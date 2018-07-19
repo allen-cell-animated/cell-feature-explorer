@@ -1,0 +1,8 @@
+server {
+    listen {{ PORT | default(80) }};
+
+    # Application should be copied into /app
+    location /msb {
+        alias /app;
+    }
+}

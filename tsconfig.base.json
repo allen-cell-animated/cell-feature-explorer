@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "jsx": "React",
+    "lib": ["DOM", "ES2015", "ES6", "DOM.Iterable", "ScriptHost"],
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "preserveConstEnums": true,
+    "strict": true,
+    "target": "ES5"
+  },
+  "include": [
+    "typings/**/*",
+    "src/**/*"
+  ]
+}
