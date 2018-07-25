@@ -1,25 +1,19 @@
 import {
-    DESELECT_FILE,
-    SELECT_FILE,
+    CHANGE_AXIS,
     SELECT_METADATA,
 } from "./constants";
 import {
     DeselectFileAction,
+    SelectAxisAction,
     SelectFileAction,
     SelectMetadataAction,
 } from "./types";
 
-export function selectFile(fileId: string | string[]): SelectFileAction {
+export function changeAxis(axisId: string, payload: string): SelectAxisAction {
     return {
-        payload: fileId,
-        type: SELECT_FILE,
-    };
-}
-
-export function deselectFile(fileId: string | string[]): DeselectFileAction {
-    return {
-        payload: fileId,
-        type: DESELECT_FILE,
+        axisId,
+        payload,
+        type: CHANGE_AXIS,
     };
 }
 

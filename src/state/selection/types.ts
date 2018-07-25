@@ -20,3 +20,9 @@ export interface SelectMetadataAction {
     payload: string | number;
     type: string;
 }
+
+export interface SelectAxisAction {
+    axisId: keyof MetadataStateBranch;
+    payload: string | number;
+    type: string;
+}

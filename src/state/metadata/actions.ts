@@ -1,6 +1,6 @@
 import {
     RECEIVE_METADATA,
-    REQUEST_METADATA,
+    REQUEST_FEATURE_DATA,
 } from "./constants";
 import {
     MetadataStateBranch,
@@ -15,8 +15,8 @@ export function receiveMetadata(payload: MetadataStateBranch): ReceiveAction {
     };
 }
 
-export function requestMetadata(): RequestAction {
+export function requestFeatureData(): RequestAction {
     return {
-        type: REQUEST_METADATA,
+        type: REQUEST_FEATURE_DATA,
     };
 }

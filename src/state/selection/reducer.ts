@@ -1,41 +1,31 @@
-import {
-    castArray,
-    without,
-} from "lodash";
 import { AnyAction } from "redux";
 
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
-    DESELECT_FILE,
-    SELECT_FILE,
+    CHANGE_AXIS,
     SELECT_METADATA,
 } from "./constants";
 import {
     DeselectFileAction,
-    SelectFileAction,
+    SelectAxisAction,
     SelectionStateBranch,
     SelectMetadataAction,
 } from "./types";
 
 export const initialState = {
     files: [],
+    plotByOnX: "Nuclear volume (fL)",
+    plotByOnY: "Cellular volume (fL)",
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [DESELECT_FILE]: {
-        accepts: (action: AnyAction): action is DeselectFileAction => action.type === DESELECT_FILE,
-        perform: (state: SelectionStateBranch, action: DeselectFileAction) => ({
+    [CHANGE_AXIS]: {
+        accepts: (action: AnyAction): action is DeselectFileAction => action.type === CHANGE_AXIS,
+        perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
             ...state,
-            files: without(state.files, ...castArray(action.payload)),
-        }),
-    },
-    [SELECT_FILE]: {
-        accepts: (action: AnyAction): action is SelectFileAction => action.type === SELECT_FILE,
-        perform: (state: SelectionStateBranch, action: SelectFileAction) => ({
-            ...state,
-            files: [...state.files, ...castArray(action.payload)],
+            [action.axisId]: action.payload,
         }),
     },
     [SELECT_METADATA]: {

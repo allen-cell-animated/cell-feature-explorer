@@ -4,9 +4,9 @@ import { createLogic } from "redux-logic";
 import { ReduxLogicDeps } from "../types";
 
 import { receiveMetadata } from "./actions";
-import { REQUEST_METADATA } from "./constants";
+import { REQUEST_FEATURE_DATA } from "./constants";
 
-const requestMetadata = createLogic({
+const requestFeatureData = createLogic({
     processOptions: {
         successType: receiveMetadata,
     },
@@ -17,15 +17,16 @@ const requestMetadata = createLogic({
         } = deps;
 
         return httpClient
-            .get(`${baseApiUrl}/metadata`)
-            .then((metadata: AxiosResponse) => metadata.data)
+            .get(`${baseApiUrl}/cell-feature-analysis.json`)
+            .then((metadata: AxiosResponse) => metadata.data
+            )
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
             });
     },
-    type: REQUEST_METADATA,
+    type: REQUEST_FEATURE_DATA,
 });
 
 export default [
-    requestMetadata,
+    requestFeatureData,
 ];
