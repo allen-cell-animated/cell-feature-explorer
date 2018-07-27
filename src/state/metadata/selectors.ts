@@ -5,7 +5,8 @@ import { State } from "../types";
 import { MetadataStateBranch } from "./types";
 
 // BASIC SELECTORS
-export const getFeatureData = (state: State) => state.metadata;
+export const getFeatureData = (state: State) => state.metadata.featureData;
+export const getAxisOptions = (state: State) => state.metadata.axisOptions;
 
 // COMPOSED SELECTORS
 export const getKeysOfMetadata = createSelector([getFeatureData], (metadata: MetadataStateBranch): string[] =>
