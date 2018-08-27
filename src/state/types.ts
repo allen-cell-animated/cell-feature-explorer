@@ -4,6 +4,8 @@ import { AnyAction } from "redux";
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
 
+export type numberOrString = number | string;
+
 export interface ActionDescription {
     accepts: (action: AnyAction) => boolean;
     perform: (state: any, action: any) => any;
@@ -32,4 +34,17 @@ export interface State {
 
 export interface TypeToDescriptionMap {
     [propName: string ]: ActionDescription;
+}
+
+export interface Annotation {
+    pointIndex: number;
+    x: number;
+    y: number;
+    cellID: string;
+}
+
+export interface Thumbnail {
+    pointIndex: number;
+    src: string;
+    cellID: string;
 }
