@@ -1,28 +1,34 @@
 import { MetadataStateBranch } from "../metadata/types";
 
-export interface DeselectFileAction {
-    payload: string | string[];
-    type: string;
-}
+export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
 
 export interface SelectionStateBranch {
     [key: string]: any;
-    files: string[];
+    selectedPoints: number[];
 }
 
-export interface SelectFileAction {
-    payload: string | string[];
-    type: string;
+export interface SelectedGroups {
+    [key: string]: number[];
 }
 
-export interface SelectMetadataAction {
-    key: keyof MetadataStateBranch;
-    payload: string | number;
+export interface SelectGroupOfPointsAction {
+    key: string | number;
+    payload: number[];
     type: string;
 }
 
 export interface SelectAxisAction {
     axisId: keyof MetadataStateBranch;
-    payload: string | number;
+    payload: string;
+    type: string;
+}
+
+export interface DeselectPointAction {
+    payload: number;
+    type: string;
+}
+
+export interface  SelectPointAction {
+    payload: number;
     type: string;
 }

@@ -1,56 +1,69 @@
 import { Select } from "antd";
+import { SelectValue } from "antd/es/select";
 import "antd/lib/select/style";
 import React from "react";
-import { connect } from "react-redux";
+import {
+ActionCreator,
+connect,
+} from "react-redux";
 
-import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
-import { getFeatureData } from "../../state/metadata/selectors";
+import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { getFeatureNames } from "../../state/metadata/selectors";
 import { changeAxis } from "../../state/selection/actions";
-import { getPlotByOnX, getPlotByOnY } from "../../state/selection/selectors";
+import {
+getColorBySelection,
+getPlotByOnX,
+getPlotByOnY,
+} from "../../state/selection/selectors";
+import { SelectAxisAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 
 interface AxisDropDownProps {
-    handleChange: () => void;
     axisId: string;
+    colorByValue: string;
+    handleChangeAxis: ActionCreator<SelectAxisAction>;
+    featureNames: string[];
     yDropDownValue: string;
     xDropDownValue: string;
 }
 
 const Option = Select.Option;
 
-class AxisDropDown extends React.Component<{}, {}> {
-    constructor(props) {
+class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
+
+    constructor(props: AxisDropDownProps) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
     }
 
-    public handleChange(value) {
+    public handleChange(value: SelectValue) {
         const {
             axisId,
             handleChangeAxis,
         } = this.props;
-
-        handleChangeAxis(axisId, value);
+        const axisSettingValue = value as string;
+        handleChangeAxis(axisId, axisSettingValue);
     }
+
     public render() {
         const {
-            allData,
             axisId,
+            colorByValue,
+            featureNames,
             xDropDownValue,
             yDropDownValue,
         } = this.props;
 
-        const allOptions = Object.keys(allData[0])
-            .filter( (ele) => ele !== "structureProteinName" && ele !== "Cell ID" && ele !== "datadir");
-        const axisIDMap: {string: string} = {
-            [X_AXIS_ID] : xDropDownValue,
-            [Y_AXIS_ID] : yDropDownValue,
+        const axisIDMap: { [key: string]: string } = {
+            [X_AXIS_ID]: xDropDownValue,
+            [Y_AXIS_ID]: yDropDownValue,
+            [COLOR_BY_SELECTOR]: colorByValue,
         };
 
         return (
             <div>
                 <Select defaultValue={axisIDMap[axisId]} onChange={this.handleChange}>
-                    {allOptions.map((option) => {
+                    {featureNames.map((option) => {
                         return (<Option value={option} key={option}>{option}</Option>
                         );
                     })}
@@ -61,9 +74,10 @@ class AxisDropDown extends React.Component<{}, {}> {
     }
 }
 
-function mapStateToProps(state: State): AxisDropDownProps {
+function mapStateToProps(state: State) {
     return {
-        allData: getFeatureData(state),
+        colorByValue: getColorBySelection(state),
+        featureNames: getFeatureNames(state),
         xDropDownValue: getPlotByOnX(state),
         yDropDownValue: getPlotByOnY(state),
     };
