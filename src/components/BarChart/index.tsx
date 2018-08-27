@@ -3,11 +3,11 @@ import React from "react";
 import Plot from "react-plotly.js";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
-import { numberOrString } from "../../state/types";
+import { NumberOrString } from "../../state/types";
 
 interface BarChartProps {
     colors: Color[];
-    names: numberOrString[];
+    names: NumberOrString[];
     totals: any;
 }
 
@@ -24,7 +24,7 @@ const BarChart: React.SFC<BarChartProps> = (props) => (
                         type: "bar",
                         x: props.totals,
                         y: props.names
-                            .map((ele: numberOrString, index: number) => typeof ele === "string" ? ele : index),
+                            .map((ele: NumberOrString, index: number) => typeof ele === "string" ? ele : index),
                     },
                 ]}
                 layout={{

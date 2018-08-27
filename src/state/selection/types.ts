@@ -8,7 +8,9 @@ export interface SelectionStateBranch {
 }
 
 export interface SelectedGroups {
+    [key: number]: number[];
     [key: string]: number[];
+
 }
 
 export interface SelectGroupOfPointsAction {

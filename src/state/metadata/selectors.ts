@@ -33,8 +33,8 @@ export const getProteinNames = createSelector([getFeatureData], (featureData: Me
 );
 
 export const getProteinTotals = createSelector([getFeatureData, getProteinNames],
-    (featureData: MetadataStateBranch, proteinNames: string[]) => {
-    const totals =  reduce(featureData, (acc: any, cur) => {
+    (featureData: MetadataStateBranch, proteinNames: string[]): number[] => {
+    const totals =  reduce(featureData, (acc: {[key: number]: number}, cur) => {
         const index = proteinNames.indexOf(cur.structureProteinName);
         if (acc[index]) {
             acc[index] ++;

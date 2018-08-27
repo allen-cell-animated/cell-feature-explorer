@@ -4,8 +4,18 @@ import { createSelector } from "reselect";
 import {
     getFeatureData,
 } from "../metadata/selectors";
-import { MetadataStateBranch } from "../metadata/types";
-import { Annotation, State, Thumbnail } from "../types";
+import {
+    FeatureData,
+    MetadataStateBranch,
+} from "../metadata/types";
+import {
+    Annotation,
+    NumberOrString,
+    State,
+    Thumbnail,
+} from "../types";
+
+import { SelectedGroups } from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -20,18 +30,18 @@ export const getSelectedSubGroup = (state: State) => state.selection.selectedSub
 // COMPOSED SELECTORS
 export const getXValues = createSelector([getFeatureData, getPlotByOnX],
     (featureData: MetadataStateBranch, plotByOnX: string): number[] => (
-         featureData.map((metaDatum: any) => (metaDatum[plotByOnX]))
+         featureData.map((metaDatum: FeatureData) => (metaDatum[plotByOnX]))
     )
 );
 
 export const getYValues = createSelector([getFeatureData, getPlotByOnY],
     (featureData: MetadataStateBranch, plotByOnY: string): number[] => (
-        featureData.map((metaDatum: any) => (metaDatum[plotByOnY]))
+        featureData.map((metaDatum: FeatureData) => (metaDatum[plotByOnY]))
     )
 );
 
 export const getSelectedGroupKeys = createSelector([getSelectedGroups],
-    (selectedGroups: any): number[] | string[] => {
+    (selectedGroups: SelectedGroups): NumberOrString[] => {
         return keys(selectedGroups);
     }
 );
@@ -42,7 +52,7 @@ export const getSelectedSetTotals = createSelector([getSelectedGroups], (selecte
 );
 
 export const getSelectedGroupsValues = createSelector([getXValues, getYValues, getSelectedGroups],
-    (xvalues: number[], yvalues: number[], selectedGroups: any): any[] => {
+    (xvalues: number[], yvalues: number[], selectedGroups: SelectedGroups): SelectedGroups[] => {
         if (!values(selectedGroups)) {
             return [];
         }
@@ -65,7 +75,7 @@ export const getSelectedGroupsValues = createSelector([getXValues, getYValues, g
 
 export const getColorByValues = createSelector([getFeatureData, getColorBySelection],
     (featureData: MetadataStateBranch, colorBy: string): string[] => (
-        featureData.map((metaDatum: any) => (metaDatum[colorBy]))
+        featureData.map((metaDatum: FeatureData) => (metaDatum[colorBy]))
     )
 );
 

@@ -24,22 +24,18 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
-import { numberOrString, State } from "../../state/types";
+import { NumberOrString, State } from "../../state/types";
 import AxisDropDown from "../AxisDropDown";
 
 const { SubMenu } = Menu;
 
 interface ColorByMenuProps {
     proteinColors: Color[];
-    // proteinNames: string[];
-    // proteinTotals: number[];
-    // selectedSetColors: Color[];
-    // selectedSetNames: numberOrString[];
+    proteinNames: string[];
+    proteinTotals: number[];
+    selectedSetColors: Color[];
+    selectedSetNames: NumberOrString[];
     selectedSetTotals: number[];
-    proteinNames: any;
-    proteinTotals: any;
-    selectedSetColors: any;
-    selectedSetNames: any;
 }
 
 interface ColorByMenuState {

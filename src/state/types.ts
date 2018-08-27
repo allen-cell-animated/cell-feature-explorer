@@ -4,7 +4,7 @@ import { AnyAction } from "redux";
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
 
-export type numberOrString = number | string;
+export type NumberOrString = number | string;
 
 export interface ActionDescription {
     accepts: (action: AnyAction) => boolean;
