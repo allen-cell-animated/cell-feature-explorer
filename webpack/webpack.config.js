@@ -2,7 +2,7 @@ const path = require('path');
 const fs  = require('fs');
 
 const lessToJs = require('less-vars-to-js');
-const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './ant-vars.less'), 'utf8'));
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, '../src/styles/ant-vars.less'), 'utf8'));
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const tsImportPluginFactory = require('ts-import-plugin');
 

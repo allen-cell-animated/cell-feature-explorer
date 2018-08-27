@@ -1,4 +1,4 @@
-@dark-gray: #131313;
+@dark-gray: #313131;
 @purple: #8048f3;
 @light-gray: #6e6e6e;
 @bright-green: #b2d030;
@@ -30,7 +30,7 @@
 @component-background   :  @background-color;
 @heading-color          : fade(#fff, 85%);
 @text-color             : fade(#fff, 85%);
-@text-color-secondary   : @dark-gray;
+@text-color-secondary   : lighten(@dark-gray, 85%);
 
 @background-color-light : @primary-color;  // background of header and selected item
 @background-color-base  : hsv(0, 0, 96%);  // Default grey background color
@@ -44,3 +44,5 @@
 @link-color             : @primary-color;
 @link-hover-color       : color(~`colorPalette("@{normal-color}", 5)`);
 @link-active-color      : color(~`colorPalette("@{normal-color}", 7)`);
+
+@card-actions-background: @dark-gray;
