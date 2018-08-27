@@ -28,7 +28,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         const { data } = this.props;
         return (
             <List
-                grid={{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 12 }}
+                grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
                 dataSource={data}
                 renderItem={this.renderGalleryCard}
             />
