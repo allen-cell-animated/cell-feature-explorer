@@ -1,5 +1,4 @@
 .container {
-
     & :global(.ant-card-cover) {
      width: 118px;
      height: 118px;
