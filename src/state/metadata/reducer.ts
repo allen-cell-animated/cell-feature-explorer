@@ -9,12 +9,17 @@ import {
     ReceiveAction,
 } from "./types";
 
-export const initialState = [];
+export const initialState = {
+    featureData: [],
+};
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_METADATA]: {
         accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_METADATA,
-        perform: (state: MetadataStateBranch, action: ReceiveAction) => ([ ...state, ...action.payload ]),
+        perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
+            ...state,
+            featureData: action.payload,
+        }),
     },
 };
 
