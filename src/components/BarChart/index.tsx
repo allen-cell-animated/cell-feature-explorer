@@ -8,7 +8,7 @@ import { NumberOrString } from "../../state/types";
 interface BarChartProps {
     colors: Color[];
     names: NumberOrString[];
-    totals: any;
+    totals: number[];
 }
 
 const BarChart: React.SFC<BarChartProps> = (props) => (

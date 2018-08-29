@@ -3,9 +3,6 @@ export interface MetadataStateBranch {
 }
 
 export interface FeatureData {
-    "Cell ID": string;
-    structureProteinName: string;
-    datadir: string;
     [key: string]: number | string;
 }
 

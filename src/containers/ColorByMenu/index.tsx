@@ -78,7 +78,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
             >
                 <SubMenu
                     key="structureProteinName"
-                    title={<span><Icon type="mail" /><span>Tagged Structures</span></span>}
+                    title={<span>Tagged Structures</span>}
                 >
                     <BarChart
                         names={proteinNames}
@@ -88,12 +88,15 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
                 </SubMenu>
                 <SubMenu
                     key="cellularFeatures"
-                    title={<span><Icon type="appstore" /><span>Cellular Features</span></span>}
+                    title={<span>Cellular Features</span>}
                 >
                     <AxisDropDown axisId={COLOR_BY_SELECTOR}/>
 
                 </SubMenu>
-                <SubMenu key="clusters" title={<span><Icon type="setting" /><span>Cluster</span></span>}>
+                <SubMenu
+                    key="clusters"
+                    title={<span>Cluster</span>}
+                >
                     <BarChart
                         names={selectedSetNames.map((ele: number| string, index: number) => Number(ele) ? index : ele)}
                         totals={selectedSetTotals}
@@ -116,8 +119,5 @@ function mapStateToProps(state: State) {
         selectedSetTotals: getSelectedSetTotals(state),
     };
 }
-
-const dispatchToPropsMap = {
-};
 
 export default connect(mapStateToProps, null)(ColorByMenu);

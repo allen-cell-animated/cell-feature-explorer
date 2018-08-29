@@ -1,8 +1,6 @@
 import * as React from "react";
-import { connect } from "react-redux";
 
 import ColorByMenu from "../../containers/ColorByMenu";
-import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 

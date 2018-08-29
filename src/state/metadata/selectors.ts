@@ -8,6 +8,11 @@ import {
 } from "lodash";
 import { createSelector } from "reselect";
 
+import {
+    CELL_ID_KEY,
+    THUMBNAIL_DIR_KEY,
+} from "../../constants";
+
 import { State } from "../types";
 
 import { MetadataStateBranch } from "./types";
@@ -16,7 +21,8 @@ import { MetadataStateBranch } from "./types";
 export const getFeatureData = (state: State) => state.metadata.featureData;
 
 export const getFeatureNames = createSelector([getFeatureData], (featureData: MetadataStateBranch) => (
-    filter( keys(featureData[0]), (ele) => ele !== "structureProteinName" && ele !== "Cell ID" && ele !== "datadir")
+    filter( keys(featureData[0]),
+        (ele) => ele !== "structureProteinName" && ele !== CELL_ID_KEY && ele !== THUMBNAIL_DIR_KEY)
     )
 );
 

@@ -6,18 +6,21 @@ import {
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS, SCATTER_PLOT_NAME } from "../../constants";
+import {
+    GENERAL_PLOT_SETTINGS,
+    SCATTER_PLOT_NAME,
+} from "../../constants";
 import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     colorBy: string;
-    plotData: any;
+    plotData: {[key: string]: any[]};
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
     annotations: Annotation[];
 }
 
-class MainPlot extends React.Component<MainPlotProps, {}> {
+export default class MainPlot extends React.Component<MainPlotProps, {}> {
     public static makeAxis(domain: number[], hoverformat: string, zeroline: boolean) {
         return {
             color: GENERAL_PLOT_SETTINGS.textColor,
@@ -37,7 +40,7 @@ class MainPlot extends React.Component<MainPlotProps, {}> {
         this.colorSettings = this.colorSettings.bind(this);
     }
 
-    public makeAnnotations() {
+    public makeAnnotations(): Annotation[] {
         const { annotations } = this.props;
 
         return annotations.map((point: Annotation) => {
@@ -64,39 +67,43 @@ class MainPlot extends React.Component<MainPlotProps, {}> {
         });
     }
 
-    public colorSettings(plotSettings: Data) {
+    public colorSettings(plotSettings: Data): Data {
         const {
             colorBy,
             plotData,
         } = this.props;
         if (colorBy === "structureProteinName") {
-             plotSettings.transforms = [{
-                    groups: plotData.groups,
-                    nameformat: `%{group}`,
+             return {
+                 ...plotSettings,
+                 transforms: [{
+                     groups: plotData.groups,
+                     nameformat: `%{group}`,
                      styles: plotData.proteinNames.map((ele: string, index: number) => {
                          return {
                              target: ele,
                              value: {marker: {color: plotData.proteinColors[index]}},
                          };
                      }),
-                    // literal typing to avoid a widened type inferred
+                     // literal typing to avoid a widened type inferred
                      type: "groupby" as "groupby",
-                }];
-        } else {
-            plotSettings.marker = {
-                color: plotData.groups,
+                 }],
             };
-
         }
-        return plotSettings;
+        return {
+            ...plotSettings,
+            marker: {
+                color: plotData.groups,
+            },
+
+        };
     }
 
-    public makeScatterPlotData() {
+    public makeScatterPlotData(): Data {
         const { plotData } = this.props;
         const plotSettings =  {
             marker: {
                 opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
-                size: GENERAL_PLOT_SETTINGS.cirleRadius,
+                size: GENERAL_PLOT_SETTINGS.circleRadius,
                 symbol: "circle",
             },
             mode: "markers" as "markers",
@@ -184,5 +191,3 @@ class MainPlot extends React.Component<MainPlotProps, {}> {
         );
     }
 }
-
-export default MainPlot;

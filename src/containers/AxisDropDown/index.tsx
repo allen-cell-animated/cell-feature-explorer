@@ -3,17 +3,21 @@ import { SelectValue } from "antd/es/select";
 import "antd/lib/select/style";
 import React from "react";
 import {
-ActionCreator,
-connect,
+    ActionCreator,
+    connect,
 } from "react-redux";
 
-import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import {
+    COLOR_BY_SELECTOR,
+    X_AXIS_ID,
+    Y_AXIS_ID,
+} from "../../constants";
 import { getFeatureNames } from "../../state/metadata/selectors";
 import { changeAxis } from "../../state/selection/actions";
 import {
-getColorBySelection,
-getPlotByOnX,
-getPlotByOnY,
+    getColorBySelection,
+    getPlotByOnX,
+    getPlotByOnY,
 } from "../../state/selection/selectors";
 import { SelectAxisAction } from "../../state/selection/types";
 import { State } from "../../state/types";
@@ -36,7 +40,7 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    public handleChange(value: SelectValue) {
+    public handleChange(value: SelectValue): void {
         const {
             axisId,
             handleChangeAxis,
@@ -68,7 +72,6 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
                         );
                     })}
                 </Select>
-
             </div>
         );
     }

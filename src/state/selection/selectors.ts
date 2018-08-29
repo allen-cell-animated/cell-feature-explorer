@@ -1,5 +1,11 @@
-import { keys, map, values } from "lodash";
+import {
+    keys,
+    map,
+    values,
+} from "lodash";
 import { createSelector } from "reselect";
+
+import { CELL_ID_KEY } from "../../constants";
 
 import {
     getFeatureData,
@@ -25,7 +31,6 @@ export const getSelectedGroups = (state: State) => state.selection.selectedGroup
 export const getColorBySelection = (state: State) => state.selection.colorBy;
 export const getProteinColors = (state: State) => state.selection.proteinColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
-export const getSelectedSubGroup = (state: State) => state.selection.selectedSubGroup;
 
 // COMPOSED SELECTORS
 export const getXValues = createSelector([getFeatureData, getPlotByOnX],
@@ -83,7 +88,7 @@ export const getThumbnails = createSelector([getFeatureData, getClickedScatterPo
     (featureData: MetadataStateBranch, clickedScatterPointIndices: number[]): Thumbnail[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
             const data = featureData[pointIndex];
-            const cellID = data["Cell ID"];
+            const cellID = data[CELL_ID_KEY];
             const directory = data.datadir;
             const cellLineId = cellID.split("_")[0];
             const src = `/aics/thumbnails/${directory}/${cellLineId}/${cellID}.png`;
@@ -100,7 +105,7 @@ export const getAnnotations = createSelector([getFeatureData, getClickedScatterP
     (featureData: MetadataStateBranch, clickedScatterPointIndices: number[], xaxis, yaxis): Annotation[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
             const data = featureData[pointIndex];
-            const cellID = data["Cell ID"];
+            const cellID = data[CELL_ID_KEY];
             const x = data[xaxis];
             const y = data[yaxis];
             return {

@@ -6,12 +6,14 @@ export const Y_AXIS_ID = "plotByOnY";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const THUMBNAIL_BASE_URL = "https://cellviewer-1-2-0.allencell.org";
 export const COLOR_BY_SELECTOR = "colorBy";
+export const CELL_ID_KEY = "Cell ID";
+export const THUMBNAIL_DIR_KEY = "datadir";
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
-    cellName: "Cell ID",
+    cellName: CELL_ID_KEY,
     chartParent: "ace-scatter-chart",
-    cirleRadius: 4,
+    circleRadius: 4,
     dataFile: "/js/AICS/cell-feature-analysis.json",
     histogramColor: "rgb(164,162,164)",
     imagesDir: "/aics/thumbnails",

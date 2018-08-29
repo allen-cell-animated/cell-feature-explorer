@@ -7,6 +7,10 @@ import { makeReducer } from "../util";
 import {
     CHANGE_AXIS,
     DESELECT_POINT,
+    INITIAL_COLOR_BY,
+    INITIAL_COLORS,
+    INITIAL_PLOT_BY_ON_X,
+    INITIAL_PLOT_BY_ON_Y,
     SELECT_GROUP,
     SELECT_POINT,
 } from "./constants";
@@ -19,37 +23,11 @@ import {
 } from "./types";
 
 export const initialState = {
-    colorBy: "structureProteinName",
-    plotByOnX: "Nuclear volume (fL)",
-    plotByOnY: "Cellular volume (fL)",
-    proteinColors: [
-        "#a6cee3",
-        "#1f78b4",
-        "#b2df8a",
-        "#33a02c",
-        "#fb9a99",
-        "#e31a1c",
-        "#fdbf6f",
-        "#ff7f00",
-        "#cab2d6",
-        "#6a3d9a",
-        "#ffff99",
-        "#b15928",
-    ],
-    selectedGroupColors: [
-        "#a6cee3",
-        "#1f78b4",
-        "#b2df8a",
-        "#33a02c",
-        "#fb9a99",
-        "#e31a1c",
-        "#fdbf6f",
-        "#ff7f00",
-        "#cab2d6",
-        "#6a3d9a",
-        "#ffff99",
-        "#b15928",
-    ],
+    colorBy: INITIAL_COLOR_BY,
+    plotByOnX: INITIAL_PLOT_BY_ON_X,
+    plotByOnY: INITIAL_PLOT_BY_ON_Y,
+    proteinColors: INITIAL_COLORS,
+    selectedGroupColors: INITIAL_COLORS,
     selectedGroups: {},
     selectedPoints: [],
 };

@@ -1,3 +1,4 @@
+import { includes } from "lodash";
 import {
     Color,
     PlotMouseEvent,
@@ -6,7 +7,7 @@ import {
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 
-import InteractivePlot from "../../components/MainPlot";
+import MainPlot from "../../components/MainPlot";
 
 import { SCATTER_PLOT_NAME, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import {
@@ -21,7 +22,6 @@ import { RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
-    SelectedGroups,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -74,7 +74,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
         } = this.props;
         points.forEach((point) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
-                if (clickedPoints.indexOf(point.pointIndex) > -1) {
+                if (includes(clickedPoints, point.pointIndex)) {
                     handleDeselectPoint(point.pointIndex);
                 } else {
                     handleSelectPoint(point.pointIndex);
@@ -102,7 +102,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              yDataValues,
              data,
          } = this.props;
-         if (data.length === 0) {return null; }
+
+         if (data.length === 0) {
+             return null;
+         }
          const plotData = {
              groups: colorByGroupings,
              proteinColors,
@@ -115,7 +118,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             <div className={styles.container}>My Plot
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
-                <InteractivePlot
+                <MainPlot
                     plotData={plotData}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}

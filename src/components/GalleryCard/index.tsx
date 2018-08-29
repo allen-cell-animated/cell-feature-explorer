@@ -6,7 +6,7 @@ import React from "react";
 
 import "antd/lib/card/style";
 
-import { THUMBNAIL_BASE_URL } from "../../constants/index";
+import { THUMBNAIL_BASE_URL } from "../../constants";
 import { DeselectPointAction } from "../../state/selection/types";
 
 const { Meta } = Card;
@@ -29,7 +29,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <Card
             style={{width: 124}}
             className={styles.container}
-            cover={<img alt="example" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>}
+            cover={<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>}
             actions={[
                 <span key={`${props.title}-load`}>3D <Icon type="arrows-alt"/></span>,
                 <Icon
