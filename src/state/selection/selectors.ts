@@ -5,7 +5,10 @@ import {
 } from "lodash";
 import { createSelector } from "reselect";
 
-import { CELL_ID_KEY } from "../../constants";
+import {
+    CELL_ID_KEY,
+    THUMBNAIL_DIR_KEY
+} from "../../constants";
 
 import {
     getFeatureData,
@@ -45,6 +48,12 @@ export const getYValues = createSelector([getFeatureData, getPlotByOnY],
     )
 );
 
+export const getColorByValues = createSelector([getFeatureData, getColorBySelection],
+    (featureData: MetadataStateBranch, colorBy: string): string[] => (
+        featureData.map((metaDatum: FeatureData) => (metaDatum[colorBy]))
+    )
+);
+
 export const getSelectedGroupKeys = createSelector([getSelectedGroups],
     (selectedGroups: SelectedGroups): NumberOrString[] => {
         return keys(selectedGroups);
@@ -78,18 +87,12 @@ export const getSelectedGroupsValues = createSelector([getXValues, getYValues, g
     }
 );
 
-export const getColorByValues = createSelector([getFeatureData, getColorBySelection],
-    (featureData: MetadataStateBranch, colorBy: string): string[] => (
-        featureData.map((metaDatum: FeatureData) => (metaDatum[colorBy]))
-    )
-);
-
 export const getThumbnails = createSelector([getFeatureData, getClickedScatterPoints],
     (featureData: MetadataStateBranch, clickedScatterPointIndices: number[]): Thumbnail[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
             const data = featureData[pointIndex];
             const cellID = data[CELL_ID_KEY];
-            const directory = data.datadir;
+            const directory = data[THUMBNAIL_DIR_KEY];
             const cellLineId = cellID.split("_")[0];
             const src = `/aics/thumbnails/${directory}/${cellLineId}/${cellID}.png`;
             return {

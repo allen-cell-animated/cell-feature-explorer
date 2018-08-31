@@ -8,6 +8,7 @@ export const THUMBNAIL_BASE_URL = "https://cellviewer-1-2-0.allencell.org";
 export const COLOR_BY_SELECTOR = "colorBy";
 export const CELL_ID_KEY = "Cell ID";
 export const THUMBNAIL_DIR_KEY = "datadir";
+export const PROTEIN_NAME_KEY = "structureProteinName";
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",

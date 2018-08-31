@@ -8,6 +8,7 @@ import Plot from "react-plotly.js";
 
 import {
     GENERAL_PLOT_SETTINGS,
+    PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
 } from "../../constants";
 import { Annotation } from "../../state/types";
@@ -72,7 +73,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             colorBy,
             plotData,
         } = this.props;
-        if (colorBy === "structureProteinName") {
+        if (colorBy === PROTEIN_NAME_KEY) {
              return {
                  ...plotSettings,
                  transforms: [{

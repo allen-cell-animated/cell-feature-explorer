@@ -4,7 +4,6 @@ export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |
 
 export interface SelectionStateBranch {
     [key: string]: any;
-    selectedPoints: number[];
 }
 
 export interface SelectedGroups {
