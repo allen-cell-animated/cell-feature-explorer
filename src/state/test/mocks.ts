@@ -30,7 +30,7 @@ export const makeFeatureData = (cellIds: string[], proteinNames: string[]): Meta
             },
         }
     )
-))
+));
 
 export const mockState = (cellIds: string[], proteinNames: string[]): State => ({
     metadata: {
@@ -45,4 +45,4 @@ export const mockState = (cellIds: string[], proteinNames: string[]): State => (
         selectedGroups: {},
         selectedPoints: [],
     },
-})
+});
