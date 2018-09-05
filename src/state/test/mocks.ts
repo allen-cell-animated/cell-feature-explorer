@@ -1,56 +1,40 @@
 import {
+    CELL_ID_KEY,
+    PROTEIN_NAME_KEY,
+    THUMBNAIL_DIR_KEY,
+} from "../../constants/index";
+
+import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
 } from "../selection/constants";
 
-import { MetadataStateBranch } from "../metadata/types";
+import { MetaData } from "../metadata/types";
+
 import { State } from "../types";
-import {
-    CELL_ID_KEY,
-    PROTEIN_NAME_KEY, THUMBNAIL_DIR_KEY,
-} from "../../constants/index";
 
-export const mockFeatureData: MetadataStateBranch = [
+export const makeFeatureData = (cellIds: string[], proteinNames: string[]): MetaData[] => (
+    cellIds.map((cellId, index) => (
         {
-            [CELL_ID_KEY]: "AICS-1",
-            [PROTEIN_NAME_KEY]: "protein1",
-            [THUMBNAIL_DIR_KEY]: "dir",
-            feature1: 1,
-            feature2: 2,
-            feature3: 3,
-        },
-        {
-            [CELL_ID_KEY]: "AICS-2",
-            [PROTEIN_NAME_KEY]: "protein1",
-            [THUMBNAIL_DIR_KEY]: "dir",
-            feature1: 4,
-            feature2: 5,
-            feature3: 6,
-        },
-        {
-            [CELL_ID_KEY]: "AICS-3",
-            [PROTEIN_NAME_KEY]: "protein2",
-            [THUMBNAIL_DIR_KEY]: "dir",
-            feature1: 7,
-            feature2: 8,
-            feature3: 9,
-        },
-        {
-            [CELL_ID_KEY]: "AICS-4",
-            [PROTEIN_NAME_KEY]: "protein2",
-            [THUMBNAIL_DIR_KEY]: "dir",
-            feature1: 10,
-            feature2: 11,
-            feature3: 12,
-        },
+            file_info : {
+                [CELL_ID_KEY]: cellId,
+                [PROTEIN_NAME_KEY]: proteinNames[index],
+                [THUMBNAIL_DIR_KEY]: "dir",
+            },
+            measured_features: {
+                feature1: index,
+                feature2: index + 1,
+                feature3: index + 2,
+            },
+        }
+    )
+))
 
-];
-
-export const mockState: State = {
+export const mockState = (cellIds: string[], proteinNames: string[]): State => ({
     metadata: {
-        featureData: mockFeatureData,
+        featureData: makeFeatureData(cellIds, proteinNames),
     },
     selection: {
         colorBy: INITIAL_COLOR_BY,
@@ -61,4 +45,4 @@ export const mockState: State = {
         selectedGroups: {},
         selectedPoints: [],
     },
-};
+})

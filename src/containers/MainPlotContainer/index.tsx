@@ -16,7 +16,7 @@ import {
 } from "../../state/types";
 
 import { requestFeatureData } from "../../state/metadata/actions";
-import { getFeatureData, getProteinNames } from "../../state/metadata/selectors";
+import { getFullMetaDataArray, getProteinNames } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
@@ -136,7 +136,7 @@ function mapStateToProps(state: State) {
         clickedPoints: getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        data: getFeatureData(state),
+        data: getFullMetaDataArray(state),
         plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
         plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),

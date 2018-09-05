@@ -16,19 +16,30 @@ import {
 
 import { State } from "../types";
 
-import { MetadataStateBranch } from "./types";
+import {
+    FileInfo,
+    MeasuredFeatures,
+    MetadataStateBranch
+} from "./types";
 
 // BASIC SELECTORS
-export const getFeatureData = (state: State) => state.metadata.featureData;
+export const getFullMetaDataArray = (state: State) => state.metadata.featureData;
 
-export const getFeatureNames = createSelector([getFeatureData], (featureData: MetadataStateBranch) => (
-    filter( keys(featureData[0]),
-        (ele) => ele !== PROTEIN_NAME_KEY && ele !== CELL_ID_KEY && ele !== THUMBNAIL_DIR_KEY)
+export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
+    return map(fullMetaData, "file_info");
+});
+
+export const getMeasuredData = createSelector([getFullMetaDataArray], (fullMetaData): MeasuredFeatures[] => {
+    return map(fullMetaData, "measured_features");
+});
+
+export const getFeatureNames = createSelector([getMeasuredData], (measuredFeatures: MetadataStateBranch): string[] => (
+    keys(measuredFeatures[0])
     )
 );
 
-export const getProteinNames = createSelector([getFeatureData], (featureData: MetadataStateBranch) => {
-        return uniq(map((featureData),  PROTEIN_NAME_KEY)).sort((a, b) => {
+export const getProteinNames = createSelector([getFileInfo], (fileInfo: MetadataStateBranch): string[] => {
+        return uniq(map((fileInfo),  PROTEIN_NAME_KEY)).sort((a, b) => {
             if (b > a) {
                 return 1;
             } else if (a > b) {
@@ -39,7 +50,7 @@ export const getProteinNames = createSelector([getFeatureData], (featureData: Me
     }
 );
 
-export const getProteinTotals = createSelector([getFeatureData, getProteinNames],
+export const getProteinTotals = createSelector([getFileInfo, getProteinNames],
     (featureData: MetadataStateBranch, proteinNames: string[]): number[] => {
     const totals =  reduce(featureData, (acc: {[key: number]: number}, cur) => {
         const index = proteinNames.indexOf(cur[PROTEIN_NAME_KEY]);

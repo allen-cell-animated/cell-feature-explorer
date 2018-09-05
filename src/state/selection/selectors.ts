@@ -6,16 +6,18 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY,
+    CELL_ID_KEY, PROTEIN_NAME_KEY,
     THUMBNAIL_DIR_KEY
 } from "../../constants";
 
 import {
-    getFeatureData,
+    getFileInfo,
+    getFullMetaDataArray,
+    getMeasuredData,
 } from "../metadata/selectors";
 import {
-    FeatureData,
-    MetadataStateBranch,
+    FileInfo,
+    MeasuredFeatures, MetaData,
 } from "../metadata/types";
 import {
     Annotation,
@@ -36,21 +38,31 @@ export const getProteinColors = (state: State) => state.selection.proteinColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
 
 // COMPOSED SELECTORS
-export const getXValues = createSelector([getFeatureData, getPlotByOnX],
-    (featureData: MetadataStateBranch, plotByOnX: string): number[] => (
-         featureData.map((metaDatum: FeatureData) => (metaDatum[plotByOnX]))
+export const getXValues = createSelector([getMeasuredData, getPlotByOnX],
+    (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => (
+         map(measuredData, (metaDatum: MeasuredFeatures) => (metaDatum[plotByOnX]))
     )
 );
 
-export const getYValues = createSelector([getFeatureData, getPlotByOnY],
-    (featureData: MetadataStateBranch, plotByOnY: string): number[] => (
-        featureData.map((metaDatum: FeatureData) => (metaDatum[plotByOnY]))
+export const getYValues = createSelector([getMeasuredData, getPlotByOnY],
+    (measuredData: MeasuredFeatures[], plotByOnY: string): number[] => (
+        measuredData.map((metaDatum: MeasuredFeatures) => (metaDatum[plotByOnY]))
     )
 );
 
-export const getColorByValues = createSelector([getFeatureData, getColorBySelection],
-    (featureData: MetadataStateBranch, colorBy: string): string[] => (
-        featureData.map((metaDatum: FeatureData) => (metaDatum[colorBy]))
+export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData) => (
+    map(metaData, (ele) => (
+            {
+            ...ele.measured_features,
+            [PROTEIN_NAME_KEY]: ele.file_info[PROTEIN_NAME_KEY],
+            }
+        )
+    ))
+);
+
+export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
+    (metaData: MetaData[], colorBy: string): number[] | string[] => (
+        map(metaData, colorBy)
     )
 );
 
@@ -82,17 +94,18 @@ export const getSelectedGroupsValues = createSelector([getXValues, getYValues, g
                     };
                 });
             })
-
         );
     }
 );
 
-export const getThumbnails = createSelector([getFeatureData, getClickedScatterPoints],
-    (featureData: MetadataStateBranch, clickedScatterPointIndices: number[]): Thumbnail[] => {
+export const getThumbnails = createSelector([
+        getFileInfo,
+        getClickedScatterPoints,
+    ],
+    (fileInfo: FileInfo[], clickedScatterPointIndices: number[]): Thumbnail[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
-            const data = featureData[pointIndex];
-            const cellID = data[CELL_ID_KEY];
-            const directory = data[THUMBNAIL_DIR_KEY];
+            const cellID = fileInfo[pointIndex][CELL_ID_KEY];
+            const directory = fileInfo[pointIndex][THUMBNAIL_DIR_KEY];
             const cellLineId = cellID.split("_")[0];
             const src = `/aics/thumbnails/${directory}/${cellLineId}/${cellID}.png`;
             return {
@@ -104,13 +117,25 @@ export const getThumbnails = createSelector([getFeatureData, getClickedScatterPo
     }
 );
 
-export const getAnnotations = createSelector([getFeatureData, getClickedScatterPoints, getPlotByOnX, getPlotByOnY],
-    (featureData: MetadataStateBranch, clickedScatterPointIndices: number[], xaxis, yaxis): Annotation[] => {
+export const getAnnotations = createSelector(
+    [
+        getMeasuredData,
+        getFileInfo,
+        getClickedScatterPoints,
+        getPlotByOnX,
+        getPlotByOnY,
+    ],
+     (
+         measuredData: MeasuredFeatures[],
+         fileInfo: FileInfo[],
+         clickedScatterPointIndices: number[],
+         xaxis,
+         yaxis
+     ): Annotation[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
-            const data = featureData[pointIndex];
-            const cellID = data[CELL_ID_KEY];
-            const x = data[xaxis];
-            const y = data[yaxis];
+            const cellID = fileInfo[pointIndex][CELL_ID_KEY];
+            const x = measuredData[pointIndex][xaxis];
+            const y = measuredData[pointIndex][yaxis];
             return {
                 cellID,
                 pointIndex,

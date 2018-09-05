@@ -10,18 +10,23 @@ import {
 import {
     getAnnotations,
     getSelectedGroupKeys,
-    getSelectedSetTotals, getThumbnails,
+    getSelectedSetTotals,
+    getThumbnails,
     getXValues,
     getYValues,
 } from "../selectors";
 
 describe("Selection selectors", () => {
+    const cellIDs = ["AICS-1", "AICS-2", "AICS-3", "AICS-4"];
+    const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
+    const newMockState = mockState(cellIDs, proteinNames);
     describe("getXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
 
                 const state: State = {
-                    ...mockState,
+                    ...newMockState,
                     selection: {
+                        ...newMockState.selection,
                         plotByOnX: "feature1",
                     },
                 };
@@ -29,6 +34,7 @@ describe("Selection selectors", () => {
                 const newState = {
                     ...state,
                     selection: {
+                        ...newMockState.selection,
                         plotByOnX: "feature2",
                     },
                 };
@@ -41,8 +47,9 @@ describe("Selection selectors", () => {
         it("returns an array of values that correspond to the currently selected y value", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
                 selection: {
+                    ...newMockState.selection,
                     plotByOnY: "feature1",
                 },
             };
@@ -50,6 +57,7 @@ describe("Selection selectors", () => {
             const newState = {
                 ...state,
                 selection: {
+                    ...newMockState.selection,
                     plotByOnY: "feature2",
                 },
             };
@@ -62,8 +70,9 @@ describe("Selection selectors", () => {
         it("it returns the keys of the selected groups, may be strings or numbers", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
                 selection: {
+                    ...newMockState.selection,
                     selectedGroups: {
                         id1: [1, 2, 3, 4],
                         id2: [2, 3, 4, 5],
@@ -77,7 +86,7 @@ describe("Selection selectors", () => {
         it("it returns an empty array if no selected groups", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
             };
 
             const result: NumberOrString[] = getSelectedGroupKeys(state);
@@ -88,8 +97,9 @@ describe("Selection selectors", () => {
         it("it returns an array where each value is the total number of points in that group", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
                 selection: {
+                    ...newMockState.selection,
                     selectedGroups: {
                         id1: [1, 2, 3, 4],
                         id2: [2, 3, 4, 5, 6, 7, 8],
@@ -109,8 +119,9 @@ describe("Selection selectors", () => {
         it("it returns a thumbnail object for every index in selectedPoints array", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
                 selection: {
+                    ...newMockState.selection,
                     selectedPoints: [0, 1],
                 },
             };
@@ -125,8 +136,9 @@ describe("Selection selectors", () => {
         it("it returns an Annotation object for every index in selectedPoints array", () => {
 
             const state: State = {
-                ...mockState,
+                ...newMockState,
                 selection: {
+                    ...newMockState.selection,
                     plotByOnX: "feature1",
                     plotByOnY: "feature2",
                     selectedPoints: [0, 1],
@@ -137,5 +149,4 @@ describe("Selection selectors", () => {
         });
 
     });
-
-})
+});

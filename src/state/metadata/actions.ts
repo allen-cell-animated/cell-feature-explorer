@@ -3,12 +3,12 @@ import {
     REQUEST_FEATURE_DATA,
 } from "./constants";
 import {
-    MetadataStateBranch,
+    MetaData,
     ReceiveAction,
     RequestAction
 } from "./types";
 
-export function receiveMetadata(payload: MetadataStateBranch): ReceiveAction {
+export function receiveMetadata(payload: MetaData): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,

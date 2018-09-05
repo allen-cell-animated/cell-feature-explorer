@@ -1,13 +1,30 @@
+import {
+    CELL_ID_KEY,
+    PROTEIN_NAME_KEY,
+    THUMBNAIL_DIR_KEY
+} from "../../constants/index";
+
 export interface MetadataStateBranch {
     [key: string]: any;
 }
 
-export interface FeatureData {
-    [key: string]: number | string;
+export interface FileInfo {
+    [CELL_ID_KEY]: string;
+    [THUMBNAIL_DIR_KEY]: string;
+    [PROTEIN_NAME_KEY]: string;
+}
+
+export interface MeasuredFeatures {
+    [key: string]: number;
+}
+
+export interface MetaData {
+    file_info: FileInfo;
+    measured_features: MeasuredFeatures;
 }
 
 export interface ReceiveAction {
-    payload: MetadataStateBranch;
+    payload: MetaData;
     type: string;
 }
 
