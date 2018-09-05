@@ -20,7 +20,10 @@ import {
 describe("Selection selectors", () => {
     const cellIDs = ["AICS-1", "AICS-2", "AICS-3", "AICS-4"];
     const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
-    const newMockState = mockState(cellIDs, proteinNames);
+    const feature1Values = [1, 4, 2, 1];
+    const feature2Values = [2, 4, 2, 4];
+
+    const newMockState = mockState(cellIDs, proteinNames, feature1Values, feature2Values);
     describe("getXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
 
@@ -40,7 +43,8 @@ describe("Selection selectors", () => {
                     },
                 };
                 const newResult: number[] = getXValues(newState);
-                expect(result).to.not.deep.equal(newResult);
+                expect(result).to.deep.equal(feature1Values);
+                expect(newResult).to.deep.equal(feature2Values)
                 expect(result.length).to.equal(newResult.length);
         });
     });

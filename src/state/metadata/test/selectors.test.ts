@@ -12,14 +12,16 @@ import {
 describe("Metadata branch selectors", () => {
     const cellIDs = ["AICS-1", "AICS-2", "AICS-3", "AICS-4"];
     const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
-    const newMockState = mockState(cellIDs, proteinNames);
+    const feature1Values = [1, 4, 2, 1];
+    const feature2Values = [2, 4, 2, 4];
+    const newMockState = mockState(cellIDs, proteinNames, feature1Values, feature2Values);
     describe("getFeatureNames", () => {
         it("returns the keys of measured features data", () => {
             const state: State = {
                 ...newMockState,
             };
             const result: string[] = getFeatureNames(state);
-            expect(result).to.deep.equal(["feature1", "feature2", "feature3"]);
+            expect(result).to.deep.equal(["feature1", "feature2"]);
         });
     });
 
