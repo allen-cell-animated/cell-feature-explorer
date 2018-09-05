@@ -5,18 +5,28 @@ import {
     PlotSelectionEvent,
 } from "plotly.js";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import {
+    ActionCreator,
+    connect,
+} from "react-redux";
 
 import MainPlot from "../../components/MainPlot";
 
-import { SCATTER_PLOT_NAME, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import {
+    SCATTER_PLOT_NAME,
+    X_AXIS_ID,
+    Y_AXIS_ID,
+} from "../../constants";
 import {
     Annotation,
     State,
 } from "../../state/types";
 
 import { requestFeatureData } from "../../state/metadata/actions";
-import { getFullMetaDataArray, getProteinNames } from "../../state/metadata/selectors";
+import {
+    getFullMetaDataArray,
+    getProteinNames,
+} from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";

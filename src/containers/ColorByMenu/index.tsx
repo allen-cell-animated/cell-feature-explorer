@@ -1,6 +1,4 @@
-
 import {
-    Icon,
     Menu,
 } from "antd";
 import "antd/lib/menu/style";
@@ -24,7 +22,10 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
-import { NumberOrString, State } from "../../state/types";
+import {
+    NumberOrString,
+    State,
+} from "../../state/types";
 import AxisDropDown from "../AxisDropDown";
 
 const { SubMenu } = Menu;

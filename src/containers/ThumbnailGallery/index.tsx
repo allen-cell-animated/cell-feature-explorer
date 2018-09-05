@@ -1,6 +1,4 @@
-import {
-    List,
-} from "antd";
+import { List } from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 
@@ -10,7 +8,10 @@ import GalleryCard from "../../components/GalleryCard";
 import { deselectPoint } from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
 import { DeselectPointAction } from "../../state/selection/types";
-import { State, Thumbnail } from "../../state/types";
+import {
+    State,
+    Thumbnail,
+} from "../../state/types";
 
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
