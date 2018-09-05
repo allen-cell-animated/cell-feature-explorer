@@ -4,7 +4,8 @@ import { mockState } from "../../test/mocks";
 import {
     Annotation,
     NumberOrString,
-    State, Thumbnail
+    State,
+    Thumbnail,
 } from "../../types";
 
 import {
