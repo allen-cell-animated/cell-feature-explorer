@@ -120,7 +120,6 @@ module.exports = ({ analyze, env } = {}) => ({
                 test: /\.less$/,
                 use: ExtractTextPlugin.extract({
                     use: [
-                        // {loader: "style-loader"},
                         {
                             loader: "css-loader",
                             options: {
