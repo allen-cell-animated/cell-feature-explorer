@@ -1,32 +1,42 @@
 import {
-    DESELECT_FILE,
-    SELECT_FILE,
-    SELECT_METADATA,
+    CHANGE_AXIS,
+    DESELECT_POINT,
+    SELECT_GROUP,
+    SELECT_POINT,
 } from "./constants";
 import {
-    DeselectFileAction,
-    SelectFileAction,
-    SelectMetadataAction,
+    DeselectPointAction,
+    SelectAxisAction,
+    SelectGroupOfPointsAction,
+    SelectPointAction,
 } from "./types";
 
-export function selectFile(fileId: string | string[]): SelectFileAction {
+export function changeAxis(axisId: string, payload: string): SelectAxisAction {
     return {
-        payload: fileId,
-        type: SELECT_FILE,
+        axisId,
+        payload,
+        type: CHANGE_AXIS,
     };
 }
 
-export function deselectFile(fileId: string | string[]): DeselectFileAction {
-    return {
-        payload: fileId,
-        type: DESELECT_FILE,
-    };
-}
-
-export function selectMetadata(key: string, payload: string | number): SelectMetadataAction  {
+export function selectGroupOfPoints(key: string | number, payload: number[]): SelectGroupOfPointsAction  {
     return {
         key,
         payload,
-        type: SELECT_METADATA,
+        type: SELECT_GROUP,
+    };
+}
+
+export function deselectPoint(payload: number): DeselectPointAction {
+    return {
+        payload,
+        type: DESELECT_POINT,
+    };
+}
+
+export function selectPoint(payload: number): SelectPointAction {
+    return {
+        payload,
+        type: SELECT_POINT,
     };
 }

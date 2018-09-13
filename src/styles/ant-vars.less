@@ -1,0 +1,48 @@
+@dark-gray: #313131;
+@purple: #8048f3;
+@light-gray: #6e6e6e;
+@bright-green: #b2d030;
+
+// -------- Colors -----------
+@primary-color            : @purple;
+@success-color          : @bright-green;
+@highlight-color        : @bright-green;
+@warning-color          : @gold-6;
+@normal-color           : @light-gray ;
+@background-color       : @dark-gray;
+@disabled-color         : fade(#fff, 85%);
+
+// Border color
+@border-color-base      :  @light-gray;  // base border outline a component
+
+
+
+// Color used by default to control hover and active backgrounds and for
+// alert info backgrounds.
+@primary-5: color(~`colorPalette("@{background-color}", 5)`);  // color used to control the text color in many active and hover states, replace tint(@primary-color, 20%)
+@primary-6: @primary-color;                                 // color used to control the text color of active buttons, don't use, use @primary-color
+@primary-7: color(~`colorPalette("@{primary-color}", 7)`);  // replace shade(@primary-color, 5%)
+
+
+// Background color for `<body>`
+@body-background        : @background-color;
+//// Base background color for most components
+@component-background   :  @background-color;
+@heading-color          : fade(#fff, 85%);
+@text-color             : fade(#fff, 85%);
+@text-color-secondary   : lighten(@dark-gray, 85%);
+
+@background-color-light : @primary-color;  // background of header and selected item
+@background-color-base  : hsv(0, 0, 96%);  // Default grey background color
+
+// The background colors for active and hover states for things like
+// list items or table cells.
+@item-active-bg         : @primary-color;
+@item-hover-bg          : @primary-color;
+
+// LINK
+@link-color             : @primary-color;
+@link-hover-color       : color(~`colorPalette("@{normal-color}", 5)`);
+@link-active-color      : color(~`colorPalette("@{normal-color}", 7)`);
+
+@card-actions-background: @dark-gray;

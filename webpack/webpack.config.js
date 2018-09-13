@@ -1,5 +1,8 @@
 const path = require('path');
+const fs  = require('fs');
 
+const lessToJs = require('less-vars-to-js');
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, '../src/styles/ant-vars.less'), 'utf8'));
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const tsImportPluginFactory = require('ts-import-plugin');
 
@@ -102,6 +105,39 @@ module.exports = ({ analyze, env } = {}) => ({
                     fallback: 'style-loader',
                     use: [{ loader: 'css-loader' }],
                 }),
+            },
+            {
+                loader: 'babel-loader',
+                exclude: /node_modules/,
+                test: /\.js$/,
+                options: {
+                    plugins: [
+                        ['import', { libraryName: "antd", style: true }]
+                    ]
+                },
+            },
+            {
+                test: /\.less$/,
+                use: ExtractTextPlugin.extract({
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                camelCase: true,
+                                importLoaders: 1
+                            }
+
+                        },
+                        {
+                            loader: "less-loader",
+                            options: {
+                                javascriptEnabled: true,
+                                modifyVars: themeVariables,
+
+                            }
+                        }
+                    ]
+                })
             },
         ]
     },

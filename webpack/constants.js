@@ -1,7 +1,7 @@
 const devServer = {
     host: '0.0.0.0',
     port: 9001,
-    path: 'msb',
+    path: 'cell-feature-explorer',
 };
 
 const Env = {

@@ -1,48 +1,67 @@
-import {
-    castArray,
-    without,
-} from "lodash";
+import { filter } from "lodash";
 import { AnyAction } from "redux";
 
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
-    DESELECT_FILE,
-    SELECT_FILE,
-    SELECT_METADATA,
+    CHANGE_AXIS,
+    DESELECT_POINT,
+    INITIAL_COLOR_BY,
+    INITIAL_COLORS,
+    INITIAL_PLOT_BY_ON_X,
+    INITIAL_PLOT_BY_ON_Y,
+    SELECT_GROUP,
+    SELECT_POINT,
 } from "./constants";
 import {
-    DeselectFileAction,
-    SelectFileAction,
+    DeselectPointAction,
+    SelectAxisAction,
+    SelectGroupOfPointsAction,
     SelectionStateBranch,
-    SelectMetadataAction,
+    SelectPointAction,
 } from "./types";
 
 export const initialState = {
-    files: [],
+    colorBy: INITIAL_COLOR_BY,
+    plotByOnX: INITIAL_PLOT_BY_ON_X,
+    plotByOnY: INITIAL_PLOT_BY_ON_Y,
+    proteinColors: INITIAL_COLORS,
+    selectedGroupColors: INITIAL_COLORS,
+    selectedGroups: {},
+    selectedPoints: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [DESELECT_FILE]: {
-        accepts: (action: AnyAction): action is DeselectFileAction => action.type === DESELECT_FILE,
-        perform: (state: SelectionStateBranch, action: DeselectFileAction) => ({
+    [CHANGE_AXIS]: {
+        accepts: (action: AnyAction): action is SelectAxisAction => action.type === CHANGE_AXIS,
+        perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
             ...state,
-            files: without(state.files, ...castArray(action.payload)),
+            [action.axisId]: action.payload,
         }),
     },
-    [SELECT_FILE]: {
-        accepts: (action: AnyAction): action is SelectFileAction => action.type === SELECT_FILE,
-        perform: (state: SelectionStateBranch, action: SelectFileAction) => ({
+    [SELECT_GROUP]: {
+        accepts: (action: AnyAction): action is SelectGroupOfPointsAction => action.type === SELECT_GROUP,
+        perform: (state: SelectionStateBranch, action: SelectGroupOfPointsAction) => ({
             ...state,
-            files: [...state.files, ...castArray(action.payload)],
+            selectedGroups: {
+                ...state.selectedGroups,
+                [action.key]: action.payload,
+            },
         }),
     },
-    [SELECT_METADATA]: {
-        accepts: (action: AnyAction): action is SelectMetadataAction => action.type === SELECT_METADATA,
-        perform: (state: SelectionStateBranch, action: SelectMetadataAction) => ({
+    [DESELECT_POINT]: {
+        accepts: (action: AnyAction): action is DeselectPointAction => action.type === DESELECT_POINT,
+        perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
-            [action.key]: action.payload,
+            selectedPoints : filter(state.selectedPoints, (e) => e !== action.payload),
+        }),
+    },
+    [SELECT_POINT]: {
+        accepts: (action: AnyAction): action is SelectPointAction => action.type === SELECT_POINT,
+        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
+            ...state,
+            selectedPoints : [...state.selectedPoints, action.payload],
         }),
     },
 };

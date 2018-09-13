@@ -1,12 +1,23 @@
 import { AxiosResponse } from "axios";
+import {
+    isNumber,
+    pickBy,
+} from "lodash";
 import { createLogic } from "redux-logic";
 
 import { ReduxLogicDeps } from "../types";
 
-import { receiveMetadata } from "./actions";
-import { REQUEST_METADATA } from "./constants";
+import {
+    CELL_ID_KEY,
+    PROTEIN_NAME_KEY,
+    THUMBNAIL_DIR_KEY,
+} from "../../constants/index";
 
-const requestMetadata = createLogic({
+import { receiveMetadata } from "./actions";
+import { REQUEST_FEATURE_DATA } from "./constants";
+import { MetadataStateBranch } from "./types";
+
+const requestFeatureData = createLogic({
     processOptions: {
         successType: receiveMetadata,
     },
@@ -17,15 +28,30 @@ const requestMetadata = createLogic({
         } = deps;
 
         return httpClient
-            .get(`${baseApiUrl}/metadata`)
-            .then((metadata: AxiosResponse) => metadata.data)
+            .get(`${baseApiUrl}/cell-feature-analysis.json`)
+            .then((metadata: AxiosResponse) => metadata.data
+            )
+            .then((data) => {
+                return data.map((datum: MetadataStateBranch) => {
+                    return {
+                        file_info: {
+                            [CELL_ID_KEY]: datum[CELL_ID_KEY],
+                            [THUMBNAIL_DIR_KEY]: datum[THUMBNAIL_DIR_KEY],
+                            [PROTEIN_NAME_KEY]: datum[PROTEIN_NAME_KEY],
+                        },
+                        measured_features: {
+                            ...pickBy(datum, isNumber),
+                        },
+                    };
+                });
+            })
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
             });
     },
-    type: REQUEST_METADATA,
+    type: REQUEST_FEATURE_DATA,
 });
 
 export default [
-    requestMetadata,
+    requestFeatureData,
 ];
