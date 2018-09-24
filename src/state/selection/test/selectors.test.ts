@@ -44,7 +44,7 @@ describe("Selection selectors", () => {
                 };
                 const newResult: number[] = getXValues(newState);
                 expect(result).to.deep.equal(feature1Values);
-                expect(newResult).to.deep.equal(feature2Values)
+                expect(newResult).to.deep.equal(feature2Values);
                 expect(result.length).to.equal(newResult.length);
         });
     });
