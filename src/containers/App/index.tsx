@@ -11,8 +11,8 @@ export default class App extends React.Component<{}, {}> {
         return (
             <div className={styles.container}>
                 <div className={styles.plotView} >
-                    <ThumbnailGallery />
                     <MainPlotContainer />
+                    <ThumbnailGallery />
                 </div>
 
                 <div className={styles.colorMenu}>
