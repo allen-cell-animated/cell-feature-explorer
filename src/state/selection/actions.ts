@@ -1,14 +1,16 @@
 import {
     CHANGE_AXIS,
+    DESELECT_ALL_POINTS,
     DESELECT_POINT,
     SELECT_GROUP,
     SELECT_POINT,
+    TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
     DeselectPointAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
-    SelectPointAction,
+    SelectPointAction, ToggleFilterAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -38,5 +40,18 @@ export function selectPoint(payload: number): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
+    };
+}
+
+export function clearAllSelectedPoints() {
+    return {
+        type: DESELECT_ALL_POINTS,
+    };
+}
+
+export function toggleFilterByProteinName(payload: string): ToggleFilterAction {
+    return {
+        payload,
+        type: TOGGLE_FILTER_BY_PROTEIN_NAME,
     };
 }

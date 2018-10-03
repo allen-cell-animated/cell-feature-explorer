@@ -6,7 +6,10 @@ import {
     difference,
     includes,
 } from "lodash";
-import { Color } from "plotly.js";
+import {
+    Color,
+    PlotMouseEvent,
+} from "plotly.js";
 import React from "react";
 import { connect } from "react-redux";
 
@@ -17,11 +20,17 @@ import {
     getProteinTotals
 } from "../../state/metadata/selectors";
 import {
+    toggleFilterByProteinName
+} from "../../state/selection/actions";
+import {
+    getFiltersToExclude,
     getProteinColors,
     getSelectedGroupKeys,
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
+import { ToggleFilterAction } from "../../state/selection/types";
+
 import {
     NumberOrString,
     State,
@@ -31,12 +40,14 @@ import AxisDropDown from "../AxisDropDown";
 const { SubMenu } = Menu;
 
 interface ColorByMenuProps {
+    filtersToExclude: string[];
     proteinColors: Color[];
     proteinNames: string[];
     proteinTotals: number[];
     selectedSetColors: Color[];
     selectedSetNames: NumberOrString[];
     selectedSetTotals: number[];
+    toggleFilterByProteinName: (payload: string) => ToggleFilterAction;
 }
 
 interface ColorByMenuState {
@@ -50,6 +61,11 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
         openKeys: ["structureProteinName"],
     };
 
+    constructor(props: ColorByMenuProps) {
+        super(props);
+        this.onBarClicked = this.onBarClicked.bind(this);
+    }
+
     public onOpenChange = (openKeys: string[]) => {
         const latestOpenKey = difference(openKeys, this.state.openKeys)[0];
         if (!includes(this.rootSubmenuKeys, latestOpenKey)) {
@@ -61,8 +77,16 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
         }
     }
 
+    public onBarClicked = (clickEvent: PlotMouseEvent) => {
+        const { toggleFilterByProteinName } = this.props;
+        const { points } = clickEvent;
+        const proteinName = points[0].y;
+        toggleFilterByProteinName(proteinName);
+    }
+
     public render() {
         const {
+            filtersToExclude,
             proteinNames,
             proteinTotals,
             proteinColors,
@@ -71,47 +95,52 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
             selectedSetTotals,
         } = this.props;
         return (
-            <Menu
-                mode="inline"
-                openKeys={this.state.openKeys}
-                onOpenChange={this.onOpenChange}
-                style={{ width: 256 }}
-            >
-                <SubMenu
-                    key="structureProteinName"
-                    title={<span>Tagged Structures</span>}
+                <Menu
+                    mode="inline"
+                    openKeys={this.state.openKeys}
+                    onOpenChange={this.onOpenChange}
                 >
-                    <BarChart
-                        names={proteinNames}
-                        totals={proteinTotals}
-                        colors={proteinColors}
-                    />
-                </SubMenu>
-                <SubMenu
-                    key="cellularFeatures"
-                    title={<span>Cellular Features</span>}
-                >
-                    <AxisDropDown axisId={COLOR_BY_SELECTOR}/>
+                    <SubMenu
+                        key="structureProteinName"
+                        title={<span>Tagged Structures</span>}
+                    >
+                        <BarChart
+                            names={proteinNames}
+                            totals={proteinTotals}
+                            colors={proteinColors}
+                            onBarClicked={this.onBarClicked}
+                            filtersToExclude={filtersToExclude}
 
-                </SubMenu>
-                <SubMenu
-                    key="clusters"
-                    title={<span>Cluster</span>}
-                >
-                    <BarChart
-                        names={selectedSetNames.map((ele: number| string, index: number) => Number(ele) ? index : ele)}
-                        totals={selectedSetTotals}
-                        colors={selectedSetColors}
-                    />
+                        />
+                    </SubMenu>
+                    <SubMenu
+                        key="cellularFeatures"
+                        title={<span>Cellular Features</span>}
+                    >
+                        <AxisDropDown axisId={COLOR_BY_SELECTOR}/>
 
-                </SubMenu>
-            </Menu>
+                    </SubMenu>
+                    <SubMenu
+                        key="clusters"
+                        title={<span>Cluster</span>}
+                    >
+                        <BarChart
+                            names={
+                                selectedSetNames.map((ele: number| string, index: number) => Number(ele) ? index : ele)
+                            }
+                            totals={selectedSetTotals}
+                            colors={selectedSetColors}
+                        />
+
+                    </SubMenu>
+                </Menu>
         );
     }
 }
 
 function mapStateToProps(state: State) {
     return {
+        filtersToExclude: getFiltersToExclude(state),
         proteinColors: getProteinColors(state),
         proteinNames: getProteinNames(state),
         proteinTotals: getProteinTotals(state),
@@ -121,4 +150,7 @@ function mapStateToProps(state: State) {
     };
 }
 
-export default connect(mapStateToProps, null)(ColorByMenu);
+const dispatchToPropsMap = {
+    toggleFilterByProteinName,
+};
+export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);

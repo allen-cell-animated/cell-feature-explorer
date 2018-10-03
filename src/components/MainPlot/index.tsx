@@ -15,6 +15,7 @@ import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     colorBy: string;
+    filtersToExclude: string[];
     plotData: {[key: string]: any[]};
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
@@ -71,12 +72,22 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     public colorSettings(plotSettings: Data): Data {
         const {
             colorBy,
+            filtersToExclude,
             plotData,
         } = this.props;
+        const filters = filtersToExclude.map((filter: string) => (
+            {
+                operation: "!=",
+                target: plotData.proteinLabels,
+                type: "filter" as "filter",
+                value: filter,
+            })
+        );
+
         if (colorBy === PROTEIN_NAME_KEY) {
              return {
                  ...plotSettings,
-                 transforms: [{
+                 transforms: [...filters , {
                      groups: plotData.groups,
                      nameformat: `%{group}`,
                      styles: plotData.proteinNames.map((ele: string, index: number) => {
@@ -87,7 +98,9 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                      }),
                      // literal typing to avoid a widened type inferred
                      type: "groupby" as "groupby",
-                 }],
+                 },
+
+                 ],
             };
         }
         return {
@@ -95,6 +108,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             marker: {
                 color: plotData.groups,
             },
+            transforms: [...filters],
 
         };
     }
@@ -109,7 +123,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             },
             mode: "markers" as "markers",
             name: SCATTER_PLOT_NAME,
-            showlegend: true,
+            showlegend: false,
             type: "scattergl" as "scattergl",
             x: plotData.x,
             y: plotData.y,
@@ -158,7 +172,19 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
 
     public render() {
         const { plotData, onPointClicked, onGroupSelected } = this.props;
+        const options = {
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: [
+                "sendDataToCloud" as "sendDataToCloud",
+                "toImage" as "toImage",
+                "resetScale2d" as "resetScale2d",
+                "hoverClosestCartesian" as "hoverClosestCartesian",
+                "hoverCompareCartesian" as "hoverCompareCartesian",
+                "toggleSpikelines" as "toggleSpikelines",
+            ],
 
+        };
         return (
             <Plot
                 data={[
@@ -186,6 +212,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                     yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
 
                 }}
+                config={options}
                 onClick={onPointClicked}
                 onSelected={onGroupSelected}
             />

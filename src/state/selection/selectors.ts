@@ -36,7 +36,7 @@ export const getSelectedGroups = (state: State) => state.selection.selectedGroup
 export const getColorBySelection = (state: State) => state.selection.colorBy;
 export const getProteinColors = (state: State) => state.selection.proteinColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
-
+export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
 // COMPOSED SELECTORS
 export const getXValues = createSelector([getMeasuredData, getPlotByOnX],
     (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => (

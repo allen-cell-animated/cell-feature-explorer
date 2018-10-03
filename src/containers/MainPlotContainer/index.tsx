@@ -25,6 +25,7 @@ import {
 import { requestFeatureData } from "../../state/metadata/actions";
 import {
     getFullMetaDataArray,
+    getProteinLabels,
     getProteinNames,
 } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
@@ -51,10 +52,12 @@ interface MainPlotContainerProps {
     clickedPoints: number[];
     colorByGroupings: string[];
     data: any;
+    filtersToExclude: string[];
     requestFeatureData: ActionCreator<RequestAction>;
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
+    proteinLabels: string[];
     proteinNames: string[];
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
@@ -106,7 +109,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              annotations,
              colorBy,
              colorByGroupings,
+             filtersToExclude,
              proteinColors,
+             proteinLabels,
              proteinNames,
              xDataValues,
              yDataValues,
@@ -119,6 +124,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
          const plotData = {
              groups: colorByGroupings,
              proteinColors,
+             proteinLabels,
              proteinNames,
              x: xDataValues,
              y: yDataValues,
@@ -134,6 +140,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
                     colorBy={colorBy}
+                    filtersToExclude={filtersToExclude}
                 />
             </div>
         );
@@ -147,9 +154,11 @@ function mapStateToProps(state: State) {
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
         data: getFullMetaDataArray(state),
+        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
         plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
+        proteinLabels: getProteinLabels(state),
         proteinNames: getProteinNames(state),
         xDataValues: selectionStateBranch.selectors.getXValues(state),
         yDataValues: selectionStateBranch.selectors.getYValues(state),

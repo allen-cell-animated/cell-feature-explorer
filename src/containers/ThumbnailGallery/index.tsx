@@ -1,13 +1,22 @@
-import { List } from "antd";
+import {
+    Button,
+    List,
+} from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 
 import "antd/lib/list/style";
 
 import GalleryCard from "../../components/GalleryCard";
-import { deselectPoint } from "../../state/selection/actions";
+import {
+    clearAllSelectedPoints,
+    deselectPoint,
+} from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
-import { DeselectPointAction } from "../../state/selection/types";
+import {
+    DeselectPointAction,
+    ResetSelectionAction,
+} from "../../state/selection/types";
 import {
     State,
     Thumbnail,
@@ -15,6 +24,7 @@ import {
 
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
+    handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
 }
 
@@ -26,13 +36,24 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
     }
 
     public render() {
-        const { data } = this.props;
+        const {
+            data,
+            handleClearAllSelectedPoints,
+        } = this.props;
         return (
-            <List
-                grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
-                dataSource={data}
-                renderItem={this.renderGalleryCard}
-            />
+            <React.Fragment>
+                {data.length > 0 ?
+                    <Button
+                        type="primary"
+                        onClick={handleClearAllSelectedPoints}
+                    >Clear All
+                    </Button> : null}
+                <List
+                    grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
+                    dataSource={data}
+                    renderItem={this.renderGalleryCard}
+                />
+            </React.Fragment>
         );
     }
 
@@ -60,6 +81,7 @@ function mapStateToProps(state: State) {
 }
 
 const dispatchToPropsMap = {
+    handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
 };
 
