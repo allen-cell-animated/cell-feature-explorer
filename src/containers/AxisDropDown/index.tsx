@@ -22,6 +22,8 @@ import {
 import { SelectAxisAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 
+const styles = require("./style.css");
+
 interface AxisDropDownProps {
     axisId: string;
     colorByValue: string;
@@ -65,7 +67,7 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
         };
 
         return (
-            <div>
+            <div className={styles[axisId]}>
                 <Select defaultValue={axisIDMap[axisId]} onChange={this.handleChange}>
                     {featureNames.map((option) => {
                         return (<Option value={option} key={option}>{option}</Option>
