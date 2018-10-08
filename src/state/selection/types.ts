@@ -33,3 +33,17 @@ export interface  SelectPointAction {
     payload: number;
     type: string;
 }
+
+export interface ResetSelectionAction {
+    type: string;
+}
+
+export interface ToggleFilterAction {
+    payload: string;
+    type: string;
+}
+
+export interface SelectCellFor3DAction {
+    payload: string;
+    type: string;
+}

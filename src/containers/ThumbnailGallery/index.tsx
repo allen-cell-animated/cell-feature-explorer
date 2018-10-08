@@ -1,13 +1,23 @@
-import { List } from "antd";
+import {
+    Button,
+    List,
+} from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 
 import "antd/lib/list/style";
 
 import GalleryCard from "../../components/GalleryCard";
-import { deselectPoint } from "../../state/selection/actions";
+import {
+    clearAllSelectedPoints,
+    deselectPoint, selectCellFor3DViewer,
+} from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
-import { DeselectPointAction } from "../../state/selection/types";
+import {
+    DeselectPointAction,
+    ResetSelectionAction,
+    SelectCellFor3DAction,
+} from "../../state/selection/types";
 import {
     State,
     Thumbnail,
@@ -15,7 +25,9 @@ import {
 
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
+    handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
 }
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
@@ -26,18 +38,32 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
     }
 
     public render() {
-        const { data } = this.props;
+        const {
+            data,
+            handleClearAllSelectedPoints,
+        } = this.props;
         return (
-            <List
-                grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
-                dataSource={data}
-                renderItem={this.renderGalleryCard}
-            />
+            <React.Fragment>
+                {data.length > 0 ?
+                    <Button
+                        type="primary"
+                        onClick={handleClearAllSelectedPoints}
+                    >Clear All
+                    </Button> : null}
+                <List
+                    grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
+                    dataSource={data}
+                    renderItem={this.renderGalleryCard}
+                />
+            </React.Fragment>
         );
     }
 
     private renderGalleryCard(item: Thumbnail) {
-        const { handleDeselectPoint } = this.props;
+        const {
+            handleDeselectPoint,
+            handleOpenIn3D,
+        } = this.props;
 
         return (
             <List.Item>
@@ -46,6 +72,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     src={item.src}
                     pointIndex={item.pointIndex}
                     handleDeselectPoint={handleDeselectPoint}
+                    handleOpenIn3D={handleOpenIn3D}
                 />
             </List.Item>
         );
@@ -55,12 +82,13 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
 function mapStateToProps(state: State) {
     return {
         data: getThumbnails(state),
-
     };
 }
 
 const dispatchToPropsMap = {
+    handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
+    handleOpenIn3D: selectCellFor3DViewer,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);

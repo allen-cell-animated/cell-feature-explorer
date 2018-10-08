@@ -22,11 +22,7 @@ import {
     State,
 } from "../../state/types";
 
-import { requestFeatureData } from "../../state/metadata/actions";
-import {
-    getFullMetaDataArray,
-    getProteinNames,
-} from "../../state/metadata/selectors";
+import metadataStateBranch from "../../state/metadata";
 import { RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
@@ -35,11 +31,6 @@ import {
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
-
-import {
-    getAnnotations,
-    getClickedScatterPoints,
-} from "../../state/selection/selectors";
 
 import AxisDropDown from "../AxisDropDown";
 
@@ -51,10 +42,12 @@ interface MainPlotContainerProps {
     clickedPoints: number[];
     colorByGroupings: string[];
     data: any;
+    filtersToExclude: string[];
     requestFeatureData: ActionCreator<RequestAction>;
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
+    proteinLabels: string[];
     proteinNames: string[];
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
@@ -106,7 +99,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              annotations,
              colorBy,
              colorByGroupings,
+             filtersToExclude,
              proteinColors,
+             proteinLabels,
              proteinNames,
              xDataValues,
              yDataValues,
@@ -119,6 +114,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
          const plotData = {
              groups: colorByGroupings,
              proteinColors,
+             proteinLabels,
              proteinNames,
              x: xDataValues,
              y: yDataValues,
@@ -134,6 +130,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
                     colorBy={colorBy}
+                    filtersToExclude={filtersToExclude}
                 />
             </div>
         );
@@ -142,15 +139,17 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
 function mapStateToProps(state: State) {
     return {
-        annotations: getAnnotations(state),
-        clickedPoints: getClickedScatterPoints(state),
+        annotations: selectionStateBranch.selectors.getAnnotations(state),
+        clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        data: getFullMetaDataArray(state),
+        data: metadataStateBranch.selectors.getFullMetaDataArray(state),
+        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
         plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
-        proteinNames: getProteinNames(state),
+        proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
+        proteinNames: metadataStateBranch.selectors.getProteinNames(state),
         xDataValues: selectionStateBranch.selectors.getXValues(state),
         yDataValues: selectionStateBranch.selectors.getYValues(state),
     };
@@ -160,7 +159,7 @@ const dispatchToPropsMap = {
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
-    requestFeatureData,
+    requestFeatureData: metadataStateBranch.actions.requestFeatureData,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(MainPlotContainer);

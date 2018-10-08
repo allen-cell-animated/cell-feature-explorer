@@ -11,3 +11,7 @@ export function bindAll<T>(obj: T, methods: Array<() => any>) {
         }
     });
 }
+
+export function getCellLineFromLegacyCellID(cellID: string): string {
+    return cellID.split("_")[0];
+}

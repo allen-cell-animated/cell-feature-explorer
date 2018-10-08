@@ -5,6 +5,9 @@ export const CHANGE_AXIS = makeConstant("selection", "deselect-file");
 export const SELECT_GROUP = makeConstant("selection", "select_group");
 export const DESELECT_POINT = makeConstant("selection", "deselect-point");
 export const SELECT_POINT = makeConstant("selection", "select-point");
+export const DESELECT_ALL_POINTS = makeConstant("selection", "deselect-all-points");
+export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeConstant("selection", "toggle-filter-by-protein-name");
+export const OPEN_CELL_IN_3D = makeConstant("selection", "open-cell-in-3d");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear volume (fL)";

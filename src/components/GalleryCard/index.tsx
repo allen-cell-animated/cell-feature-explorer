@@ -7,7 +7,10 @@ import React from "react";
 import "antd/lib/card/style";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
-import { DeselectPointAction } from "../../state/selection/types";
+import {
+    DeselectPointAction,
+    SelectCellFor3DAction,
+} from "../../state/selection/types";
 
 const { Meta } = Card;
 const styles = require("./style.css");
@@ -16,6 +19,7 @@ interface GalleryCardProps {
     title: string;
     src: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
     pointIndex: number;
 }
 
@@ -25,13 +29,28 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         props.handleDeselectPoint(props.pointIndex);
     };
 
+    const openCellin3D = () => {
+        setTimeout(window.scroll({
+            behavior: "smooth",
+            left: 0,
+            top: 2500,
+        }), 3000);
+        props.handleOpenIn3D(props.title);
+    };
+
     return (
         <Card
             style={{width: 124}}
             className={styles.container}
             cover={<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>}
             actions={[
-                <span key={`${props.title}-load`}>3D <Icon type="arrows-alt"/></span>,
+                <span
+                    key={`${props.title}-load`}
+                    onClick={openCellin3D}
+                >3D <Icon
+                    type="arrows-alt"
+                />
+                </span>,
                 <Icon
                     key={`${props.title}-close`}
                     type="close"

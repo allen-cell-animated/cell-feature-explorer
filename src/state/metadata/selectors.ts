@@ -38,6 +38,10 @@ export const getFeatureNames = createSelector([getMeasuredData], (measuredFeatur
     )
 );
 
+export const getProteinLabels = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
+    return map(fullMetaData, PROTEIN_NAME_KEY);
+});
+
 export const getProteinNames = createSelector([getFileInfo], (fileInfo: MetadataStateBranch): string[] => {
         return uniq(map((fileInfo),  PROTEIN_NAME_KEY)).sort((a, b) => {
             if (b > a) {

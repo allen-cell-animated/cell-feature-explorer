@@ -1,14 +1,20 @@
 import {
     CHANGE_AXIS,
+    DESELECT_ALL_POINTS,
     DESELECT_POINT,
+    OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
+    TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
     DeselectPointAction,
+    ResetSelectionAction,
     SelectAxisAction,
+    SelectCellFor3DAction,
     SelectGroupOfPointsAction,
     SelectPointAction,
+    ToggleFilterAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -38,5 +44,25 @@ export function selectPoint(payload: number): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
+    };
+}
+
+export function clearAllSelectedPoints(): ResetSelectionAction {
+    return {
+        type: DESELECT_ALL_POINTS,
+    };
+}
+
+export function toggleFilterByProteinName(payload: string): ToggleFilterAction {
+    return {
+        payload,
+        type: TOGGLE_FILTER_BY_PROTEIN_NAME,
+    };
+}
+
+export function selectCellFor3DViewer(payload: string): SelectCellFor3DAction {
+    return {
+        payload,
+        type: OPEN_CELL_IN_3D,
     };
 }
