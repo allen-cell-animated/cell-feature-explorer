@@ -79,6 +79,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             {
                 operation: "!=",
                 target: plotData.proteinLabels,
+                // literal typing to avoid a widened type inferred
                 type: "filter" as "filter",
                 value: filter,
             })
@@ -121,9 +122,11 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                 size: GENERAL_PLOT_SETTINGS.circleRadius,
                 symbol: "circle",
             },
+            // literal typing to avoid a widened type inferred
             mode: "markers" as "markers",
             name: SCATTER_PLOT_NAME,
             showlegend: false,
+            // literal typing to avoid a widened type inferred
             type: "scattergl" as "scattergl",
             x: plotData.x,
             y: plotData.y,
@@ -145,6 +148,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             name: `x histogram`,
             nbinsx: 60,
             showlegend: false,
+            // literal typing to avoid a widened type inferred
             type: "histogram" as "histogram",
             x: data,
             yaxis: "y2",
@@ -163,6 +167,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             name: `y histogram`,
             nbinsy: 60,
             showlegend: false,
+            // literal typing to avoid a widened type inferred
             type: "histogram" as "histogram",
             xaxis: "x2",
             y: data,
@@ -176,6 +181,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             displayModeBar: true,
             displaylogo: false,
             modeBarButtonsToRemove: [
+                // literal typing to avoid a widened type inferred
                 "sendDataToCloud" as "sendDataToCloud",
                 "toImage" as "toImage",
                 "resetScale2d" as "resetScale2d",
