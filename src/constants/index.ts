@@ -9,6 +9,7 @@ export const COLOR_BY_SELECTOR = "colorBy";
 export const CELL_ID_KEY = "Cell ID";
 export const THUMBNAIL_DIR_KEY = "datadir";
 export const PROTEIN_NAME_KEY = "structureProteinName";
+export const CELL_VIEWER_URL = "https://meganrm.github.io/website-3d-cell-viewer/";
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",

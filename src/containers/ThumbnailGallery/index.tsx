@@ -10,12 +10,13 @@ import "antd/lib/list/style";
 import GalleryCard from "../../components/GalleryCard";
 import {
     clearAllSelectedPoints,
-    deselectPoint,
+    deselectPoint, selectCellFor3DViewer,
 } from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
     ResetSelectionAction,
+    SelectCellFor3DAction,
 } from "../../state/selection/types";
 import {
     State,
@@ -26,6 +27,7 @@ interface ThumbnailGalleryProps {
     data: Thumbnail[];
     handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
 }
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
@@ -58,7 +60,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
     }
 
     private renderGalleryCard(item: Thumbnail) {
-        const { handleDeselectPoint } = this.props;
+        const {
+            handleDeselectPoint,
+            handleOpenIn3D,
+        } = this.props;
 
         return (
             <List.Item>
@@ -67,6 +72,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     src={item.src}
                     pointIndex={item.pointIndex}
                     handleDeselectPoint={handleDeselectPoint}
+                    handleOpenIn3D={handleOpenIn3D}
                 />
             </List.Item>
         );
@@ -76,13 +82,13 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
 function mapStateToProps(state: State) {
     return {
         data: getThumbnails(state),
-
     };
 }
 
 const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
+    handleOpenIn3D: selectCellFor3DViewer,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);
