@@ -9,6 +9,7 @@ import {
 } from "./constants";
 import {
     DeselectPointAction,
+    ResetSelectionAction,
     SelectAxisAction,
     SelectCellFor3DAction,
     SelectGroupOfPointsAction,
@@ -46,7 +47,7 @@ export function selectPoint(payload: number): SelectPointAction {
     };
 }
 
-export function clearAllSelectedPoints() {
+export function clearAllSelectedPoints(): ResetSelectionAction {
     return {
         type: DESELECT_ALL_POINTS,
     };

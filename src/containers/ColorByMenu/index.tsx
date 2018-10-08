@@ -41,7 +41,7 @@ const { SubMenu } = Menu;
 
 interface ColorByMenuProps {
     filtersToExclude: string[];
-    handleFilterByProtinName: (payload: string) => ToggleFilterAction;
+    handleFilterByProteinName: (payload: string) => ToggleFilterAction;
     proteinColors: Color[];
     proteinNames: string[];
     proteinTotals: number[];
@@ -78,10 +78,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
     }
 
     public onBarClicked = (clickEvent: PlotMouseEvent) => {
-        const { handleFilterByProtinName } = this.props;
+        const { handleFilterByProteinName } = this.props;
         const { points } = clickEvent;
         const proteinName = points[0].y;
-        handleFilterByProtinName(proteinName);
+        handleFilterByProteinName(proteinName);
     }
 
     public render() {
@@ -151,7 +151,7 @@ function mapStateToProps(state: State) {
 }
 
 const dispatchToPropsMap = {
-    handleFilterByProtinName: toggleFilterByProteinName,
+    handleFilterByProteinName: toggleFilterByProteinName,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);

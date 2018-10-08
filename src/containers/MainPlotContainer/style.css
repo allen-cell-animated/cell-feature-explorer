@@ -7,9 +7,9 @@
     flex-direction: column;
     padding: 5em;
 }
-    :global(.modebar) {
-        bottom: 2em!important;
-        top: initial!important;
-        right: 5em!important;
-    }
+:global(.modebar) {
+    bottom: 2em!important;
+    top: initial!important;
+    right: 5em!important;
+}
 
