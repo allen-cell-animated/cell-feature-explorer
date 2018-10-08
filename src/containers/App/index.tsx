@@ -3,7 +3,10 @@ import {
     connect,
 } from "react-redux";
 
-import { getSelected3DCell } from "../../state/selection/selectors";
+import {
+    getSelected3DCell,
+    getSelected3DCellDir,
+} from "../../state/selection/selectors";
 
 import CellViewer from "../../components/CellViewer/index";
 import ColorByMenu from "../../containers/ColorByMenu";
@@ -16,11 +19,15 @@ const styles = require("./style.css");
 
 interface AppProps {
     selected3DCell: string;
+    selected3DCellDir: string;
 }
 
 class App extends React.Component<AppProps, {}> {
     public render() {
-        const { selected3DCell } = this.props;
+        const {
+            selected3DCell,
+            selected3DCellDir,
+        } = this.props;
         return (
             <div className={styles.container}>
                 <div className={styles.plotView} >
@@ -33,6 +40,7 @@ class App extends React.Component<AppProps, {}> {
                 </div>
                 <CellViewer
                     cellName={selected3DCell}
+                    selected3DCellDir={selected3DCellDir}
                 />
             </div>
         );
@@ -42,7 +50,7 @@ class App extends React.Component<AppProps, {}> {
 function mapStateToProps(state: State) {
     return {
         selected3DCell: getSelected3DCell(state),
-
+        selected3DCellDir: getSelected3DCellDir(state),
     };
 }
 

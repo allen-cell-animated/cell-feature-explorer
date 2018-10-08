@@ -1,4 +1,5 @@
 import {
+    find,
     keys,
     map,
     values,
@@ -6,7 +7,8 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY, PROTEIN_NAME_KEY,
+    CELL_ID_KEY,
+    PROTEIN_NAME_KEY,
     THUMBNAIL_DIR_KEY
 } from "../../constants";
 
@@ -38,7 +40,15 @@ export const getProteinColors = (state: State) => state.selection.proteinColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
 export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
+
 // COMPOSED SELECTORS
+export const getSelected3DCellDir = createSelector([getSelected3DCell, getFileInfo],
+    (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
+        const fileInfo = find(fileInfoArray, {[CELL_ID_KEY]: selected3DCellId});
+        return fileInfo ? fileInfo[THUMBNAIL_DIR_KEY] : "";
+    }
+);
+
 export const getXValues = createSelector([getMeasuredData, getPlotByOnX],
     (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => (
          map(measuredData, (metaDatum: MeasuredFeatures) => (metaDatum[plotByOnX]))

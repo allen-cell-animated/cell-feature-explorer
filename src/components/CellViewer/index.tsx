@@ -7,9 +7,10 @@ const styles = require("./style.css");
 
 interface CellViewerProps {
     cellName: string;
+    selected3DCellDir: string;
 }
 
-const CellViewer: React.SFC<CellViewerProps> = ({ cellName }) => {
+const CellViewer: React.SFC<CellViewerProps> = ({ cellName, selected3DCellDir }) => {
     // ?legacyName_1_2=AICS-10/AICS-10_5_5
     if (!cellName) {
         return null;
@@ -20,7 +21,7 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellName }) => {
         <iframe
             frameBorder={0}
             className={styles.cellViewer}
-            src={`${CELL_VIEWER_URL}?legacyName_1_2=${cellLine}/${cellName}`}
+            src={`${CELL_VIEWER_URL}?legacyName_1_2=${selected3DCellDir}/${cellLine}/${cellName}`}
 
         />
     );
