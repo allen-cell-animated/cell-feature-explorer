@@ -2,6 +2,7 @@ import {
     CHANGE_AXIS,
     DESELECT_ALL_POINTS,
     DESELECT_POINT,
+    OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -9,8 +10,10 @@ import {
 import {
     DeselectPointAction,
     SelectAxisAction,
+    SelectCellFor3DAction,
     SelectGroupOfPointsAction,
-    SelectPointAction, ToggleFilterAction,
+    SelectPointAction,
+    ToggleFilterAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -53,5 +56,12 @@ export function toggleFilterByProteinName(payload: string): ToggleFilterAction {
     return {
         payload,
         type: TOGGLE_FILTER_BY_PROTEIN_NAME,
+    };
+}
+
+export function selectCellFor3DViewer(payload: string): SelectCellFor3DAction {
+    return {
+        payload,
+        type: OPEN_CELL_IN_3D,
     };
 }

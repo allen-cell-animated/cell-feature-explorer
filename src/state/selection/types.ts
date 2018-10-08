@@ -42,3 +42,8 @@ export interface ToggleFilterAction {
     payload: string;
     type: string;
 }
+
+export interface SelectCellFor3DAction {
+    payload: string;
+    type: string;
+}

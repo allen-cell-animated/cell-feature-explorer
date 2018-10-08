@@ -12,6 +12,7 @@ import {
     INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
+    OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -20,6 +21,7 @@ import {
     DeselectPointAction,
     ResetSelectionAction,
     SelectAxisAction,
+    SelectCellFor3DAction,
     SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
@@ -27,6 +29,7 @@ import {
 } from "./types";
 
 export const initialState = {
+    cellSelectedFor3D: null,
     colorBy: INITIAL_COLOR_BY,
     filterExclude: [],
     plotByOnX: INITIAL_PLOT_BY_ON_X,
@@ -43,6 +46,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
             ...state,
             [action.axisId]: action.payload,
+        }),
+    },
+    [OPEN_CELL_IN_3D] : {
+        accepts: (action: AnyAction): action is SelectCellFor3DAction => action.type === OPEN_CELL_IN_3D,
+        perform: (state: SelectionStateBranch, action: SelectGroupOfPointsAction) => ({
+            ...state,
+            cellSelectedFor3D: action.payload,
         }),
     },
     [SELECT_GROUP]: {
