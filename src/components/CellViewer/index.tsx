@@ -18,7 +18,7 @@ const CellViewer: React.SFC<CellViewerProps> = (props) => {
 
     return (
         <iframe
-            frameborder={0}
+            frameBorder={0}
             className={styles.cellViewer}
             src={`${CELL_VIEWER_URL}?legacyName_1_2=${cellLine}/${cellName}`}
 
