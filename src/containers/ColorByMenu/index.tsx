@@ -80,7 +80,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
     public onBarClicked = (clickEvent: PlotMouseEvent) => {
         const { handleFilterByProteinName } = this.props;
         const { points } = clickEvent;
-        const proteinName = points[0].y;
+        const proteinName = points[0].y as string;
         handleFilterByProteinName(proteinName);
     }
 
@@ -94,6 +94,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
             selectedSetColors,
             selectedSetTotals,
         } = this.props;
+
         return (
                 <Menu
                     mode="inline"
