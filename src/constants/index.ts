@@ -17,7 +17,7 @@ export const PROTEIN_NAME_KEY = "structureProteinName";
 // assume all components are accessible on the same local server for dev environment
 export const CELL_VIEWER_URL = "/website-3d-cell-viewer/imageviewer/";
 export const BASE_API_URL = `/cell-feature-explorer/dist/`;
-export const THUMBNAIL_BASE_URL = "/cellviewer-1-3-0/Cell-Viewer_Thumbnails/";
+export const THUMBNAIL_BASE_URL = "http://dev-aics-dtp-001/cellviewer-1-3-0/Cell-Viewer_Thumbnails/";
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
