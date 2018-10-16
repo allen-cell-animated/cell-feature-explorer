@@ -41,6 +41,8 @@ export interface Annotation {
     x: number;
     y: number;
     cellID: string;
+    fovID: string;
+    cellLine: string;
 }
 
 export interface Thumbnail {

@@ -2,6 +2,7 @@ const path = require('path');
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -19,6 +20,9 @@ const BASE_PLUGINS = [
         root: path.resolve(__dirname, '../'),
         watch: true,
     }),
+    new CopyWebpackPlugin(
+        [path.resolve(__dirname, '../src', 'cell-feature-analysis.json')]
+    ),
     new ExtractTextPlugin('style.[contenthash].css'),
     new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',

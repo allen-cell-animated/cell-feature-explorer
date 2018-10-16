@@ -56,13 +56,16 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                 borderwidth: 1.5,
                 captureevents: true,
                 cellID: point.cellID,
+                cellLine: point.cellLine,
                 font: {
                     color: "#ffffff",
                     family: "tahoma, arial, verdana, sans-serif",
                     size: 12,
                 },
+                fovID: point.fovID,
                 pointIndex: point.pointIndex,
-                text: `${point.cellID}<br><i >click to load in 3D</i>`,
+                // TODO full AICS cell name?
+                text: `Cell ${point.cellID}<br><i>click to load in 3D</i>`,
                 x: point.x,
                 y: point.y,
             };

@@ -11,7 +11,6 @@ import { createSelector } from "reselect";
 import {
     CELL_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY,
 } from "../../constants";
 
 import { State } from "../types";

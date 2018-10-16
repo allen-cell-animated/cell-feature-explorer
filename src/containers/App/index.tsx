@@ -5,7 +5,8 @@ import {
 
 import {
     getSelected3DCell,
-    getSelected3DCellDir,
+    getSelected3DCellCellLine,
+    getSelected3DCellFOV,
 } from "../../state/selection/selectors";
 
 import CellViewer from "../../components/CellViewer/index";
@@ -19,14 +20,16 @@ const styles = require("./style.css");
 
 interface AppProps {
     selected3DCell: string;
-    selected3DCellDir: string;
+    selected3DCellFOV: string;
+    selected3DCellCellLine: string;
 }
 
 class App extends React.Component<AppProps, {}> {
     public render() {
         const {
             selected3DCell,
-            selected3DCellDir,
+            selected3DCellFOV,
+            selected3DCellCellLine,
         } = this.props;
         return (
             <div className={styles.container}>
@@ -39,8 +42,9 @@ class App extends React.Component<AppProps, {}> {
                     <ColorByMenu />
                 </div>
                 <CellViewer
-                    cellName={selected3DCell}
-                    selected3DCellDir={selected3DCellDir}
+                    cellId={selected3DCell}
+                    fovId={selected3DCellFOV}
+                    cellLineName={selected3DCellCellLine}
                 />
             </div>
         );
@@ -50,8 +54,9 @@ class App extends React.Component<AppProps, {}> {
 function mapStateToProps(state: State) {
     return {
         selected3DCell: getSelected3DCell(state),
-        selected3DCellDir: getSelected3DCellDir(state),
-    };
+        selected3DCellCellLine: getSelected3DCellCellLine(state),
+        selected3DCellFOV: getSelected3DCellFOV(state),
+        };
 }
 
 export default connect(mapStateToProps, null)(App);

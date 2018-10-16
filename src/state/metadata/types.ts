@@ -1,7 +1,8 @@
 import {
     CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY
 } from "../../constants/index";
 
 export interface MetadataStateBranch {
@@ -10,7 +11,8 @@ export interface MetadataStateBranch {
 
 export interface FileInfo {
     [CELL_ID_KEY]: string;
-    [THUMBNAIL_DIR_KEY]: string;
+    [CELL_LINE_NAME_KEY]: string;
+    [FOV_ID_KEY]: string;
     [PROTEIN_NAME_KEY]: string;
 }
 

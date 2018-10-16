@@ -9,8 +9,9 @@ import { ReduxLogicDeps } from "../types";
 
 import {
     CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY,
 } from "../../constants/index";
 
 import { receiveMetadata } from "./actions";
@@ -36,7 +37,8 @@ const requestFeatureData = createLogic({
                     return {
                         file_info: {
                             [CELL_ID_KEY]: datum[CELL_ID_KEY],
-                            [THUMBNAIL_DIR_KEY]: datum[THUMBNAIL_DIR_KEY],
+                            [CELL_LINE_NAME_KEY]: datum[CELL_LINE_NAME_KEY],
+                            [FOV_ID_KEY]: datum[FOV_ID_KEY],
                             [PROTEIN_NAME_KEY]: datum[PROTEIN_NAME_KEY],
                         },
                         measured_features: {
