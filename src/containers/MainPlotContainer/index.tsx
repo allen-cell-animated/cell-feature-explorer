@@ -23,7 +23,7 @@ import {
 } from "../../state/types";
 
 import metadataStateBranch from "../../state/metadata";
-import { RequestAction } from "../../state/metadata/types";
+import { RequestAction, RequestFeatureDataAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
 import {
@@ -43,7 +43,8 @@ interface MainPlotContainerProps {
     colorByGroupings: string[];
     data: any;
     filtersToExclude: string[];
-    requestFeatureData: ActionCreator<RequestAction>;
+    requestCellLineData: ActionCreator<RequestAction>;
+    requestFeatureData: ActionCreator<RequestFeatureDataAction>;
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
@@ -65,7 +66,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     }
 
     public componentWillMount() {
-        this.props.requestFeatureData();
+        this.props.requestCellLineData();
     }
 
     public onPointClicked(clicked: PlotMouseEvent) {
@@ -159,6 +160,7 @@ const dispatchToPropsMap = {
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
+    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
 };
 

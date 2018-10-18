@@ -21,7 +21,10 @@ const BASE_PLUGINS = [
         watch: true,
     }),
     new CopyWebpackPlugin(
-        [path.resolve(__dirname, '../src', 'cell-feature-analysis.json')]
+        [
+            path.resolve(__dirname, '../src', 'cell-feature-analysis.json'),
+            path.resolve(__dirname, '../src', 'cell-line-def.json')
+        ]
     ),
     new ExtractTextPlugin('style.[contenthash].css'),
     new webpack.optimize.CommonsChunkPlugin({

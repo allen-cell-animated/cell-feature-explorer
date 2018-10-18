@@ -8,6 +8,9 @@ export const CELL_ID_KEY = "Cell ID";
 export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_ID_KEY = "FOV ID";
 export const PROTEIN_NAME_KEY = "structureProteinName";
+export const CELLLINEDEF_NAME_KEY = "CellLineId/Name";
+export const CELLLINEDEF_STRUCTURE_KEY = "StructureId/Name";
+export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/Name";
 
 // production-like settings
 // export const CELL_VIEWER_URL = "https://meganrm.github.io/website-3d-cell-viewer/";
