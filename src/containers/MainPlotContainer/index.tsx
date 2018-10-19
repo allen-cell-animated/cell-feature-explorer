@@ -23,7 +23,7 @@ import {
 } from "../../state/types";
 
 import metadataStateBranch from "../../state/metadata";
-import { RequestAction, RequestFeatureDataAction } from "../../state/metadata/types";
+import { CellLineDef, RequestAction, RequestFeatureDataAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
 import {
@@ -38,6 +38,7 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
+    cellLineDefs: CellLineDef;
     colorBy: string;
     clickedPoints: number[];
     colorByGroupings: string[];
@@ -141,6 +142,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
+        cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),

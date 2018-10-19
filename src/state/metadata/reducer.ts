@@ -7,9 +7,11 @@ import { RECEIVE_CELL_LINE_DATA, RECEIVE_METADATA } from "./constants";
 import {
     MetadataStateBranch,
     ReceiveAction,
+    ReceiveCellLineAction,
 } from "./types";
 
 export const initialState = {
+    cellLineDefs: {},
     featureData: [],
 };
 
@@ -22,10 +24,10 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_CELL_LINE_DATA]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_CELL_LINE_DATA,
-        perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
+        accepts: (action: AnyAction): action is ReceiveCellLineAction => action.type === RECEIVE_CELL_LINE_DATA,
+        perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
             ...state,
-            featureData: action.payload,
+            cellLineDefs: action.payload,
         }),
     },
 };

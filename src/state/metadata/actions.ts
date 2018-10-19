@@ -8,9 +8,17 @@ import {
     CellLineDef,
     MetaData,
     ReceiveAction,
+    ReceiveCellLineAction,
     RequestAction,
     RequestFeatureDataAction
 } from "./types";
+
+export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
+    return {
+        payload,
+        type: RECEIVE_CELL_LINE_DATA,
+    };
+}
 
 export function receiveMetadata(payload: MetaData): ReceiveAction {
     return {
@@ -25,9 +33,8 @@ export function requestCellLineData(): RequestAction {
     };
 }
 
-export function requestFeatureData(payload: CellLineDef): RequestFeatureDataAction {
+export function requestFeatureData(): RequestFeatureDataAction {
     return {
-        payload,
         type: REQUEST_FEATURE_DATA,
     };
 }

@@ -17,7 +17,7 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 
-import { receiveMetadata, requestFeatureData } from "./actions";
+import { receiveCellLineData, receiveMetadata, requestFeatureData } from "./actions";
 import { REQUEST_CELL_LINE_DATA, REQUEST_FEATURE_DATA } from "./constants";
 import { CellLineDef, MetadataStateBranch } from "./types";
 
@@ -44,7 +44,8 @@ const requestCellLineData = createLogic({
                     return accumulator;
                 }, {});
             })
-            .then((data) => dispatch(requestFeatureData(data)))
+            .then((data) => dispatch(receiveCellLineData(data)))
+            .then(() => dispatch(requestFeatureData()))
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
             })
@@ -60,6 +61,7 @@ const requestFeatureDataLogic = createLogic({
     process(deps: ReduxLogicDeps) {
         const {
             baseApiUrl,
+            getState,
             httpClient,
         } = deps;
 
@@ -68,13 +70,15 @@ const requestFeatureDataLogic = createLogic({
             .then((metadata: AxiosResponse) => metadata.data
             )
             .then((data) => {
+                const cellLineDefs = getState().metadata.cellLineDefs;
                 return data.map((datum: MetadataStateBranch) => {
                     return {
                         file_info: {
                             [CELL_ID_KEY]: datum[CELL_ID_KEY],
                             [CELL_LINE_NAME_KEY]: datum[CELL_LINE_NAME_KEY],
                             [FOV_ID_KEY]: datum[FOV_ID_KEY],
-                            [PROTEIN_NAME_KEY]: datum[PROTEIN_NAME_KEY],
+                            [PROTEIN_NAME_KEY]:
+                                cellLineDefs[datum[CELL_LINE_NAME_KEY]][CELLLINEDEF_PROTEIN_KEY],
                         },
                         measured_features: {
                             ...pickBy(datum, isNumber),

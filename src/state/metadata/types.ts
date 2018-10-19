@@ -39,11 +39,15 @@ export interface ReceiveAction {
     type: string;
 }
 
+export interface ReceiveCellLineAction {
+    payload: CellLineDef;
+    type: string;
+}
+
 export interface RequestAction {
     type: string;
 }
 
 export interface RequestFeatureDataAction {
-    payload: CellLineDef;
     type: string;
 }
