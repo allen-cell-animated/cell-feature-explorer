@@ -9,16 +9,12 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
-    CELLLINEDEF_PROTEIN_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 
 import { State } from "../types";
 
 import {
-    CellLineDef,
     FileInfo,
     MeasuredFeatures,
     MetadataStateBranch,

@@ -1,7 +1,6 @@
 import React from "react";
 
 import { CELL_VIEWER_URL } from "../../constants/index";
-import { getCellLineFromLegacyCellID } from "../../util/index";
 
 const styles = require("./style.css");
 

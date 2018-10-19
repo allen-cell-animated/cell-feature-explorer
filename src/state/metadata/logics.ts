@@ -22,9 +22,6 @@ import { REQUEST_CELL_LINE_DATA, REQUEST_FEATURE_DATA } from "./constants";
 import { CellLineDef, MetadataStateBranch } from "./types";
 
 const requestCellLineData = createLogic({
-    // processOptions: {
-    //    successType: requestFeatureData,
-    // },
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const {
             baseApiUrl,
