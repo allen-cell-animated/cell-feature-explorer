@@ -10,7 +10,6 @@ import {
     ReceiveAction,
     ReceiveCellLineAction,
     RequestAction,
-    RequestFeatureDataAction
 } from "./types";
 
 export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
@@ -33,7 +32,7 @@ export function requestCellLineData(): RequestAction {
     };
 }
 
-export function requestFeatureData(): RequestFeatureDataAction {
+export function requestFeatureData(): RequestAction {
     return {
         type: REQUEST_FEATURE_DATA,
     };

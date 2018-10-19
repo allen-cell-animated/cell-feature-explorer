@@ -47,7 +47,3 @@ export interface ReceiveCellLineAction {
 export interface RequestAction {
     type: string;
 }
-
-export interface RequestFeatureDataAction {
-    type: string;
-}

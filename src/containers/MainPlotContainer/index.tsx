@@ -23,7 +23,7 @@ import {
 } from "../../state/types";
 
 import metadataStateBranch from "../../state/metadata";
-import { CellLineDef, RequestAction, RequestFeatureDataAction } from "../../state/metadata/types";
+import { CellLineDef, RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
 import {
@@ -45,7 +45,7 @@ interface MainPlotContainerProps {
     data: any;
     filtersToExclude: string[];
     requestCellLineData: ActionCreator<RequestAction>;
-    requestFeatureData: ActionCreator<RequestFeatureDataAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
