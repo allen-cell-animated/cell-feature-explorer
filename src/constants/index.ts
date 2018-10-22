@@ -12,15 +12,15 @@ export const CELLLINEDEF_NAME_KEY = "CellLineId/Name";
 export const CELLLINEDEF_STRUCTURE_KEY = "StructureId/Name";
 export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/Name";
 
-// production-like settings
-// export const CELL_VIEWER_URL = "https://meganrm.github.io/website-3d-cell-viewer/";
-// export const BASE_API_URL = `https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/`;
-// export const THUMBNAIL_BASE_URL = "https://cellviewer-1-2-0.allencell.org";
-
-// assume all components are accessible on the same local server for dev environment
-export const CELL_VIEWER_URL = "/website-3d-cell-viewer/imageviewer/";
-export const BASE_API_URL = `/cell-feature-explorer/dist/`;
-export const THUMBNAIL_BASE_URL = "http://dev-aics-dtp-001/cellviewer-1-3-0/Cell-Viewer_Thumbnails/";
+declare const CELL_VIEWER_URL: string;
+declare const BASE_API_URL: string;
+declare const THUMBNAIL_BASE_URL: string;
+const _CELL_VIEWER_URL = CELL_VIEWER_URL;
+const _BASE_API_URL = BASE_API_URL;
+const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
+export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
+export {_BASE_API_URL as BASE_API_URL};
+export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",

@@ -47,12 +47,29 @@ const PLUGINS_BY_ENV = {
     [Env.PRODUCTION]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
+            CELL_VIEWER_URL: 'https://meganrm.github.io/website-3d-cell-viewer/',
+            BASE_API_URL: 'https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/',
+            THUMBNAIL_BASE_URL: 'https://cellviewer-1-2-0.allencell.org'
         }),
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.HashedModuleIdsPlugin()
     ],
     [Env.STAGE]: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('staging'),
+            CELL_VIEWER_URL: 'https://meganrm.github.io/website-3d-cell-viewer/',
+            BASE_API_URL: 'https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/',
+            THUMBNAIL_BASE_URL: 'https://cellviewer-1-2-0.allencell.org'
+        }),
         new webpack.NamedModulesPlugin()
+    ],
+    [Env.DEVELOPMENT]: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('dev'),
+            CELL_VIEWER_URL: '"/website-3d-cell-viewer/imageviewer/"',
+            BASE_API_URL: '"/cell-feature-explorer/dist/"',
+            THUMBNAIL_BASE_URL: '"http://dev-aics-dtp-001/cellviewer-1-3-0/Cell-Viewer_Thumbnails/"'
+        }),
     ]
 };
 
