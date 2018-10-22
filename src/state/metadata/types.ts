@@ -1,16 +1,27 @@
 import {
     CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    CELLLINEDEF_PROTEIN_KEY,
+    CELLLINEDEF_STRUCTURE_KEY,
+    FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY
 } from "../../constants/index";
 
 export interface MetadataStateBranch {
     [key: string]: any;
 }
 
+export interface CellLineDef {
+    [key: string]: {
+        [CELLLINEDEF_STRUCTURE_KEY]: string;
+        [CELLLINEDEF_PROTEIN_KEY]: string;
+    };
+}
+
 export interface FileInfo {
     [CELL_ID_KEY]: string;
-    [THUMBNAIL_DIR_KEY]: string;
+    [CELL_LINE_NAME_KEY]: string;
+    [FOV_ID_KEY]: string;
     [PROTEIN_NAME_KEY]: string;
 }
 
@@ -25,6 +36,11 @@ export interface MetaData {
 
 export interface ReceiveAction {
     payload: MetaData;
+    type: string;
+}
+
+export interface ReceiveCellLineAction {
+    payload: CellLineDef;
     type: string;
 }
 

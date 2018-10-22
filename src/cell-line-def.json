@@ -1,0 +1,282 @@
+[
+    {
+        "StructureId/Name": "Mitochondria",
+        "CellLineId/Name": "AICS-0-IDH3G",
+        "ProteinId/Name": "Isocitrate dehydrogenase"
+    },
+    {
+        "StructureId/Name": "Desmosomes",
+        "CellLineId/Name": "AICS-0-DSP",
+        "ProteinId/Name": "Desmoplakin"
+    },
+    {
+        "StructureId/Name": "Actin filaments",
+        "CellLineId/Name": "AICS-0-ACTB",
+        "ProteinId/Name": "Beta-actin"
+    },
+    {
+        "StructureId/Name": "Matrix adhesions",
+        "CellLineId/Name": "AICS-5",
+        "ProteinId/Name": "Paxillin"
+    },
+    {
+        "StructureId/Name": "Matrix adhesions",
+        "CellLineId/Name": "AICS-5-POOL",
+        "ProteinId/Name": "Paxillin"
+    },
+    {
+        "StructureId/Name": "Mitochondria",
+        "CellLineId/Name": "AICS-11-NHEJ",
+        "ProteinId/Name": "Tom20"
+    },
+    {
+        "StructureId/Name": "Matrix adhesions",
+        "CellLineId/Name": "AICS-5-CMAX",
+        "ProteinId/Name": "Paxillin"
+    },
+    {
+        "StructureId/Name": "Matrix adhesions",
+        "CellLineId/Name": "AICS-5-GENEJUICE",
+        "ProteinId/Name": "Paxillin"
+    },
+    {
+        "StructureId/Name": "Microtubules",
+        "CellLineId/Name": "AICS-6",
+        "ProteinId/Name": "Alpha-tubulin"
+    },
+    {
+        "StructureId/Name": "Actin bundles",
+        "CellLineId/Name": "AICS-7",
+        "ProteinId/Name": "Alpha-actinin"
+    },
+    {
+        "StructureId/Name": "Actin bundles",
+        "CellLineId/Name": "AICS-8",
+        "ProteinId/Name": "Alpha-actinin"
+    },
+    {
+        "StructureId/Name": "Actin bundles",
+        "CellLineId/Name": "AICS-9",
+        "ProteinId/Name": "Alpha-actinin"
+    },
+    {
+        "StructureId/Name": "Endoplasmic reticulum",
+        "CellLineId/Name": "AICS-10",
+        "ProteinId/Name": "Sec61 beta"
+    },
+    {
+        "StructureId/Name": "Mitochondria",
+        "CellLineId/Name": "AICS-11",
+        "ProteinId/Name": "Tom20"
+    },
+    {
+        "StructureId/Name": "Microtubules",
+        "CellLineId/Name": "AICS-12",
+        "ProteinId/Name": "Alpha-tubulin"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-13",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Nucleolus",
+        "CellLineId/Name": "AICS-14",
+        "ProteinId/Name": "Fibrillarin"
+    },
+    {
+        "StructureId/Name": "Mitochondria",
+        "CellLineId/Name": "AICS-15",
+        "ProteinId/Name": "Isocitrate dehydrogenase"
+    },
+    {
+        "StructureId/Name": "Actin filaments",
+        "CellLineId/Name": "AICS-16",
+        "ProteinId/Name": "Beta-actin"
+    },
+    {
+        "StructureId/Name": "Desmosomes",
+        "CellLineId/Name": "AICS-17",
+        "ProteinId/Name": "Desmoplakin"
+    },
+    {
+        "StructureId/Name": "Golgi",
+        "CellLineId/Name": "AICS-19",
+        "ProteinId/Name": "Galactose-1-phosphate uridylyltransferase"
+    },
+    {
+        "StructureId/Name": "Intermediate filaments",
+        "CellLineId/Name": "AICS-20",
+        "ProteinId/Name": "Vimentin"
+    },
+    {
+        "StructureId/Name": "Centrosome",
+        "CellLineId/Name": "AICS-21",
+        "ProteinId/Name": "Centrin-2"
+    },
+    {
+        "StructureId/Name": "Lysosome",
+        "CellLineId/Name": "AICS-22",
+        "ProteinId/Name": "LAMP-1"
+    },
+    {
+        "StructureId/Name": "Tight junctions",
+        "CellLineId/Name": "AICS-23",
+        "ProteinId/Name": "Tight junction ZO1"
+    },
+    {
+        "StructureId/Name": "Actomyosin bundles",
+        "CellLineId/Name": "AICS-24",
+        "ProteinId/Name": "Non-muscle myosin IIB"
+    },
+    {
+        "StructureId/Name": "Golgi",
+        "CellLineId/Name": "AICS-25",
+        "ProteinId/Name": "Sialyltransferase 1"
+    },
+    {
+        "StructureId/Name": "Centrosome",
+        "CellLineId/Name": "AICS-27",
+        "ProteinId/Name": "Centrin-2"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-28",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-29",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Autophagosomes",
+        "CellLineId/Name": "AICS-30",
+        "ProteinId/Name": "Autophagy-related protein LC3 B"
+    },
+    {
+        "StructureId/Name": "Microtubules",
+        "CellLineId/Name": "AICS-31",
+        "ProteinId/Name": "Alpha-tubulin"
+    },
+    {
+        "StructureId/Name": "Centrosome",
+        "CellLineId/Name": "AICS-32",
+        "ProteinId/Name": "Centrin-2"
+    },
+    {
+        "StructureId/Name": "Peroxisomes",
+        "CellLineId/Name": "AICS-33",
+        "ProteinId/Name": "Peroxisomal membrane protein PMP34"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-34",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Microtubules",
+        "CellLineId/Name": "AICS-38",
+        "ProteinId/Name": "Alpha-tubulin"
+    },
+    {
+        "StructureId/Name": "Sarcomeric thin filament",
+        "CellLineId/Name": "AICS-37",
+        "ProteinId/Name": "Troponin I, slow skeletal type"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-41",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Endoplasmic reticulum",
+        "CellLineId/Name": "AICS-41",
+        "ProteinId/Name": "Sec61-beta"
+    },
+    {
+        "StructureId/Name": "Microtubules",
+        "CellLineId/Name": "AICS-42",
+        "ProteinId/Name": "Alpha-tubulin"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-42",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Sarcomeric z-disk",
+        "CellLineId/Name": "AICS-39",
+        "ProteinId/Name": "Alpha-actinin-2"
+    },
+    {
+        "StructureId/Name": "Endosomes",
+        "CellLineId/Name": "AICS-40",
+        "ProteinId/Name": "Ras-related protein Rab-5A"
+    },
+    {
+        "StructureId/Name": "Sarcomeric thin filament",
+        "CellLineId/Name": "AICS-47",
+        "ProteinId/Name": "Troponin I, cardiac muscle"
+    },
+    {
+        "StructureId/Name": "Endoplasmic reticulum",
+        "CellLineId/Name": "AICS-45",
+        "ProteinId/Name": "Sec61 beta"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-35",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Sarcoplasmic reticulum",
+        "CellLineId/Name": "AICS-46",
+        "ProteinId/Name": "SERCA2"
+    },
+    {
+        "StructureId/Name": "Gap junctions",
+        "CellLineId/Name": "AICS-53",
+        "ProteinId/Name": "Connexin-43"
+    },
+    {
+        "StructureId/Name": "MAPK1/ERK2",
+        "CellLineId/Name": "AICS-49",
+        "ProteinId/Name": "MAPK1/ERK2"
+    },
+    {
+        "StructureId/Name": "Sarcomere",
+        "CellLineId/Name": "AICS-48",
+        "ProteinId/Name": "Titin"
+    },
+    {
+        "StructureId/Name": "Centrosome",
+        "CellLineId/Name": "AICS-56",
+        "ProteinId/Name": "Centrin-2"
+    },
+    {
+        "StructureId/Name": "Sarcomeric thick filaments",
+        "CellLineId/Name": "AICS-52",
+        "ProteinId/Name": "MLC-2a"
+    },
+    {
+        "StructureId/Name": "Nuclear envelope",
+        "CellLineId/Name": "AICS-59",
+        "ProteinId/Name": "Lamin B1"
+    },
+    {
+        "StructureId/Name": "Adherens junctions",
+        "CellLineId/Name": "AICS-58",
+        "ProteinId/Name": "Beta catenin"
+    },
+    {
+        "StructureId/Name": "PKB/AKT1",
+        "CellLineId/Name": "AICS-50",
+        "ProteinId/Name": "PKB/AKT1"
+    },
+    {
+        "StructureId/Name": null,
+        "CellLineId/Name": "AICS-57",
+        "ProteinId/Name": "Nucleophosmin"
+    }
+]

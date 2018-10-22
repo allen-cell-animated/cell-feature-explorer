@@ -23,7 +23,7 @@ import {
 } from "../../state/types";
 
 import metadataStateBranch from "../../state/metadata";
-import { RequestAction } from "../../state/metadata/types";
+import { CellLineDef, RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
 import {
@@ -38,11 +38,13 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
+    cellLineDefs: CellLineDef;
     colorBy: string;
     clickedPoints: number[];
     colorByGroupings: string[];
     data: any;
     filtersToExclude: string[];
+    requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     plotByOnX: string;
     plotByOnY: string;
@@ -65,7 +67,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     }
 
     public componentWillMount() {
-        this.props.requestFeatureData();
+        this.props.requestCellLineData();
     }
 
     public onPointClicked(clicked: PlotMouseEvent) {
@@ -140,6 +142,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
+        cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
@@ -159,6 +162,7 @@ const dispatchToPropsMap = {
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
+    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
 };
 

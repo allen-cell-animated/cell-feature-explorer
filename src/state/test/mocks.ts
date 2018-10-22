@@ -2,8 +2,9 @@ import { zipWith } from "lodash";
 
 import {
     CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY,
 } from "../../constants/index";
 
 import {
@@ -27,8 +28,9 @@ export const makeFeatureData = (
         {
             file_info : {
                 [CELL_ID_KEY]: cellId,
+                [CELL_LINE_NAME_KEY]: "",
+                [FOV_ID_KEY]: "",
                 [PROTEIN_NAME_KEY]: proteinName,
-                [THUMBNAIL_DIR_KEY]: "dir",
             },
             measured_features: {
                 feature1,

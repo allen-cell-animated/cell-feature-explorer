@@ -1,24 +1,34 @@
 export const APP_ID = "cell-feature-explorer";
 export const API_VERSION = "v1";
-export const BASE_API_URL = `https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/`;
 export const X_AXIS_ID = "plotByOnX";
 export const Y_AXIS_ID = "plotByOnY";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
-export const THUMBNAIL_BASE_URL = "https://cellviewer-1-2-0.allencell.org";
 export const COLOR_BY_SELECTOR = "colorBy";
 export const CELL_ID_KEY = "Cell ID";
-export const THUMBNAIL_DIR_KEY = "datadir";
+export const CELL_LINE_NAME_KEY = "CellLineName";
+export const FOV_ID_KEY = "FOV ID";
 export const PROTEIN_NAME_KEY = "structureProteinName";
-export const CELL_VIEWER_URL = "https://meganrm.github.io/website-3d-cell-viewer/";
+export const CELLLINEDEF_NAME_KEY = "CellLineId/Name";
+export const CELLLINEDEF_STRUCTURE_KEY = "StructureId/Name";
+export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/Name";
+
+declare const CELL_VIEWER_URL: string;
+declare const BASE_API_URL: string;
+declare const THUMBNAIL_BASE_URL: string;
+const _CELL_VIEWER_URL = CELL_VIEWER_URL;
+const _BASE_API_URL = BASE_API_URL;
+const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
+export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
+export {_BASE_API_URL as BASE_API_URL};
+export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
 
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
     cellName: CELL_ID_KEY,
     chartParent: "ace-scatter-chart",
     circleRadius: 4,
-    dataFile: "/js/AICS/cell-feature-analysis.json",
     histogramColor: "rgb(164,162,164)",
-    imagesDir: "/aics/thumbnails",
+    // imagesDir: "", // "/aics/thumbnails",
     legend: {
         font: {
             color: "rgb(255,255,255)",

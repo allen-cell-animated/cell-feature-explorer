@@ -8,8 +8,9 @@ import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY
 } from "../../constants";
 
 import {
@@ -42,10 +43,17 @@ export const getFiltersToExclude = (state: State) => state.selection.filterExclu
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
 
 // COMPOSED SELECTORS
-export const getSelected3DCellDir = createSelector([getSelected3DCell, getFileInfo],
+export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
         const fileInfo = find(fileInfoArray, {[CELL_ID_KEY]: selected3DCellId});
-        return fileInfo ? fileInfo[THUMBNAIL_DIR_KEY] : "";
+        return fileInfo ? fileInfo[FOV_ID_KEY] : "";
+    }
+);
+
+export const getSelected3DCellCellLine = createSelector([getSelected3DCell, getFileInfo],
+    (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
+        const fileInfo = find(fileInfoArray, {[CELL_ID_KEY]: selected3DCellId});
+        return fileInfo ? fileInfo[CELL_LINE_NAME_KEY] : "";
     }
 );
 
@@ -116,9 +124,9 @@ export const getThumbnails = createSelector([
     (fileInfo: FileInfo[], clickedScatterPointIndices: number[]): Thumbnail[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
             const cellID = fileInfo[pointIndex][CELL_ID_KEY];
-            const directory = fileInfo[pointIndex][THUMBNAIL_DIR_KEY];
-            const cellLineId = cellID.split("_")[0];
-            const src = `/aics/thumbnails/${directory}/${cellLineId}/${cellID}.png`;
+            const cellLineId = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
+            const fovId = fileInfo[pointIndex][FOV_ID_KEY];
+            const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
             return {
                 cellID,
                 pointIndex,
@@ -145,10 +153,14 @@ export const getAnnotations = createSelector(
      ): Annotation[] => {
         return clickedScatterPointIndices.map((pointIndex) => {
             const cellID = fileInfo[pointIndex][CELL_ID_KEY];
+            const fovID = fileInfo[pointIndex][FOV_ID_KEY];
+            const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
             const x = measuredData[pointIndex][xaxis];
             const y = measuredData[pointIndex][yaxis];
             return {
                 cellID,
+                cellLine,
+                fovID,
                 pointIndex,
                 x,
                 y,

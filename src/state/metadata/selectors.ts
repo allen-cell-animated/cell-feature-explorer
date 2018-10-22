@@ -9,9 +9,7 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_DIR_KEY,
 } from "../../constants";
 
 import { State } from "../types";
@@ -19,11 +17,13 @@ import { State } from "../types";
 import {
     FileInfo,
     MeasuredFeatures,
-    MetadataStateBranch
+    MetadataStateBranch,
 } from "./types";
 
 // BASIC SELECTORS
 export const getFullMetaDataArray = (state: State) => state.metadata.featureData;
+
+export const getFullCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 
 export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
     return map(fullMetaData, "file_info");
