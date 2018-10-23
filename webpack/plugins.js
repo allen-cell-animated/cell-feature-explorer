@@ -10,6 +10,10 @@ const webpack = require('webpack');
 
 const Env = require('./constants').Env;
 
+const DevServers = require('./server-urls-dev.json');
+const ProductionServers = require('./server-urls-production.json');
+const StagingServers = require('./server-urls-staging.json');
+
 const BASE_PLUGINS = [
     new ForkTsCheckerWebpackPlugin({
         tsconfig: path.resolve(__dirname, '../', 'tsconfig.json'),
@@ -22,8 +26,14 @@ const BASE_PLUGINS = [
     }),
     new CopyWebpackPlugin(
         [
-            path.resolve(__dirname, '../src', 'cell-feature-analysis.json'),
-            path.resolve(__dirname, '../src', 'cell-line-def.json')
+            {
+                from: path.resolve(__dirname, '../src/data', 'cell-feature-analysis.json'),
+                to: 'data'
+            },
+            {
+                from: path.resolve(__dirname, '../src/data', 'cell-line-def.json'),
+                to: 'data'
+            }
         ]
     ),
     new ExtractTextPlugin('style.[contenthash].css'),
@@ -47,9 +57,9 @@ const PLUGINS_BY_ENV = {
     [Env.PRODUCTION]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
-            CELL_VIEWER_URL: 'https://meganrm.github.io/website-3d-cell-viewer/',
-            BASE_API_URL: 'https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/',
-            THUMBNAIL_BASE_URL: 'https://cellviewer-1-2-0.allencell.org'
+            CELL_VIEWER_URL: ProductionServers.CELL_VIEWER_URL,
+            BASE_API_URL: ProductionServers.BASE_API_URL,
+            THUMBNAIL_BASE_URL: ProductionServers.THUMBNAIL_BASE_URL
         }),
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.HashedModuleIdsPlugin()
@@ -57,18 +67,18 @@ const PLUGINS_BY_ENV = {
     [Env.STAGE]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('staging'),
-            CELL_VIEWER_URL: 'https://meganrm.github.io/website-3d-cell-viewer/',
-            BASE_API_URL: 'https://raw.githubusercontent.com/meganrm/plotting-tool/master/src/',
-            THUMBNAIL_BASE_URL: 'https://cellviewer-1-2-0.allencell.org'
+            CELL_VIEWER_URL: StagingServers.CELL_VIEWER_URL,
+            BASE_API_URL: StagingServers.BASE_API_URL,
+            THUMBNAIL_BASE_URL: StagingServers.THUMBNAIL_BASE_URL
         }),
         new webpack.NamedModulesPlugin()
     ],
     [Env.DEVELOPMENT]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('dev'),
-            CELL_VIEWER_URL: '"/website-3d-cell-viewer/imageviewer/"',
-            BASE_API_URL: '"/cell-feature-explorer/dist/"',
-            THUMBNAIL_BASE_URL: '"http://dev-aics-dtp-001/cellviewer-1-3-0/Cell-Viewer_Thumbnails/"'
+            CELL_VIEWER_URL: DevServers.CELL_VIEWER_URL,
+            BASE_API_URL: DevServers.BASE_API_URL,
+            THUMBNAIL_BASE_URL: DevServers.THUMBNAIL_BASE_URL
         }),
     ]
 };
