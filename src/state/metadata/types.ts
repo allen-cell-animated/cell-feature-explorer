@@ -1,8 +1,8 @@
 import {
     CELL_ID_KEY,
+    CELL_LINE_DEF_PROTEIN_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
-    CELLLINEDEF_PROTEIN_KEY,
-    CELLLINEDEF_STRUCTURE_KEY,
     FOV_ID_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
@@ -13,8 +13,8 @@ export interface MetadataStateBranch {
 
 export interface CellLineDef {
     [key: string]: {
-        [CELLLINEDEF_STRUCTURE_KEY]: string;
-        [CELLLINEDEF_PROTEIN_KEY]: string;
+        [CELL_LINE_DEF_STRUCTURE_KEY]: string;
+        [CELL_LINE_DEF_PROTEIN_KEY]: string;
     };
 }
 
