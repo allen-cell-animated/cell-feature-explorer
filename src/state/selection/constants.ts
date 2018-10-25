@@ -10,8 +10,8 @@ export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeConstant("selection", "toggle-f
 export const OPEN_CELL_IN_3D = makeConstant("selection", "open-cell-in-3d");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
-export const INITIAL_PLOT_BY_ON_X = "Nuclear volume (fL)";
-export const INITIAL_PLOT_BY_ON_Y = "Cellular volume (fL)";
+export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
+export const INITIAL_PLOT_BY_ON_Y = "Cellular Volume (fL)";
 export const INITIAL_COLORS = [
     "#a6cee3",
     "#1f78b4",
