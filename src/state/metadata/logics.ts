@@ -71,18 +71,14 @@ const requestFeatureDataLogic = createLogic({
                 return data.map((datum: MetadataStateBranch) => {
                     return {
                         file_info: {
-                            [CELL_ID_KEY]: datum[CELL_ID_KEY],
-                            [CELL_LINE_NAME_KEY]: datum[CELL_LINE_NAME_KEY],
-                            [FOV_ID_KEY]: datum[FOV_ID_KEY],
+                            ...datum.file_info,
                             // TODO: The following field is unnecessary but convenient.
                             // To optimize, remove this and use selectors to get protein name via
                             // cell line name and state.metadata.cellLineDefs
                             [PROTEIN_NAME_KEY]:
-                                cellLineDefs[datum[CELL_LINE_NAME_KEY]][CELLLINEDEF_PROTEIN_KEY],
+                                cellLineDefs[datum.file_info[CELL_LINE_NAME_KEY]][CELLLINEDEF_PROTEIN_KEY],
                         },
-                        measured_features: {
-                            ...pickBy(datum, isNumber),
-                        },
+                        measured_features: datum.measured_features,
                     };
                 });
             })

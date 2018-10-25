@@ -4,13 +4,13 @@ export const X_AXIS_ID = "plotByOnX";
 export const Y_AXIS_ID = "plotByOnY";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const COLOR_BY_SELECTOR = "colorBy";
-export const CELL_ID_KEY = "Cell ID";
+export const CELL_ID_KEY = "CellId";
 export const CELL_LINE_NAME_KEY = "CellLineName";
-export const FOV_ID_KEY = "FOV ID";
+export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
 export const CELLLINEDEF_NAME_KEY = "CellLineId/Name";
 export const CELLLINEDEF_STRUCTURE_KEY = "StructureId/Name";
-export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/Name";
+export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/DisplayName";
 
 declare const CELL_VIEWER_URL: string;
 declare const BASE_API_URL: string;
@@ -47,6 +47,6 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: .7,
-    xAxisInitial: "Nuclear volume (fL)",
-    yAxisInitial: "Cellular volume (fL)",
+    xAxisInitial: "Nuclear Volume (fL)",
+    yAxisInitial: "Cellular Volume (fL)",
 };
