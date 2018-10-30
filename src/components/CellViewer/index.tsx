@@ -27,12 +27,13 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
     }
 
     return (
-        <iframe
-            frameBorder={0}
-            className={styles.cellViewer}
-            src={`${CELL_VIEWER_URL}?${query}`}
+            <iframe
+                id="three-d-viewer"
+                frameBorder={0}
+                className={styles.cellViewer}
+                src={`${CELL_VIEWER_URL}?${query}`}
 
-        />
+            />
     );
 };
 
