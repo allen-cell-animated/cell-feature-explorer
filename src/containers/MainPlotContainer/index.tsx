@@ -123,7 +123,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
          };
 
          return (
-            <div className={styles.container}>My Plot
+            <div
+                id="main-plot"
+                className={styles.container}
+            >
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
                 <MainPlot

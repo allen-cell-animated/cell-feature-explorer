@@ -14,6 +14,7 @@ import ColorByMenu from "../../containers/ColorByMenu";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 
+import AffixedNav from "../../components/AffixNav";
 import { State } from "../../state/types";
 
 const styles = require("./style.css");
@@ -33,6 +34,7 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
         return (
             <div className={styles.container}>
+                <AffixedNav />
                 <div className={styles.plotView} >
                     <MainPlotContainer />
                     <ThumbnailGallery />

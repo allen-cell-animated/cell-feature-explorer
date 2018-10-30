@@ -43,7 +43,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleClearAllSelectedPoints,
         } = this.props;
         return (
-            <React.Fragment>
+            <div id="gallery">
                 {data.length > 0 ?
                     <Button
                         type="primary"
@@ -55,7 +55,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     dataSource={data}
                     renderItem={this.renderGalleryCard}
                 />
-            </React.Fragment>
+            </div>
         );
     }
 
