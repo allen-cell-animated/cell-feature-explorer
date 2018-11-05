@@ -1,3 +1,5 @@
+@import "../../styles/colors.css";
+
 .plot-by-on-x {
     position: absolute;
     bottom: 0;
@@ -13,4 +15,8 @@
     -webkit-transform: rotate(-90deg); /* Safari */
     transform: rotate(-90deg);
     z-index: 100;
+}
+
+.color-by :global(.ant-select-selection) {
+    background-color: var(--purple);
 }

@@ -41,7 +41,7 @@ interface MainPlotContainerProps {
     cellLineDefs: CellLineDef;
     colorBy: string;
     clickedPoints: number[];
-    colorByGroupings: string[];
+    colorByGroupings: string[] | number[];
     data: any;
     filtersToExclude: string[];
     requestCellLineData: ActionCreator<RequestAction>;

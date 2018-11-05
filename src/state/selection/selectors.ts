@@ -22,7 +22,9 @@ import {
 } from "../metadata/selectors";
 import {
     FileInfo,
-    MeasuredFeatures, MetaData,
+    MeasuredFeatures,
+    MetaData,
+    MetadataStateBranch,
 } from "../metadata/types";
 import {
     Annotation,
@@ -99,7 +101,7 @@ export const getPossibleColorByData = createSelector([getFilteredData], (metaDat
 );
 
 export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
-    (metaData: MetaData[], colorBy: string): number[] | string[] => (
+    (metaData: MetadataStateBranch[], colorBy: string): (number[] | string[]) => (
         map(metaData, colorBy)
     )
 );
