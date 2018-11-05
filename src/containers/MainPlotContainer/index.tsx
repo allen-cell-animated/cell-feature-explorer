@@ -156,8 +156,8 @@ function mapStateToProps(state: State) {
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
-        xDataValues: selectionStateBranch.selectors.getXValues(state),
-        yDataValues: selectionStateBranch.selectors.getYValues(state),
+        xDataValues: selectionStateBranch.selectors.getFilteredXValues(state),
+        yDataValues: selectionStateBranch.selectors.getFilteredYValues(state),
     };
 }
 
