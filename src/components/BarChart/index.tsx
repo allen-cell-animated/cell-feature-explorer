@@ -1,15 +1,17 @@
+import { includes } from "lodash";
 import {
-    Color,
-    PlotMouseEvent,
+Color,
+PlotMouseEvent,
 } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS } from "../../constants";
+import { GENERAL_PLOT_SETTINGS, PROTEIN_NAME_KEY } from "../../constants";
 import { NumberOrString } from "../../state/types";
 
 interface BarChartProps {
     colors: Color[];
+    colorBy: string;
     names: NumberOrString[];
     filtersToExclude?: string[];
     onBarClicked?: (clicked: PlotMouseEvent) => void;
@@ -17,13 +19,27 @@ interface BarChartProps {
 }
 
 const BarChart: React.SFC<BarChartProps> = (props) => {
+    const {
+        filtersToExclude,
+        colorBy,
+    } = props;
+    let colors;
+    if (colorBy === PROTEIN_NAME_KEY) {
+        colors = props.names
+            .map((ele: NumberOrString, index: number) =>
+                includes(filtersToExclude, ele) ? "#6e6e6e" : props.colors[index]);
+    } else {
+        colors = props.names
+            .map((ele: NumberOrString, index: number) => "#6e6e6e" );
+    }
+
     return (
 
         <Plot
             data={[
                 {
                     marker: {
-                        color: props.colors,
+                        color: colors,
                         width: 1,
                     },
                     orientation: "h",

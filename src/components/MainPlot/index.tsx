@@ -75,23 +75,12 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     public colorSettings(plotSettings: Data): Data {
         const {
             colorBy,
-            filtersToExclude,
             plotData,
         } = this.props;
-        const filters = filtersToExclude.map((filter: string) => (
-            {
-                operation: "!=",
-                target: plotData.proteinLabels,
-                // literal typing to avoid a widened type inferred
-                type: "filter" as "filter",
-                value: filter,
-            })
-        );
-
         if (colorBy === PROTEIN_NAME_KEY) {
-             return {
+            return {
                  ...plotSettings,
-                 transforms: [...filters , {
+                 transforms: [ {
                      groups: plotData.groups,
                      nameformat: `%{group}`,
                      styles: plotData.proteinNames.map((ele: string, index: number) => {
@@ -112,7 +101,6 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             marker: {
                 color: plotData.groups,
             },
-            transforms: [...filters],
 
         };
     }
@@ -201,20 +189,19 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                     this.makeHistogramPlotY(plotData.y),
                     this.makeScatterPlotData(),
                 ]}
+                useResizeHandler={true}
                 layout={{
                     annotations: this.makeAnnotations(),
                     autosize: true,
-                    height: 800,
                     hovermode: "closest",
                     legend: GENERAL_PLOT_SETTINGS.legend,
                     margin: {
                         b: 30,
-                        r: 10,
+                        r: 200,
                         t: 10,
                     },
                     paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                     plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    width: 600,
                     xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
                     xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
                     yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
