@@ -1,11 +1,10 @@
 import {
-    Menu,
+    Collapse,
+    Switch
 } from "antd";
-import "antd/lib/menu/style";
-import {
-    difference,
-    includes,
-} from "lodash";
+import "antd/lib/collapse/style";
+import "antd/lib/switch/style";
+
 import {
     Color,
     PlotMouseEvent,
@@ -14,22 +13,27 @@ import React from "react";
 import { connect } from "react-redux";
 
 import BarChart from "../../components/BarChart";
-import { COLOR_BY_SELECTOR } from "../../constants";
+import { COLOR_BY_SELECTOR, PROTEIN_NAME_KEY } from "../../constants";
 import {
     getProteinNames,
     getProteinTotals
 } from "../../state/metadata/selectors";
 import {
-    toggleFilterByProteinName
+    changeAxis,
+    toggleFilterByProteinName,
 } from "../../state/selection/actions";
 import {
+    getColorBySelection,
     getFiltersToExclude,
     getProteinColors,
     getSelectedGroupKeys,
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
-import { ToggleFilterAction } from "../../state/selection/types";
+import {
+    SelectAxisAction,
+    ToggleFilterAction,
+} from "../../state/selection/types";
 
 import {
     NumberOrString,
@@ -37,10 +41,12 @@ import {
 } from "../../state/types";
 import AxisDropDown from "../AxisDropDown";
 
-const { SubMenu } = Menu;
+const { Panel } = Collapse;
 
 interface ColorByMenuProps {
+    colorBy: string;
     filtersToExclude: string[];
+    handleChangeAxis: (axisName: string, proteinName: string) => SelectAxisAction;
     handleFilterByProteinName: (payload: string) => ToggleFilterAction;
     proteinColors: Color[];
     proteinNames: string[];
@@ -55,37 +61,38 @@ interface ColorByMenuState {
 }
 class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
     // submenu keys of first level
-    public rootSubmenuKeys = ["structureProteinName", "cellularFeatures", "clusters"];
 
-    public state: ColorByMenuState = {
-        openKeys: ["structureProteinName"],
-    };
+    public defaultActiveKey =  "structureProteinName";
 
     constructor(props: ColorByMenuProps) {
         super(props);
+        this.onOpenChange = this.onOpenChange.bind(this);
         this.onBarClicked = this.onBarClicked.bind(this);
+        this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
     }
 
-    public onOpenChange = (openKeys: string[]) => {
-        const latestOpenKey = difference(openKeys, this.state.openKeys)[0];
-        if (!includes(this.rootSubmenuKeys, latestOpenKey)) {
-            this.setState({ openKeys });
-        } else {
-            this.setState({
-                openKeys: latestOpenKey ? [latestOpenKey] : [],
-            });
-        }
+    public onOpenChange(openKeys: string[]) {
+        this.setState({ openKeys });
     }
 
-    public onBarClicked = (clickEvent: PlotMouseEvent) => {
+    public onBarClicked(clickEvent: PlotMouseEvent) {
         const { handleFilterByProteinName } = this.props;
         const { points } = clickEvent;
         const proteinName = points[0].y as string;
         handleFilterByProteinName(proteinName);
     }
 
+    public onColorBySwitchChanged(colorByProtein: string) {
+        const { handleChangeAxis } = this.props;
+        if (colorByProtein) {
+            return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
+        }
+        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear Volume (fL)");
+    }
+
     public render() {
         const {
+            colorBy,
             filtersToExclude,
             proteinNames,
             proteinTotals,
@@ -96,34 +103,42 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
         } = this.props;
 
         return (
-                <Menu
-                    mode="inline"
-                    openKeys={this.state.openKeys}
-                    onOpenChange={this.onOpenChange}
+                <Collapse
+                    defaultActiveKey={this.defaultActiveKey}
                 >
-                    <SubMenu
+                    <Panel
                         key="structureProteinName"
-                        title={<span>Tagged Structures</span>}
+                        header={<span>Tagged Structures</span>}
                     >
-                        <BarChart
-                            names={proteinNames}
-                            totals={proteinTotals}
-                            colors={proteinColors}
-                            onBarClicked={this.onBarClicked}
-                            filtersToExclude={filtersToExclude}
+                        <div>
+                            <span>Color by:</span>
+                                <Switch
+                                    defaultChecked={true}
+                                    checkedChildren="protein"
+                                    unCheckedChildren="cellular feature"
+                                    onChange={this.onColorBySwitchChanged}
+                                />
+                        </div>
+                        <div>
+                            {colorBy === PROTEIN_NAME_KEY ? null : (
+                                    <AxisDropDown
+                                        axisId={COLOR_BY_SELECTOR}
+                                    />
+                            )}
+                                <BarChart
+                                    names={proteinNames}
+                                    totals={proteinTotals}
+                                    colors={proteinColors}
+                                    colorBy={colorBy}
+                                    onBarClicked={this.onBarClicked}
+                                    filtersToExclude={filtersToExclude}
+                                />
 
-                        />
-                    </SubMenu>
-                    <SubMenu
-                        key="cellularFeatures"
-                        title={<span>Cellular Features</span>}
-                    >
-                        <AxisDropDown axisId={COLOR_BY_SELECTOR}/>
-
-                    </SubMenu>
-                    <SubMenu
+                        </div>
+                    </Panel>
+                    <Panel
                         key="clusters"
-                        title={<span>Cluster</span>}
+                        header="Cluster"
                     >
                         <BarChart
                             names={
@@ -133,14 +148,15 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
                             colors={selectedSetColors}
                         />
 
-                    </SubMenu>
-                </Menu>
+                    </Panel>
+                </Collapse>
         );
     }
 }
 
 function mapStateToProps(state: State) {
     return {
+        colorBy: getColorBySelection(state),
         filtersToExclude: getFiltersToExclude(state),
         proteinColors: getProteinColors(state),
         proteinNames: getProteinNames(state),
@@ -152,6 +168,7 @@ function mapStateToProps(state: State) {
 }
 
 const dispatchToPropsMap = {
+    handleChangeAxis: changeAxis,
     handleFilterByProteinName: toggleFilterByProteinName,
 };
 
