@@ -1,7 +1,10 @@
-import * as React from "react";
 import {
-    connect,
-} from "react-redux";
+    Layout,
+} from "antd";
+import * as React from "react";
+const { Header, Footer, Sider, Content } = Layout;
+import "antd/lib/layout/style";
+import { connect } from "react-redux";
 
 import {
     getSelected3DCell,
@@ -33,23 +36,36 @@ class App extends React.Component<AppProps, {}> {
             selected3DCellCellLine,
         } = this.props;
         return (
-            <div className={styles.container}>
-                <AffixedNav />
-                <div className={styles.plotView} >
-                    <MainPlotContainer />
-                    <ThumbnailGallery />
-                </div>
+            <Layout className={styles.container}>
+                <Header>Cell feature explorer
+                </Header>
 
-                <div className={styles.colorMenu}>
-                    <ColorByMenu />
-                </div>
-                <CellViewer
-                    cellId={selected3DCell}
-                    fovId={selected3DCellFOV}
-                    cellLineName={selected3DCellCellLine}
-                />
-            </div>
+                <Layout>
+                    <Sider
+                        width={400}
+                        className={styles.colorMenu}
+                    >
+                        <AffixedNav />
+
+                        <ColorByMenu />
+                    </Sider>
+                    <Content>
+                        <div className={styles.plotView} >
+                            <MainPlotContainer />
+                            <ThumbnailGallery />
+                        </div>
+                    </Content>
+                </Layout>
+                <Footer>
+                    <CellViewer
+                        cellId={selected3DCell}
+                        fovId={selected3DCellFOV}
+                        cellLineName={selected3DCellCellLine}
+                    />
+                </Footer>
+            </Layout>
         );
+
     }
 }
 

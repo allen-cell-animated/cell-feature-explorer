@@ -1,17 +1,17 @@
-.container {
-    all: initial;
-    width: 100%;
-    display: flex;
-    flex-flow: row wrap;
-}
+/*.container {*/
+    /*all: initial;*/
+    /*width: 100%;*/
+    /*display: flex;*/
+    /*flex-flow: row wrap;*/
+/*}*/
 
-.plot-view {
-    flex: 2;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
+/*.plot-view {*/
+    /*flex: 2;*/
+    /*height: 100%;*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+/*}*/
 
 .color-menu {
-    flex: 1;
+    flex: 0 0 400px;
 }
