@@ -1,5 +1,7 @@
 import {
+    filter,
     find,
+    includes,
     keys,
     map,
     values,
@@ -69,7 +71,24 @@ export const getYValues = createSelector([getMeasuredData, getPlotByOnY],
     )
 );
 
-export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData) => (
+export const getFilteredData = createSelector([getFullMetaDataArray, getFiltersToExclude],
+    (allData, filters): MetaData[] => {
+    return filter(allData, (datum) => !includes(filters,  datum.file_info[PROTEIN_NAME_KEY]));
+});
+
+export const getFilteredXValues = createSelector([getFilteredData, getPlotByOnX],
+    (filteredData, plotByOnX): number[] => (
+        map(filteredData, (metaDatum: MetaData) => (metaDatum.measured_features[plotByOnX]))
+    )
+);
+
+export const getFilteredYValues = createSelector([getFilteredData, getPlotByOnY],
+    (filteredData, plotByOnY): number[] => (
+        map(filteredData, (metaDatum: MetaData) => (metaDatum.measured_features[plotByOnY]))
+    )
+);
+
+export const getPossibleColorByData = createSelector([getFilteredData], (metaData) => (
     map(metaData, (ele) => (
             {
             ...ele.measured_features,
