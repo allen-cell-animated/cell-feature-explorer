@@ -70,7 +70,6 @@ const requestFeatureDataLogic = createLogic({
                 const cellLineDefs = getState().metadata.cellLineDefs;
 
                 return data.map((datum: MetadataStateBranch) => {
-                    const measuredFeaturesKeys = difference(keys(datum), FILE_INFO_KEYS);
                     return {
                         file_info: {
                             ...datum.file_info,
