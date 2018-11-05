@@ -99,6 +99,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         return {
             ...plotSettings,
             marker: {
+                ...plotSettings.marker,
                 color: plotData.groups,
             },
 

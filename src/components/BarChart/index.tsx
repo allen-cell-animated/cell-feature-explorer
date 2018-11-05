@@ -11,7 +11,7 @@ import { NumberOrString } from "../../state/types";
 
 interface BarChartProps {
     colors: Color[];
-    colorBy: string;
+    colorBy?: string;
     names: NumberOrString[];
     filtersToExclude?: string[];
     onBarClicked?: (clicked: PlotMouseEvent) => void;
@@ -27,10 +27,11 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
     if (colorBy === PROTEIN_NAME_KEY) {
         colors = props.names
             .map((ele: NumberOrString, index: number) =>
-                includes(filtersToExclude, ele) ? "#6e6e6e" : props.colors[index]);
+                includes(filtersToExclude, ele) ? "#000" : props.colors[index]);
     } else {
         colors = props.names
-            .map((ele: NumberOrString, index: number) => "#6e6e6e" );
+            .map((ele: NumberOrString, index: number) =>
+                includes(filtersToExclude, ele) ? "#000" : "#6e6e6e");
     }
 
     return (
@@ -41,6 +42,11 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
                     marker: {
                         color: colors,
                         width: 1,
+
+                        line: {
+                            color: "#6e6e6e",
+                            width: 0.5,
+                        },
                     },
                     orientation: "h",
                     type: "bar",

@@ -1,6 +1,8 @@
 import {
+    Col,
     Collapse,
-    Switch
+    Row,
+    Switch,
 } from "antd";
 import "antd/lib/collapse/style";
 import "antd/lib/switch/style";
@@ -41,6 +43,8 @@ import {
 } from "../../state/types";
 import AxisDropDown from "../AxisDropDown";
 
+const styles = require("./style.css");
+
 const { Panel } = Collapse;
 
 interface ColorByMenuProps {
@@ -56,23 +60,16 @@ interface ColorByMenuProps {
     selectedSetTotals: number[];
 }
 
-interface ColorByMenuState {
-    openKeys: string[];
-}
-class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
+class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
-
-    public defaultActiveKey =  "structureProteinName";
+    public panelkeys = ["strucutreProteinName", "clusters"];
+    public defaultActiveKey =  this.panelkeys[0];
 
     constructor(props: ColorByMenuProps) {
         super(props);
-        this.onOpenChange = this.onOpenChange.bind(this);
         this.onBarClicked = this.onBarClicked.bind(this);
         this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
-    }
 
-    public onOpenChange(openKeys: string[]) {
-        this.setState({ openKeys });
     }
 
     public onBarClicked(clickEvent: PlotMouseEvent) {
@@ -82,7 +79,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
         handleFilterByProteinName(proteinName);
     }
 
-    public onColorBySwitchChanged(colorByProtein: string) {
+    public onColorBySwitchChanged(colorByProtein: boolean) {
         const { handleChangeAxis } = this.props;
         if (colorByProtein) {
             return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
@@ -104,41 +101,49 @@ class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
 
         return (
                 <Collapse
-                    defaultActiveKey={this.defaultActiveKey}
+                    defaultActiveKey={[this.defaultActiveKey]}
                 >
                     <Panel
-                        key="structureProteinName"
-                        header={<span>Tagged Structures</span>}
+                        key={this.panelkeys[0]}
+                        header="Data grouped by tagged structures"
                     >
-                        <div>
-                            <span>Color by:</span>
+                        <Row
+                            className={styles.colorByRow}
+                            type="flex"
+                            align="middle"
+                        >
+                            <Col span={12}>
+                                <span>Color by:</span>
                                 <Switch
+                                    className={styles.colorBySwitch}
                                     defaultChecked={true}
                                     checkedChildren="protein"
                                     unCheckedChildren="cellular feature"
                                     onChange={this.onColorBySwitchChanged}
                                 />
-                        </div>
-                        <div>
-                            {colorBy === PROTEIN_NAME_KEY ? null : (
+                            </Col>
+                                {colorBy === PROTEIN_NAME_KEY ? null : (
+                                <Col span={6}>
                                     <AxisDropDown
                                         axisId={COLOR_BY_SELECTOR}
                                     />
+                                </Col>
                             )}
-                                <BarChart
-                                    names={proteinNames}
-                                    totals={proteinTotals}
-                                    colors={proteinColors}
-                                    colorBy={colorBy}
-                                    onBarClicked={this.onBarClicked}
-                                    filtersToExclude={filtersToExclude}
-                                />
-
+                        </Row>
+                        <div>
+                            <BarChart
+                                names={proteinNames}
+                                totals={proteinTotals}
+                                colors={proteinColors}
+                                colorBy={colorBy}
+                                onBarClicked={this.onBarClicked}
+                                filtersToExclude={filtersToExclude}
+                            />
                         </div>
                     </Panel>
                     <Panel
-                        key="clusters"
-                        header="Cluster"
+                        key={this.panelkeys[1]}
+                        header="Selections"
                     >
                         <BarChart
                             names={
