@@ -1,7 +1,7 @@
 .plot-by-on-x {
     position: absolute;
     bottom: 0;
-    left: 50%;
+    right: 50%;
     z-index: 100;
 }
 
