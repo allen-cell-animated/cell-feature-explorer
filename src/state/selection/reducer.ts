@@ -12,6 +12,7 @@ import {
     INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
+    INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
@@ -35,7 +36,7 @@ export const initialState = {
     plotByOnX: INITIAL_PLOT_BY_ON_X,
     plotByOnY: INITIAL_PLOT_BY_ON_Y,
     proteinColors: INITIAL_COLORS,
-    selectedGroupColors: INITIAL_COLORS,
+    selectedGroupColors: {},
     selectedGroups: {},
     selectedPoints: [],
 };
@@ -59,6 +60,10 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is SelectGroupOfPointsAction => action.type === SELECT_GROUP,
         perform: (state: SelectionStateBranch, action: SelectGroupOfPointsAction) => ({
             ...state,
+            selectedGroupColors: {
+                ...state.selectedGroupColors,
+                [action.key]: INITIAL_SELECTION_COLORS.splice(0, 1)[0],
+            },
             selectedGroups: {
                 ...state.selectedGroups,
                 [action.key]: action.payload,

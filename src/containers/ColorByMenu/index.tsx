@@ -143,16 +143,23 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     </Panel>
                     <Panel
                         key={this.panelkeys[1]}
-                        header="Selections"
+                        header="Selected sets"
                     >
-                        <BarChart
-                            names={
-                                selectedSetNames.map((ele: number| string, index: number) => Number(ele) ? index : ele)
-                            }
-                            totals={selectedSetTotals}
-                            colors={selectedSetColors}
-                        />
-
+                        {selectedSetTotals.length === 0 ?
+                            (<span>
+                                No selected sets yet. Make a selection on the chart using the
+                                <strong> Lasso Select</strong> or
+                                <strong> Box Select</strong> tools on the plot, and it will get saved here.
+                            </span>) :
+                            (<BarChart
+                                names={
+                                    selectedSetNames.map(
+                                        (ele: number | string, index: number) => Number(ele) ? index : ele)
+                                }
+                                totals={selectedSetTotals}
+                                colors={selectedSetColors}
+                            />)
+                        }
                     </Panel>
                 </Collapse>
         );

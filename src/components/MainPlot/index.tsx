@@ -1,4 +1,9 @@
 import {
+    flatten,
+    map,
+    values,
+} from "lodash";
+import {
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -38,6 +43,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     constructor(props: MainPlotProps) {
         super(props);
         this.makeScatterPlotData = this.makeScatterPlotData.bind(this);
+        this.makeScatterPlotSelectedPointsData = this.makeScatterPlotSelectedPointsData.bind(this);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.colorSettings = this.colorSettings.bind(this);
     }
@@ -76,6 +82,8 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         const {
             colorBy,
             plotData,
+            selectedGroups,
+            selectedGroupsColors,
         } = this.props;
         if (colorBy === PROTEIN_NAME_KEY) {
             return {
@@ -86,7 +94,10 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                      styles: plotData.proteinNames.map((ele: string, index: number) => {
                          return {
                              target: ele,
-                             value: {marker: {color: plotData.proteinColors[index]}},
+                             value: {
+                                 marker:
+                                 { color: plotData.proteinColors[index],
+                                 }},
                          };
                      }),
                      // literal typing to avoid a widened type inferred
@@ -104,6 +115,37 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             },
 
         };
+    }
+
+    public makeScatterPlotSelectedPointsData(): Data {
+        const {
+            selectedGroups,
+            selectedGroupsColors,
+        } = this.props;
+
+        const allSelected = flatten(values(selectedGroups));
+        const plotData = {
+            marker: {
+                color: map( allSelected, "groupColor"),
+                opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
+                size: GENERAL_PLOT_SETTINGS.circleRadius,
+                symbol: "circle",
+                // line: {
+                //     color: "white",
+                //     width: 1,
+                // }
+            },
+            mode: "markers" as "markers",
+            name: "overlay",
+            showlegend: false,
+            // literal typing to avoid a widened type inferred
+            type: "scattergl" as "scattergl",
+            x: map( allSelected, "x"),
+            y: map( allSelected, "y"),
+            z: [],
+        };
+        return plotData;
+
     }
 
     public makeScatterPlotData(): Data {
@@ -189,6 +231,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                     this.makeHistogramPlotX(plotData.x),
                     this.makeHistogramPlotY(plotData.y),
                     this.makeScatterPlotData(),
+                    this.makeScatterPlotSelectedPointsData(),
                 ]}
                 useResizeHandler={true}
                 layout={{
