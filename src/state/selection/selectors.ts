@@ -4,6 +4,7 @@ import {
     includes,
     keys,
     map,
+    mapValues,
     values,
 } from "lodash";
 import { createSelector } from "reselect";
@@ -78,6 +79,39 @@ export const getFilteredData = createSelector([getFullMetaDataArray, getFiltersT
     return filter(allData, (datum) => !includes(filters,  datum.file_info[PROTEIN_NAME_KEY]));
 });
 
+export const getSelectedGroupsData = createSelector(
+    [
+        getFullMetaDataArray,
+        getSelectedGroups,
+        getPlotByOnX,
+        getPlotByOnY,
+        getColorBySelection,
+        getSelectionSetColors,
+    ],
+    (
+        allData,
+        selectedGroups,
+        plotByOnX,
+        plotByOnY,
+        colorBy,
+        selectedGroupColorMapping
+
+    ) => {
+        return mapValues(selectedGroups, (value, key) => {
+            return map(value, (pointIndex) => {
+                const measuredFeatures = allData[pointIndex].measured_features;
+                const fileInfo = allData[pointIndex].file_info;
+                return {
+                    colorBy: measuredFeatures[colorBy] || fileInfo[colorBy],
+                    groupColor: selectedGroupColorMapping[key],
+                    x: measuredFeatures[plotByOnX],
+                    y: measuredFeatures[plotByOnY],
+                };
+            });
+        });
+    }
+);
+
 export const getFilteredXValues = createSelector([getFilteredData, getPlotByOnX],
     (filteredData, plotByOnX): number[] => (
         map(filteredData, (metaDatum: MetaData) => (metaDatum.measured_features[plotByOnX]))
@@ -114,27 +148,6 @@ export const getSelectedGroupKeys = createSelector([getSelectedGroups],
 
 export const getSelectedSetTotals = createSelector([getSelectedGroups], (selectedGroups): number[] => {
         return map(selectedGroups, (group) => group.length);
-    }
-);
-
-export const getSelectedGroupsValues = createSelector([getXValues, getYValues, getSelectedGroups],
-    (xvalues: number[], yvalues: number[], selectedGroups: SelectedGroups): SelectedGroups[] => {
-        if (!values(selectedGroups)) {
-            return [];
-        }
-        return values(selectedGroups).map(
-            ((selectedGroupsArray) => {
-                if (!selectedGroupsArray) {
-                    return {};
-                }
-                return selectedGroupsArray.map((pointIndex: number) => {
-                    return {
-                        x: xvalues[pointIndex],
-                        y: yvalues[pointIndex],
-                    };
-                });
-            })
-        );
     }
 );
 

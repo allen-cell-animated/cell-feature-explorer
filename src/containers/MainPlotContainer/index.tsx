@@ -102,6 +102,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              colorBy,
              colorByGroupings,
              filtersToExclude,
+             selectedGroups,
+             selectedGroupsColors,
              proteinColors,
              proteinLabels,
              proteinNames,
@@ -121,7 +123,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              x: xDataValues,
              y: yDataValues,
          };
-
          return (
             <div
                 id="main-plot"
@@ -134,6 +135,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
+                    selectedGroups={selectedGroups}
+                    selectedGroupsColors={selectedGroupsColors}
                     colorBy={colorBy}
                     filtersToExclude={filtersToExclude}
                 />
@@ -156,6 +159,8 @@ function mapStateToProps(state: State) {
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
+        selectedGroups: selectionStateBranch.selectors.getSelectedGroupsData(state),
+        selectedGroupsColors: selectionStateBranch.selectors.getSelectionSetColors(state),
         xDataValues: selectionStateBranch.selectors.getFilteredXValues(state),
         yDataValues: selectionStateBranch.selectors.getFilteredYValues(state),
     };
