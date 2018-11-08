@@ -1,3 +1,7 @@
 .color-menu {
     flex: 0 0 400px;
 }
+
+:global(.ant-affix) {
+    z-index: 99999;
+}

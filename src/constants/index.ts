@@ -24,6 +24,9 @@ export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
 export {_BASE_API_URL as BASE_API_URL};
 export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
 
+export const DISABLE_COLOR = "#6e6e6e";
+export const OFF_COLOR = "#000";
+
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
     cellName: CELL_ID_KEY,

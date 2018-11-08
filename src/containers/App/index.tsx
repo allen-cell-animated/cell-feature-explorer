@@ -45,7 +45,8 @@ class App extends React.Component<AppProps, {}> {
                         width={400}
                         className={styles.colorMenu}
                     >
-                        <AffixedNav />
+                        <AffixedNav
+                        />
 
                         <ColorByMenu />
                     </Sider>

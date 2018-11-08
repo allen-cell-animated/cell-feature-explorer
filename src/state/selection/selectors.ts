@@ -46,6 +46,7 @@ export const getProteinColors = (state: State) => state.selection.proteinColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
 export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
+export const getApplyColorToSelections = (state: State) => state.selection.applySelectionSetColoring;
 
 // COMPOSED SELECTORS
 export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],

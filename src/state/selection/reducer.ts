@@ -16,6 +16,7 @@ import {
     OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
+    TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
@@ -26,10 +27,12 @@ import {
     SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
+    ToggleApplyColorAction,
     ToggleFilterAction,
 } from "./types";
 
 export const initialState = {
+    applySelectionSetColoring: true,
     cellSelectedFor3D: null,
     colorBy: INITIAL_COLOR_BY,
     filterExclude: [],
@@ -42,6 +45,7 @@ export const initialState = {
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
+
     [CHANGE_AXIS]: {
         accepts: (action: AnyAction): action is SelectAxisAction => action.type === CHANGE_AXIS,
         perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
@@ -99,6 +103,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
                 filterExclude: includes(state.filterExclude, action.payload) ?
                     filter(state.filterExclude, (e) => e !== action.payload) : [...state.filterExclude, action.payload],
 
+        }),
+    },
+    [TOGGLE_APPLY_SELECTION_SET_COLOR] : {
+        accepts: (action: AnyAction): action is ToggleApplyColorAction =>
+            action.type === TOGGLE_APPLY_SELECTION_SET_COLOR,
+        perform: (state: SelectionStateBranch, action: ToggleApplyColorAction) => ({
+            ...state,
+            applySelectionSetColoring: action.payload,
         }),
     },
 };
