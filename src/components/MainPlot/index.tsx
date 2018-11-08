@@ -16,14 +16,19 @@ import {
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
 } from "../../constants";
+import {
+    SelectedGroups,
+} from "../../state/selection/types";
 import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
+    applyColorToSelections: boolean;
     colorBy: string;
     filtersToExclude: string[];
     plotData: {[key: string]: any[]};
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
+    selectedGroups: SelectedGroups;
     annotations: Annotation[];
 }
 
@@ -82,8 +87,6 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         const {
             colorBy,
             plotData,
-            selectedGroups,
-            selectedGroupsColors,
         } = this.props;
         if (colorBy === PROTEIN_NAME_KEY) {
             return {
@@ -120,20 +123,15 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     public makeScatterPlotSelectedPointsData(): Data {
         const {
             selectedGroups,
-            selectedGroupsColors,
         } = this.props;
 
         const allSelected = flatten(values(selectedGroups));
         const plotData = {
             marker: {
-                color: map( allSelected, "groupColor"),
+                color: map(allSelected, "groupColor"),
                 opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
                 size: GENERAL_PLOT_SETTINGS.circleRadius,
                 symbol: "circle",
-                // line: {
-                //     color: "white",
-                //     width: 1,
-                // }
             },
             mode: "markers" as "markers",
             name: "overlay",
@@ -210,7 +208,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     }
 
     public render() {
-        const { plotData, onPointClicked, onGroupSelected } = this.props;
+        const { plotData, onPointClicked, onGroupSelected, applyColorToSelections } = this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
@@ -227,12 +225,17 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         };
         return (
             <Plot
-                data={[
+                data={applyColorToSelections ? [
                     this.makeHistogramPlotX(plotData.x),
                     this.makeHistogramPlotY(plotData.y),
                     this.makeScatterPlotData(),
                     this.makeScatterPlotSelectedPointsData(),
-                ]}
+                ] : [
+                    this.makeHistogramPlotX(plotData.x),
+                    this.makeHistogramPlotY(plotData.y),
+                    this.makeScatterPlotData(),
+                ]
+                }
                 useResizeHandler={true}
                 layout={{
                     annotations: this.makeAnnotations(),

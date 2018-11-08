@@ -28,6 +28,7 @@ import { CellLineDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
+    SelectedGroups,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -38,14 +39,13 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
+    applyColorToSelections: boolean;
     cellLineDefs: CellLineDef;
     colorBy: string;
     clickedPoints: number[];
     colorByGroupings: string[] | number[];
     data: any;
     filtersToExclude: string[];
-    requestCellLineData: ActionCreator<RequestAction>;
-    requestFeatureData: ActionCreator<RequestAction>;
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
@@ -54,6 +54,9 @@ interface MainPlotContainerProps {
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
+    requestCellLineData: ActionCreator<RequestAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
+    selectedGroups: SelectedGroups;
     xDataValues: number[];
     yDataValues: number[];
 }
@@ -98,12 +101,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     public render() {
          const {
+             applyColorToSelections,
              annotations,
              colorBy,
              colorByGroupings,
              filtersToExclude,
              selectedGroups,
-             selectedGroupsColors,
              proteinColors,
              proteinLabels,
              proteinNames,
@@ -136,9 +139,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
                     selectedGroups={selectedGroups}
-                    selectedGroupsColors={selectedGroupsColors}
                     colorBy={colorBy}
                     filtersToExclude={filtersToExclude}
+                    applyColorToSelections={applyColorToSelections}
                 />
             </div>
         );
@@ -148,6 +151,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
+        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
         cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),

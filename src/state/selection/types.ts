@@ -1,3 +1,5 @@
+import { Color } from "plotly.js";
+
 import { MetadataStateBranch } from "../metadata/types";
 
 export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
@@ -9,7 +11,6 @@ export interface SelectionStateBranch {
 export interface SelectedGroups {
     [key: number]: number[];
     [key: string]: number[];
-
 }
 
 export interface SelectGroupOfPointsAction {
@@ -45,5 +46,10 @@ export interface ToggleFilterAction {
 
 export interface SelectCellFor3DAction {
     payload: string;
+    type: string;
+}
+
+export interface ToggleApplyColorAction {
+    payload: boolean;
     type: string;
 }

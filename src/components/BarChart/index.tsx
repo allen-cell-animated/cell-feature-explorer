@@ -11,28 +11,13 @@ import { NumberOrString } from "../../state/types";
 
 interface BarChartProps {
     colors: Color[];
-    colorBy?: string;
     names: NumberOrString[];
-    filtersToExclude?: string[];
     onBarClicked?: (clicked: PlotMouseEvent) => void;
     totals: number[];
 }
 
 const BarChart: React.SFC<BarChartProps> = (props) => {
-    const {
-        filtersToExclude,
-        colorBy,
-    } = props;
-    let colors;
-    if (colorBy === PROTEIN_NAME_KEY) {
-        colors = props.names
-            .map((ele: NumberOrString, index: number) =>
-                includes(filtersToExclude, ele) ? "#000" : props.colors[index]);
-    } else {
-        colors = props.names
-            .map((ele: NumberOrString, index: number) =>
-                includes(filtersToExclude, ele) ? "#000" : "#6e6e6e");
-    }
+    const { colors } = props;
 
     return (
 
