@@ -1,5 +1,5 @@
 .cell-viewer{
-    flex: 1 100%;
+    flex: 1;
     height: 45vw;
-    width: 100%;
+    width: 50%;
 }

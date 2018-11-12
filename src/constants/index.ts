@@ -33,7 +33,6 @@ export const GENERAL_PLOT_SETTINGS = {
     chartParent: "ace-scatter-chart",
     circleRadius: 4,
     histogramColor: "rgb(164,162,164)",
-    // imagesDir: "", // "/aics/thumbnails",
     legend: {
         font: {
             color: "rgb(255,255,255)",

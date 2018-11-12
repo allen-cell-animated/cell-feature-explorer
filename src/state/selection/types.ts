@@ -53,3 +53,15 @@ export interface ToggleApplyColorAction {
     payload: boolean;
     type: string;
 }
+
+export interface SelectedGroupDatum {
+    colorBy: number[] | string[];
+    groupColor: Color[];
+    x: number[];
+    y: number[];
+}
+
+export interface SelectedGroupData {
+    [key: number]: SelectedGroupDatum[];
+    [key: string]: SelectedGroupDatum[];
+}

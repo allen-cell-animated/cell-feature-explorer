@@ -4,6 +4,7 @@ import {
     values,
 } from "lodash";
 import {
+    Color,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -17,18 +18,17 @@ import {
     SCATTER_PLOT_NAME,
 } from "../../constants";
 import {
-    SelectedGroups,
+    SelectedGroupData,
 } from "../../state/selection/types";
 import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     applyColorToSelections: boolean;
     colorBy: string;
-    filtersToExclude: string[];
     plotData: {[key: string]: any[]};
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
-    selectedGroups: SelectedGroups;
+    selectedGroups: SelectedGroupData;
     annotations: Annotation[];
 }
 
@@ -99,7 +99,9 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                              target: ele,
                              value: {
                                  marker:
-                                 { color: plotData.proteinColors[index],
+                                 {
+                                     color: plotData.proteinColors[index],
+                                     opacity: plotData.dotOpacity[index],
                                  }},
                          };
                      }),
@@ -115,6 +117,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             marker: {
                 ...plotSettings.marker,
                 color: plotData.groups,
+                opacity: plotData.dotOpacity,
             },
 
         };
@@ -128,7 +131,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         const allSelected = flatten(values(selectedGroups));
         const plotData = {
             marker: {
-                color: map(allSelected, "groupColor"),
+                color: map(allSelected, "groupColor") as Color[],
                 opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
                 size: GENERAL_PLOT_SETTINGS.circleRadius,
                 symbol: "circle",
