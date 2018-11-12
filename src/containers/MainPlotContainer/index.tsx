@@ -28,7 +28,7 @@ import { CellLineDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
-    SelectedGroups,
+    SelectedGroupData,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -41,11 +41,10 @@ interface MainPlotContainerProps {
     annotations: Annotation[];
     applyColorToSelections: boolean;
     cellLineDefs: CellLineDef;
-    colorBy: string;
     clickedPoints: number[];
+    colorBy: string;
     colorByGroupings: string[] | number[];
-    data: any;
-    filtersToExclude: string[];
+    dotOpacity: number[];
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
@@ -56,7 +55,7 @@ interface MainPlotContainerProps {
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
-    selectedGroups: SelectedGroups;
+    selectedGroups: SelectedGroupData;
     xDataValues: number[];
     yDataValues: number[];
 }
@@ -105,20 +104,19 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              annotations,
              colorBy,
              colorByGroupings,
-             filtersToExclude,
+             dotOpacity,
              selectedGroups,
              proteinColors,
              proteinLabels,
              proteinNames,
              xDataValues,
              yDataValues,
-             data,
          } = this.props;
-
-         if (data.length === 0) {
+         if (xDataValues.length === 0) {
              return null;
          }
          const plotData = {
+             dotOpacity,
              groups: colorByGroupings,
              proteinColors,
              proteinLabels,
@@ -140,7 +138,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     onGroupSelected={this.onGroupSelected}
                     selectedGroups={selectedGroups}
                     colorBy={colorBy}
-                    filtersToExclude={filtersToExclude}
                     applyColorToSelections={applyColorToSelections}
                 />
             </div>
@@ -148,7 +145,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     }
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State): Partial<MainPlotContainerProps> {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
@@ -156,17 +153,15 @@ function mapStateToProps(state: State) {
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        data: metadataStateBranch.selectors.getFullMetaDataArray(state),
-        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        dotOpacity: selectionStateBranch.selectors.getOpacity(state),
         plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
         plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
         selectedGroups: selectionStateBranch.selectors.getSelectedGroupsData(state),
-        selectedGroupsColors: selectionStateBranch.selectors.getSelectionSetColors(state),
-        xDataValues: selectionStateBranch.selectors.getFilteredXValues(state),
-        yDataValues: selectionStateBranch.selectors.getFilteredYValues(state),
+        xDataValues: selectionStateBranch.selectors.getXValues(state),
+        yDataValues: selectionStateBranch.selectors.getYValues(state),
     };
 }
 

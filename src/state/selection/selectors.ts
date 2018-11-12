@@ -13,6 +13,7 @@ import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
+    GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 
@@ -20,11 +21,12 @@ import {
     getFileInfo,
     getFullMetaDataArray,
     getMeasuredData,
+    getProteinLabels,
+    getProteinNames,
 } from "../metadata/selectors";
 import {
     FileInfo,
     MeasuredFeatures,
-    MetaData,
     MetadataStateBranch,
 } from "../metadata/types";
 import {
@@ -34,7 +36,10 @@ import {
     Thumbnail,
 } from "../types";
 
-import { SelectedGroups } from "./types";
+import {
+    SelectedGroupData,
+    SelectedGroups,
+} from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -75,11 +80,6 @@ export const getYValues = createSelector([getMeasuredData, getPlotByOnY],
     )
 );
 
-export const getFilteredData = createSelector([getFullMetaDataArray, getFiltersToExclude],
-    (allData, filters): MetaData[] => {
-    return filter(allData, (datum) => !includes(filters,  datum.file_info[PROTEIN_NAME_KEY]));
-});
-
 export const getSelectedGroupsData = createSelector(
     [
         getFullMetaDataArray,
@@ -97,7 +97,7 @@ export const getSelectedGroupsData = createSelector(
         colorBy,
         selectedGroupColorMapping
 
-    ) => {
+    ): SelectedGroupData | {} => {
         return mapValues(selectedGroups, (value, key) => {
             return map(value, (pointIndex) => {
                 const measuredFeatures = allData[pointIndex].measured_features;
@@ -113,27 +113,34 @@ export const getSelectedGroupsData = createSelector(
     }
 );
 
-export const getFilteredXValues = createSelector([getFilteredData, getPlotByOnX],
-    (filteredData, plotByOnX): number[] => (
-        map(filteredData, (metaDatum: MetaData) => (metaDatum.measured_features[plotByOnX]))
-    )
-);
-
-export const getFilteredYValues = createSelector([getFilteredData, getPlotByOnY],
-    (filteredData, plotByOnY): number[] => (
-        map(filteredData, (metaDatum: MetaData) => (metaDatum.measured_features[plotByOnY]))
-    )
-);
-
-export const getPossibleColorByData = createSelector([getFilteredData], (metaData) => (
+export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData) => (
     map(metaData, (ele) => (
             {
-            ...ele.measured_features,
-            [PROTEIN_NAME_KEY]: ele.file_info[PROTEIN_NAME_KEY],
+                ...ele.measured_features,
+                [PROTEIN_NAME_KEY]: ele.file_info[PROTEIN_NAME_KEY],
             }
         )
     ))
 );
+
+export const getOpacity = createSelector(
+    [
+        getColorBySelection,
+        getFiltersToExclude,
+        getProteinNames,
+        getProteinLabels,
+    ],
+    (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels) => {
+        let arrayToMap;
+        if (colorBySelection === PROTEIN_NAME_KEY) {
+            arrayToMap = proteinNameArray;
+        } else {
+            arrayToMap = proteinLabels;
+        }
+        return map(arrayToMap, (proteinName) => (
+            includes(filtersToExclude, proteinName) ? 0 : GENERAL_PLOT_SETTINGS.unselectedCircleOpacity
+        ));
+});
 
 export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
     (metaData: MetadataStateBranch[], colorBy: string): (number[] | string[]) => (
