@@ -68,7 +68,10 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
 
         return (
             <div className={styles[axisId]}>
-                <Select defaultValue={axisIDMap[axisId]} onChange={this.handleChange}>
+                <Select
+                    defaultValue={axisIDMap[axisId]}
+                    onChange={this.handleChange}
+                >
                     {featureNames.map((option) => {
                         return (<Option value={option} key={option}>{option}</Option>
                         );

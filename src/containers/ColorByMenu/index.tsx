@@ -1,35 +1,54 @@
 import {
-    Menu,
+    Col,
+    Collapse,
+    Row,
+    Switch,
 } from "antd";
-import "antd/lib/menu/style";
-import {
-    difference,
-    includes,
-} from "lodash";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import "antd/lib/collapse/style";
+import "antd/lib/switch/style";
+import { includes, values } from "lodash";
 import {
     Color,
-    PlotMouseEvent,
 } from "plotly.js";
 import React from "react";
-import { connect } from "react-redux";
+import {
+    ActionCreator,
+    connect,
+} from "react-redux";
 
 import BarChart from "../../components/BarChart";
-import { COLOR_BY_SELECTOR } from "../../constants";
+import {
+    COLOR_BY_SELECTOR,
+    DISABLE_COLOR,
+    OFF_COLOR,
+    PROTEIN_NAME_KEY
+} from "../../constants";
 import {
     getProteinNames,
     getProteinTotals
 } from "../../state/metadata/selectors";
 import {
-    toggleFilterByProteinName
+    changeAxis,
+    deselectGroupOfPoints,
+    toggleApplySelectionSetColors,
+    toggleFilterByProteinName,
 } from "../../state/selection/actions";
 import {
+    getApplyColorToSelections,
+    getColorBySelection,
     getFiltersToExclude,
     getProteinColors,
     getSelectedGroupKeys,
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
-import { ToggleFilterAction } from "../../state/selection/types";
+import {
+    DeselectGroupOfPointsAction,
+    SelectAxisAction,
+    ToggleApplyColorAction,
+    ToggleFilterAction,
+} from "../../state/selection/types";
 
 import {
     NumberOrString,
@@ -37,11 +56,22 @@ import {
 } from "../../state/types";
 import AxisDropDown from "../AxisDropDown";
 
-const { SubMenu } = Menu;
+const styles = require("./style.css");
+
+const { Panel } = Collapse;
 
 interface ColorByMenuProps {
+    applyColorToSelections: boolean;
+    colorBy: string;
+    defaultActiveKey: string[];
     filtersToExclude: string[];
-    handleFilterByProteinName: (payload: string) => ToggleFilterAction;
+    handleChangeAxis: ActionCreator<SelectAxisAction>;
+    handleFilterByProteinName: ActionCreator<ToggleFilterAction>;
+    handleApplyColorSwitchChange: ActionCreator<ToggleApplyColorAction>;
+    handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
+    openKeys: string[];
+    onPanelClicked: (value: string[]) => void;
+    panelKeys: string[];
     proteinColors: Color[];
     proteinNames: string[];
     proteinTotals: number[];
@@ -50,97 +80,149 @@ interface ColorByMenuProps {
     selectedSetTotals: number[];
 }
 
-interface ColorByMenuState {
-    openKeys: string[];
-}
-class ColorByMenu extends React.Component<ColorByMenuProps, ColorByMenuState> {
+class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
-    public rootSubmenuKeys = ["structureProteinName", "cellularFeatures", "clusters"];
-
-    public state: ColorByMenuState = {
-        openKeys: ["structureProteinName"],
-    };
 
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
+        this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
+        this.onActivePanelChange = this.onActivePanelChange.bind(this);
     }
 
-    public onOpenChange = (openKeys: string[]) => {
-        const latestOpenKey = difference(openKeys, this.state.openKeys)[0];
-        if (!includes(this.rootSubmenuKeys, latestOpenKey)) {
-            this.setState({ openKeys });
-        } else {
-            this.setState({
-                openKeys: latestOpenKey ? [latestOpenKey] : [],
-            });
-        }
-    }
-
-    public onBarClicked = (clickEvent: PlotMouseEvent) => {
+    public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName } = this.props;
-        const { points } = clickEvent;
-        const proteinName = points[0].y as string;
-        handleFilterByProteinName(proteinName);
+        handleFilterByProteinName(target.value);
+    }
+
+    public onColorBySwitchChanged(colorByProtein: boolean) {
+        const { handleChangeAxis } = this.props;
+        if (colorByProtein) {
+            return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
+        }
+        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear Volume (fL)");
+    }
+
+    public onActivePanelChange(value: string | string[]) {
+        this.props.onPanelClicked(value as string[]);
     }
 
     public render() {
         const {
+            applyColorToSelections,
+            colorBy,
+            defaultActiveKey,
+            openKeys,
             filtersToExclude,
+            panelKeys,
             proteinNames,
             proteinTotals,
             proteinColors,
             selectedSetNames,
             selectedSetColors,
             selectedSetTotals,
+            handleApplyColorSwitchChange,
+            handleCloseSelectionSet,
         } = this.props;
-
         return (
-                <Menu
-                    mode="inline"
-                    openKeys={this.state.openKeys}
-                    onOpenChange={this.onOpenChange}
+                <Collapse
+                    defaultActiveKey={defaultActiveKey}
+                    activeKey={openKeys}
+                    onChange={this.onActivePanelChange}
                 >
-                    <SubMenu
-                        key="structureProteinName"
-                        title={<span>Tagged Structures</span>}
+                    <Panel
+                        key={panelKeys[0]}
+                        header="Data grouped by tagged structures"
                     >
-                        <BarChart
-                            names={proteinNames}
-                            totals={proteinTotals}
-                            colors={proteinColors}
-                            onBarClicked={this.onBarClicked}
-                            filtersToExclude={filtersToExclude}
-
-                        />
-                    </SubMenu>
-                    <SubMenu
-                        key="cellularFeatures"
-                        title={<span>Cellular Features</span>}
+                        <Row
+                            className={styles.colorByRow}
+                            type="flex"
+                            align="middle"
+                        >
+                            <Col span={12}>
+                                <span>Color by:</span>
+                                <Switch
+                                    className={styles.colorBySwitch}
+                                    defaultChecked={true}
+                                    checkedChildren="protein"
+                                    unCheckedChildren="cellular feature"
+                                    onChange={this.onColorBySwitchChanged}
+                                />
+                            </Col>
+                                {colorBy === PROTEIN_NAME_KEY ? null : (
+                                <Col span={6}>
+                                    <AxisDropDown
+                                        axisId={COLOR_BY_SELECTOR}
+                                    />
+                                </Col>
+                            )}
+                        </Row>
+                        <div>
+                            <BarChart
+                                names={proteinNames}
+                                ids={proteinNames}
+                                totals={proteinTotals}
+                                closeable={false}
+                                hideable={true}
+                                colors={colorBy === PROTEIN_NAME_KEY ?
+                                    proteinNames
+                                        .map((ele: NumberOrString, index: number) =>
+                                            includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
+                                    proteinNames
+                                        .map((ele: NumberOrString, index: number) =>
+                                            includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR)
+                                }
+                                onBarClicked={this.onBarClicked}
+                            />
+                        </div>
+                    </Panel>
+                    <Panel
+                        key={panelKeys[1]}
+                        header="Selected sets"
                     >
-                        <AxisDropDown axisId={COLOR_BY_SELECTOR}/>
+                        {selectedSetTotals.length === 0 ?
+                            (<span>
+                                No selected sets yet. Make a selection on the chart using the
+                                <strong> Lasso Select</strong> or
+                                <strong> Box Select</strong> tools on the plot, and it will get saved here.
+                            </span>) :
 
-                    </SubMenu>
-                    <SubMenu
-                        key="clusters"
-                        title={<span>Cluster</span>}
-                    >
-                        <BarChart
-                            names={
-                                selectedSetNames.map((ele: number| string, index: number) => Number(ele) ? index : ele)
-                            }
-                            totals={selectedSetTotals}
-                            colors={selectedSetColors}
-                        />
+                            (<Col span={12}>
 
-                    </SubMenu>
-                </Menu>
+                            <span>Show selections: </span>
+                                <Switch
+                                    className={styles.colorBySwitch}
+                                    defaultChecked={true}
+                                    onChange={handleApplyColorSwitchChange}
+                                />
+
+                                <BarChart
+                                    names={
+                                        selectedSetNames.map(
+                                            (ele: number | string, index: number) => Number(ele) ? index : ele)
+                                    }
+                                    ids={selectedSetNames}
+                                    closeable={true}
+                                    hideable={false}
+                                    totals={selectedSetTotals}
+                                    handleCloseSelectionSet={handleCloseSelectionSet}
+                                    colors={applyColorToSelections ?
+                                        values(selectedSetColors) : Array(selectedSetTotals.length).fill(DISABLE_COLOR)
+                                    }
+                                />
+                                </Col>
+                            )
+                        }
+                    </Panel>
+                </Collapse>
         );
     }
 }
 
 function mapStateToProps(state: State) {
     return {
+        applyColorToSelections: getApplyColorToSelections(state),
+        colorBy: getColorBySelection(state),
         filtersToExclude: getFiltersToExclude(state),
         proteinColors: getProteinColors(state),
         proteinNames: getProteinNames(state),
@@ -152,6 +234,9 @@ function mapStateToProps(state: State) {
 }
 
 const dispatchToPropsMap = {
+    handleApplyColorSwitchChange: toggleApplySelectionSetColors,
+    handleChangeAxis: changeAxis,
+    handleCloseSelectionSet: deselectGroupOfPoints,
     handleFilterByProteinName: toggleFilterByProteinName,
 };
 

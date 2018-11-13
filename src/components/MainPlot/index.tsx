@@ -1,4 +1,10 @@
 import {
+    flatten,
+    map,
+    values,
+} from "lodash";
+import {
+    Color,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -11,14 +17,18 @@ import {
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
 } from "../../constants";
+import {
+    SelectedGroupData,
+} from "../../state/selection/types";
 import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
+    applyColorToSelections: boolean;
     colorBy: string;
-    filtersToExclude: string[];
     plotData: {[key: string]: any[]};
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
+    selectedGroups: SelectedGroupData;
     annotations: Annotation[];
 }
 
@@ -38,8 +48,10 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     constructor(props: MainPlotProps) {
         super(props);
         this.makeScatterPlotData = this.makeScatterPlotData.bind(this);
+        this.makeScatterPlotSelectedPointsData = this.makeScatterPlotSelectedPointsData.bind(this);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.colorSettings = this.colorSettings.bind(this);
+        this.getDataArray = this.getDataArray.bind(this);
     }
 
     public makeAnnotations(): Annotation[] {
@@ -75,29 +87,23 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     public colorSettings(plotSettings: Data): Data {
         const {
             colorBy,
-            filtersToExclude,
             plotData,
         } = this.props;
-        const filters = filtersToExclude.map((filter: string) => (
-            {
-                operation: "!=",
-                target: plotData.proteinLabels,
-                // literal typing to avoid a widened type inferred
-                type: "filter" as "filter",
-                value: filter,
-            })
-        );
-
         if (colorBy === PROTEIN_NAME_KEY) {
-             return {
+            return {
                  ...plotSettings,
-                 transforms: [...filters , {
+                 transforms: [ {
                      groups: plotData.groups,
                      nameformat: `%{group}`,
                      styles: plotData.proteinNames.map((ele: string, index: number) => {
                          return {
                              target: ele,
-                             value: {marker: {color: plotData.proteinColors[index]}},
+                             value: {
+                                 marker:
+                                 {
+                                     color: plotData.proteinColors[index],
+                                     opacity: plotData.dotOpacity[index],
+                                 }},
                          };
                      }),
                      // literal typing to avoid a widened type inferred
@@ -110,11 +116,38 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         return {
             ...plotSettings,
             marker: {
+                ...plotSettings.marker,
                 color: plotData.groups,
+                opacity: plotData.dotOpacity,
             },
-            transforms: [...filters],
 
         };
+    }
+
+    public makeScatterPlotSelectedPointsData(): Data {
+        const {
+            selectedGroups,
+        } = this.props;
+
+        const allSelected = flatten(values(selectedGroups));
+        const plotData = {
+            marker: {
+                color: map(allSelected, "groupColor") as Color[],
+                opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
+                size: GENERAL_PLOT_SETTINGS.circleRadius,
+                symbol: "circle",
+            },
+            mode: "markers" as "markers",
+            name: "overlay",
+            showlegend: false,
+            // literal typing to avoid a widened type inferred
+            type: "scattergl" as "scattergl",
+            x: map( allSelected, "x"),
+            y: map( allSelected, "y"),
+            z: [],
+        };
+        return plotData;
+
     }
 
     public makeScatterPlotData(): Data {
@@ -178,8 +211,22 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         };
     }
 
+    public getDataArray() {
+        const { plotData, applyColorToSelections } = this.props;
+        return applyColorToSelections ? [
+            this.makeHistogramPlotX(plotData.x),
+            this.makeHistogramPlotY(plotData.y),
+            this.makeScatterPlotData(),
+            this.makeScatterPlotSelectedPointsData(),
+        ] : [
+            this.makeHistogramPlotX(plotData.x),
+            this.makeHistogramPlotY(plotData.y),
+            this.makeScatterPlotData(),
+        ];
+    }
+
     public render() {
-        const { plotData, onPointClicked, onGroupSelected } = this.props;
+        const { onPointClicked, onGroupSelected } = this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
@@ -196,25 +243,20 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         };
         return (
             <Plot
-                data={[
-                    this.makeHistogramPlotX(plotData.x),
-                    this.makeHistogramPlotY(plotData.y),
-                    this.makeScatterPlotData(),
-                ]}
+                data={this.getDataArray()}
+                useResizeHandler={true}
                 layout={{
                     annotations: this.makeAnnotations(),
                     autosize: true,
-                    height: 800,
                     hovermode: "closest",
                     legend: GENERAL_PLOT_SETTINGS.legend,
                     margin: {
                         b: 30,
-                        r: 10,
+                        r: 200,
                         t: 10,
                     },
                     paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                     plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    width: 600,
                     xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
                     xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
                     yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),

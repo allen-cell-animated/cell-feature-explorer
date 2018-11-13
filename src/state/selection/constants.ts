@@ -8,6 +8,8 @@ export const SELECT_POINT = makeConstant("selection", "select-point");
 export const DESELECT_ALL_POINTS = makeConstant("selection", "deselect-all-points");
 export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeConstant("selection", "toggle-filter-by-protein-name");
 export const OPEN_CELL_IN_3D = makeConstant("selection", "open-cell-in-3d");
+export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeConstant("selection", "apply-selection-set-color");
+export const DESELECT_GROUP_OF_POINTS = makeConstant("selection", "deselect-group");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
@@ -24,5 +26,35 @@ export const INITIAL_COLORS = [
     "#cab2d6",
     "#6a3d9a",
     "#ffff99",
+    "#ff00de",
+    "#24bcfa",
+    "#84df11",
+    "#ecc560",
+    "#ff72ff",
+    "#f58117",
+    "#f8311b",
+    "#5791db",
+    "#98b0d6",
+    "#11a89a",
+    "#a70009",
+    "#ff6200",
+    "#fddb02",
+    "#f7db78",
     "#b15928",
+    "#f9a558",
+    ];
+
+export const INITIAL_SELECTION_COLORS = [
+    "#8dd3c7",
+    "#ffffb3",
+    "#bebada",
+    "#fb8072",
+    "#80b1d3",
+    "#fdb462",
+    "#b3de69",
+    "#fccde5",
+    "#d9d9d9",
+    "#bc80bd",
+    "#ccebc5",
+    "#ffed6f",
 ];

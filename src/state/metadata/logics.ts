@@ -1,19 +1,19 @@
 import { AxiosResponse } from "axios";
 import {
-    isNumber,
-    pickBy,
+    difference,
+    keys,
+    pick,
 } from "lodash";
 import { createLogic } from "redux-logic";
 
 import { ReduxLogicDeps } from "../types";
 
 import {
-    CELL_ID_KEY,
+    CELL_LINE_DEF_NAME_KEY,
+    CELL_LINE_DEF_PROTEIN_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
-    CELLLINEDEF_NAME_KEY,
-    CELLLINEDEF_PROTEIN_KEY,
-    CELLLINEDEF_STRUCTURE_KEY,
-    FOV_ID_KEY,
+    FILE_INFO_KEYS,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 
@@ -34,9 +34,9 @@ const requestCellLineData = createLogic({
             )
             .then((data) => {
                 return data.reduce((accumulator: CellLineDef, datum: MetadataStateBranch) => {
-                    accumulator[datum[CELLLINEDEF_NAME_KEY]] = {
-                        [CELLLINEDEF_STRUCTURE_KEY]: datum[CELLLINEDEF_STRUCTURE_KEY],
-                        [CELLLINEDEF_PROTEIN_KEY]: datum[CELLLINEDEF_PROTEIN_KEY],
+                    accumulator[datum[CELL_LINE_DEF_NAME_KEY]] = {
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
+                        [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
                     };
                     return accumulator;
                 }, {});
@@ -68,6 +68,7 @@ const requestFeatureDataLogic = createLogic({
             )
             .then((data) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
+
                 return data.map((datum: MetadataStateBranch) => {
                     return {
                         file_info: {
@@ -76,7 +77,8 @@ const requestFeatureDataLogic = createLogic({
                             // To optimize, remove this and use selectors to get protein name via
                             // cell line name and state.metadata.cellLineDefs
                             [PROTEIN_NAME_KEY]:
-                                cellLineDefs[datum.file_info[CELL_LINE_NAME_KEY]][CELLLINEDEF_PROTEIN_KEY],
+                                cellLineDefs[datum.file_info[CELL_LINE_NAME_KEY]][CELL_LINE_DEF_PROTEIN_KEY],
+
                         },
                         measured_features: datum.measured_features,
                     };

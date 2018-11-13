@@ -1,10 +1,12 @@
 .container {
-    & :global(.ant-card-cover) {
-     width: 118px;
-     height: 118px;
-
- }
+    & :global(.ant-card-loading-block) {
+        animation: none;
+    }
+    & :global(.ant-card-body) {
+        padding: 6px;
+      }
       img {
           max-height: 118px;
       }
+
 }

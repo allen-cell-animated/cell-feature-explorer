@@ -8,9 +8,11 @@ export const CELL_ID_KEY = "CellId";
 export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
-export const CELLLINEDEF_NAME_KEY = "CellLineId/Name";
-export const CELLLINEDEF_STRUCTURE_KEY = "StructureId/Name";
-export const CELLLINEDEF_PROTEIN_KEY = "ProteinId/DisplayName";
+
+export const CELL_LINE_DEF_NAME_KEY = "CellLineId/Name";
+export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId/Name";
+export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";
+export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
 
 declare const CELL_VIEWER_URL: string;
 declare const BASE_API_URL: string;
@@ -22,13 +24,15 @@ export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
 export {_BASE_API_URL as BASE_API_URL};
 export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
 
+export const DISABLE_COLOR = "#6e6e6e";
+export const OFF_COLOR = "#000";
+
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
     cellName: CELL_ID_KEY,
     chartParent: "ace-scatter-chart",
     circleRadius: 4,
     histogramColor: "rgb(164,162,164)",
-    // imagesDir: "", // "/aics/thumbnails",
     legend: {
         font: {
             color: "rgb(255,255,255)",

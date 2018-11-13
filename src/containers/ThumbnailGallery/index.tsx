@@ -23,6 +23,8 @@ import {
     Thumbnail,
 } from "../../state/types";
 
+const styles = require("./style.css");
+
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
     handleClearAllSelectedPoints: () => ResetSelectionAction;
@@ -43,19 +45,23 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleClearAllSelectedPoints,
         } = this.props;
         return (
-            <React.Fragment>
-                {data.length > 0 ?
-                    <Button
-                        type="primary"
-                        onClick={handleClearAllSelectedPoints}
-                    >Clear All
-                    </Button> : null}
+            <div id="gallery">
+                <section className={styles.galleryHeader}>
+                    <h3>Thumbnail gallery</h3>
+                    {data.length > 0 ?
+                        <Button
+                            type="primary"
+                            icon="close"
+                            onClick={handleClearAllSelectedPoints}
+                        >Clear All
+                        </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
+                </section>
                 <List
-                    grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
-                    dataSource={data}
+                    grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 8 }}
+                    dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />
-            </React.Fragment>
+            </div>
         );
     }
 
@@ -64,10 +70,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleDeselectPoint,
             handleOpenIn3D,
         } = this.props;
-
         return (
             <List.Item>
                 <GalleryCard
+                    empty={item.empty}
                     title={item.cellID}
                     src={item.src}
                     pointIndex={item.pointIndex}

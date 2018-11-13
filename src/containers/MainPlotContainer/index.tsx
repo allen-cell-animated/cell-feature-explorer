@@ -28,6 +28,7 @@ import { CellLineDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
+    SelectedGroupData,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -38,22 +39,24 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
+    applyColorToSelections: boolean;
     cellLineDefs: CellLineDef;
-    colorBy: string;
     clickedPoints: number[];
-    colorByGroupings: string[];
-    data: any;
-    filtersToExclude: string[];
-    requestCellLineData: ActionCreator<RequestAction>;
-    requestFeatureData: ActionCreator<RequestAction>;
+    colorBy: string;
+    colorByGroupings: string[] | number[];
+    dotOpacity: number[];
     plotByOnX: string;
     plotByOnY: string;
     proteinColors: Color[];
     proteinLabels: string[];
     proteinNames: string[];
+    handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
+    requestCellLineData: ActionCreator<RequestAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
+    selectedGroups: SelectedGroupData;
     xDataValues: number[];
     yDataValues: number[];
 }
@@ -90,30 +93,35 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
         const { points } = eventData;
-        const { handleSelectGroupOfPoints } = this.props;
+        const {
+            handleSelectGroupOfPoints,
+            handleSelectionToolUsed,
+        } = this.props;
         const key = Date.now().valueOf().toString();
         const payload = points.map((point) => point.pointIndex);
         handleSelectGroupOfPoints(key, payload);
+        handleSelectionToolUsed();
     }
 
     public render() {
          const {
+             applyColorToSelections,
              annotations,
              colorBy,
              colorByGroupings,
-             filtersToExclude,
+             dotOpacity,
+             selectedGroups,
              proteinColors,
              proteinLabels,
              proteinNames,
              xDataValues,
              yDataValues,
-             data,
          } = this.props;
-
-         if (data.length === 0) {
+         if (xDataValues.length === 0) {
              return null;
          }
          const plotData = {
+             dotOpacity,
              groups: colorByGroupings,
              proteinColors,
              proteinLabels,
@@ -121,9 +129,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
              x: xDataValues,
              y: yDataValues,
          };
-
          return (
-            <div className={styles.container}>My Plot
+            <div
+                id="main-plot"
+                className={styles.container}
+            >
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
                 <MainPlot
@@ -131,8 +141,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
+                    selectedGroups={selectedGroups}
                     colorBy={colorBy}
-                    filtersToExclude={filtersToExclude}
+                    applyColorToSelections={applyColorToSelections}
                 />
             </div>
         );
@@ -142,17 +153,18 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
+        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
         cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        data: metadataStateBranch.selectors.getFullMetaDataArray(state),
-        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        dotOpacity: selectionStateBranch.selectors.getOpacity(state),
         plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
         plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
+        selectedGroups: selectionStateBranch.selectors.getSelectedGroupsData(state),
         xDataValues: selectionStateBranch.selectors.getXValues(state),
         yDataValues: selectionStateBranch.selectors.getYValues(state),
     };

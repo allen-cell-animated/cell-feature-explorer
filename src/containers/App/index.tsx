@@ -1,7 +1,11 @@
-import * as React from "react";
 import {
-    connect,
-} from "react-redux";
+    Layout,
+} from "antd";
+import * as React from "react";
+const { Header, Footer, Sider, Content } = Layout;
+import "antd/lib/layout/style";
+import { uniq } from "lodash";
+import { connect } from "react-redux";
 
 import {
     getSelected3DCell,
@@ -14,6 +18,7 @@ import ColorByMenu from "../../containers/ColorByMenu";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 
+import AffixedNav from "../../components/AffixedNav";
 import { State } from "../../state/types";
 
 const styles = require("./style.css");
@@ -25,6 +30,26 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
+    private static panelKeys = ["proteinNames", "clusters"];
+
+    public state = {
+        defaultActiveKey: [App.panelKeys[0]],
+        openKeys: [App.panelKeys[0]],
+    };
+
+    constructor(props: AppProps) {
+        super(props);
+        this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
+        this.onPanelClicked = this.onPanelClicked.bind(this);
+    }
+    public onSelectionToolUsed() {
+        this.setState({openKeys: uniq([...this.state.openKeys, App.panelKeys[1]])});
+    }
+
+    public onPanelClicked(value: string[]) {
+        this.setState({openKeys: value});
+    }
+
     public render() {
         const {
             selected3DCell,
@@ -32,23 +57,49 @@ class App extends React.Component<AppProps, {}> {
             selected3DCellCellLine,
         } = this.props;
         return (
-            <div className={styles.container}>
-                <div className={styles.plotView} >
-                    <MainPlotContainer />
-                    <ThumbnailGallery />
-                </div>
+                <Layout className={styles.container}>
+                    <Header>Cell feature explorer
+                    </Header>
+                    <Layout>
+                        <Sider
+                            width={400}
+                            className={styles.colorMenu}
+                        >
+                            <ColorByMenu
+                                panelKeys={App.panelKeys}
+                                openKeys={this.state.openKeys}
+                                defaultActiveKey={this.state.defaultActiveKey}
+                                onPanelClicked={this.onPanelClicked}
+                            />
+                        </Sider>
+                        <Content>
+                            <div className={styles.plotView} >
+                                <MainPlotContainer
+                                    handleSelectionToolUsed={this.onSelectionToolUsed}
+                                />
+                            </div>
 
-                <div className={styles.colorMenu}>
-                    <ColorByMenu />
-                </div>
-                <CellViewer
-                    cellId={selected3DCell}
-                    fovId={selected3DCellFOV}
-                    cellLineName={selected3DCellCellLine}
-                />
-            </div>
+                        </Content>
+                        <Sider>
+                            <AffixedNav
+                            />
+                        </Sider>
+
+                    </Layout>
+                    <Footer>
+                        <ThumbnailGallery />
+                        <div className={styles.cellViewerContainer}>
+                            <CellViewer
+                                cellId={selected3DCell}
+                                fovId={selected3DCellFOV}
+                                cellLineName={selected3DCellCellLine}
+                            />
+                        </div>
+                    </Footer>
+                </Layout>
         );
     }
+
 }
 
 function mapStateToProps(state: State) {

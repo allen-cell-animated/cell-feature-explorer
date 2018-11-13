@@ -1,10 +1,12 @@
 import {
     CHANGE_AXIS,
     DESELECT_ALL_POINTS,
+    DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
+    TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
@@ -14,6 +16,7 @@ import {
     SelectCellFor3DAction,
     SelectGroupOfPointsAction,
     SelectPointAction,
+    ToggleApplyColorAction,
     ToggleFilterAction,
 } from "./types";
 
@@ -30,6 +33,13 @@ export function selectGroupOfPoints(key: string | number, payload: number[]): Se
         key,
         payload,
         type: SELECT_GROUP,
+    };
+}
+
+export function deselectGroupOfPoints(payload: string | number) {
+    return {
+        payload,
+        type: DESELECT_GROUP_OF_POINTS,
     };
 }
 
@@ -64,5 +74,12 @@ export function selectCellFor3DViewer(payload: string): SelectCellFor3DAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
+    };
+}
+
+export function toggleApplySelectionSetColors(payload: boolean): ToggleApplyColorAction {
+    return {
+        payload,
+        type: TOGGLE_APPLY_SELECTION_SET_COLOR,
     };
 }

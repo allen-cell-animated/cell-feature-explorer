@@ -1,6 +1,6 @@
 import {
     Card,
-    Icon
+    Icon,
 } from "antd";
 import React from "react";
 
@@ -21,6 +21,7 @@ interface GalleryCardProps {
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
     pointIndex: number;
+    empty?: boolean;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
@@ -37,12 +38,13 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         }), 3000);
         props.handleOpenIn3D(props.title);
     };
-
     return (
         <Card
-            style={{width: 124}}
             className={styles.container}
-            cover={<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>}
+            loading={props.empty}
+            cover={props.src &&
+                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>)
+            }
             actions={[
                 <span
                     key={`${props.title}-load`}

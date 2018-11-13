@@ -37,16 +37,17 @@ export interface TypeToDescriptionMap {
 }
 
 export interface Annotation {
+    cellLine: string;
+    cellID: string;
+    fovID: string;
     pointIndex: number;
     x: number;
     y: number;
-    cellID: string;
-    fovID: string;
-    cellLine: string;
 }
 
 export interface Thumbnail {
     pointIndex: number;
     src: string;
     cellID: string;
+    empty?: boolean;
 }
