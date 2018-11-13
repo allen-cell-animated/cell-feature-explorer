@@ -29,7 +29,9 @@ import {
     getProteinTotals
 } from "../../state/metadata/selectors";
 import {
-    changeAxis, deselectGroupOfPoints, toggleApplySelectionSetColors,
+    changeAxis,
+    deselectGroupOfPoints,
+    toggleApplySelectionSetColors,
     toggleFilterByProteinName,
 } from "../../state/selection/actions";
 import {
@@ -63,9 +65,9 @@ interface ColorByMenuProps {
     colorBy: string;
     defaultActiveKey: string[];
     filtersToExclude: string[];
-    handleChangeAxis: (axisName: string, proteinName: string) => SelectAxisAction;
-    handleFilterByProteinName: (payload: string) => ToggleFilterAction;
-    handleApplyColorSwitchChange: (payload: boolean) => ToggleApplyColorAction;
+    handleChangeAxis: ActionCreator<SelectAxisAction>;
+    handleFilterByProteinName: ActionCreator<ToggleFilterAction>;
+    handleApplyColorSwitchChange: ActionCreator<ToggleApplyColorAction>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     openKeys: string[];
     onPanelClicked: (value: string[]) => void;
