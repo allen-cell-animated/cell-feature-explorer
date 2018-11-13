@@ -55,8 +55,7 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
         return (
             <React.Fragment>
-                <AffixedNav
-                />
+
                 <Layout className={styles.container}>
                     <Header>Cell feature explorer
                     </Header>
@@ -80,6 +79,10 @@ class App extends React.Component<AppProps, {}> {
                             </div>
 
                         </Content>
+                        <Sider>
+                            <AffixedNav
+                            />
+                        </Sider>
 
                     </Layout>
                     <Footer>
