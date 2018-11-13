@@ -9,6 +9,7 @@ import InteractiveRow from "../InteractiveRow";
 interface BarChartProps {
     colors: Color[];
     closeable: boolean;
+    hideable: boolean;
     names: NumberOrString[];
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
@@ -21,6 +22,7 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
         colors,
         closeable,
         handleCloseSelectionSet,
+        hideable,
         names,
         totals,
         onBarClicked,
@@ -34,13 +36,14 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
                     <InteractiveRow
                         key={names[index]}
                         closeable={closeable}
+                        hideable={hideable}
                         percent={total / maxTotal * 100}
                         color={colors[index] as string}
                         name={names[index]}
                         total={total}
                         id={ids[index].toString()}
                         onBarClicked={onBarClicked}
-                        handleCloseSelectionSet={handleCloseSelectionSet}
+                        handleClose={handleCloseSelectionSet}
                     />
                 );
             })

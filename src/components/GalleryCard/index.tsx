@@ -21,7 +21,7 @@ interface GalleryCardProps {
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
     pointIndex: number;
-    loading?: boolean;
+    empty?: boolean;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
@@ -38,13 +38,12 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         }), 3000);
         props.handleOpenIn3D(props.title);
     };
-
     return (
         <Card
             className={styles.container}
-            loading={props.loading}
-            cover={props.src ?
-                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>) : null
+            loading={props.empty}
+            cover={props.src &&
+                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>)
             }
             actions={[
                 <span

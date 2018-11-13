@@ -49,5 +49,5 @@ export interface Thumbnail {
     pointIndex: number;
     src: string;
     cellID: string;
-    loading?: boolean;
+    empty?: boolean;
 }

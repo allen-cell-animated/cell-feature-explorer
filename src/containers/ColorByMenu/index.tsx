@@ -163,6 +163,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                 ids={proteinNames}
                                 totals={proteinTotals}
                                 closeable={false}
+                                hideable={true}
                                 colors={colorBy === PROTEIN_NAME_KEY ?
                                     proteinNames
                                         .map((ele: NumberOrString, index: number) =>
@@ -202,6 +203,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                     }
                                     ids={selectedSetNames}
                                     closeable={true}
+                                    hideable={false}
                                     totals={selectedSetTotals}
                                     handleCloseSelectionSet={handleCloseSelectionSet}
                                     colors={applyColorToSelections ?

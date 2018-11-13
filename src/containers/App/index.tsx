@@ -18,7 +18,7 @@ import ColorByMenu from "../../containers/ColorByMenu";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 
-import AffixedNav from "../../components/AffixNav";
+import AffixedNav from "../../components/AffixedNav";
 import { State } from "../../state/types";
 
 const styles = require("./style.css");
@@ -30,23 +30,26 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    public panelKeys = ["proteinNames", "clusters"];
+    private static panelKeys = ["proteinNames", "clusters"];
+
     public state = {
-        defaultActiveKey: [this.panelKeys[0]],
-        openKeys: [this.panelKeys[0]],
+        defaultActiveKey: [App.panelKeys[0]],
+        openKeys: [App.panelKeys[0]],
     };
+
     constructor(props: AppProps) {
         super(props);
         this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
         this.onPanelClicked = this.onPanelClicked.bind(this);
     }
     public onSelectionToolUsed() {
-        this.setState({openKeys: uniq([...this.state.openKeys, this.panelKeys[1]])});
+        this.setState({openKeys: uniq([...this.state.openKeys, App.panelKeys[1]])});
     }
 
     public onPanelClicked(value: string[]) {
         this.setState({openKeys: value});
     }
+
     public render() {
         const {
             selected3DCell,
@@ -63,7 +66,7 @@ class App extends React.Component<AppProps, {}> {
                             className={styles.colorMenu}
                         >
                             <ColorByMenu
-                                panelKeys={this.panelKeys}
+                                panelKeys={App.panelKeys}
                                 openKeys={this.state.openKeys}
                                 defaultActiveKey={this.state.defaultActiveKey}
                                 onPanelClicked={this.onPanelClicked}
@@ -96,6 +99,7 @@ class App extends React.Component<AppProps, {}> {
                 </Layout>
         );
     }
+
 }
 
 function mapStateToProps(state: State) {

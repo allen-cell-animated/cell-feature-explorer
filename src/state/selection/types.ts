@@ -31,7 +31,7 @@ export interface DeselectPointAction {
 }
 
 export interface DeselectGroupOfPointsAction {
-    payload: number | number;
+    payload: number | string;
     type: string;
 }
 

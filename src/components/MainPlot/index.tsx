@@ -51,6 +51,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         this.makeScatterPlotSelectedPointsData = this.makeScatterPlotSelectedPointsData.bind(this);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.colorSettings = this.colorSettings.bind(this);
+        this.getDataArray = this.getDataArray.bind(this);
     }
 
     public makeAnnotations(): Annotation[] {
@@ -210,8 +211,22 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         };
     }
 
+    public getDataArray() {
+        const { plotData, applyColorToSelections } = this.props;
+        return applyColorToSelections ? [
+            this.makeHistogramPlotX(plotData.x),
+            this.makeHistogramPlotY(plotData.y),
+            this.makeScatterPlotData(),
+            this.makeScatterPlotSelectedPointsData(),
+        ] : [
+            this.makeHistogramPlotX(plotData.x),
+            this.makeHistogramPlotY(plotData.y),
+            this.makeScatterPlotData(),
+        ];
+    }
+
     public render() {
-        const { plotData, onPointClicked, onGroupSelected, applyColorToSelections } = this.props;
+        const { onPointClicked, onGroupSelected } = this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
@@ -228,17 +243,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         };
         return (
             <Plot
-                data={applyColorToSelections ? [
-                    this.makeHistogramPlotX(plotData.x),
-                    this.makeHistogramPlotY(plotData.y),
-                    this.makeScatterPlotData(),
-                    this.makeScatterPlotSelectedPointsData(),
-                ] : [
-                    this.makeHistogramPlotX(plotData.x),
-                    this.makeHistogramPlotY(plotData.y),
-                    this.makeScatterPlotData(),
-                ]
-                }
+                data={this.getDataArray()}
                 useResizeHandler={true}
                 layout={{
                     annotations: this.makeAnnotations(),

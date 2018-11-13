@@ -12,33 +12,39 @@ import "antd/lib/progress/style";
 const styles = require("./style.css");
 
 interface InteractiveRowProps {
-    closeable: boolean;
     percent: number;
     color: string;
     id: string;
     name: string | number;
     total: number;
+    closeable?: boolean;
+    hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
-    handleCloseSelectionSet?: (id: number | string) => void;
+    handleClose?: (id: number | string) => void;
 }
 
 export default class InteractiveRow extends React.Component<InteractiveRowProps, {}> {
+    private static defaultProps = {
+        closeable: false,
+        hideable: true,
+    };
     constructor(props: InteractiveRowProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
     }
     public onClose(event: any ) {
         const {
-            handleCloseSelectionSet,
+            handleClose,
         } = this.props;
-        if (event.target && event.target.id && handleCloseSelectionSet) {
-            handleCloseSelectionSet(event.target.id);
+        if (event.target && event.target.id && handleClose) {
+            handleClose(event.target.id);
         }
     }
 
     public render() {
         const {
             closeable,
+            hideable,
             percent,
             id,
             color,
@@ -51,7 +57,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             <div
                 className={styles.container}
             >
-                {closeable ? null :
+                {hideable &&
                     <Checkbox
                         onChange={onBarClicked}
                         value={id}
@@ -67,16 +73,14 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                     strokeColor={color}
                     format={format}
                 />
-                {closeable ?
-                    (
-                        <Button
-                            size="small"
-                            icon="close"
-                            id={id}
-                            ghost={true}
-                            onClick={this.onClose}
-                        />
-                    ) : null
+                {closeable &&
+                    <Button
+                        size="small"
+                        icon="close"
+                        id={id}
+                        ghost={true}
+                        onClick={this.onClose}
+                    />
                 }
             </div>
         );

@@ -58,7 +58,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                 </section>
                 <List
                     grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 8 }}
-                    dataSource={data.length > 0 ? data : [{loading: true}]}
+                    dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />
             </div>
@@ -73,7 +73,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         return (
             <List.Item>
                 <GalleryCard
-                    loading={item.loading}
+                    empty={item.empty}
                     title={item.cellID}
                     src={item.src}
                     pointIndex={item.pointIndex}

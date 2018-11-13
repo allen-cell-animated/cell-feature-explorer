@@ -50,7 +50,7 @@ interface MainPlotContainerProps {
     proteinColors: Color[];
     proteinLabels: string[];
     proteinNames: string[];
-    handleSelectionToolUsed: any;
+    handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
