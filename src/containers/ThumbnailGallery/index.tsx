@@ -23,6 +23,8 @@ import {
     Thumbnail,
 } from "../../state/types";
 
+const styles = require("./style.css");
+
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
     handleClearAllSelectedPoints: () => ResetSelectionAction;
@@ -44,14 +46,16 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         } = this.props;
         return (
             <div id="gallery">
-                <h3>Thumbnail gallery of cells</h3>
-                <h4>Clicked points on the plot will appear here</h4>
-                {data.length > 0 ?
-                    <Button
-                        type="primary"
-                        onClick={handleClearAllSelectedPoints}
-                    >Clear All
-                    </Button> : null}
+                <section className={styles.galleryHeader}>
+                    <h3>Thumbnail gallery</h3>
+                    {data.length > 0 ?
+                        <Button
+                            type="primary"
+                            icon="close"
+                            onClick={handleClearAllSelectedPoints}
+                        >Clear All
+                        </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
+                </section>
                 <List
                     grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 8 }}
                     dataSource={data.length > 0 ? data : [{loading: true}]}
