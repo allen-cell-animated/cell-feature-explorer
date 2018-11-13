@@ -50,6 +50,7 @@ interface MainPlotContainerProps {
     proteinColors: Color[];
     proteinLabels: string[];
     proteinNames: string[];
+    handleSelectionToolUsed: any;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
@@ -92,10 +93,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
         const { points } = eventData;
-        const { handleSelectGroupOfPoints } = this.props;
+        const {
+            handleSelectGroupOfPoints,
+            handleSelectionToolUsed,
+        } = this.props;
         const key = Date.now().valueOf().toString();
         const payload = points.map((point) => point.pointIndex);
         handleSelectGroupOfPoints(key, payload);
+        handleSelectionToolUsed();
     }
 
     public render() {
@@ -145,7 +150,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     }
 }
 
-function mapStateToProps(state: State): Partial<MainPlotContainerProps> {
+function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),

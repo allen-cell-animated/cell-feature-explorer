@@ -9,6 +9,7 @@ export const DESELECT_ALL_POINTS = makeConstant("selection", "deselect-all-point
 export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeConstant("selection", "toggle-filter-by-protein-name");
 export const OPEN_CELL_IN_3D = makeConstant("selection", "open-cell-in-3d");
 export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeConstant("selection", "apply-selection-set-color");
+export const DESELECT_GROUP_OF_POINTS = makeConstant("select", "deselect-group");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";

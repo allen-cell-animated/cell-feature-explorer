@@ -1,6 +1,7 @@
 import {
     CHANGE_AXIS,
     DESELECT_ALL_POINTS,
+    DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     OPEN_CELL_IN_3D,
     SELECT_GROUP,
@@ -32,6 +33,13 @@ export function selectGroupOfPoints(key: string | number, payload: number[]): Se
         key,
         payload,
         type: SELECT_GROUP,
+    };
+}
+
+export function deselectGroupOfPoints(payload: string | number) {
+    return {
+        payload,
+        type: DESELECT_GROUP_OF_POINTS,
     };
 }
 

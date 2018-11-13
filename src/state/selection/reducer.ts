@@ -1,4 +1,8 @@
-import { filter, includes } from "lodash";
+import {
+    filter,
+    includes,
+    pickBy,
+} from "lodash";
 import { AnyAction } from "redux";
 
 import { TypeToDescriptionMap } from "../types";
@@ -7,6 +11,7 @@ import { makeReducer } from "../util";
 import {
     CHANGE_AXIS,
     DESELECT_ALL_POINTS,
+    DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
@@ -20,6 +25,7 @@ import {
     TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
+    DeselectGroupOfPointsAction,
     DeselectPointAction,
     ResetSelectionAction,
     SelectAxisAction,
@@ -72,6 +78,15 @@ const actionToConfigMap: TypeToDescriptionMap = {
                 ...state.selectedGroups,
                 [action.key]: action.payload,
             },
+        }),
+    },
+    [DESELECT_GROUP_OF_POINTS]: {
+        accepts: (action: AnyAction): action is DeselectGroupOfPointsAction => action.type === DESELECT_GROUP_OF_POINTS,
+        perform: (state: SelectionStateBranch, action: DeselectGroupOfPointsAction) => ({
+            ...state,
+            selectedGroupColors: pickBy(state.selectedGroupColors,
+                (value, key) => key.toString() !== action.payload.toString()),
+            selectedGroups: pickBy(state.selectedGroups, (value, key) => key.toString() !== action.payload.toString()),
         }),
     },
     [DESELECT_POINT]: {
