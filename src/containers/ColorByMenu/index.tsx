@@ -4,15 +4,18 @@ import {
     Row,
     Switch,
 } from "antd";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import "antd/lib/collapse/style";
 import "antd/lib/switch/style";
 import { includes, values } from "lodash";
 import {
     Color,
-    PlotMouseEvent,
 } from "plotly.js";
 import React from "react";
-import { connect } from "react-redux";
+import {
+    ActionCreator,
+    connect,
+} from "react-redux";
 
 import BarChart from "../../components/BarChart";
 import {
@@ -26,7 +29,7 @@ import {
     getProteinTotals
 } from "../../state/metadata/selectors";
 import {
-    changeAxis, toggleApplySelectionSetColors,
+    changeAxis, deselectGroupOfPoints, toggleApplySelectionSetColors,
     toggleFilterByProteinName,
 } from "../../state/selection/actions";
 import {
@@ -39,6 +42,7 @@ import {
     getSelectionSetColors,
 } from "../../state/selection/selectors";
 import {
+    DeselectGroupOfPointsAction,
     SelectAxisAction,
     ToggleApplyColorAction,
     ToggleFilterAction,
@@ -57,10 +61,15 @@ const { Panel } = Collapse;
 interface ColorByMenuProps {
     applyColorToSelections: boolean;
     colorBy: string;
+    defaultActiveKey: string[];
     filtersToExclude: string[];
     handleChangeAxis: (axisName: string, proteinName: string) => SelectAxisAction;
     handleFilterByProteinName: (payload: string) => ToggleFilterAction;
     handleApplyColorSwitchChange: (payload: boolean) => ToggleApplyColorAction;
+    handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
+    openKeys: string[];
+    onPanelClicked: (value: string[]) => void;
+    panelKeys: string[];
     proteinColors: Color[];
     proteinNames: string[];
     proteinTotals: number[];
@@ -71,21 +80,17 @@ interface ColorByMenuProps {
 
 class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
-    public panelKeys = ["strucutreProteinName", "clusters"];
-    public defaultActiveKey =  this.panelKeys[0];
 
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
         this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
-
+        this.onActivePanelChange = this.onActivePanelChange.bind(this);
     }
 
-    public onBarClicked(clickEvent: PlotMouseEvent) {
+    public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName } = this.props;
-        const { points } = clickEvent;
-        const proteinName = points[0].y as string;
-        handleFilterByProteinName(proteinName);
+        handleFilterByProteinName(target.value);
     }
 
     public onColorBySwitchChanged(colorByProtein: boolean) {
@@ -96,11 +101,18 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear Volume (fL)");
     }
 
+    public onActivePanelChange(value: string | string[]) {
+        this.props.onPanelClicked(value as string[]);
+    }
+
     public render() {
         const {
             applyColorToSelections,
             colorBy,
+            defaultActiveKey,
+            openKeys,
             filtersToExclude,
+            panelKeys,
             proteinNames,
             proteinTotals,
             proteinColors,
@@ -108,14 +120,16 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             selectedSetColors,
             selectedSetTotals,
             handleApplyColorSwitchChange,
+            handleCloseSelectionSet,
         } = this.props;
-
         return (
                 <Collapse
-                    defaultActiveKey={[this.defaultActiveKey]}
+                    defaultActiveKey={defaultActiveKey}
+                    activeKey={openKeys}
+                    onChange={this.onActivePanelChange}
                 >
                     <Panel
-                        key={this.panelKeys[0]}
+                        key={panelKeys[0]}
                         header="Data grouped by tagged structures"
                     >
                         <Row
@@ -144,7 +158,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         <div>
                             <BarChart
                                 names={proteinNames}
+                                ids={proteinNames}
                                 totals={proteinTotals}
+                                closeable={false}
                                 colors={colorBy === PROTEIN_NAME_KEY ?
                                     proteinNames
                                         .map((ele: NumberOrString, index: number) =>
@@ -158,7 +174,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         </div>
                     </Panel>
                     <Panel
-                        key={this.panelKeys[1]}
+                        key={panelKeys[1]}
                         header="Selected sets"
                     >
                         {selectedSetTotals.length === 0 ?
@@ -182,7 +198,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                         selectedSetNames.map(
                                             (ele: number | string, index: number) => Number(ele) ? index : ele)
                                     }
+                                    ids={selectedSetNames}
+                                    closeable={true}
                                     totals={selectedSetTotals}
+                                    handleCloseSelectionSet={handleCloseSelectionSet}
                                     colors={applyColorToSelections ?
                                         values(selectedSetColors) : Array(selectedSetTotals.length).fill(DISABLE_COLOR)
                                     }
@@ -213,6 +232,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     handleApplyColorSwitchChange: toggleApplySelectionSetColors,
     handleChangeAxis: changeAxis,
+    handleCloseSelectionSet: deselectGroupOfPoints,
     handleFilterByProteinName: toggleFilterByProteinName,
 };
 
