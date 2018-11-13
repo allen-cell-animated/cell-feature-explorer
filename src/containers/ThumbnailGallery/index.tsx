@@ -44,6 +44,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         } = this.props;
         return (
             <div id="gallery">
+                <h3>Thumbnail gallery of cells</h3>
+                <h4>Clicked points on the plot will appear here</h4>
                 {data.length > 0 ?
                     <Button
                         type="primary"
@@ -64,7 +66,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleDeselectPoint,
             handleOpenIn3D,
         } = this.props;
-        console.log(item)
         return (
             <List.Item>
                 <GalleryCard

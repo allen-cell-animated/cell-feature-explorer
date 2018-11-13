@@ -43,7 +43,9 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <Card
             className={styles.container}
             loading={props.loading}
-            cover={props.src ? (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>) : null}
+            cover={props.src ?
+                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>) : null
+            }
             actions={[
                 <span
                     key={`${props.title}-load`}
