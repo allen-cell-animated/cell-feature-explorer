@@ -54,8 +54,6 @@ class App extends React.Component<AppProps, {}> {
             selected3DCellCellLine,
         } = this.props;
         return (
-            <React.Fragment>
-
                 <Layout className={styles.container}>
                     <Header>Cell feature explorer
                     </Header>
@@ -96,7 +94,6 @@ class App extends React.Component<AppProps, {}> {
                         </div>
                     </Footer>
                 </Layout>
-            </React.Fragment>
         );
     }
 }
