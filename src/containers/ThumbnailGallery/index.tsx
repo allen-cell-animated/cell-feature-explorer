@@ -51,8 +51,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     >Clear All
                     </Button> : null}
                 <List
-                    grid={{ gutter: 10, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
-                    dataSource={data}
+                    grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 8 }}
+                    dataSource={data.length > 0 ? data : [{loading: true}]}
                     renderItem={this.renderGalleryCard}
                 />
             </div>
@@ -64,10 +64,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleDeselectPoint,
             handleOpenIn3D,
         } = this.props;
-
+        console.log(item)
         return (
             <List.Item>
                 <GalleryCard
+                    loading={item.loading}
                     title={item.cellID}
                     src={item.src}
                     pointIndex={item.pointIndex}
