@@ -1,13 +1,20 @@
 import {
     Col,
     Collapse,
+    Radio,
     Row,
     Switch,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import "antd/lib/collapse/style";
+import { RadioChangeEvent } from "antd/lib/radio";
+import "antd/lib/radio/style";
 import "antd/lib/switch/style";
-import { includes, values } from "lodash";
+
+import {
+    includes,
+    values,
+} from "lodash";
 import {
     Color,
 } from "plotly.js";
@@ -28,47 +35,46 @@ import {
     getProteinNames,
     getProteinTotals
 } from "../../state/metadata/selectors";
+
+import selectionStateBranch from "../../state/selection";
+import { CLUSTERING_MAP } from "../../state/selection/constants";
 import {
-    changeAxis,
-    deselectGroupOfPoints,
-    toggleApplySelectionSetColors,
-    toggleFilterByProteinName,
-} from "../../state/selection/actions";
-import {
-    getApplyColorToSelections,
-    getColorBySelection,
-    getFiltersToExclude,
-    getProteinColors,
-    getSelectedGroupKeys,
-    getSelectedSetTotals,
-    getSelectionSetColors,
-} from "../../state/selection/selectors";
-import {
+    BoolToggleAction,
+    ChangeClusterNumberAction,
+    ChangeSelectionAction, ClusteringTypeChoices,
     DeselectGroupOfPointsAction,
     SelectAxisAction,
-    ToggleApplyColorAction,
-    ToggleFilterAction,
 } from "../../state/selection/types";
 
 import {
     NumberOrString,
     State,
 } from "../../state/types";
+
+import SliderInputCombo from "../../components/SliderInputCombo";
 import AxisDropDown from "../AxisDropDown";
 
 const styles = require("./style.css");
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const { Panel } = Collapse;
 
 interface ColorByMenuProps {
     applyColorToSelections: boolean;
     colorBy: string;
+    clusteringAlgorithm: ClusteringTypeChoices;
+    clusteringOptions: string[];
     defaultActiveKey: string[];
     filtersToExclude: string[];
+    handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
-    handleFilterByProteinName: ActionCreator<ToggleFilterAction>;
-    handleApplyColorSwitchChange: ActionCreator<ToggleApplyColorAction>;
+    handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
+    handleChangeClusteringNumber: ActionCreator<ChangeClusterNumberAction>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
+    handleClusteringToggle: ActionCreator<BoolToggleAction>;
+    handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
     openKeys: string[];
     onPanelClicked: (value: string[]) => void;
     panelKeys: string[];
@@ -88,6 +94,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.onBarClicked = this.onBarClicked.bind(this);
         this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
+        this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
+        this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
@@ -106,6 +114,15 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public onActivePanelChange(value: string | string[]) {
         this.props.onPanelClicked(value as string[]);
     }
+    public changeClusteringAlgorithm({ target }: RadioChangeEvent) {
+        const { handleChangeClusteringAlgorithm } = this.props;
+        handleChangeClusteringAlgorithm(target.value);
+    }
+
+    public changeClusteringNumber(value: string) {
+        const { handleChangeClusteringNumber, clusteringAlgorithm } = this.props;
+        handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
+    }
 
     public render() {
         const {
@@ -123,6 +140,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             selectedSetTotals,
             handleApplyColorSwitchChange,
             handleCloseSelectionSet,
+            handleClusteringToggle,
+            handleChangeClusteringNumber,
+            clusteringOptions,
         } = this.props;
         return (
                 <Collapse
@@ -214,6 +234,27 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             )
                         }
                     </Panel>
+                    <Panel
+                        key={panelKeys[2]}
+                        header="Data group by clustering"
+                    >
+                        <span>Show clusters: </span>
+                        <Switch
+                            className={styles.colorBySwitch}
+                            defaultChecked={false}
+                            onChange={handleClusteringToggle}
+                        />
+
+                        <RadioGroup onChange={this.changeClusteringAlgorithm} defaultValue="KMeans">
+                            <RadioButton value="KMeans">KMeans</RadioButton>
+                            <RadioButton value="Agglomerative">Agglomerative</RadioButton>
+                            <RadioButton value="DBSCAN">DBSCAN</RadioButton>
+                        </RadioGroup>
+                        <SliderInputCombo
+                            onValueChange={this.changeClusteringNumber}
+                            valueOptions={clusteringOptions}
+                        />
+                    </Panel>
                 </Collapse>
         );
     }
@@ -221,23 +262,28 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State) {
     return {
-        applyColorToSelections: getApplyColorToSelections(state),
-        colorBy: getColorBySelection(state),
-        filtersToExclude: getFiltersToExclude(state),
-        proteinColors: getProteinColors(state),
+        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
+        clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
+        clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
+        colorBy: selectionStateBranch.selectors.getColorBySelection(state),
+        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinNames: getProteinNames(state),
         proteinTotals: getProteinTotals(state),
-        selectedSetColors: getSelectionSetColors(state),
-        selectedSetNames: getSelectedGroupKeys(state),
-        selectedSetTotals: getSelectedSetTotals(state),
+        selectedSetColors: selectionStateBranch.selectors.getSelectionSetColors(state),
+        selectedSetNames: selectionStateBranch.selectors.getSelectedGroupKeys(state),
+        selectedSetTotals: selectionStateBranch.selectors.getSelectedSetTotals(state),
     };
 }
 
 const dispatchToPropsMap = {
-    handleApplyColorSwitchChange: toggleApplySelectionSetColors,
-    handleChangeAxis: changeAxis,
-    handleCloseSelectionSet: deselectGroupOfPoints,
-    handleFilterByProteinName: toggleFilterByProteinName,
+    handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
+    handleChangeAxis: selectionStateBranch.actions.changeAxis,
+    handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
+    handleChangeClusteringNumber: selectionStateBranch.actions.changeClusteringNumber,
+    handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
+    handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
+    handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);

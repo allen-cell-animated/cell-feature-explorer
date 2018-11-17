@@ -1,5 +1,15 @@
-import { PROTEIN_NAME_KEY } from "../../constants/index";
+import {
+    AGGLOMERATIVE_KEY,
+    CLUSTER_DISTANCE_KEY, CLUSTER_NUMBER_KEY,
+    DBSCAN_KEY, KMEANS_KEY,
+    PROTEIN_NAME_KEY,
+} from "../../constants/index";
 import { makeConstant } from "../util";
+
+import {
+    ClusteringNumberChoices,
+    ClusteringTypeChoices,
+} from "./types";
 
 export const CHANGE_AXIS = makeConstant("selection", "deselect-file");
 export const SELECT_GROUP = makeConstant("selection", "select_group");
@@ -10,6 +20,9 @@ export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeConstant("selection", "toggle-f
 export const OPEN_CELL_IN_3D = makeConstant("selection", "open-cell-in-3d");
 export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeConstant("selection", "apply-selection-set-color");
 export const DESELECT_GROUP_OF_POINTS = makeConstant("selection", "deselect-group");
+export const CHANGE_CLUSTER_NUMBER = makeConstant("selection", "change-cluster-number");
+export const CHANGE_CLUSTERING_ALGORITHM = makeConstant("selection", "change-clustering-algorithm");
+export const TOGGLE_CLUSTERS_VISIBLE = makeConstant("selection", "toggle-clusters-on");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
@@ -58,3 +71,12 @@ export const INITIAL_SELECTION_COLORS = [
     "#ccebc5",
     "#ffed6f",
 ];
+
+export const CLUSTERING_MAP = (key: ClusteringTypeChoices): ClusteringNumberChoices => {
+    const map: {[key: string]: ClusteringNumberChoices} = {
+        [AGGLOMERATIVE_KEY]: CLUSTER_NUMBER_KEY,
+        [DBSCAN_KEY]: CLUSTER_DISTANCE_KEY,
+        [KMEANS_KEY]: CLUSTER_NUMBER_KEY,
+    };
+    return map[key] || CLUSTER_NUMBER_KEY;
+};

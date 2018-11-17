@@ -30,7 +30,7 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    private static panelKeys = ["proteinNames", "clusters"];
+    private static panelKeys = ["proteinNames", "selections", "clusters"];
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],

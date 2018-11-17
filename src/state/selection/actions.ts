@@ -1,5 +1,6 @@
 import {
-    CHANGE_AXIS,
+    CHANGE_AXIS, CHANGE_CLUSTER_NUMBER,
+    CHANGE_CLUSTERING_ALGORITHM,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -7,17 +8,18 @@ import {
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
+    TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
+    BoolToggleAction,
+    ChangeClusterNumberAction,
+    ChangeSelectionAction,
     DeselectPointAction,
     ResetSelectionAction,
     SelectAxisAction,
-    SelectCellFor3DAction,
     SelectGroupOfPointsAction,
     SelectPointAction,
-    ToggleApplyColorAction,
-    ToggleFilterAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -63,23 +65,45 @@ export function clearAllSelectedPoints(): ResetSelectionAction {
     };
 }
 
-export function toggleFilterByProteinName(payload: string): ToggleFilterAction {
+export function toggleFilterByProteinName(payload: string): ChangeSelectionAction {
     return {
         payload,
         type: TOGGLE_FILTER_BY_PROTEIN_NAME,
     };
 }
 
-export function selectCellFor3DViewer(payload: string): SelectCellFor3DAction {
+export function selectCellFor3DViewer(payload: string): ChangeSelectionAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
     };
 }
 
-export function toggleApplySelectionSetColors(payload: boolean): ToggleApplyColorAction {
+export function toggleApplySelectionSetColors(payload: boolean): BoolToggleAction {
     return {
         payload,
         type: TOGGLE_APPLY_SELECTION_SET_COLOR,
+    };
+}
+
+export function changeClusteringAlgorithm(payload: string): ChangeSelectionAction {
+    return {
+        payload,
+        type: CHANGE_CLUSTERING_ALGORITHM,
+    };
+}
+
+export function changeClusteringNumber(clusteringKey: string, payload: number): ChangeClusterNumberAction {
+    return {
+        clusteringKey,
+        payload,
+        type: CHANGE_CLUSTER_NUMBER,
+    };
+}
+
+export function toggleShowClusters(payload: boolean): BoolToggleAction {
+    return {
+        payload,
+        type: TOGGLE_CLUSTERS_VISIBLE,
     };
 }

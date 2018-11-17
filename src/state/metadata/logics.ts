@@ -71,6 +71,7 @@ const requestFeatureDataLogic = createLogic({
 
                 return data.map((datum: MetadataStateBranch) => {
                     return {
+                        clusters: datum.clusters,
                         file_info: {
                             ...datum.file_info,
                             // TODO: The following field is unnecessary but convenient.
