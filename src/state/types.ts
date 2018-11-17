@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { Color } from "plotly.js";
 import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
@@ -50,4 +51,49 @@ export interface Thumbnail {
     src: string;
     cellID: string;
     empty?: boolean;
+}
+
+export interface SelectedGroupDatum {
+    groupColor: Color;
+    x: number;
+    y: number;
+}
+
+export interface ContinuousPlotData {
+    color: Color | Color[] | number | number[];
+    x: number[];
+    y: number[];
+    groupBy?: boolean;
+    plotName?: string;
+    opacity?: number[] | number;
+    groupColors?: Color[];
+}
+
+interface GroupSettings {
+    name: string;
+    color: Color | number;
+    opacity: number;
+}
+export interface GroupedPlotData {
+    x: number[];
+    y: number[];
+    groupBy: boolean;
+    groups: string[];
+    groupSettings: GroupSettings[];
+    plotName?: string;
+}
+
+export interface SelectedGroup {
+    groupColor: Color[];
+    x: number[];
+    y: number[];
+}
+
+export interface SelectedGroupData {
+    [key: string]: SelectedGroupDatum[];
+}
+
+export interface SelectedGroups {
+    [key: number]: number[];
+    [key: string]: number[];
 }
