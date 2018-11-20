@@ -94,8 +94,8 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                             value: {
                                 marker:
                                     {
-                                        color: ele.color as number,
-                                        opacity: ele.opacity as number,
+                                        color: ele.color,
+                                        opacity: ele.opacity,
                                     }},
                         };
                     }),

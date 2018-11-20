@@ -147,7 +147,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             handleApplyColorSwitchChange,
             handleCloseSelectionSet,
             handleClusteringToggle,
-            handleChangeClusteringNumber,
             clusteringOptions,
             showClusters,
         } = this.props;

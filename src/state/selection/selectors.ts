@@ -6,7 +6,6 @@ import {
     mapValues,
     reduce,
 } from "lodash";
-import { Color } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
@@ -182,9 +181,9 @@ export const getMainPlotData = createSelector(
         colorBy,
         proteinColors,
         proteinNames
-    ): GroupedPlotData => {
+    ): GroupedPlotData | ContinuousPlotData => {
     return {
-        color: colorByValues as string[],
+        color: colorByValues,
         groupBy: colorBy === PROTEIN_NAME_KEY,
         groupSettings: map(proteinNames, (name: string, index) => {
             return {
@@ -193,7 +192,7 @@ export const getMainPlotData = createSelector(
                 opacity: opacity[index],
             };
         }),
-        groups: colorByValues as string[],
+        groups: colorByValues,
         x: xValues,
         y: yValues,
 
