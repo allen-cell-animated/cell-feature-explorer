@@ -1,6 +1,5 @@
-import { map } from "lodash";
+import { includes, map } from "lodash";
 import {
-    Color,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -27,7 +26,11 @@ interface MainPlotProps {
     selectGroupPlotData: ContinuousPlotData | null;
 }
 
-export default class MainPlot extends React.Component<MainPlotProps, {}> {
+interface MainPlotState {
+    showFullAnnotation: boolean;
+}
+
+export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     public static makeAxis(domain: number[], hoverformat: string, zeroline: boolean) {
         return {
             color: GENERAL_PLOT_SETTINGS.textColor,
@@ -46,32 +49,43 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.colorSettings = this.colorSettings.bind(this);
         this.getDataArray = this.getDataArray.bind(this);
+        this.clickedAnnotation = this.clickedAnnotation.bind(this);
+        this.state = {
+            showFullAnnotation: true,
+        };
+    }
+
+    public clickedAnnotation() {
+        this.setState({showFullAnnotation: false});
     }
 
     public makeAnnotations(): Annotation[] {
         const { annotations } = this.props;
 
-        return annotations.map((point: Annotation) => {
+        return annotations.map((point: Annotation, index) => {
+            const lastOne =  index + 1  === annotations.length;
+            const show = lastOne && this.state.showFullAnnotation;
             return {
+                arrowcolor: "#fff",
                 arrowhead: 6,
                 ax: 0,
-                ay: -30,
+                ay: show ? -80 : 0,
                 bgcolor: "#a4a2a45c",
-                bordercolor: "#a4a2a45c",
-                borderpad: 4,
-                borderwidth: 1.5,
+                bordercolor: "#fff",
+                borderpad:  show ? 4 : 0,
+                borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
                 cellLine: point.cellLine,
                 font: {
                     color: "#ffffff",
                     family: "tahoma, arial, verdana, sans-serif",
-                    size: 12,
+                    size: 11,
                 },
                 fovID: point.fovID,
                 pointIndex: point.pointIndex,
                 // TODO full AICS cell name?
-                text: `Cell ${point.cellID}<br><i>click to load in 3D</i>`,
+                text: show ? `Cell ${point.cellID}<br><i>click "3D" button in gallery to load in 3D</i>` : "",
                 x: point.x,
                 y: point.y,
             };
@@ -154,6 +168,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
 
         };
     }
+
     public makeHistogramPlotY(data: number[]) {
         return {
             marker: {
@@ -234,6 +249,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                 }}
                 config={options}
                 onClick={onPointClicked}
+                onClickAnnotation={this.clickedAnnotation}
                 onSelected={onGroupSelected}
             />
         );
