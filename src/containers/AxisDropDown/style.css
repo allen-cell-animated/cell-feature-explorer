@@ -3,7 +3,7 @@
 .plot-by-on-x {
     position: absolute;
     bottom: 0;
-    right: 50%;
+    left: 40%;
     z-index: 100;
 }
 

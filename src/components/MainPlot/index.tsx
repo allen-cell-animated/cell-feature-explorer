@@ -185,11 +185,11 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             this.makeHistogramPlotY(mainPlotData.y),
             this.makeScatterPlotData(mainPlotData),
         ];
-        if (selectGroupPlotData) {
-            data.push(this.makeScatterPlotData(selectGroupPlotData));
-        }
         if (clusteringPlotData) {
             data.push(this.makeScatterPlotData(clusteringPlotData));
+        }
+        if (selectGroupPlotData) {
+            data.push(this.makeScatterPlotData(selectGroupPlotData));
         }
         return data;
     }
@@ -221,7 +221,7 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
                     legend: GENERAL_PLOT_SETTINGS.legend,
                     margin: {
                         b: 30,
-                        r: 200,
+                        r: 20,
                         t: 10,
                     },
                     paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
