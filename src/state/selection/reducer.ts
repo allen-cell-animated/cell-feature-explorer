@@ -10,7 +10,8 @@ import { makeReducer } from "../util";
 
 import {
     CHANGE_AXIS,
-    CHANGE_CLUSTER_NUMBER, CHANGE_CLUSTERING_ALGORITHM,
+    CHANGE_CLUSTER_NUMBER,
+    CHANGE_CLUSTERING_ALGORITHM,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -22,7 +23,8 @@ import {
     OPEN_CELL_IN_3D,
     SELECT_GROUP,
     SELECT_POINT,
-    TOGGLE_APPLY_SELECTION_SET_COLOR, TOGGLE_CLUSTERS_VISIBLE,
+    TOGGLE_APPLY_SELECTION_SET_COLOR,
+    TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
 } from "./constants";
 import {
@@ -34,7 +36,8 @@ import {
     ResetSelectionAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
-    SelectionStateBranch, SelectPointAction,
+    SelectionStateBranch,
+    SelectPointAction,
 } from "./types";
 
 export const initialState = {
