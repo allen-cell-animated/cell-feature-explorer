@@ -2,7 +2,6 @@ import {
     filter,
     includes,
     map,
-    reduce,
 } from "lodash";
 import {
     Color,
@@ -18,7 +17,9 @@ import {
 import MainPlot from "../../components/MainPlot";
 
 import {
+    CLUSTERS_PLOT_NAME,
     SCATTER_PLOT_NAME,
+    SELECTIONS_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
@@ -26,7 +27,6 @@ import {
     Annotation,
     ContinuousPlotData,
     GroupedPlotData,
-    SelectedGroupDatum,
     State,
 } from "../../state/types";
 
@@ -131,19 +131,18 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                 ...mainPlotDataValues.groupSettings,
             },
             plotName: SCATTER_PLOT_NAME,
-
         };
 
         const selectedGroupPlotData = applyColorToSelections ? {
                 ...selectedGroups,
             groupBy: false,
-            plotName: "Selections",
+            plotName: SELECTIONS_PLOT_NAME,
         } : null;
+
         const clusteringPlotData = showClusters ? {
             ...clusteringResultData,
             groupBy: false,
-            opacity: 0.5,
-            plotName: "Clusters",
+            plotName: CLUSTERS_PLOT_NAME,
         } : null;
 
         return (
