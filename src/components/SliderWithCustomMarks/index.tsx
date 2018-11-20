@@ -9,26 +9,35 @@ import "antd/lib/slider/style";
 
 interface SliderWithCustomMarksProps {
     disabled: boolean;
+    initIndex?: number;
     onValueChange: (value: string) => void;
     label: string;
     valueOptions: string[];
 }
-export default class SliderWithCustomMarks extends React.Component<SliderWithCustomMarksProps, {}> {
-    public state = {
-        inputValue: 2,
-    };
 
+interface SliderState {
+    inputValue: number;
+}
+export default class SliderWithCustomMarks extends React.Component<SliderWithCustomMarksProps, SliderState> {
     constructor(props: SliderWithCustomMarksProps) {
         super(props);
         this.onChange = this.onChange.bind(this);
+        this.state = {
+            inputValue: props.initIndex || 0,
+        };
+    }
+
+    public componentWillMount() {
+        const { valueOptions, onValueChange } = this.props;
+        onValueChange(valueOptions[this.state.inputValue]);
     }
 
     public onChange = (value: SliderValue) => {
         const { valueOptions } = this.props;
-        this.setState({
-            inputValue: value,
-        });
         // SliderValue can be [number, number]
+        this.setState({
+            inputValue: value as number,
+        });
         this.props.onValueChange(valueOptions[value as number]);
     }
 

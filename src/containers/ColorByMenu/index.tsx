@@ -13,6 +13,7 @@ import "antd/lib/switch/style";
 
 import {
     includes,
+    indexOf,
     values,
 } from "lodash";
 import {
@@ -26,8 +27,11 @@ import {
 
 import BarChart from "../../components/BarChart";
 import {
+    AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
+    DBSCAN_KEY,
     DISABLE_COLOR,
+    KMEANS_KEY,
     OFF_COLOR,
     PROTEIN_NAME_KEY
 } from "../../constants";
@@ -62,6 +66,7 @@ const styles = require("./style.css");
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const initIndex = 2;
 
 const { Panel } = Collapse;
 
@@ -70,6 +75,7 @@ interface ColorByMenuProps {
     colorBy: string;
     clusteringAlgorithm: ClusteringTypeChoices;
     clusteringOptions: string[];
+    clusteringSetting: string;
     defaultActiveKey: string[];
     filtersToExclude: string[];
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
@@ -103,6 +109,14 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
     }
 
+    public componentWillReceiveProps(nextProps: ColorByMenuProps) {
+        const { handleChangeClusteringNumber } = this.props;
+        if (!nextProps.clusteringSetting) {
+            handleChangeClusteringNumber(
+                CLUSTERING_MAP(nextProps.clusteringAlgorithm), nextProps.clusteringOptions[initIndex]);
+        }
+    }
+
     public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName } = this.props;
         handleFilterByProteinName(target.value);
@@ -133,6 +147,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const {
             applyColorToSelections,
             clusteringAlgorithm,
+            clusteringSetting,
             colorBy,
             defaultActiveKey,
             openKeys,
@@ -150,6 +165,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             clusteringOptions,
             showClusters,
         } = this.props;
+        const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
         return (
                 <Collapse
                     defaultActiveKey={defaultActiveKey}
@@ -270,12 +286,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         >
                             <RadioGroup
                                 onChange={this.changeClusteringAlgorithm}
-                                defaultValue="KMeans"
+                                defaultValue={KMEANS_KEY}
                                 disabled={!showClusters}
                             >
-                                <RadioButton value="KMeans">KMeans</RadioButton>
-                                <RadioButton value="Agglomerative">Agglomerative</RadioButton>
-                                <RadioButton value="DBSCAN">DBSCAN</RadioButton>
+                                <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
+                                <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
+                                <RadioButton value={DBSCAN_KEY}>DBSCAN</RadioButton>
                             </RadioGroup>
                         </Row>
                         <SliderWithCustomMarks
@@ -283,6 +299,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
                             onValueChange={this.changeClusteringNumber}
                             valueOptions={clusteringOptions}
+                            initIndex={initSliderSetting}
                         />
                     </Panel>
                 </Collapse>
@@ -295,6 +312,7 @@ function mapStateToProps(state: State) {
         applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
+        clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         proteinColors: selectionStateBranch.selectors.getProteinColors(state),

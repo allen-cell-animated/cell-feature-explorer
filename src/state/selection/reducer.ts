@@ -5,6 +5,7 @@ import {
 } from "lodash";
 import { AnyAction } from "redux";
 
+import { KMEANS_KEY } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
@@ -43,11 +44,11 @@ import {
 export const initialState = {
     applySelectionSetColoring: true,
     cellSelectedFor3D: null,
-    clusteringAlgorithm: "KMeans",
-    clusteringDistance: "78.5",
+    clusteringAlgorithm: KMEANS_KEY,
+    clusteringDistance: "",
     colorBy: INITIAL_COLOR_BY,
     filterExclude: [],
-    numberOfClusters: 6,
+    numberOfClusters: "",
     plotByOnX: INITIAL_PLOT_BY_ON_X,
     plotByOnY: INITIAL_PLOT_BY_ON_Y,
     proteinColors: INITIAL_COLORS,
