@@ -19,7 +19,6 @@ export interface CellLineDef {
 }
 
 export interface FileInfo {
-    [key: string]: string;
     [CELL_ID_KEY]: string;
     [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: string;
