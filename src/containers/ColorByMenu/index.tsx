@@ -37,11 +37,15 @@ import {
 } from "../../state/metadata/selectors";
 
 import selectionStateBranch from "../../state/selection";
-import { CLUSTERING_MAP } from "../../state/selection/constants";
+import {
+    CLUSTERING_LABEL,
+    CLUSTERING_MAP,
+} from "../../state/selection/constants";
 import {
     BoolToggleAction,
     ChangeClusterNumberAction,
-    ChangeSelectionAction, ClusteringTypeChoices,
+    ChangeSelectionAction,
+    ClusteringTypeChoices,
     DeselectGroupOfPointsAction,
     SelectAxisAction,
 } from "../../state/selection/types";
@@ -51,7 +55,7 @@ import {
     State,
 } from "../../state/types";
 
-import SliderInputCombo from "../../components/SliderInputCombo";
+import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
 const styles = require("./style.css");
@@ -84,6 +88,7 @@ interface ColorByMenuProps {
     selectedSetColors: Color[];
     selectedSetNames: NumberOrString[];
     selectedSetTotals: number[];
+    showClusters: boolean;
 }
 
 class ColorByMenu extends React.Component<ColorByMenuProps> {
@@ -127,6 +132,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public render() {
         const {
             applyColorToSelections,
+            clusteringAlgorithm,
             colorBy,
             defaultActiveKey,
             openKeys,
@@ -143,6 +149,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             handleClusteringToggle,
             handleChangeClusteringNumber,
             clusteringOptions,
+            showClusters,
         } = this.props;
         return (
                 <Collapse
@@ -160,7 +167,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             align="middle"
                         >
                             <Col span={12}>
-                                <span>Color by:</span>
+                                <label className={styles.label}>Color by:</label>
                                 <Switch
                                     className={styles.colorBySwitch}
                                     defaultChecked={true}
@@ -207,15 +214,21 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                 <strong> Box Select</strong> tools on the plot, and it will get saved here.
                             </span>) :
 
-                            (<Col span={12}>
+                            (<React.Fragment>
+                                <Row
+                                    className={styles.colorByRow}
+                                    type="flex"
+                                    align="middle"
+                                >
 
-                            <span>Show selections: </span>
-                                <Switch
-                                    className={styles.colorBySwitch}
-                                    defaultChecked={true}
-                                    onChange={handleApplyColorSwitchChange}
-                                />
-
+                                <label className={styles.label}>Show selections: </label>
+                                    <Switch
+                                        className={styles.colorBySwitch}
+                                        defaultChecked={true}
+                                        onChange={handleApplyColorSwitchChange}
+                                    />
+                                </Row>
+                                <div>
                                 <BarChart
                                     names={
                                         selectedSetNames.map(
@@ -230,7 +243,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                         values(selectedSetColors) : Array(selectedSetTotals.length).fill(DISABLE_COLOR)
                                     }
                                 />
-                                </Col>
+                                </div>
+                            </React.Fragment>
                             )
                         }
                     </Panel>
@@ -238,19 +252,36 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         key={panelKeys[2]}
                         header="Data group by clustering"
                     >
-                        <span>Show clusters: </span>
-                        <Switch
-                            className={styles.colorBySwitch}
-                            defaultChecked={false}
-                            onChange={handleClusteringToggle}
-                        />
-
-                        <RadioGroup onChange={this.changeClusteringAlgorithm} defaultValue="KMeans">
-                            <RadioButton value="KMeans">KMeans</RadioButton>
-                            <RadioButton value="Agglomerative">Agglomerative</RadioButton>
-                            <RadioButton value="DBSCAN">DBSCAN</RadioButton>
-                        </RadioGroup>
-                        <SliderInputCombo
+                        <Row
+                            className={styles.colorByRow}
+                            type="flex"
+                            align="middle"
+                        >
+                            <label className={styles.label}>Show clusters: </label>
+                            <Switch
+                                className={styles.colorBySwitch}
+                                defaultChecked={false}
+                                onChange={handleClusteringToggle}
+                            />
+                        </Row>
+                        <Row
+                            className={styles.colorByRow}
+                            type="flex"
+                            align="middle"
+                        >
+                            <RadioGroup
+                                onChange={this.changeClusteringAlgorithm}
+                                defaultValue="KMeans"
+                                disabled={!showClusters}
+                            >
+                                <RadioButton value="KMeans">KMeans</RadioButton>
+                                <RadioButton value="Agglomerative">Agglomerative</RadioButton>
+                                <RadioButton value="DBSCAN">DBSCAN</RadioButton>
+                            </RadioGroup>
+                        </Row>
+                        <SliderWithCustomMarks
+                            disabled={!showClusters}
+                            label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
                             onValueChange={this.changeClusteringNumber}
                             valueOptions={clusteringOptions}
                         />
@@ -273,6 +304,7 @@ function mapStateToProps(state: State) {
         selectedSetColors: selectionStateBranch.selectors.getSelectionSetColors(state),
         selectedSetNames: selectionStateBranch.selectors.getSelectedGroupKeys(state),
         selectedSetTotals: selectionStateBranch.selectors.getSelectedSetTotals(state),
+        showClusters: selectionStateBranch.selectors.getClustersOn(state),
     };
 }
 

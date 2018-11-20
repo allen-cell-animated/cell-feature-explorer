@@ -15,3 +15,13 @@
 :global(.ant-select.ant-select-enabled) {
   color: #ffffff;
 }
+
+:global(.ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked){
+  background-color: var(--dimgray);
+  color: var(--background-dark-gray);
+}
+
+.label{
+  color: #ffffff;
+  padding-right: 1em;
+}

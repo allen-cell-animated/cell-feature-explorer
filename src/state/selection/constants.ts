@@ -80,3 +80,8 @@ export const CLUSTERING_MAP = (key: ClusteringTypeChoices): ClusteringNumberChoi
     };
     return map[key] || CLUSTER_NUMBER_KEY;
 };
+
+export const CLUSTERING_LABEL = {
+    [CLUSTER_NUMBER_KEY] : "number of clusters",
+    [CLUSTER_DISTANCE_KEY] : "distance between clusters",
+};

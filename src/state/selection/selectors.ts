@@ -184,7 +184,7 @@ export const getMainPlotData = createSelector(
         proteinNames
     ): GroupedPlotData => {
     return {
-
+        color: colorByValues as string[],
         groupBy: colorBy === PROTEIN_NAME_KEY,
         groupSettings: map(proteinNames, (name: string, index) => {
             return {

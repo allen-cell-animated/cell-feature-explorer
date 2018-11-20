@@ -81,6 +81,7 @@ export interface GroupedPlotData {
     groups: string[];
     groupSettings: GroupSettings[];
     plotName?: string;
+    color?: number[];
 }
 
 export interface SelectedGroup {
