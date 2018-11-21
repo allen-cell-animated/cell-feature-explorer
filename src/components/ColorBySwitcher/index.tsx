@@ -1,0 +1,53 @@
+import {
+    Col,
+    Row,
+    Switch,
+} from "antd";
+import React from "react";
+
+const styles = require("./style.css");
+
+interface ColorBySwitcherProps {
+    defaultChecked: boolean;
+    label: string;
+    handleChange: (on: boolean) => void;
+    includeCol?: number;
+    checkedChildren?: string;
+    unCheckedChildren?: string;
+}
+
+const ColorBySwitcher: React.SFC<ColorBySwitcherProps> = (props) => {
+    return props.includeCol ? (
+        <Row
+            className={styles.colorByRow}
+            type="flex"
+            align="middle"
+        >
+            <Col span={props.includeCol}>
+                <label className={styles.label}>Color by:</label>
+                <Switch
+                    className={styles.colorBySwitch}
+                    defaultChecked={props.defaultChecked}
+                    checkedChildren={props.checkedChildren}
+                    unCheckedChildren={props.unCheckedChildren}
+                    onChange={props.handleChange}
+                />
+            </Col>
+            {props.children}
+        </Row>) : (
+        <Row
+            className={styles.colorByRow}
+            type="flex"
+            align="middle"
+        >
+            <label className={styles.label}>{props.label}</label>
+            <Switch
+                className={styles.colorBySwitch}
+                defaultChecked={props.defaultChecked}
+                onChange={props.handleChange}
+            />
+        </Row>
+    );
+};
+
+export default ColorBySwitcher;
