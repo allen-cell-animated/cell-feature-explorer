@@ -94,7 +94,7 @@ export function changeClusteringAlgorithm(payload: string): ChangeSelectionActio
     };
 }
 
-export function changeClusteringNumber(clusteringKey: string, payload: number): ChangeClusterNumberAction {
+export function changeClusteringNumber(clusteringKey: string, payload: string): ChangeClusterNumberAction {
     return {
         clusteringKey,
         payload,

@@ -70,7 +70,7 @@ export interface BoolToggleAction {
 }
 
 export interface ChangeClusterNumberAction {
-    payload: number;
+    payload: string;
     clusteringKey: string;
     type: string;
 }
