@@ -136,6 +136,18 @@ export const getPossibleColorByData = createSelector([getFullMetaDataArray], (me
     ))
 );
 
+export const getFilteredOpacity = createSelector(
+    [
+        getColorBySelection,
+        getFiltersToExclude,
+        getProteinLabels,
+    ],
+    (colorBySelection, filtersToExclude, proteinLabels): number[] => {
+        return map(proteinLabels, (proteinName) => (
+            includes(filtersToExclude, proteinName) ? 0 : GENERAL_PLOT_SETTINGS.unselectedCircleOpacity
+        ));
+    });
+
 export const getOpacity = createSelector(
     [
         getColorBySelection,
@@ -191,9 +203,9 @@ export const getMainPlotData = createSelector(
             };
         }) : null,
         groups: colorByValues,
+        opacity,
         x: xValues,
         y: yValues,
-
         };
     }
 );
@@ -284,16 +296,19 @@ export const getClusteringResult = createSelector(
         getClusteringSetting,
         getXValues,
         getYValues,
+        getFilteredOpacity,
     ],
     (
             clusteringData,
             clusteringAlgorithm,
             clusterSetting,
             xValues,
-            yValues
+            yValues,
+            opacity
     ): ContinuousPlotData => {
             return {
                 color: map(clusteringData, (ele) => ele[clusteringAlgorithm][clusterSetting]),
+                opacity,
                 x: xValues,
                 y: yValues,
             };
