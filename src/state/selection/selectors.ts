@@ -35,7 +35,6 @@ import {
     ContinuousPlotData,
     GroupedPlotData,
     NumberOrString,
-    SelectedGroupData,
     SelectedGroupDatum,
     SelectedGroups,
     State,
@@ -43,7 +42,6 @@ import {
 } from "../types";
 
 import { CLUSTERING_MAP } from "./constants";
-import { ClusteringDatum } from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -183,15 +181,15 @@ export const getMainPlotData = createSelector(
         proteinNames
     ): GroupedPlotData | ContinuousPlotData => {
     return {
-        color: colorByValues,
+        color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
         groupBy: colorBy === PROTEIN_NAME_KEY,
-        groupSettings: map(proteinNames, (name: string, index) => {
+        groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
             return {
                 color: proteinColors[index],
                 name,
                 opacity: opacity[index],
             };
-        }),
+        }) : null,
         groups: colorByValues,
         x: xValues,
         y: yValues,
