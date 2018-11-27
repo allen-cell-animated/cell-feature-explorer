@@ -1,8 +1,6 @@
 import { AxiosResponse } from "axios";
 import {
-    difference,
-    keys,
-    pick,
+    shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
 
@@ -69,7 +67,7 @@ const requestFeatureDataLogic = createLogic({
             .then((data) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
 
-                return data.map((datum: MetadataStateBranch) => {
+                return shuffle(data.map((datum: MetadataStateBranch) => {
                     return {
                         clusters: datum.clusters,
                         file_info: {
@@ -83,7 +81,7 @@ const requestFeatureDataLogic = createLogic({
                         },
                         measured_features: datum.measured_features,
                     };
-                });
+                }));
             })
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
