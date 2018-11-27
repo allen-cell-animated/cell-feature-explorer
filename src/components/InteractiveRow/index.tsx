@@ -1,10 +1,11 @@
 import {
+    Badge,
     Button,
     Checkbox,
-    Progress,
 } from "antd";
 import React from "react";
 
+import "antd/lib/badge/style";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import "antd/lib/checkbox/style";
 import "antd/lib/progress/style";
@@ -52,7 +53,6 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             total,
             onBarClicked,
         } = this.props;
-        const format = () => total.toString();
         return (
             <div
                 className={styles.container}
@@ -64,15 +64,16 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                         defaultChecked={true}
                     />
                 }
-
                 <span className={styles.label}>
-                    {name}
-                </span>
-                <Progress
-                    percent={percent}
-                    strokeColor={color}
-                    format={format}
+                        {name}
+                    </span>
+                <span className={styles.label}>{total}</span>
+
+                <Badge
+                    style={{backgroundColor: color}}
+                    dot={true}
                 />
+
                 {closeable &&
                     <Button
                         size="small"
