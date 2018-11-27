@@ -3,7 +3,6 @@ import {
     Collapse,
     Radio,
     Row,
-    Switch,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import "antd/es/collapse/style";
