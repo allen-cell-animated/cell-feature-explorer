@@ -19,7 +19,7 @@ export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction
     };
 }
 
-export function receiveMetadata(payload: MetaData): ReceiveAction {
+export function receiveMetadata(payload: MetaData[]): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,

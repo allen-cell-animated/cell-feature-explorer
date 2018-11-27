@@ -5,11 +5,11 @@ import {
     Row,
     Switch,
 } from "antd";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import "antd/lib/collapse/style";
-import { RadioChangeEvent } from "antd/lib/radio";
-import "antd/lib/radio/style";
-import "antd/lib/switch/style";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
+import "antd/es/collapse/style";
+import { RadioChangeEvent } from "antd/es/radio";
+import "antd/es/radio/style";
+import "antd/es/switch/style";
 
 import {
     includes,
@@ -59,6 +59,7 @@ import {
     State,
 } from "../../state/types";
 
+import ColorBySwitcher from "../../components/ColorBySwitcher";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
@@ -107,13 +108,21 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
         this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
         this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
+        this.renderProteinPanel = this.renderProteinPanel.bind(this);
+        this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
+        this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
     }
 
-    public componentWillReceiveProps(nextProps: ColorByMenuProps) {
-        const { handleChangeClusteringNumber } = this.props;
-        if (!nextProps.clusteringSetting) {
+    public componentDidUpdate() {
+        const {
+            clusteringAlgorithm,
+            handleChangeClusteringNumber,
+            clusteringSetting,
+            clusteringOptions,
+        } = this.props;
+        if (!clusteringSetting) {
             handleChangeClusteringNumber(
-                CLUSTERING_MAP(nextProps.clusteringAlgorithm), nextProps.clusteringOptions[initIndex]);
+                CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
         }
     }
 
@@ -133,6 +142,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public onActivePanelChange(value: string | string[]) {
         this.props.onPanelClicked(value as string[]);
     }
+
     public changeClusteringAlgorithm({ target }: RadioChangeEvent) {
         const { handleChangeClusteringAlgorithm } = this.props;
         handleChangeClusteringAlgorithm(target.value);
@@ -143,29 +153,149 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
     }
 
-    public render() {
+    public renderClusteringPanel() {
         const {
-            applyColorToSelections,
             clusteringAlgorithm,
             clusteringSetting,
-            colorBy,
-            defaultActiveKey,
-            openKeys,
-            filtersToExclude,
-            panelKeys,
-            proteinNames,
-            proteinTotals,
-            proteinColors,
-            selectedSetNames,
-            selectedSetColors,
-            selectedSetTotals,
-            handleApplyColorSwitchChange,
-            handleCloseSelectionSet,
             handleClusteringToggle,
             clusteringOptions,
             showClusters,
         } = this.props;
         const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
+
+        return (
+
+            <React.Fragment>
+                <ColorBySwitcher
+                    defaultChecked={false}
+                    handleChange={handleClusteringToggle}
+                    label="Show clusters:"
+                />
+                <Row
+                    className={styles.colorByRow}
+                    type="flex"
+                    align="middle"
+                >
+                    <RadioGroup
+                        onChange={this.changeClusteringAlgorithm}
+                        defaultValue={KMEANS_KEY}
+                        disabled={!showClusters}
+                    >
+                        <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
+                        <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
+                        <RadioButton value={DBSCAN_KEY}>DBSCAN</RadioButton>
+                    </RadioGroup>
+                </Row>
+                    <SliderWithCustomMarks
+                        disabled={!showClusters}
+                        label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
+                        onValueChange={this.changeClusteringNumber}
+                        valueOptions={clusteringOptions}
+                        initIndex={initSliderSetting}
+                    />
+            </React.Fragment>
+        );
+    }
+
+    public renderSelectionPanel() {
+        const {
+            applyColorToSelections,
+            selectedSetNames,
+            selectedSetColors,
+            selectedSetTotals,
+            handleApplyColorSwitchChange,
+            handleCloseSelectionSet,
+        } = this.props;
+        return selectedSetTotals.length === 0 ?
+            (
+                <span>No selected sets yet. Make a selection on the chart using the
+                    <strong> Lasso Select</strong> or
+                    <strong> Box Select</strong> tools on the plot, and it will get saved here.
+                </span>
+            ) : (
+            <React.Fragment>
+                <ColorBySwitcher
+                    defaultChecked={true}
+                    handleChange={handleApplyColorSwitchChange}
+                    label="Show selections: "
+                />
+                <div>
+                    <BarChart
+                        names={
+                            selectedSetNames.map(
+                                (ele: number | string, index: number) => Number(ele) ? index : ele)
+                        }
+                        ids={selectedSetNames}
+                        closeable={true}
+                        hideable={false}
+                        totals={selectedSetTotals}
+                        handleCloseSelectionSet={handleCloseSelectionSet}
+                        colors={applyColorToSelections ?
+                            values(selectedSetColors) :
+                            Array(selectedSetTotals.length).fill(DISABLE_COLOR)
+                        }
+                    />
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    public renderProteinPanel() {
+        const {
+            colorBy,
+            filtersToExclude,
+            proteinNames,
+            proteinTotals,
+            proteinColors,
+
+        } = this.props;
+
+        return (
+            <React.Fragment>
+                <ColorBySwitcher
+                    defaultChecked={true}
+                    label="Color by: "
+                    handleChange={this.onColorBySwitchChanged}
+                    includeCol={12}
+                    checkedChildren="protein"
+                    unCheckedChildren="cellular feature"
+                >
+                    {colorBy === PROTEIN_NAME_KEY ? null : (
+                        <Col span={6}>
+                            <AxisDropDown
+                                axisId={COLOR_BY_SELECTOR}
+                            />
+                        </Col>
+                    )}
+                </  ColorBySwitcher >
+                <div>
+                    <BarChart
+                        names={proteinNames}
+                        ids={proteinNames}
+                        totals={proteinTotals}
+                        closeable={false}
+                        hideable={true}
+                        colors={colorBy === PROTEIN_NAME_KEY ?
+                            proteinNames
+                                .map((ele: NumberOrString, index: number) =>
+                                    includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
+                            proteinNames
+                                .map((ele: NumberOrString, index: number) =>
+                                    includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR)
+                    }
+                        onBarClicked={this.onBarClicked}
+                    />
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    public render() {
+        const {
+            defaultActiveKey,
+            openKeys,
+            panelKeys,
+        } = this.props;
         return (
                 <Collapse
                     defaultActiveKey={defaultActiveKey}
@@ -176,131 +306,19 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         key={panelKeys[0]}
                         header="Data grouped by tagged structures"
                     >
-                        <Row
-                            className={styles.colorByRow}
-                            type="flex"
-                            align="middle"
-                        >
-                            <Col span={12}>
-                                <label className={styles.label}>Color by:</label>
-                                <Switch
-                                    className={styles.colorBySwitch}
-                                    defaultChecked={true}
-                                    checkedChildren="protein"
-                                    unCheckedChildren="cellular feature"
-                                    onChange={this.onColorBySwitchChanged}
-                                />
-                            </Col>
-                                {colorBy === PROTEIN_NAME_KEY ? null : (
-                                <Col span={6}>
-                                    <AxisDropDown
-                                        axisId={COLOR_BY_SELECTOR}
-                                    />
-                                </Col>
-                            )}
-                        </Row>
-                        <div>
-                            <BarChart
-                                names={proteinNames}
-                                ids={proteinNames}
-                                totals={proteinTotals}
-                                closeable={false}
-                                hideable={true}
-                                colors={colorBy === PROTEIN_NAME_KEY ?
-                                    proteinNames
-                                        .map((ele: NumberOrString, index: number) =>
-                                            includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
-                                    proteinNames
-                                        .map((ele: NumberOrString, index: number) =>
-                                            includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR)
-                                }
-                                onBarClicked={this.onBarClicked}
-                            />
-                        </div>
+                        {this.renderProteinPanel()}
                     </Panel>
                     <Panel
                         key={panelKeys[1]}
                         header="Selected sets"
                     >
-                        {selectedSetTotals.length === 0 ?
-                            (<span>
-                                No selected sets yet. Make a selection on the chart using the
-                                <strong> Lasso Select</strong> or
-                                <strong> Box Select</strong> tools on the plot, and it will get saved here.
-                            </span>) :
-
-                            (<React.Fragment>
-                                <Row
-                                    className={styles.colorByRow}
-                                    type="flex"
-                                    align="middle"
-                                >
-
-                                <label className={styles.label}>Show selections: </label>
-                                    <Switch
-                                        className={styles.colorBySwitch}
-                                        defaultChecked={true}
-                                        onChange={handleApplyColorSwitchChange}
-                                    />
-                                </Row>
-                                <div>
-                                <BarChart
-                                    names={
-                                        selectedSetNames.map(
-                                            (ele: number | string, index: number) => Number(ele) ? index : ele)
-                                    }
-                                    ids={selectedSetNames}
-                                    closeable={true}
-                                    hideable={false}
-                                    totals={selectedSetTotals}
-                                    handleCloseSelectionSet={handleCloseSelectionSet}
-                                    colors={applyColorToSelections ?
-                                        values(selectedSetColors) : Array(selectedSetTotals.length).fill(DISABLE_COLOR)
-                                    }
-                                />
-                                </div>
-                            </React.Fragment>
-                            )
-                        }
+                        {this.renderSelectionPanel()}
                     </Panel>
                     <Panel
                         key={panelKeys[2]}
                         header="Data group by clustering"
                     >
-                        <Row
-                            className={styles.colorByRow}
-                            type="flex"
-                            align="middle"
-                        >
-                            <label className={styles.label}>Show clusters: </label>
-                            <Switch
-                                className={styles.colorBySwitch}
-                                defaultChecked={false}
-                                onChange={handleClusteringToggle}
-                            />
-                        </Row>
-                        <Row
-                            className={styles.colorByRow}
-                            type="flex"
-                            align="middle"
-                        >
-                            <RadioGroup
-                                onChange={this.changeClusteringAlgorithm}
-                                defaultValue={KMEANS_KEY}
-                                disabled={!showClusters}
-                            >
-                                <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
-                                <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
-                                <RadioButton value={DBSCAN_KEY}>DBSCAN</RadioButton>
-                            </RadioGroup>
-                        </Row>
-                        <SliderWithCustomMarks
-                            disabled={!showClusters}
-                            label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
-                            onValueChange={this.changeClusteringNumber}
-                            valueOptions={clusteringOptions}
-                            initIndex={initSliderSetting}
-                        />
+                        {this.renderClusteringPanel()}
                     </Panel>
                 </Collapse>
         );

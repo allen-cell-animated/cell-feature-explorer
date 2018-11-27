@@ -1,0 +1,18 @@
+@import "../../styles/colors.css";
+
+.color-by-switch {
+    background-color: var(--dimgray);
+}
+
+.color-by-switch:global(.ant-switch-checked) {
+    background-color: var(--purple);
+}
+
+.color-by-row {
+    margin-bottom: 1em;
+}
+
+.label{
+    color: #ffffff;
+    padding-right: 1em;
+}

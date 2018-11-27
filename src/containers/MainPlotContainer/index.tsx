@@ -5,6 +5,7 @@ import {
 } from "lodash";
 import {
     Color,
+    Data,
     PlotMouseEvent,
     PlotSelectionEvent,
 } from "plotly.js";
@@ -42,33 +43,20 @@ import {
 
 import AxisDropDown from "../AxisDropDown";
 
+import { getScatterPlotDataArray } from "./selectors";
+
 const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
-    applyColorToSelections: boolean;
-    cellLineDefs: CellLineDef;
     clickedPoints: number[];
-    clusteringResultData: ContinuousPlotData;
-    colorBy: string;
-    colorByGroupings: string[] | number[];
-    dotOpacity: number[];
-    mainPlotDataValues: GroupedPlotData;
-    plotByOnX: string;
-    plotByOnY: string;
-    proteinColors: Color[];
-    proteinLabels: string[];
-    proteinNames: string[];
+    plotDataArray: Data[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
-    selectedGroups: ContinuousPlotData;
-    showClusters: boolean;
-    xDataValues: number[];
-    yDataValues: number[];
 }
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
@@ -115,35 +103,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     public render() {
         const {
-            applyColorToSelections,
             annotations,
-            clusteringResultData,
-            mainPlotDataValues,
-            showClusters,
-            selectedGroups,
+            plotDataArray,
         } = this.props;
-        if (mainPlotDataValues.x.length === 0) {
+        if (plotDataArray.length === 0) {
             return null;
         }
-        const mainPlotData = {
-            ...mainPlotDataValues,
-            groupSettings : {
-                ...mainPlotDataValues.groupSettings,
-            },
-            plotName: SCATTER_PLOT_NAME,
-        };
-
-        const selectedGroupPlotData = applyColorToSelections ? {
-                ...selectedGroups,
-            groupBy: false,
-            plotName: SELECTIONS_PLOT_NAME,
-        } : null;
-
-        const clusteringPlotData = showClusters ? {
-            ...clusteringResultData,
-            groupBy: false,
-            plotName: CLUSTERS_PLOT_NAME,
-        } : null;
 
         return (
             <div
@@ -153,11 +118,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
                 <MainPlot
-                    mainPlotData={mainPlotData}
-                    selectGroupPlotData={selectedGroupPlotData}
+                    plotDataArray={plotDataArray}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
-                    clusteringPlotData={clusteringPlotData}
                     onGroupSelected={this.onGroupSelected}
                 />
             </div>
@@ -168,23 +131,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
-        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
-        cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
-        clusteringResultData: selectionStateBranch.selectors.getClusteringResult(state),
-        colorBy: selectionStateBranch.selectors.getColorBySelection(state),
-        colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        dotOpacity: selectionStateBranch.selectors.getOpacity(state),
-        mainPlotDataValues: selectionStateBranch.selectors.getMainPlotData(state),
-        plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
-        plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
-        proteinColors: selectionStateBranch.selectors.getProteinColors(state),
-        proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
-        proteinNames: metadataStateBranch.selectors.getProteinNames(state),
-        selectedGroups: selectionStateBranch.selectors.getSelectedGroupsData(state),
-        showClusters: selectionStateBranch.selectors.getClustersOn(state),
-        xDataValues: selectionStateBranch.selectors.getXValues(state),
-        yDataValues: selectionStateBranch.selectors.getYValues(state),
+        plotDataArray: getScatterPlotDataArray(state),
     };
 }
 

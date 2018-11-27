@@ -9,7 +9,7 @@ import "antd/lib/slider/style";
 
 interface SliderWithCustomMarksProps {
     disabled: boolean;
-    initIndex?: number;
+    initIndex: number;
     onValueChange: (value: string) => void;
     label: string;
     valueOptions: string[];
@@ -27,9 +27,11 @@ export default class SliderWithCustomMarks extends React.Component<SliderWithCus
         };
     }
 
-    public componentWillMount() {
-        const { valueOptions, onValueChange } = this.props;
-        onValueChange(valueOptions[this.state.inputValue]);
+    public componentDidUpdate(prevProps: SliderWithCustomMarksProps) {
+        const { initIndex } = this.props;
+        if ( prevProps.initIndex !== initIndex) {
+            this.setState({ inputValue: initIndex });
+        }
     }
 
     public onChange = (value: SliderValue) => {

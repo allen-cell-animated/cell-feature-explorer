@@ -19,11 +19,9 @@ import {
 
 interface MainPlotProps {
     annotations: Annotation[];
-    clusteringPlotData: ContinuousPlotData | null;
-    mainPlotData: GroupedPlotData;
+    plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
-    selectGroupPlotData: ContinuousPlotData | null;
 }
 
 interface MainPlotState {
@@ -45,10 +43,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
 
     constructor(props: MainPlotProps) {
         super(props);
-        this.makeScatterPlotData = this.makeScatterPlotData.bind(this);
         this.makeAnnotations = this.makeAnnotations.bind(this);
-        this.colorSettings = this.colorSettings.bind(this);
-        this.getDataArray = this.getDataArray.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
         this.state = {
             showFullAnnotation: true,
@@ -56,7 +51,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public shouldComponentUpdate(nextProps) {
-        nextProps.clusteringPlotData
+        // nextProps.clusteringPlotData
         return false;
     }
 
@@ -96,126 +91,9 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             };
         });
     }
-    public isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
-        return plotData.groupBy === true;
-    }
-
-    public colorSettings(plotSettings: Data, plotData: GroupedPlotData| ContinuousPlotData): Data {
-        if (this.isGrouped(plotData)) {
-            return {
-                ...plotSettings,
-                transforms: [ {
-                    groups: plotData.groups,
-                    nameformat: `%{group}`,
-                    styles: map(plotData.groupSettings, (ele, index: number) => {
-                        return {
-                            target: ele.name,
-                            value: {
-                                marker:
-                                    {
-                                        color: ele.color,
-                                        opacity: ele.opacity,
-                                    }},
-                        };
-                    }),
-                    // literal typing to avoid a widened type inferred
-                    type: "groupby" as "groupby",
-                },
-                ],
-            };
-        }
-
-        return {
-            ...plotSettings,
-            marker: {
-                ...plotSettings.marker,
-                color: plotData.color,
-                opacity: plotData.opacity  || GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
-            },
-        };
-    }
-
-    public makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Data {
-        const plotSettings =  {
-            marker: {
-                size: GENERAL_PLOT_SETTINGS.circleRadius,
-                symbol: "circle",
-            },
-            // literal typing to avoid a widened type inferred
-            mode: "markers" as "markers",
-            name: plotData.plotName,
-            showlegend: false,
-            // literal typing to avoid a widened type inferred
-            type: "scattergl" as "scattergl",
-            x: plotData.x,
-            y: plotData.y,
-            z: [],
-        };
-        return this.colorSettings(plotSettings, plotData);
-    }
-
-    public makeHistogramPlotX(data: number[]) {
-        return {
-            marker: {
-                color: GENERAL_PLOT_SETTINGS.histogramColor,
-                line: {
-                    color: GENERAL_PLOT_SETTINGS.textColor,
-                    width: 1,
-                },
-            },
-            name: `x histogram`,
-            nbinsx: 60,
-            showlegend: false,
-            // literal typing to avoid a widened type inferred
-            type: "histogram" as "histogram",
-            x: data,
-            yaxis: "y2",
-
-        };
-    }
-
-    public makeHistogramPlotY(data: number[]) {
-        return {
-            marker: {
-                color: GENERAL_PLOT_SETTINGS.histogramColor,
-                line: {
-                    color: GENERAL_PLOT_SETTINGS.textColor,
-                    width: 1,
-                },
-            },
-            name: `y histogram`,
-            nbinsy: 60,
-            showlegend: false,
-            // literal typing to avoid a widened type inferred
-            type: "histogram" as "histogram",
-            xaxis: "x2",
-            y: data,
-
-        };
-    }
-
-    public getDataArray() {
-        const {
-            mainPlotData,
-            selectGroupPlotData,
-            clusteringPlotData,
-        } = this.props;
-        const data = [
-            this.makeHistogramPlotX(mainPlotData.x),
-            this.makeHistogramPlotY(mainPlotData.y),
-            this.makeScatterPlotData(mainPlotData),
-        ];
-        if (clusteringPlotData) {
-            data.push(this.makeScatterPlotData(clusteringPlotData));
-        }
-        if (selectGroupPlotData) {
-            data.push(this.makeScatterPlotData(selectGroupPlotData));
-        }
-        return data;
-    }
 
     public render() {
-        const { onPointClicked, onGroupSelected } = this.props;
+        const { onPointClicked, onGroupSelected, plotDataArray } = this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
@@ -232,7 +110,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
         return (
             <Plot
-                data={this.getDataArray()}
+                data={plotDataArray}
                 useResizeHandler={true}
                 layout={{
                     annotations: this.makeAnnotations(),

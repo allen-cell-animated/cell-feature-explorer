@@ -32,10 +32,11 @@ export interface MeasuredFeatures {
 export interface MetaData {
     file_info: FileInfo;
     measured_features: MeasuredFeatures;
+    clusters: any;
 }
 
 export interface ReceiveAction {
-    payload: MetaData;
+    payload: MetaData[];
     type: string;
 }
 

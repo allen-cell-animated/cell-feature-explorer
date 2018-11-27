@@ -79,7 +79,7 @@ export interface GroupedPlotData {
     y: number[];
     groupBy: boolean;
     groups: number[] | string[];
-    groupSettings: GroupSettings[];
+    groupSettings: GroupSettings[] | null;
     plotName?: string;
 }
 
