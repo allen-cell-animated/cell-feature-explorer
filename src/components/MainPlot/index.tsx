@@ -55,6 +55,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
+    public shouldComponentUpdate(nextProps) {
+        nextProps.clusteringPlotData
+        return false;
+    }
+
     public clickedAnnotation() {
         this.setState({showFullAnnotation: false});
     }
