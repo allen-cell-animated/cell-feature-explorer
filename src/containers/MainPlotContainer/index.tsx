@@ -4,7 +4,6 @@ import {
     map,
 } from "lodash";
 import {
-    Color,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -18,21 +17,17 @@ import {
 import MainPlot from "../../components/MainPlot";
 
 import {
-    CLUSTERS_PLOT_NAME,
     SCATTER_PLOT_NAME,
-    SELECTIONS_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
 import {
     Annotation,
-    ContinuousPlotData,
-    GroupedPlotData,
     State,
 } from "../../state/types";
 
 import metadataStateBranch from "../../state/metadata";
-import { CellLineDef, RequestAction } from "../../state/metadata/types";
+import { RequestAction } from "../../state/metadata/types";
 
 import selectionStateBranch from "../../state/selection";
 import {
