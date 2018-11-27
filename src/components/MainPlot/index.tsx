@@ -25,6 +25,7 @@ interface MainPlotProps {
 }
 
 interface MainPlotState {
+    layout: any;
     showFullAnnotation: boolean;
 }
 
@@ -46,13 +47,25 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
         this.state = {
+            layout: {
+                annotations: this.makeAnnotations(),
+                autosize: true,
+                hovermode: "closest",
+                legend: GENERAL_PLOT_SETTINGS.legend,
+                margin: {
+                    b: 30,
+                    r: 20,
+                    t: 10,
+                },
+                paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
+                xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
+                yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
+                yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
+            },
             showFullAnnotation: true,
         };
-    }
-
-    public shouldComponentUpdate(nextProps) {
-        // nextProps.clusteringPlotData
-        return false;
     }
 
     public clickedAnnotation() {
@@ -112,24 +125,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             <Plot
                 data={plotDataArray}
                 useResizeHandler={true}
-                layout={{
-                    annotations: this.makeAnnotations(),
-                    autosize: true,
-                    hovermode: "closest",
-                    legend: GENERAL_PLOT_SETTINGS.legend,
-                    margin: {
-                        b: 30,
-                        r: 20,
-                        t: 10,
-                    },
-                    paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                    xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
-                    yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                    yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
-
-                }}
+                layout={this.state.layout}
                 config={options}
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
