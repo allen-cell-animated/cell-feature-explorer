@@ -30,7 +30,7 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    private static panelKeys = ["proteinNames", "clusters"];
+    private static panelKeys = ["proteinNames", "selections", "clusters"];
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
@@ -62,7 +62,6 @@ class App extends React.Component<AppProps, {}> {
                     </Header>
                     <Layout>
                         <Sider
-                            width={400}
                             className={styles.colorMenu}
                         >
                             <ColorByMenu
@@ -72,7 +71,7 @@ class App extends React.Component<AppProps, {}> {
                                 onPanelClicked={this.onPanelClicked}
                             />
                         </Sider>
-                        <Content>
+                        <Content className={styles.content}>
                             <div className={styles.plotView} >
                                 <MainPlotContainer
                                     handleSelectionToolUsed={this.onSelectionToolUsed}

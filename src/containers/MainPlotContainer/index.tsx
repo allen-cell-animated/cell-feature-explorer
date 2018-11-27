@@ -1,6 +1,11 @@
-import { includes } from "lodash";
+import {
+    filter,
+    includes,
+    map,
+} from "lodash";
 import {
     Color,
+    Data,
     PlotMouseEvent,
     PlotSelectionEvent,
 } from "plotly.js";
@@ -13,12 +18,16 @@ import {
 import MainPlot from "../../components/MainPlot";
 
 import {
+    CLUSTERS_PLOT_NAME,
     SCATTER_PLOT_NAME,
+    SELECTIONS_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
 import {
     Annotation,
+    ContinuousPlotData,
+    GroupedPlotData,
     State,
 } from "../../state/types";
 
@@ -28,45 +37,34 @@ import { CellLineDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
-    SelectedGroupData,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
 
 import AxisDropDown from "../AxisDropDown";
 
+import { getScatterPlotDataArray } from "./selectors";
+
 const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
-    applyColorToSelections: boolean;
-    cellLineDefs: CellLineDef;
     clickedPoints: number[];
-    colorBy: string;
-    colorByGroupings: string[] | number[];
-    dotOpacity: number[];
-    plotByOnX: string;
-    plotByOnY: string;
-    proteinColors: Color[];
-    proteinLabels: string[];
-    proteinNames: string[];
+    plotDataArray: Data[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
-    selectedGroups: SelectedGroupData;
-    xDataValues: number[];
-    yDataValues: number[];
 }
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     constructor(props: MainPlotContainerProps) {
-         super(props);
-         this.onPointClicked = this.onPointClicked.bind(this);
-         this.onGroupSelected = this.onGroupSelected.bind(this);
+        super(props);
+        this.onPointClicked = this.onPointClicked.bind(this);
+        this.onGroupSelected = this.onGroupSelected.bind(this);
     }
 
     public componentWillMount() {
@@ -98,38 +96,21 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
-        const payload = points.map((point) => point.pointIndex);
+        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "pointIndex");
         handleSelectGroupOfPoints(key, payload);
         handleSelectionToolUsed();
     }
 
     public render() {
-         const {
-             applyColorToSelections,
-             annotations,
-             colorBy,
-             colorByGroupings,
-             dotOpacity,
-             selectedGroups,
-             proteinColors,
-             proteinLabels,
-             proteinNames,
-             xDataValues,
-             yDataValues,
-         } = this.props;
-         if (xDataValues.length === 0) {
-             return null;
-         }
-         const plotData = {
-             dotOpacity,
-             groups: colorByGroupings,
-             proteinColors,
-             proteinLabels,
-             proteinNames,
-             x: xDataValues,
-             y: yDataValues,
-         };
-         return (
+        const {
+            annotations,
+            plotDataArray,
+        } = this.props;
+        if (plotDataArray.length === 0) {
+            return null;
+        }
+
+        return (
             <div
                 id="main-plot"
                 className={styles.container}
@@ -137,13 +118,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
                 <MainPlot
-                    plotData={plotData}
+                    plotDataArray={plotDataArray}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
-                    selectedGroups={selectedGroups}
-                    colorBy={colorBy}
-                    applyColorToSelections={applyColorToSelections}
                 />
             </div>
         );
@@ -153,20 +131,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
-        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
-        cellLineDefs: metadataStateBranch.selectors.getFullCellLineDefs(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
-        colorBy: selectionStateBranch.selectors.getColorBySelection(state),
-        colorByGroupings: selectionStateBranch.selectors.getColorByValues(state),
-        dotOpacity: selectionStateBranch.selectors.getOpacity(state),
-        plotByOnX: selectionStateBranch.selectors.getPlotByOnX(state),
-        plotByOnY: selectionStateBranch.selectors.getPlotByOnY(state),
-        proteinColors: selectionStateBranch.selectors.getProteinColors(state),
-        proteinLabels: metadataStateBranch.selectors.getProteinLabels(state),
-        proteinNames: metadataStateBranch.selectors.getProteinNames(state),
-        selectedGroups: selectionStateBranch.selectors.getSelectedGroupsData(state),
-        xDataValues: selectionStateBranch.selectors.getXValues(state),
-        yDataValues: selectionStateBranch.selectors.getYValues(state),
+        plotDataArray: getScatterPlotDataArray(state),
     };
 }
 

@@ -3,7 +3,7 @@ import { zipWith } from "lodash";
 import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
-    FOV_ID_KEY,
+    FOV_ID_KEY, KMEANS_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 
@@ -26,6 +26,11 @@ export const makeFeatureData = (
 ): MetaData[] => (
     zipWith(cellIds, proteinNames, measuredFeatures1, measuredFeatures2, (cellId, proteinName, feature1, feature2) => (
         {
+            clusters: {
+                [KMEANS_KEY]: {
+                    2 : 0,
+                },
+            },
             file_info : {
                 [CELL_ID_KEY]: cellId,
                 [CELL_LINE_NAME_KEY]: "",
@@ -36,6 +41,7 @@ export const makeFeatureData = (
                 feature1,
                 feature2,
             },
+
         }
     )
 ));

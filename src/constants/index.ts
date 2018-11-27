@@ -3,6 +3,8 @@ export const API_VERSION = "v1";
 export const X_AXIS_ID = "plotByOnX";
 export const Y_AXIS_ID = "plotByOnY";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
+export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
+export const CLUSTERS_PLOT_NAME = "clusters-plot-name";
 export const COLOR_BY_SELECTOR = "colorBy";
 export const CELL_ID_KEY = "CellId";
 export const CELL_LINE_NAME_KEY = "CellLineName";
@@ -13,6 +15,13 @@ export const CELL_LINE_DEF_NAME_KEY = "CellLineId/Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId/Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";
 export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
+
+export const AGGLOMERATIVE_KEY = "Agglomerative";
+export const KMEANS_KEY = "KMeans";
+export const DBSCAN_KEY = "DBSCAN";
+
+export const CLUSTER_NUMBER_KEY = "numberOfClusters";
+export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
 
 declare const CELL_VIEWER_URL: string;
 declare const BASE_API_URL: string;

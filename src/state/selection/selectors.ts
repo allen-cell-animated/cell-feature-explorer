@@ -4,18 +4,21 @@ import {
     keys,
     map,
     mapValues,
+    reduce,
 } from "lodash";
 import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
+    CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 
 import {
+    getClusterData,
     getFileInfo,
     getFullMetaDataArray,
     getMeasuredData,
@@ -29,15 +32,16 @@ import {
 } from "../metadata/types";
 import {
     Annotation,
+    ContinuousPlotData,
+    GroupedPlotData,
     NumberOrString,
+    SelectedGroupDatum,
+    SelectedGroups,
     State,
     Thumbnail,
 } from "../types";
 
-import {
-    SelectedGroupData,
-    SelectedGroups,
-} from "./types";
+import { CLUSTERING_MAP } from "./constants";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -50,7 +54,10 @@ export const getSelectionSetColors = (state: State) => state.selection.selectedG
 export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
 export const getApplyColorToSelections = (state: State) => state.selection.applySelectionSetColoring;
-
+export const getClustersOn = (state: State) => state.selection.showClusters;
+export const getClusteringAlgorithm = (state: State) => state.selection.clusteringAlgorithm;
+export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
+export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
 // COMPOSED SELECTORS
 export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
@@ -80,38 +87,46 @@ export const getYValues = createSelector([getMeasuredData, getPlotByOnY],
 
 export const getSelectedGroupsData = createSelector(
     [
-        getFullMetaDataArray,
+        getMeasuredData,
         getSelectedGroups,
         getPlotByOnX,
         getPlotByOnY,
-        getColorBySelection,
         getSelectionSetColors,
     ],
     (
-        allData,
+        measuredDataArray,
         selectedGroups,
         plotByOnX,
         plotByOnY,
-        colorBy,
         selectedGroupColorMapping
 
-    ): SelectedGroupData | {} => {
-        return mapValues(selectedGroups, (value, key) => {
+    ): ContinuousPlotData => {
+        const dataArray = mapValues(selectedGroups, (value, key) => {
+            // for each point index, get x, y, and color for the point.
             return map(value, (pointIndex) => {
-                const measuredFeatures = allData[pointIndex].measured_features;
-                const fileInfo = allData[pointIndex].file_info;
+
+                const measuredFeatures = measuredDataArray[pointIndex];
                 return {
-                    colorBy: measuredFeatures[colorBy] || fileInfo[colorBy],
                     groupColor: selectedGroupColorMapping[key],
                     x: measuredFeatures[plotByOnX],
                     y: measuredFeatures[plotByOnY],
                 };
             });
         });
+        // flatten into array
+        const flattened = reduce(dataArray, (accum: SelectedGroupDatum[], value) =>
+                [...accum, ...value],
+            []
+        );
+        return {
+            color: map(flattened, "groupColor"),
+            x: map( flattened, "x"),
+            y: map( flattened, "y"),
+        };
     }
 );
 
-export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData) => (
+export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData): MetadataStateBranch[] => (
     map(metaData, (ele) => (
             {
                 ...ele.measured_features,
@@ -128,7 +143,7 @@ export const getOpacity = createSelector(
         getProteinNames,
         getProteinLabels,
     ],
-    (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels) => {
+    (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels): number[] => {
         let arrayToMap;
         if (colorBySelection === PROTEIN_NAME_KEY) {
             arrayToMap = proteinNameArray;
@@ -141,9 +156,46 @@ export const getOpacity = createSelector(
 });
 
 export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
-    (metaData: MetadataStateBranch[], colorBy: string): (number[] | string[]) => (
+    (metaData: MetadataStateBranch[], colorBy: string): (string[] | number[]) => (
         map(metaData, colorBy)
     )
+);
+
+export const getMainPlotData = createSelector(
+    [
+        getXValues,
+        getYValues,
+        getColorByValues,
+        getOpacity,
+        getColorBySelection,
+        getProteinColors,
+        getProteinNames,
+    ],
+    (
+        xValues,
+        yValues,
+        colorByValues,
+        opacity,
+        colorBy,
+        proteinColors,
+        proteinNames
+    ): GroupedPlotData | ContinuousPlotData => {
+    return {
+        color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
+        groupBy: colorBy === PROTEIN_NAME_KEY,
+        groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
+            return {
+                color: proteinColors[index],
+                name,
+                opacity: opacity[index],
+            };
+        }) : null,
+        groups: colorByValues,
+        x: xValues,
+        y: yValues,
+
+        };
+    }
 );
 
 export const getSelectedGroupKeys = createSelector([getSelectedGroups],
@@ -206,5 +258,45 @@ export const getAnnotations = createSelector(
                 y,
             };
         });
+    }
+);
+
+export const getClusteringRange = createSelector([getClusterData, getClusteringAlgorithm],
+    (clusterData, clusteringAlgorithm): string[] => {
+        if (clusterData[0]) {
+            return keys(clusterData[0][clusteringAlgorithm]);
+        }
+        return [];
+    }
+);
+
+export const getClusteringSetting = createSelector(
+    [getClusteringAlgorithm, getClusteringDistance, getNumberOfClusters],
+    (clusteringAlgorithm, distance, numberOfClusters): string => {
+    const clusteringType = CLUSTERING_MAP(clusteringAlgorithm);
+    return clusteringType === CLUSTER_DISTANCE_KEY ? distance : numberOfClusters;
+});
+
+export const getClusteringResult = createSelector(
+    [
+        getClusterData,
+        getClusteringAlgorithm,
+        getClusteringSetting,
+        getXValues,
+        getYValues,
+    ],
+    (
+            clusteringData,
+            clusteringAlgorithm,
+            clusterSetting,
+            xValues,
+            yValues
+    ): ContinuousPlotData => {
+            return {
+                color: map(clusteringData, (ele) => ele[clusteringAlgorithm][clusterSetting]),
+                x: xValues,
+                y: yValues,
+            };
+
     }
 );

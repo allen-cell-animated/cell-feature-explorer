@@ -1,16 +1,31 @@
-import { Color } from "plotly.js";
+import {
+    AGGLOMERATIVE_KEY,
+    CLUSTER_DISTANCE_KEY,
+    CLUSTER_NUMBER_KEY,
+    DBSCAN_KEY,
+    KMEANS_KEY,
+} from "../../constants";
+
+type AGGLOMERATIVE_KEY = typeof AGGLOMERATIVE_KEY;
+type DBSCAN_KEY = typeof DBSCAN_KEY;
+type KMEANS_KEY = typeof KMEANS_KEY;
+type CLUSTER_DISTANCE_KEY = typeof CLUSTER_DISTANCE_KEY;
+type CLUSTER_NUMBER_KEY = typeof CLUSTER_NUMBER_KEY;
 
 import { MetadataStateBranch } from "../metadata/types";
-
 export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
+export type ClusteringTypeChoices = KMEANS_KEY | DBSCAN_KEY | AGGLOMERATIVE_KEY;
+export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
 
 export interface SelectionStateBranch {
     [key: string]: any;
 }
 
-export interface SelectedGroups {
-    [key: number]: number[];
-    [key: string]: number[];
+interface OneCluster {
+    [key: string]: number;
+}
+export interface ClusteringDatum {
+    [key: string]: OneCluster;
 }
 
 export interface SelectGroupOfPointsAction {
@@ -44,29 +59,18 @@ export interface ResetSelectionAction {
     type: string;
 }
 
-export interface ToggleFilterAction {
+export interface ChangeSelectionAction {
     payload: string;
     type: string;
 }
 
-export interface SelectCellFor3DAction {
-    payload: string;
-    type: string;
-}
-
-export interface ToggleApplyColorAction {
+export interface BoolToggleAction {
     payload: boolean;
     type: string;
 }
 
-export interface SelectedGroupDatum {
-    colorBy: number[] | string[];
-    groupColor: Color[];
-    x: number[];
-    y: number[];
-}
-
-export interface SelectedGroupData {
-    [key: number]: SelectedGroupDatum[];
-    [key: string]: SelectedGroupDatum[];
+export interface ChangeClusterNumberAction {
+    payload: string;
+    clusteringKey: string;
+    type: string;
 }

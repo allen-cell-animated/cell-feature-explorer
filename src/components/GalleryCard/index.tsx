@@ -8,8 +8,8 @@ import "antd/lib/card/style";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
+    ChangeSelectionAction,
     DeselectPointAction,
-    SelectCellFor3DAction,
 } from "../../state/selection/types";
 
 const { Meta } = Card;
@@ -19,7 +19,7 @@ interface GalleryCardProps {
     title: string;
     src: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => SelectCellFor3DAction;
+    handleOpenIn3D: (payload: string) => ChangeSelectionAction;
     pointIndex: number;
     empty?: boolean;
 }

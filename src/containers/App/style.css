@@ -1,7 +1,13 @@
 .color-menu {
-    flex: 0 0 400px;
+    min-width: 200px;
+    max-width: 400px!important;
+    flex: 1!important;
 }
 
 :global(.ant-affix) {
     z-index: 99999;
+}
+
+.content {
+    flex: 2;
 }
