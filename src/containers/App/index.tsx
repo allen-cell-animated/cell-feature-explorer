@@ -1,10 +1,8 @@
 import {
     Layout,
 } from "antd";
-import * as React from "react";
-const { Header, Footer, Sider, Content } = Layout;
-import "antd/lib/layout/style";
 import { uniq } from "lodash";
+import * as React from "react";
 import { connect } from "react-redux";
 
 import {
@@ -22,6 +20,7 @@ import AffixedNav from "../../components/AffixedNav";
 import { State } from "../../state/types";
 
 const styles = require("./style.css");
+const { Header, Footer, Sider, Content } = Layout;
 
 interface AppProps {
     selected3DCell: string;

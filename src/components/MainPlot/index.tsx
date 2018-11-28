@@ -1,4 +1,3 @@
-import { includes, map } from "lodash";
 import {
     Data,
     PlotMouseEvent,
@@ -13,8 +12,6 @@ import {
 
 import {
     Annotation,
-    ContinuousPlotData,
-    GroupedPlotData,
 } from "../../state/types";
 
 interface MainPlotProps {

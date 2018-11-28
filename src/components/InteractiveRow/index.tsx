@@ -64,7 +64,10 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                     />
                 }
                     <Badge
-                        style={{backgroundColor: color, margin: "auto", paddingRight: 4}}
+                        style={{
+                            backgroundColor: color,
+                            padding: 4,
+                        }}
                         dot={true}
                     />
                     <span className={styles.label}>{name}</span>

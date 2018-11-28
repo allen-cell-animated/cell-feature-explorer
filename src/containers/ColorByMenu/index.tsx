@@ -6,10 +6,7 @@ import {
     Row,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import "antd/es/collapse/style";
 import { RadioChangeEvent } from "antd/es/radio";
-import "antd/es/radio/style";
-import "antd/es/switch/style";
 
 import {
     filter,

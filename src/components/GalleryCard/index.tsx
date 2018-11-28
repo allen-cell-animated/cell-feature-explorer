@@ -4,8 +4,6 @@ import {
 } from "antd";
 import React from "react";
 
-import "antd/lib/card/style";
-
 import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
     ChangeSelectionAction,

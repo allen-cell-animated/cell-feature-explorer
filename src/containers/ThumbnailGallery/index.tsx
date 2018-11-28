@@ -5,8 +5,6 @@ import {
 import * as React from "react";
 import { connect } from "react-redux";
 
-import "antd/lib/list/style";
-
 import GalleryCard from "../../components/GalleryCard";
 import {
     clearAllSelectedPoints,

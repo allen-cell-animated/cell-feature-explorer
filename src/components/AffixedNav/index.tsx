@@ -5,8 +5,6 @@ import {
 import React from "react";
 const { Link } = Anchor;
 
-import "antd/lib/anchor/style";
-
 const AffixedNav: React.SFC = () => {
 
         return (
