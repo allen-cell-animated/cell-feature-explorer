@@ -20,3 +20,7 @@
 .color-by :global(.ant-select-selection) {
     background-color: var(--purple);
 }
+
+:global(.ant-select-arrow) {
+    color: white;
+}

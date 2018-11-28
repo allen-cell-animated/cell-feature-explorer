@@ -11,7 +11,3 @@
 .content {
     flex: 2;
 }
-
-:global(.ant-select-arrow i svg) {
-    fill: #ffffff;
-}

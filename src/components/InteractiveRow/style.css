@@ -36,3 +36,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.container :global(.ant-badge.ant-badge-not-a-wrapper) {
+    padding-right: 0;
+}
