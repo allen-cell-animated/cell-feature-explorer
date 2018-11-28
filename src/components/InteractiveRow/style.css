@@ -12,12 +12,22 @@
     background-color: transparent;
 }
 
+:global(.ant-badge) {
+    margin: auto;
+    padding: 4px;
+}
+
 :global(.ant-progress-status-success .ant-progress-text) {
      color: #ffffff;
 }
 
 .container{
     display: flex;
+    justify-content: space-between;
+}
+
+.container :global(.ant-badge sup) {
+    box-shadow: none;
 }
 
 .label {
@@ -25,5 +35,4 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
 }

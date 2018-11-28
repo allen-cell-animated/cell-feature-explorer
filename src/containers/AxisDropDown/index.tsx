@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import { SelectValue } from "antd/es/select";
-import "antd/lib/select/style";
+import { includes } from "lodash";
 import React from "react";
 import {
     ActionCreator,
@@ -8,7 +8,7 @@ import {
 } from "react-redux";
 
 import {
-    COLOR_BY_SELECTOR,
+    COLOR_BY_SELECTOR, PROTEIN_NAME_KEY,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
@@ -55,9 +55,9 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
         const {
             axisId,
             colorByValue,
-            featureNames,
             xDropDownValue,
             yDropDownValue,
+            featureNames,
         } = this.props;
 
         const axisIDMap: { [key: string]: string } = {
@@ -66,6 +66,10 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
             [COLOR_BY_SELECTOR]: colorByValue,
         };
 
+        if (axisId === COLOR_BY_SELECTOR && !includes(featureNames, PROTEIN_NAME_KEY)) {
+            featureNames.unshift(PROTEIN_NAME_KEY);
+        }
+
         return (
             <div className={styles[axisId]}>
                 <Select
@@ -73,7 +77,13 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
                     onChange={this.handleChange}
                 >
                     {featureNames.map((option) => {
-                        return (<Option value={option} key={option}>{option}</Option>
+                        return (
+                            <Option
+                                value={option}
+                                key={option}
+                            >
+                                {option === PROTEIN_NAME_KEY ? "Protein" : option}
+                            </Option>
                         );
                     })}
                 </Select>

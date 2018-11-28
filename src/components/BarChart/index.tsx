@@ -1,47 +1,38 @@
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { max } from "lodash";
-import { Color } from "plotly.js";
+import { map } from "lodash";
 import React from "react";
 
-import { NumberOrString } from "../../state/types";
 import InteractiveRow from "../InteractiveRow";
 
 interface BarChartProps {
-    colors: Color[];
     closeable: boolean;
     hideable: boolean;
-    names: NumberOrString[];
+    panelData: any[];
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
-    totals: number[];
-    ids: NumberOrString[];
 }
 
 const BarChart: React.SFC<BarChartProps> = (props) => {
     const {
-        colors,
         closeable,
         handleCloseSelectionSet,
         hideable,
-        names,
-        totals,
         onBarClicked,
-        ids,
+        panelData,
     } = props;
-    const maxTotal = max(props.totals) || 100;
     return (
         <React.Fragment>
-            {totals.map((total, index) => {
+            {map(panelData, (item) => {
                 return (
                     <InteractiveRow
-                        key={names[index]}
+                        key={item.name}
                         closeable={closeable}
+                        checked={item.checked}
                         hideable={hideable}
-                        percent={total / maxTotal * 100}
-                        color={colors[index] as string}
-                        name={names[index]}
-                        total={total}
-                        id={ids[index].toString()}
+                        color={item.color as string}
+                        name={item.name}
+                        total={item.total}
+                        id={item.id}
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
                     />
