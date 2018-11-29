@@ -16,4 +16,5 @@
 .bar-chart-header{
   border-bottom: 0.5px solid var(--dimgray);
   display: flex;
+  justify-content: space-between;
 }

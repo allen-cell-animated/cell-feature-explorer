@@ -1,4 +1,5 @@
 import {
+    Icon,
     Layout,
 } from "antd";
 import { uniq } from "lodash";
@@ -57,7 +58,10 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
         return (
                 <Layout className={styles.container}>
-                    <Header>Cell feature explorer
+                    <Header>
+                        <h3><Icon type="dot-chart"/> Plot</h3>
+                        <AffixedNav
+                        />
                     </Header>
                     <Layout>
                         <Sider
@@ -76,24 +80,20 @@ class App extends React.Component<AppProps, {}> {
                                     handleSelectionToolUsed={this.onSelectionToolUsed}
                                 />
                             </div>
-
                         </Content>
-                        <Sider>
-                            <AffixedNav
-                            />
-                        </Sider>
-
+                        <Sider/>
                     </Layout>
                     <Footer>
                         <ThumbnailGallery />
-                        <div className={styles.cellViewerContainer}>
-                            <CellViewer
-                                cellId={selected3DCell}
-                                fovId={selected3DCellFOV}
-                                cellLineName={selected3DCellCellLine}
-                            />
-                        </div>
                     </Footer>
+                    <div className={styles.cellViewerContainer}>
+                        <h3 className={styles.header}><Icon type="sync"/> 3D Cell Viewer</h3>
+                        <CellViewer
+                            cellId={selected3DCell}
+                            fovId={selected3DCellFOV}
+                            cellLineName={selected3DCellCellLine}
+                        />
+                    </div>
                 </Layout>
         );
     }

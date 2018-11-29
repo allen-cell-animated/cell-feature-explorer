@@ -1,5 +1,6 @@
 import {
     Button,
+    Icon,
     List,
 } from "antd";
 import * as React from "react";
@@ -45,7 +46,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         return (
             <div id="gallery">
                 <section className={styles.galleryHeader}>
-                    <h3>Thumbnail gallery</h3>
+                    <h3><Icon type="picture"/> Thumbnail gallery</h3>
                     {data.length > 0 ?
                         <Button
                             type="primary"
@@ -55,7 +56,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                         </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
                 </section>
                 <List
-                    grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 8 }}
+                    grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 12 }}
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />

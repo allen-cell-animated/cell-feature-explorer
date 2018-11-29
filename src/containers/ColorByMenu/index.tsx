@@ -229,7 +229,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
     public renderProteinPanel() {
         const {
-            colorBy,
             filtersToExclude,
             someProteinsOff,
             proteinPanelData,
@@ -257,8 +256,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         >
                             Show/Hide all
                         </Checkbox>
-                        <span className={styles.label}>color</span>
-                        <span className={styles.label}># cells</span>
+                        <span className={styles.label}># of cells</span>
                     </div>
 
                     <BarChart

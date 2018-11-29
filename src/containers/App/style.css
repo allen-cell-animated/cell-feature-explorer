@@ -1,3 +1,5 @@
+@import "../../styles/colors.css";
+
 .color-menu {
     min-width: 200px;
     max-width: 400px!important;
@@ -8,6 +10,15 @@
     z-index: 99999;
 }
 
+:global(.ant-layout-header) {
+    display: flex;
+    justify-content: space-between;
+}
+
 .content {
     flex: 2;
+}
+
+.header {
+    padding: 24px 50px;
 }
