@@ -209,7 +209,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         } = this.props;
         return selectionSetsPanelData.length === 0 ?
             (
-                <span>No selected sets yet. Make a selection on the chart using the
+                <span>No selected sets yet. Make a selection on the plot using the
                     <strong> Lasso Select</strong> or
                     <strong> Box Select</strong> tools on the plot, and it will get saved here.
                 </span>
