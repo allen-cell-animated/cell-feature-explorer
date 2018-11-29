@@ -65,6 +65,15 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
+    public componentDidUpdate(prevProps: MainPlotProps) {
+        if (prevProps.annotations.length !== this.props.annotations.length) {
+            this.setState({layout: {
+                ...this.state.layout,
+                annotations: this.makeAnnotations(),
+            }});
+        }
+    }
+
     public clickedAnnotation() {
         this.setState({showFullAnnotation: false});
     }
