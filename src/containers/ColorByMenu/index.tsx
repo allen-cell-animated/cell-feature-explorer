@@ -1,43 +1,33 @@
 import {
+    Checkbox,
     Col,
     Collapse,
     Radio,
     Row,
-    Switch,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import "antd/es/collapse/style";
 import { RadioChangeEvent } from "antd/es/radio";
-import "antd/es/radio/style";
-import "antd/es/switch/style";
 
 import {
+    filter,
     includes,
     indexOf,
-    values,
 } from "lodash";
-import {
-    Color,
-} from "plotly.js";
 import React from "react";
 import {
     ActionCreator,
     connect,
 } from "react-redux";
 
-import BarChart from "../../components/BarChart";
 import {
     AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
     DBSCAN_KEY,
-    DISABLE_COLOR,
     KMEANS_KEY,
-    OFF_COLOR,
     PROTEIN_NAME_KEY
 } from "../../constants";
 import {
     getProteinNames,
-    getProteinTotals
 } from "../../state/metadata/selectors";
 
 import selectionStateBranch from "../../state/selection";
@@ -55,14 +45,20 @@ import {
 } from "../../state/selection/types";
 
 import {
-    NumberOrString,
     State,
 } from "../../state/types";
 
+import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
+import {
+    getCheckAllCheckboxIsIntermediate,
+    getInteractivePanelData,
+    getSelectionPanelData,
+} from "./selectors";
+import { PanelData } from "./types";
 const styles = require("./style.css");
 
 const RadioButton = Radio.Button;
@@ -72,13 +68,17 @@ const initIndex = 2;
 const { Panel } = Collapse;
 
 interface ColorByMenuProps {
-    applyColorToSelections: boolean;
-    colorBy: string;
     clusteringAlgorithm: ClusteringTypeChoices;
     clusteringOptions: string[];
     clusteringSetting: string;
+    colorBy: string;
     defaultActiveKey: string[];
     filtersToExclude: string[];
+    proteinPanelData: PanelData[];
+    showClusters: boolean;
+    someProteinsOff: boolean;
+    proteinNames: string[];
+    selectionSetsPanelData: PanelData[];
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
@@ -89,13 +89,6 @@ interface ColorByMenuProps {
     openKeys: string[];
     onPanelClicked: (value: string[]) => void;
     panelKeys: string[];
-    proteinColors: Color[];
-    proteinNames: string[];
-    proteinTotals: number[];
-    selectedSetColors: Color[];
-    selectedSetNames: NumberOrString[];
-    selectedSetTotals: number[];
-    showClusters: boolean;
 }
 
 class ColorByMenu extends React.Component<ColorByMenuProps> {
@@ -111,6 +104,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderProteinPanel = this.renderProteinPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
+        this.allOnOff = this.allOnOff.bind(this);
     }
 
     public componentDidUpdate() {
@@ -127,8 +121,18 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
-        const { handleFilterByProteinName } = this.props;
-        handleFilterByProteinName(target.value);
+        const { handleFilterByProteinName, filtersToExclude } = this.props;
+        const newFilterList = includes(filtersToExclude, target.value) ?
+            filter(filtersToExclude, (e) => e !== target.value) : [...filtersToExclude, target.value];
+        handleFilterByProteinName(newFilterList);
+    }
+
+    public allOnOff({ target }: CheckboxChangeEvent) {
+        const { handleFilterByProteinName, proteinNames } = this.props;
+        if (target.checked) {
+            return handleFilterByProteinName([]);
+        }
+        handleFilterByProteinName(proteinNames);
     }
 
     public onColorBySwitchChanged(colorByProtein: boolean) {
@@ -199,16 +203,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
     public renderSelectionPanel() {
         const {
-            applyColorToSelections,
-            selectedSetNames,
-            selectedSetColors,
-            selectedSetTotals,
             handleApplyColorSwitchChange,
+            selectionSetsPanelData,
             handleCloseSelectionSet,
         } = this.props;
-        return selectedSetTotals.length === 0 ?
+        return selectionSetsPanelData.length === 0 ?
             (
-                <span>No selected sets yet. Make a selection on the chart using the
+                <span>No selected sets yet. Make a selection on the plot using the
                     <strong> Lasso Select</strong> or
                     <strong> Box Select</strong> tools on the plot, and it will get saved here.
                 </span>
@@ -221,19 +222,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                 />
                 <div>
                     <BarChart
-                        names={
-                            selectedSetNames.map(
-                                (ele: number | string, index: number) => Number(ele) ? index : ele)
-                        }
-                        ids={selectedSetNames}
                         closeable={true}
                         hideable={false}
-                        totals={selectedSetTotals}
                         handleCloseSelectionSet={handleCloseSelectionSet}
-                        colors={applyColorToSelections ?
-                            values(selectedSetColors) :
-                            Array(selectedSetTotals.length).fill(DISABLE_COLOR)
-                        }
+                        panelData={selectionSetsPanelData}
                     />
                 </div>
             </React.Fragment>
@@ -242,47 +234,40 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
     public renderProteinPanel() {
         const {
-            colorBy,
             filtersToExclude,
-            proteinNames,
-            proteinTotals,
-            proteinColors,
-
+            someProteinsOff,
+            proteinPanelData,
         } = this.props;
-
         return (
             <React.Fragment>
-                <ColorBySwitcher
-                    defaultChecked={true}
-                    label="Color by: "
-                    handleChange={this.onColorBySwitchChanged}
-                    includeCol={12}
-                    checkedChildren="protein"
-                    unCheckedChildren="cellular feature"
-                >
-                    {colorBy === PROTEIN_NAME_KEY ? null : (
+
+                <Row className={styles.colorByRow}>
+                        <Col span={6}>
+                            Color by:
+                        </Col>
                         <Col span={6}>
                             <AxisDropDown
                                 axisId={COLOR_BY_SELECTOR}
                             />
                         </Col>
-                    )}
-                </  ColorBySwitcher >
+                </Row>
+
                 <div>
+                    <div className={styles.barChartHeader}>
+                        <Checkbox
+                            indeterminate={someProteinsOff}
+                            checked={filtersToExclude.length === 0}
+                            onChange={this.allOnOff}
+                        >
+                            Show/Hide all
+                        </Checkbox>
+                        <span className={styles.label}># of cells</span>
+                    </div>
+
                     <BarChart
-                        names={proteinNames}
-                        ids={proteinNames}
-                        totals={proteinTotals}
                         closeable={false}
+                        panelData={proteinPanelData}
                         hideable={true}
-                        colors={colorBy === PROTEIN_NAME_KEY ?
-                            proteinNames
-                                .map((ele: NumberOrString, index: number) =>
-                                    includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
-                            proteinNames
-                                .map((ele: NumberOrString, index: number) =>
-                                    includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR)
-                    }
                         onBarClicked={this.onBarClicked}
                     />
                 </div>
@@ -327,19 +312,16 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State) {
     return {
-        applyColorToSelections: selectionStateBranch.selectors.getApplyColorToSelections(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
         clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
-        proteinColors: selectionStateBranch.selectors.getProteinColors(state),
         proteinNames: getProteinNames(state),
-        proteinTotals: getProteinTotals(state),
-        selectedSetColors: selectionStateBranch.selectors.getSelectionSetColors(state),
-        selectedSetNames: selectionStateBranch.selectors.getSelectedGroupKeys(state),
-        selectedSetTotals: selectionStateBranch.selectors.getSelectedSetTotals(state),
+        proteinPanelData: getInteractivePanelData(state),
+        selectionSetsPanelData: getSelectionPanelData(state),
         showClusters: selectionStateBranch.selectors.getClustersOn(state),
+        someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
     };
 }
 

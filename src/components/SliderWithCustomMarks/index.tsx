@@ -1,11 +1,7 @@
+import { Col, Row, Slider } from "antd";
+import { SliderValue } from "antd/es/slider";
 import { reduce } from "lodash";
 import React from "react";
-
-import { Col, InputNumber, Row, Slider } from "antd";
-
-import { SliderValue } from "antd/es/slider";
-import "antd/lib/input-number/style";
-import "antd/lib/slider/style";
 
 interface SliderWithCustomMarksProps {
     disabled: boolean;

@@ -1,22 +1,19 @@
 import {
+    Badge,
     Button,
     Checkbox,
-    Progress,
 } from "antd";
-import React from "react";
-
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import "antd/lib/checkbox/style";
-import "antd/lib/progress/style";
+import React from "react";
 
 const styles = require("./style.css");
 
 interface InteractiveRowProps {
-    percent: number;
     color: string;
     id: string;
-    name: string | number;
+    name: string;
     total: number;
+    checked?: boolean;
     closeable?: boolean;
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
@@ -45,34 +42,40 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         const {
             closeable,
             hideable,
-            percent,
             id,
             color,
             name,
             total,
             onBarClicked,
+            checked,
         } = this.props;
-        const format = () => total.toString();
         return (
             <div
                 className={styles.container}
             >
+                <div>
                 {hideable &&
                     <Checkbox
                         onChange={onBarClicked}
                         value={id}
                         defaultChecked={true}
+                        checked={checked}
                     />
                 }
+                    <Badge
+                        style={{
+                            backgroundColor: color,
+                            padding: 4,
+                        }}
+                        dot={true}
+                    />
+                    <span className={styles.label}>{name}</span>
 
-                <span className={styles.label}>
-                    {name}
-                </span>
-                <Progress
-                    percent={percent}
-                    strokeColor={color}
-                    format={format}
-                />
+                </div>
+                <div>
+
+                    <span className={styles.label}>{total}</span>
+                </div>
                 {closeable &&
                     <Button
                         size="small"

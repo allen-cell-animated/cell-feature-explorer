@@ -49,6 +49,10 @@ module.exports = ({ analyze, env } = {}) => ({
                                         libraryDirectory: null,
                                         camel2DashComponentName: false,
                                         style: false,
+                                    },
+                                    {
+                                        libraryName: 'antd',
+                                        style: true,
                                     }
                                 ]),
                             ]

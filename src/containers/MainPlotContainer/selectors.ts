@@ -44,7 +44,6 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
-
     const clusteringPlotData = showClusters ? {
         ...clusteringResultData,
         groupBy: false,

@@ -1,6 +1,4 @@
-import { map } from "lodash";
 import {
-    Color,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -14,8 +12,6 @@ import {
 
 import {
     Annotation,
-    ContinuousPlotData,
-    GroupedPlotData,
 } from "../../state/types";
 
 interface MainPlotProps {
@@ -25,7 +21,12 @@ interface MainPlotProps {
     onGroupSelected: (selected: PlotSelectionEvent) => void;
 }
 
-export default class MainPlot extends React.Component<MainPlotProps, {}> {
+interface MainPlotState {
+    layout: any;
+    showFullAnnotation: boolean;
+}
+
+export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     public static makeAxis(domain: number[], hoverformat: string, zeroline: boolean) {
         return {
             color: GENERAL_PLOT_SETTINGS.textColor,
@@ -41,32 +42,69 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
     constructor(props: MainPlotProps) {
         super(props);
         this.makeAnnotations = this.makeAnnotations.bind(this);
+        this.clickedAnnotation = this.clickedAnnotation.bind(this);
+        this.state = {
+            layout: {
+                annotations: this.makeAnnotations(),
+                autosize: true,
+                hovermode: "closest",
+                legend: GENERAL_PLOT_SETTINGS.legend,
+                margin: {
+                    b: 30,
+                    r: 20,
+                    t: 10,
+                },
+                paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
+                xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
+                yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
+                yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
+            },
+            showFullAnnotation: true,
+        };
+    }
+
+    public componentDidUpdate(prevProps: MainPlotProps) {
+        if (prevProps.annotations.length !== this.props.annotations.length) {
+            this.setState({layout: {
+                ...this.state.layout,
+                annotations: this.makeAnnotations(),
+            }});
+        }
+    }
+
+    public clickedAnnotation() {
+        this.setState({showFullAnnotation: false});
     }
 
     public makeAnnotations(): Annotation[] {
         const { annotations } = this.props;
 
-        return annotations.map((point: Annotation) => {
+        return annotations.map((point: Annotation, index) => {
+            const lastOne =  index + 1  === annotations.length;
+            const show = lastOne && this.state.showFullAnnotation;
             return {
+                arrowcolor: "#fff",
                 arrowhead: 6,
                 ax: 0,
-                ay: -30,
+                ay: show ? -80 : 0,
                 bgcolor: "#a4a2a45c",
-                bordercolor: "#a4a2a45c",
-                borderpad: 4,
-                borderwidth: 1.5,
+                bordercolor: "#fff",
+                borderpad:  show ? 4 : 0,
+                borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
                 cellLine: point.cellLine,
                 font: {
                     color: "#ffffff",
                     family: "tahoma, arial, verdana, sans-serif",
-                    size: 12,
+                    size: 11,
                 },
                 fovID: point.fovID,
                 pointIndex: point.pointIndex,
                 // TODO full AICS cell name?
-                text: `Cell ${point.cellID}<br><i>click to load in 3D</i>`,
+                text: show ? `Cell ${point.cellID}<br><i>click "3D" button in gallery to load in 3D</i>` : "",
                 x: point.x,
                 y: point.y,
             };
@@ -93,26 +131,10 @@ export default class MainPlot extends React.Component<MainPlotProps, {}> {
             <Plot
                 data={plotDataArray}
                 useResizeHandler={true}
-                layout={{
-                    annotations: this.makeAnnotations(),
-                    autosize: true,
-                    hovermode: "closest",
-                    legend: GENERAL_PLOT_SETTINGS.legend,
-                    margin: {
-                        b: 30,
-                        r: 20,
-                        t: 10,
-                    },
-                    paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                    xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                    xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
-                    yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                    yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
-
-                }}
+                layout={this.state.layout}
                 config={options}
                 onClick={onPointClicked}
+                onClickAnnotation={this.clickedAnnotation}
                 onSelected={onGroupSelected}
             />
         );

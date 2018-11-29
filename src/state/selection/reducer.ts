@@ -123,8 +123,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
 
                 ...state,
-                filterExclude: includes(state.filterExclude, action.payload) ?
-                    filter(state.filterExclude, (e) => e !== action.payload) : [...state.filterExclude, action.payload],
+                filterExclude: action.payload,
 
         }),
     },
