@@ -8,7 +8,8 @@ import {
 } from "react-redux";
 
 import {
-    COLOR_BY_SELECTOR, PROTEIN_NAME_KEY,
+    COLOR_BY_SELECTOR,
+    PROTEIN_NAME_KEY,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
@@ -65,9 +66,11 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
             [Y_AXIS_ID]: yDropDownValue,
             [COLOR_BY_SELECTOR]: colorByValue,
         };
-
+        let displayOptions;
         if (axisId === COLOR_BY_SELECTOR && !includes(featureNames, PROTEIN_NAME_KEY)) {
-            featureNames.unshift(PROTEIN_NAME_KEY);
+            displayOptions = [PROTEIN_NAME_KEY, ...featureNames];
+        } else {
+            displayOptions = featureNames;
         }
 
         return (
@@ -76,7 +79,7 @@ class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
                     defaultValue={axisIDMap[axisId]}
                     onChange={this.handleChange}
                 >
-                    {featureNames.map((option) => {
+                    {displayOptions.map((option) => {
                         return (
                             <Option
                                 value={option}

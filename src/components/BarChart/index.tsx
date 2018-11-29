@@ -2,12 +2,14 @@ import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { map } from "lodash";
 import React from "react";
 
+import { PanelData } from "../../containers/ColorByMenu/types";
+
 import InteractiveRow from "../InteractiveRow";
 
 interface BarChartProps {
     closeable: boolean;
     hideable: boolean;
-    panelData: any[];
+    panelData: PanelData[];
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }

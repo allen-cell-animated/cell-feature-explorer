@@ -1,17 +1,30 @@
-import { includes, map, values } from "lodash";
+import {
+    includes,
+    map,
+    values
+} from "lodash";
 import { createSelector } from "reselect";
 
-import { DISABLE_COLOR, OFF_COLOR, PROTEIN_NAME_KEY } from "../../constants/index";
+import {
+    DISABLE_COLOR,
+    OFF_COLOR,
+    PROTEIN_NAME_KEY,
+} from "../../constants/index";
 import { getProteinNames, getProteinTotals } from "../../state/metadata/selectors";
 import {
     getApplyColorToSelections,
     getColorBySelection,
     getFiltersToExclude,
-    getProteinColors, getSelectedGroupKeys, getSelectedSetTotals, getSelectionSetColors,
+    getProteinColors,
+    getSelectedGroupKeys,
+    getSelectedSetTotals,
+    getSelectionSetColors,
 } from "../../state/selection/selectors";
 import { NumberOrString } from "../../state/types";
 
-export const getIntermediate = createSelector(
+import { PanelData } from "./types";
+
+export const getCheckAllCheckboxIsIntermediate = createSelector(
     [getFiltersToExclude, getProteinNames] ,
     (filtersToExclude, allProteinNames): boolean => {
         return filtersToExclude.length > 0 && filtersToExclude.length !== allProteinNames.length;
@@ -31,30 +44,29 @@ const getColors = createSelector(
 
 export const getInteractivePanelData = createSelector(
     [getProteinNames, getFiltersToExclude, getProteinTotals, getColors],
-    (proteinNames, filtersToExclude, proteinTotals, proteinColors) => {
+    (proteinNames, filtersToExclude, proteinTotals, proteinColors): PanelData[] => {
         return map(proteinTotals, (total, index) => {
             return {
                 checked: !includes(filtersToExclude, proteinNames[index]),
                 color: proteinColors[index],
-                id: name,
+                id: proteinNames[index],
                 name: proteinNames[index],
                 total,
             };
         });
-    }
-    );
+    });
 
 export const getSelectionPanelData = createSelector(
     [getApplyColorToSelections, getSelectionSetColors, getSelectedGroupKeys, getSelectedSetTotals],
-    (applyColorToSelections, selectedSetColors, selectedSetNames, selectedSetTotals) => {
-        return map(selectedSetNames, (name: NumberOrString, index) => {
+    (applyColorToSelections, selectedSetColors, selectedSetNames, selectedSetTotals): PanelData[] => {
+        return map(selectedSetNames, (name, index) => {
+            const color = applyColorToSelections ? values(selectedSetColors)[index] : DISABLE_COLOR;
+            const displayName = Number(name) ? index : name;
             return {
-                color: applyColorToSelections ?
-                    values(selectedSetColors)[index] : DISABLE_COLOR,
-                id: name,
-                name: Number(name) ? index : name,
+                color,
+                id: name.toString(),
+                name: displayName.toString(),
                 total: selectedSetTotals[index],
             };
         });
-    }
-    );
+    });

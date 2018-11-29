@@ -71,7 +71,7 @@ const requestFeatureDataLogic = createLogic({
             .then((metadata: AxiosResponse) => metadata.data)
             .then((data) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
-
+                // shuffle to keep the plot from being organized in z
                 return shuffle(map(data, (datum: MetadataStateBranch) => {
                     return {
                         clusters: datum.clusters,

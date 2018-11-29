@@ -53,7 +53,12 @@ import ColorBySwitcher from "../../components/ColorBySwitcher";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
-import { getInteractivePanelData, getIntermediate, getSelectionPanelData } from "./selectors";
+import {
+    getCheckAllCheckboxIsIntermediate,
+    getInteractivePanelData,
+    getSelectionPanelData,
+} from "./selectors";
+import { PanelData } from "./types";
 const styles = require("./style.css");
 
 const RadioButton = Radio.Button;
@@ -69,11 +74,11 @@ interface ColorByMenuProps {
     colorBy: string;
     defaultActiveKey: string[];
     filtersToExclude: string[];
-    proteinPanelData: any[];
+    proteinPanelData: PanelData[];
     showClusters: boolean;
     someProteinsOff: boolean;
     proteinNames: string[];
-    selectionSetsPanelData: any[];
+    selectionSetsPanelData: PanelData[];
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
@@ -316,7 +321,7 @@ function mapStateToProps(state: State) {
         proteinPanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
         showClusters: selectionStateBranch.selectors.getClustersOn(state),
-        someProteinsOff: getIntermediate(state),
+        someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
     };
 }
 

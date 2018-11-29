@@ -3,18 +3,17 @@ import {
     Button,
     Checkbox,
 } from "antd";
-import React from "react";
-
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import React from "react";
 
 const styles = require("./style.css");
 
 interface InteractiveRowProps {
     color: string;
     id: string;
-    name: string | number;
+    name: string;
     total: number;
-    checked: boolean;
+    checked?: boolean;
     closeable?: boolean;
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
