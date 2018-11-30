@@ -2,6 +2,9 @@ import {
     Badge,
     Button,
     Checkbox,
+    Dropdown,
+    Icon,
+    Menu,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import React from "react";
@@ -18,6 +21,7 @@ interface InteractiveRowProps {
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
+    handleDownload: (id: string) => void;
 }
 
 export default class InteractiveRow extends React.Component<InteractiveRowProps, {}> {
@@ -28,7 +32,10 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
     constructor(props: InteractiveRowProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
+        this.onDownload = this.onDownload.bind(this);
+        this.renderMenu = this.renderMenu.bind(this);
     }
+
     public onClose(event: any ) {
         const {
             handleClose,
@@ -36,6 +43,30 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         if (event.target && event.target.id && handleClose) {
             handleClose(event.target.id);
         }
+    }
+
+    public onDownload(event: any ) {
+        const {
+            handleDownload,
+        } = this.props;
+        if (event.target && event.target.id && handleDownload) {
+            handleDownload(event.target.id);
+        }
+    }
+
+    public renderMenu() {
+        const { downloadAllUrl } = this.props;
+        if (downloadAllUrl) {
+            return(
+                <Menu>
+                    <Menu.Item>
+                        <a target="_blank" href={downloadAllUrl} >download all data </a>
+                    </Menu.Item>
+
+                </Menu>
+            );
+        }
+        return null;
     }
 
     public render() {
@@ -48,7 +79,17 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             total,
             onBarClicked,
             checked,
+            downloadAllUrl
         } = this.props;
+        console.log(downloadAllUrl)
+        const menu =  (
+            <Menu>
+                <Menu.Item>
+                    <a target="_blank" href={downloadAllUrl}> Download data </a>
+                </Menu.Item>
+
+            </Menu>
+        )
         return (
             <div
                 className={styles.container}
@@ -76,10 +117,15 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
 
                     <span className={styles.label}>{total}</span>
                 </div>
+                <Dropdown overlay={menu}  trigger={['click']}>
+                    <Button className="ant-dropdown-link" id={id} onClick={this.onDownload}>
+                        <Icon type="download" />
+                    </Button>
+                </Dropdown>
                 {closeable &&
                     <Button
-                        size="small"
                         icon="close"
+                        size="small"
                         id={id}
                         ghost={true}
                         onClick={this.onClose}

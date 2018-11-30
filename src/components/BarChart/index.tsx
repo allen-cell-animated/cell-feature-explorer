@@ -17,7 +17,9 @@ interface BarChartProps {
 const BarChart: React.SFC<BarChartProps> = (props) => {
     const {
         closeable,
+        downloadAllUrl,
         handleCloseSelectionSet,
+        handleDownload,
         hideable,
         onBarClicked,
         panelData,
@@ -37,6 +39,8 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
                         id={item.id}
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
+                        handleDownload={handleDownload}
+                        downloadAllUrl={downloadAllUrl}
                     />
                 );
             })

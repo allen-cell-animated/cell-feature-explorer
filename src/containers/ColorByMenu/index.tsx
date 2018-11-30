@@ -12,6 +12,7 @@ import {
     filter,
     includes,
     indexOf,
+    map,
 } from "lodash";
 import React from "react";
 import {
@@ -54,6 +55,7 @@ import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
 import {
+    getCellIdsByProteinName,
     getCheckAllCheckboxIsIntermediate,
     getInteractivePanelData,
     getSelectionPanelData,
@@ -105,6 +107,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
+        this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
+        this.state = {
+            downloadAllUrl: '',
+        }
     }
 
     public componentDidUpdate() {
@@ -125,6 +131,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const newFilterList = includes(filtersToExclude, target.value) ?
             filter(filtersToExclude, (e) => e !== target.value) : [...filtersToExclude, target.value];
         handleFilterByProteinName(newFilterList);
+    }
+
+    public onProteinDownloadButtonClicked(proteinName) {
+        const { cellIdsByProteinName } = this.props;
+        const idsToDownload = cellIdsByProteinName[proteinName].slice(0,3);
+        this.setState({ downloadAllUrl: `https://files.allencell.org/api/2.0/file/download?collection=cellviewer-1-3${map(idsToDownload, (cellId) => `&id=${cellId}`).join("")}`})
     }
 
     public allOnOff({ target }: CheckboxChangeEvent) {
@@ -267,8 +279,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     <BarChart
                         closeable={false}
                         panelData={proteinPanelData}
+                        downloadAllUrl={this.state.downloadAllUrl}
                         hideable={true}
                         onBarClicked={this.onBarClicked}
+                        handleDownload={this.onProteinDownloadButtonClicked}
                     />
                 </div>
             </React.Fragment>
@@ -312,6 +326,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State) {
     return {
+        cellIdsByProteinName: getCellIdsByProteinName(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
         clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),

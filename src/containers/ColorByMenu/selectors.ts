@@ -1,7 +1,8 @@
 import {
     includes,
     map,
-    values
+    reduce,
+    values,
 } from "lodash";
 import { createSelector } from "reselect";
 
@@ -10,7 +11,11 @@ import {
     OFF_COLOR,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
-import { getProteinNames, getProteinTotals } from "../../state/metadata/selectors";
+import {
+    getFileInfo,
+    getProteinNames,
+    getProteinTotals,
+} from "../../state/metadata/selectors";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -70,3 +75,10 @@ export const getSelectionPanelData = createSelector(
             };
         });
     });
+
+export const getCellIdsByProteinName = createSelector([getProteinNames, getFileInfo], (proteinNames, fileInfo) => {
+    return reduce(fileInfo, (acc, cur) => {
+        acc[cur[PROTEIN_NAME_KEY]].push(`${cur.CellLineName}_${cur.FOVId}_${cur.CellId}`);
+        return acc;
+    }, reduce(proteinNames, (acc, cur) => { acc[cur] = []; return acc; }, {} ));
+});
