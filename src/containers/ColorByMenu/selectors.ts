@@ -1,4 +1,5 @@
 import {
+    chunk,
     includes,
     map,
     reduce,
@@ -7,7 +8,7 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    DISABLE_COLOR,
+    DISABLE_COLOR, DOWNLOAD_URL_PREFIX,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
@@ -16,12 +17,13 @@ import {
     getProteinNames,
     getProteinTotals,
 } from "../../state/metadata/selectors";
+import { FileInfo } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
-    getColorBySelection,
+    getColorBySelection, getDownloadConfig,
     getFiltersToExclude,
     getProteinColors,
-    getSelectedGroupKeys,
+    getSelectedGroupKeys, getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
@@ -76,9 +78,51 @@ export const getSelectionPanelData = createSelector(
         });
     });
 
-export const getCellIdsByProteinName = createSelector([getProteinNames, getFileInfo], (proteinNames, fileInfo) => {
-    return reduce(fileInfo, (acc, cur) => {
-        acc[cur[PROTEIN_NAME_KEY]].push(`${cur.CellLineName}_${cur.FOVId}_${cur.CellId}`);
-        return acc;
-    }, reduce(proteinNames, (acc, cur) => { acc[cur] = []; return acc; }, {} ));
+function convertFileInfoToAICSId(datum: FileInfo): string {
+    return `${datum.CellLineName}_${datum.FOVId}_${datum.CellId}`;
+}
+
+export const getListOfCellIdsByDownloadConfig = createSelector(
+    [
+        getProteinNames,
+        getFileInfo,
+        getDownloadConfig,
+        getSelectedGroups,
+    ],
+    (
+        proteinNames,
+        fileInfo,
+        downloadConfig,
+        selectedGroups
+    ) => {
+        const returnArray: string[] = [];
+        if (downloadConfig.type === "protein") {
+
+            return reduce(fileInfo, (acc, cur: FileInfo) => {
+                if (cur[PROTEIN_NAME_KEY] === downloadConfig.key) {
+                    acc.push(convertFileInfoToAICSId(cur));
+                }
+                return acc;
+            }, returnArray);
+        } else if (downloadConfig.type === "selectionSet") {
+            const selectedIndices = selectedGroups[downloadConfig.key];
+
+            return reduce(fileInfo, (acc, cur: FileInfo, index) => {
+                if (includes(selectedIndices, index)) {
+                    acc.push(convertFileInfoToAICSId(cur));
+                }
+                return acc;
+            }, returnArray);
+        }
+        return [];
+});
+
+export const createUrlFromListOfIds = createSelector(
+    [getListOfCellIdsByDownloadConfig],
+    (cellIdsToDownload): string[] => {
+    const chunkSize = 300;
+    const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
+    return map(chunksOfIds,
+        (listOfIds) => (`${DOWNLOAD_URL_PREFIX}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`)
+    );
 });

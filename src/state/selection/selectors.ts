@@ -58,6 +58,7 @@ export const getClustersOn = (state: State) => state.selection.showClusters;
 export const getClusteringAlgorithm = (state: State) => state.selection.clusteringAlgorithm;
 export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
 export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
+export const getDownloadConfig = (state: State) => state.selection.downloadConfig;
 // COMPOSED SELECTORS
 export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]) => {

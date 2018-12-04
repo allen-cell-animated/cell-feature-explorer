@@ -12,7 +12,6 @@ import {
     filter,
     includes,
     indexOf,
-    map,
 } from "lodash";
 import React from "react";
 import {
@@ -55,12 +54,14 @@ import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
 import {
-    getCellIdsByProteinName,
+    createUrlFromListOfIds,
     getCheckAllCheckboxIsIntermediate,
     getInteractivePanelData,
+    getListOfCellIdsByDownloadConfig,
     getSelectionPanelData,
 } from "./selectors";
 import { PanelData } from "./types";
+
 const styles = require("./style.css");
 
 const RadioButton = Radio.Button;
@@ -70,17 +71,20 @@ const initIndex = 2;
 const { Panel } = Collapse;
 
 interface ColorByMenuProps {
+    cellIdsByProteinName: string[];
     clusteringAlgorithm: ClusteringTypeChoices;
     clusteringOptions: string[];
     clusteringSetting: string;
     colorBy: string;
     defaultActiveKey: string[];
+    downloadUrls: string[];
+    downloadConfig: any;
     filtersToExclude: string[];
     proteinPanelData: PanelData[];
-    showClusters: boolean;
-    someProteinsOff: boolean;
     proteinNames: string[];
     selectionSetsPanelData: PanelData[];
+    showClusters: boolean;
+    someProteinsOff: boolean;
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
@@ -88,6 +92,7 @@ interface ColorByMenuProps {
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleClusteringToggle: ActionCreator<BoolToggleAction>;
     handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
+    handleSelectDownloadId: ActionCreator<ChangeSelectionAction>;
     openKeys: string[];
     onPanelClicked: (value: string[]) => void;
     panelKeys: string[];
@@ -108,9 +113,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
         this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
-        this.state = {
-            downloadAllUrl: '',
-        }
+        this.onSelectionSetDownloadButtonClicked = this.onSelectionSetDownloadButtonClicked.bind(this);
     }
 
     public componentDidUpdate() {
@@ -133,10 +136,20 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         handleFilterByProteinName(newFilterList);
     }
 
-    public onProteinDownloadButtonClicked(proteinName) {
-        const { cellIdsByProteinName } = this.props;
-        const idsToDownload = cellIdsByProteinName[proteinName].slice(0,3);
-        this.setState({ downloadAllUrl: `https://files.allencell.org/api/2.0/file/download?collection=cellviewer-1-3${map(idsToDownload, (cellId) => `&id=${cellId}`).join("")}`})
+    public onProteinDownloadButtonClicked(proteinName: string) {
+        const { handleSelectDownloadId } = this.props;
+        handleSelectDownloadId({
+            key: proteinName,
+            type: "protein",
+        });
+    }
+
+    public onSelectionSetDownloadButtonClicked(selectionSetId: string) {
+        const { handleSelectDownloadId } = this.props;
+        handleSelectDownloadId({
+            key: selectionSetId,
+            type: "selectionSet",
+        });
     }
 
     public allOnOff({ target }: CheckboxChangeEvent) {
@@ -215,6 +228,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
     public renderSelectionPanel() {
         const {
+            downloadUrls,
+            downloadConfig,
             handleApplyColorSwitchChange,
             selectionSetsPanelData,
             handleCloseSelectionSet,
@@ -238,6 +253,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         hideable={false}
                         handleCloseSelectionSet={handleCloseSelectionSet}
                         panelData={selectionSetsPanelData}
+                        downloadUrls={downloadUrls}
+                        downloadConfig={downloadConfig}
+                        handleDownload={this.onSelectionSetDownloadButtonClicked}
                     />
                 </div>
             </React.Fragment>
@@ -249,6 +267,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             filtersToExclude,
             someProteinsOff,
             proteinPanelData,
+            downloadUrls,
+            downloadConfig,
         } = this.props;
         return (
             <React.Fragment>
@@ -279,7 +299,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     <BarChart
                         closeable={false}
                         panelData={proteinPanelData}
-                        downloadAllUrl={this.state.downloadAllUrl}
+                        downloadUrls={downloadUrls}
+                        downloadConfig={downloadConfig}
                         hideable={true}
                         onBarClicked={this.onBarClicked}
                         handleDownload={this.onProteinDownloadButtonClicked}
@@ -326,11 +347,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State) {
     return {
-        cellIdsByProteinName: getCellIdsByProteinName(state),
+        cellIdsByProteinName: getListOfCellIdsByDownloadConfig(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
         clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
+        downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
+        downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         proteinNames: getProteinNames(state),
         proteinPanelData: getInteractivePanelData(state),
@@ -348,6 +371,7 @@ const dispatchToPropsMap = {
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
     handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
+    handleSelectDownloadId: selectionStateBranch.actions.selectDownloadId,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);

@@ -1,11 +1,3 @@
-import {
-    AGGLOMERATIVE_KEY,
-    CLUSTER_DISTANCE_KEY,
-    CLUSTER_NUMBER_KEY,
-    DBSCAN_KEY,
-    KMEANS_KEY,
-} from "../../constants";
-
 type AGGLOMERATIVE_KEY = typeof AGGLOMERATIVE_KEY;
 type DBSCAN_KEY = typeof DBSCAN_KEY;
 type KMEANS_KEY = typeof KMEANS_KEY;
@@ -16,6 +8,10 @@ import { MetadataStateBranch } from "../metadata/types";
 export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
 export type ClusteringTypeChoices = KMEANS_KEY | DBSCAN_KEY | AGGLOMERATIVE_KEY;
 export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
+export interface DownloadConfig {
+    key: string;
+    type: string;
+}
 
 export interface SelectionStateBranch {
     [key: string]: any;
@@ -64,6 +60,10 @@ export interface ChangeSelectionAction {
     type: string;
 }
 
+export interface ChangeDownloadConfigAction {
+    payload: DownloadConfig;
+    type: string;
+}
 export interface BoolToggleAction {
     payload: boolean;
     type: string;

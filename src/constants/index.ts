@@ -10,7 +10,7 @@ export const CELL_ID_KEY = "CellId";
 export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
-
+export const DOWNLOAD_URL_PREFIX = "https://files.allencell.org/api/2.0/file/download?collection=cellviewer-1-3";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId/Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId/Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";

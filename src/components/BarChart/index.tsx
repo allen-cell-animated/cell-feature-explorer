@@ -10,6 +10,9 @@ interface BarChartProps {
     closeable: boolean;
     hideable: boolean;
     panelData: PanelData[];
+    handleDownload: (key: string) => void;
+    downloadUrls: string[];
+    downloadConfig: any;
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }
@@ -17,9 +20,10 @@ interface BarChartProps {
 const BarChart: React.SFC<BarChartProps> = (props) => {
     const {
         closeable,
-        downloadAllUrl,
+        downloadUrls,
         handleCloseSelectionSet,
         handleDownload,
+        downloadConfig,
         hideable,
         onBarClicked,
         panelData,
@@ -40,7 +44,8 @@ const BarChart: React.SFC<BarChartProps> = (props) => {
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
                         handleDownload={handleDownload}
-                        downloadAllUrl={downloadAllUrl}
+                        downloadUrls={downloadUrls}
+                        downloadConfig={downloadConfig}
                     />
                 );
             })
