@@ -1,18 +1,30 @@
 import {
     map,
 } from "lodash";
-import { Data, PlotData } from "plotly.js";
+import {
+    Data,
+} from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
-    CLUSTERS_PLOT_NAME, GENERAL_PLOT_SETTINGS, SCATTER_PLOT_NAME,
-    SELECTIONS_PLOT_NAME
-} from "../../constants/index";
+    CLUSTERS_PLOT_NAME,
+    GENERAL_PLOT_SETTINGS,
+    SCATTER_PLOT_NAME,
+    SELECTIONS_PLOT_NAME,
+} from "../../constants";
+
+import { PlotData } from "../../state/plotyjs-types";
 import {
-    getApplyColorToSelections, getClusteringResult, getClustersOn, getMainPlotData,
-    getSelectedGroupsData
+    getApplyColorToSelections,
+    getClusteringResult,
+    getClustersOn,
+    getMainPlotData,
+    getSelectedGroupsData,
 } from "../../state/selection/selectors";
-import { ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import {
+    ContinuousPlotData,
+    GroupedPlotData
+} from "../../state/types";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
@@ -57,7 +69,7 @@ export const composePlotlyData = createSelector([
     };
 });
 
-function colorSettings(plotSettings: Data, plotData: GroupedPlotData| ContinuousPlotData): Data {
+function colorSettings(plotSettings: Data, plotData: GroupedPlotData| ContinuousPlotData): Partial<PlotData> {
     if (isGrouped(plotData)) {
         return {
             ...plotSettings,
@@ -92,7 +104,7 @@ function colorSettings(plotSettings: Data, plotData: GroupedPlotData| Continuous
     };
 }
 
-function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Data {
+function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
     const plotSettings =  {
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
