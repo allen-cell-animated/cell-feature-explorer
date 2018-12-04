@@ -1,3 +1,11 @@
+import {
+    AGGLOMERATIVE_KEY,
+    CLUSTER_DISTANCE_KEY,
+    CLUSTER_NUMBER_KEY,
+    DBSCAN_KEY,
+    KMEANS_KEY,
+} from "../../constants";
+
 type AGGLOMERATIVE_KEY = typeof AGGLOMERATIVE_KEY;
 type DBSCAN_KEY = typeof DBSCAN_KEY;
 type KMEANS_KEY = typeof KMEANS_KEY;

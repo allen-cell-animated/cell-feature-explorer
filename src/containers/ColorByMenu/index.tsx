@@ -23,6 +23,8 @@ import {
     AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
     DBSCAN_KEY,
+    DOWNLOAD_CONFIG_TYPE_PROTEIN,
+    DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     KMEANS_KEY,
     PROTEIN_NAME_KEY
 } from "../../constants";
@@ -140,7 +142,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const { handleSelectDownloadId } = this.props;
         handleSelectDownloadId({
             key: proteinName,
-            type: "protein",
+            type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
         });
     }
 
@@ -148,7 +150,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const { handleSelectDownloadId } = this.props;
         handleSelectDownloadId({
             key: selectionSetId,
-            type: "selectionSet",
+            type: DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
         });
     }
 

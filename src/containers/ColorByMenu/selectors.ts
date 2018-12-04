@@ -8,7 +8,10 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    DISABLE_COLOR, DOWNLOAD_URL_PREFIX,
+    DISABLE_COLOR,
+    DOWNLOAD_CONFIG_TYPE_PROTEIN,
+    DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
+    DOWNLOAD_URL_PREFIX,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
@@ -96,7 +99,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
         selectedGroups
     ) => {
         const returnArray: string[] = [];
-        if (downloadConfig.type === "protein") {
+        if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
 
             return reduce(fileInfo, (acc, cur: FileInfo) => {
                 if (cur[PROTEIN_NAME_KEY] === downloadConfig.key) {
@@ -104,7 +107,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 }
                 return acc;
             }, returnArray);
-        } else if (downloadConfig.type === "selectionSet") {
+        } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
             const selectedIndices = selectedGroups[downloadConfig.key];
 
             return reduce(fileInfo, (acc, cur: FileInfo, index) => {

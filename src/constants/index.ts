@@ -15,6 +15,8 @@ export const CELL_LINE_DEF_NAME_KEY = "CellLineId/Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId/Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";
 export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
+export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
+export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
