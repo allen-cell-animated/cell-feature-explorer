@@ -49,7 +49,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             cover={props.src &&
                 (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>)
             }
-            actions={[
+            actions={props.empty ? [] : [
                 <span
                     key={`${props.title}-load`}
                     onClick={openCellin3D}
