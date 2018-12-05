@@ -38,7 +38,8 @@ import {
 } from "../../state/selection/constants";
 import {
     BoolToggleAction,
-    ChangeClusterNumberAction, ChangeDownloadConfigAction,
+    ChangeClusterNumberAction,
+    ChangeDownloadConfigAction,
     ChangeSelectionAction,
     ClusteringTypeChoices,
     DeselectGroupOfPointsAction,
