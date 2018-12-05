@@ -1,6 +1,5 @@
 import {
     filter,
-    includes,
     pickBy,
 } from "lodash";
 import { AnyAction } from "redux";
@@ -21,7 +20,8 @@ import {
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
-    OPEN_CELL_IN_3D, SELECT_DOWNLOAD_ID,
+    OPEN_CELL_IN_3D,
+    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -49,8 +49,8 @@ export const initialState = {
     clusteringDistance: "",
     colorBy: INITIAL_COLOR_BY,
     downloadConfig: {
-        key: "" as string,
-        type: "" as string,
+        key: "",
+        type: "",
     },
     filterExclude: [],
     numberOfClusters: "",
