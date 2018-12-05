@@ -13,7 +13,7 @@ import {
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
 
-import { PlotData } from "../../state/plotyjs-types";
+import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
     getClusteringResult,
