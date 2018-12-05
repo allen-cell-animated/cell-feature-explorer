@@ -1,9 +1,7 @@
 import {
     map,
 } from "lodash";
-import {
-    Data,
-} from "plotly.js";
+
 import { createSelector } from "reselect";
 
 import {
@@ -19,7 +17,7 @@ import {
     getClusteringResult,
     getClustersOn,
     getMainPlotData,
-    getSelectedGroupsData,
+    getSelectedGroupsData
 } from "../../state/selection/selectors";
 import {
     ContinuousPlotData,
@@ -69,7 +67,9 @@ export const composePlotlyData = createSelector([
     };
 });
 
-function colorSettings(plotSettings: Data, plotData: GroupedPlotData| ContinuousPlotData): Partial<PlotData> {
+function colorSettings(
+    plotSettings: Partial<PlotData>,
+    plotData: GroupedPlotData| ContinuousPlotData): Partial<PlotData> {
     if (isGrouped(plotData)) {
         return {
             ...plotSettings,
