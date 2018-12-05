@@ -3,6 +3,7 @@ import {
     keys,
     map,
     reduce,
+    shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
 
@@ -70,7 +71,8 @@ const requestFeatureDataLogic = createLogic({
             .then((metadata: AxiosResponse) => metadata.data)
             .then((data) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
-                return map(data, (datum: MetadataStateBranch) => {
+                // shuffle to keep the plot from being organized in z
+                return shuffle(map(data, (datum: MetadataStateBranch) => {
                     return {
                         clusters: datum.clusters,
                         file_info: {
@@ -84,7 +86,7 @@ const requestFeatureDataLogic = createLogic({
                         },
                         measured_features: datum.measured_features,
                     };
-                });
+                }));
             })
             .then((metaData: MetaData[]) => {
                 dispatch((receiveMetadata(metaData)));

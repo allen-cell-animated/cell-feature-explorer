@@ -5,8 +5,6 @@ import {
 import React from "react";
 const { Link } = Anchor;
 
-import "antd/lib/anchor/style";
-
 const AffixedNav: React.SFC = () => {
 
         return (
@@ -16,8 +14,8 @@ const AffixedNav: React.SFC = () => {
                         href="#main-plot"
                         title={(
                         <React.Fragment>
-                            <span>Chart </span>
                             <Icon type="dot-chart"/>
+                            <span> Plot </span>
                         </React.Fragment>
                     )}
                     />
@@ -25,16 +23,16 @@ const AffixedNav: React.SFC = () => {
                         href="#gallery"
                         title={(
                             <React.Fragment>
-                                <span>Gallery </span>
-                                <Icon type="Picture"/>
+                                <Icon type="picture"/>
+                                <span> Gallery </span>
                             </React.Fragment>)}
                     />
                     <Link
                         href="#three-d-viewer"
                         title={(
                         <React.Fragment>
-                            <span>3D viewer </span>
                             <Icon type="sync"/>
+                            <span> 3D viewer </span>
                         </React.Fragment>)}
                     />
 

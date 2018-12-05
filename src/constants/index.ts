@@ -59,7 +59,7 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffHeight: 635,
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
-    unselectedCircleOpacity: .7,
+    unselectedCircleOpacity: .5,
     xAxisInitial: "Nuclear Volume (fL)",
     yAxisInitial: "Cellular Volume (fL)",
 };
