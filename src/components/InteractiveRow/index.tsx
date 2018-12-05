@@ -39,6 +39,8 @@ interface InteractiveRowState {
     alreadyDownloaded: AlreadyDownloaded;
 }
 
+const LOCAL_STORAGE_KEY = "alreadyDownloaded";
+
 export default class InteractiveRow extends React.Component<InteractiveRowProps, InteractiveRowState> {
     private static defaultProps = {
         closeable: false,
@@ -54,13 +56,13 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         this.handleDownloadMenuVisibleChange = this.handleDownloadMenuVisibleChange.bind(this);
 
         this.state = {
-            alreadyDownloaded: localStorage.getItem("alreadyDownloaded") ?
-                JSON.parse(localStorage.getItem("alreadyDownloaded") as string) : {},
+            alreadyDownloaded: localStorage.getItem(LOCAL_STORAGE_KEY) ?
+                JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) as string) : {},
             downloadMenuVisible: false,
         };
     }
 
-    public onClose({ currentTarget }: React.MouseEvent<HTMLButtonElement>) {
+    public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
         const {
             handleClose,
         } = this.props;
@@ -69,7 +71,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         }
     }
 
-    public onDownload({ currentTarget }: React.MouseEvent<HTMLButtonElement>) {
+    public onDownload({ currentTarget }: MouseEvent<HTMLButtonElement>) {
         const {
             handleDownload,
         } = this.props;
@@ -100,7 +102,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
 
     }
     public handleDownloadMenuVisibleChange(flag?: boolean) {
-        localStorage.setItem("alreadyDownloaded", JSON.stringify( this.state.alreadyDownloaded));
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify( this.state.alreadyDownloaded));
         this.setState({ downloadMenuVisible: !!flag }); // for typescript, to convert undefined to false
     }
 
@@ -134,7 +136,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                      (<Menu.Item key={index} onClick={this.saveDownloadUrl}>
                          {includes(alreadyDownloaded, index.toString()) ?
                              <Icon type="check" /> :  <Icon type="download" />}
-                             <a target="_blank" href={url}> data chunk {index + 1} </a>
+                             <a href={url}> data chunk {index + 1} </a>
                     </Menu.Item>)
                 )}
 

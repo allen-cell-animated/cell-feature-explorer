@@ -5,6 +5,8 @@ import {
 
 import { APP_ID } from "../constants";
 
+import { FileInfo } from "./metadata/types";
+
 import {
     BatchedAction,
     TypeToDescriptionMap,
@@ -46,4 +48,8 @@ export function enableBatching<S>(reducer: Reducer<S>): Reducer<S> {
         }
         return reducer(state, action);
     };
+}
+
+export function convertFileInfoToAICSId(datum: FileInfo): string {
+    return `${datum.CellLineName}_${datum.FOVId}_${datum.CellId}`;
 }

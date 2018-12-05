@@ -7,7 +7,7 @@ import React from "react";
 import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
     ChangeSelectionAction,
-    DeselectPointAction,
+    DeselectPointAction, DownloadImageAction,
 } from "../../state/selection/types";
 
 const { Meta } = Card;
@@ -18,6 +18,7 @@ interface GalleryCardProps {
     src: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => ChangeSelectionAction;
+    handleDownloadImage: (payload: number) => DownloadImageAction;
     pointIndex: number;
     empty?: boolean;
 }
@@ -36,6 +37,11 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         }), 3000);
         props.handleOpenIn3D(props.title);
     };
+
+    const downloadData = () => {
+        props.handleDownloadImage(props.pointIndex);
+    };
+
     return (
         <Card
             className={styles.container}
@@ -47,10 +53,13 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 <span
                     key={`${props.title}-load`}
                     onClick={openCellin3D}
-                >3D <Icon
-                    type="arrows-alt"
-                />
+                >3D
                 </span>,
+                <Icon
+                    key={`${props.title}-download`}
+                    type="download"
+                    onClick={downloadData}
+                />,
                 <Icon
                     key={`${props.title}-close`}
                     type="close"

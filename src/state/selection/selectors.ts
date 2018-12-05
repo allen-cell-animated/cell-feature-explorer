@@ -42,6 +42,7 @@ import {
 } from "../types";
 
 import { CLUSTERING_MAP } from "./constants";
+import { DownloadConfig } from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -58,7 +59,7 @@ export const getClustersOn = (state: State) => state.selection.showClusters;
 export const getClusteringAlgorithm = (state: State) => state.selection.clusteringAlgorithm;
 export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
 export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
-export const getDownloadConfig = (state: State) => state.selection.downloadConfig;
+export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
 // COMPOSED SELECTORS
 export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]) => {

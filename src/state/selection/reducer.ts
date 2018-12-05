@@ -49,8 +49,8 @@ export const initialState = {
     clusteringDistance: "",
     colorBy: INITIAL_COLOR_BY,
     downloadConfig: {
-        key: "",
-        type: "",
+        key: "" as string,
+        type: "" as string,
     },
     filterExclude: [],
     numberOfClusters: "",

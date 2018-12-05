@@ -4,6 +4,7 @@ import React from "react";
 
 import { PanelData } from "../../containers/ColorByMenu/types";
 
+import { DownloadConfig } from "../../state/selection/types";
 import InteractiveRow from "../InteractiveRow";
 
 interface BarChartProps {
@@ -12,7 +13,7 @@ interface BarChartProps {
     panelData: PanelData[];
     handleDownload: (key: string) => void;
     downloadUrls: string[];
-    downloadConfig: any;
+    downloadConfig: DownloadConfig;
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }

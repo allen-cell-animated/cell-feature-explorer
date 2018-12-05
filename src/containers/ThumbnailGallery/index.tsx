@@ -9,12 +9,15 @@ import { connect } from "react-redux";
 import GalleryCard from "../../components/GalleryCard";
 import {
     clearAllSelectedPoints,
-    deselectPoint, selectCellFor3DViewer,
+    deselectPoint,
+    downloadImage,
+    selectCellFor3DViewer,
 } from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
 import {
     ChangeSelectionAction,
     DeselectPointAction,
+    DownloadImageAction,
     ResetSelectionAction,
 } from "../../state/selection/types";
 import {
@@ -28,6 +31,7 @@ interface ThumbnailGalleryProps {
     data: Thumbnail[];
     handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
+    handleDownloadImage: (payload: number) => DownloadImageAction;
     handleOpenIn3D: (payload: string) => ChangeSelectionAction;
 }
 
@@ -67,6 +71,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
+            handleDownloadImage,
             handleOpenIn3D,
         } = this.props;
         return (
@@ -78,6 +83,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     pointIndex={item.pointIndex}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
+                    handleDownloadImage={handleDownloadImage}
                 />
             </List.Item>
         );
@@ -93,6 +99,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
+    handleDownloadImage : downloadImage,
     handleOpenIn3D: selectCellFor3DViewer,
 };
 

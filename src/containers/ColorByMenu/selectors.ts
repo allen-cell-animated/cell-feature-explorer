@@ -23,14 +23,18 @@ import {
 import { FileInfo } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
-    getColorBySelection, getDownloadConfig,
+    getColorBySelection,
+    getDownloadConfig,
     getFiltersToExclude,
     getProteinColors,
-    getSelectedGroupKeys, getSelectedGroups,
+    getSelectedGroupKeys,
+    getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
+
 import { NumberOrString } from "../../state/types";
+import { convertFileInfoToAICSId } from "../../state/util";
 
 import { PanelData } from "./types";
 
@@ -81,10 +85,6 @@ export const getSelectionPanelData = createSelector(
         });
     });
 
-function convertFileInfoToAICSId(datum: FileInfo): string {
-    return `${datum.CellLineName}_${datum.FOVId}_${datum.CellId}`;
-}
-
 export const getListOfCellIdsByDownloadConfig = createSelector(
     [
         getProteinNames,
@@ -97,10 +97,9 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
         fileInfo,
         downloadConfig,
         selectedGroups
-    ) => {
+    ): string[] => {
         const returnArray: string[] = [];
         if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
-
             return reduce(fileInfo, (acc, cur: FileInfo) => {
                 if (cur[PROTEIN_NAME_KEY] === downloadConfig.key) {
                     acc.push(convertFileInfoToAICSId(cur));
@@ -117,7 +116,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 return acc;
             }, returnArray);
         }
-        return [];
+        return returnArray;
 });
 
 export const createUrlFromListOfIds = createSelector(

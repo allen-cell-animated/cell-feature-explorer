@@ -16,6 +16,7 @@ import { MetadataStateBranch } from "../metadata/types";
 export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
 export type ClusteringTypeChoices = KMEANS_KEY | DBSCAN_KEY | AGGLOMERATIVE_KEY;
 export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
+
 export interface DownloadConfig {
     key: string;
     type: string;
@@ -80,5 +81,10 @@ export interface BoolToggleAction {
 export interface ChangeClusterNumberAction {
     payload: string;
     clusteringKey: string;
+    type: string;
+}
+
+export interface DownloadImageAction {
+    payload: number;
     type: string;
 }
