@@ -1,15 +1,20 @@
 import {
     map,
 } from "lodash";
-import { Data, PlotData } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
-    CLUSTERS_PLOT_NAME, GENERAL_PLOT_SETTINGS, SCATTER_PLOT_NAME,
-    SELECTIONS_PLOT_NAME
+    CLUSTERS_PLOT_NAME,
+    GENERAL_PLOT_SETTINGS,
+    SCATTER_PLOT_NAME,
+    SELECTIONS_PLOT_NAME,
 } from "../../constants/index";
+import { PlotData } from "../../state/plotlyjs-types";
 import {
-    getApplyColorToSelections, getClusteringResult, getClustersOn, getMainPlotData,
+    getApplyColorToSelections,
+    getClusteringResult,
+    getClustersOn,
+    getMainPlotData,
     getSelectedGroupsData
 } from "../../state/selection/selectors";
 import { ContinuousPlotData, GroupedPlotData } from "../../state/types";
@@ -57,7 +62,9 @@ export const composePlotlyData = createSelector([
     };
 });
 
-function colorSettings(plotSettings: Data, plotData: GroupedPlotData| ContinuousPlotData): Data {
+function colorSettings(
+    plotSettings: Partial<PlotData>,
+    plotData: GroupedPlotData| ContinuousPlotData): Partial<PlotData> {
     if (isGrouped(plotData)) {
         return {
             ...plotSettings,
@@ -92,7 +99,7 @@ function colorSettings(plotSettings: Data, plotData: GroupedPlotData| Continuous
     };
 }
 
-function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Data {
+function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
     const plotSettings =  {
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
