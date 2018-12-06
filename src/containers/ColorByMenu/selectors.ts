@@ -122,7 +122,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
 export const createUrlFromListOfIds = createSelector(
     [getListOfCellIdsByDownloadConfig],
     (cellIdsToDownload): string[] => {
-    const chunkSize = 300;
+    const chunkSize = 340;
     const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
     return map(chunksOfIds,
         (listOfIds) => (`${DOWNLOAD_URL_PREFIX}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`)

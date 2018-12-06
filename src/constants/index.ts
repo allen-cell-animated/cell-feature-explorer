@@ -10,7 +10,6 @@ export const CELL_ID_KEY = "CellId";
 export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
-export const DOWNLOAD_URL_PREFIX = "https://files.allencell.org/api/2.0/file/download?collection=cellviewer-1-3";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId/Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId/Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";
@@ -25,15 +24,22 @@ export const DBSCAN_KEY = "DBSCAN";
 export const CLUSTER_NUMBER_KEY = "numberOfClusters";
 export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
 
+// These lines are typing and exporting variables created by webpack DefinePlugin
 declare const CELL_VIEWER_URL: string;
-declare const BASE_API_URL: string;
-declare const THUMBNAIL_BASE_URL: string;
 const _CELL_VIEWER_URL = CELL_VIEWER_URL;
-const _BASE_API_URL = BASE_API_URL;
-const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
 export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
+
+declare const BASE_API_URL: string;
+const _BASE_API_URL = BASE_API_URL;
 export {_BASE_API_URL as BASE_API_URL};
+
+declare const THUMBNAIL_BASE_URL: string;
+const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
 export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
+
+declare const DOWNLOAD_URL_PREFIX: string;
+const _DOWNLOAD_URL_PREFIX = DOWNLOAD_URL_PREFIX;
+export {_DOWNLOAD_URL_PREFIX as DOWNLOAD_URL_PREFIX};
 
 export const DISABLE_COLOR = "#6e6e6e";
 export const OFF_COLOR = "#000";

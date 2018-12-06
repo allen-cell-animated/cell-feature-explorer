@@ -2,10 +2,7 @@ import { createLogic } from "redux-logic";
 
 import { ReduxLogicDeps, State } from "../types";
 
-import {
-    DOWNLOAD_URL_PREFIX,
-} from "../../constants/index";
-
+import { DOWNLOAD_URL_PREFIX } from "../../constants";
 import { getFileInfo } from "../metadata/selectors";
 import { convertFileInfoToAICSId } from "../util";
 

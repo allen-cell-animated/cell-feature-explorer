@@ -59,7 +59,8 @@ const PLUGINS_BY_ENV = {
             'process.env.NODE_ENV': JSON.stringify('production'),
             CELL_VIEWER_URL: ProductionServers.CELL_VIEWER_URL,
             BASE_API_URL: ProductionServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: ProductionServers.THUMBNAIL_BASE_URL
+            THUMBNAIL_BASE_URL: ProductionServers.THUMBNAIL_BASE_URL,
+            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.HashedModuleIdsPlugin()
@@ -69,7 +70,8 @@ const PLUGINS_BY_ENV = {
             'process.env.NODE_ENV': JSON.stringify('staging'),
             CELL_VIEWER_URL: StagingServers.CELL_VIEWER_URL,
             BASE_API_URL: StagingServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: StagingServers.THUMBNAIL_BASE_URL
+            THUMBNAIL_BASE_URL: StagingServers.THUMBNAIL_BASE_URL,
+            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
         new webpack.NamedModulesPlugin()
     ],
@@ -78,7 +80,8 @@ const PLUGINS_BY_ENV = {
             'process.env.NODE_ENV': JSON.stringify('dev'),
             CELL_VIEWER_URL: DevServers.CELL_VIEWER_URL,
             BASE_API_URL: DevServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: DevServers.THUMBNAIL_BASE_URL
+            THUMBNAIL_BASE_URL: DevServers.THUMBNAIL_BASE_URL,
+            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
     ]
 };
