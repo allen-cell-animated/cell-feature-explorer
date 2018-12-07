@@ -83,8 +83,3 @@ export interface ChangeClusterNumberAction {
     clusteringKey: string;
     type: string;
 }
-
-export interface DownloadImageAction {
-    payload: number;
-    type: string;
-}

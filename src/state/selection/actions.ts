@@ -5,7 +5,6 @@ import {
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
-    DOWNLOAD_IMAGE_DATA,
     OPEN_CELL_IN_3D,
     SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
@@ -21,7 +20,6 @@ import {
     ChangeSelectionAction,
     DeselectPointAction,
     DownloadConfig,
-    DownloadImageAction,
     ResetSelectionAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
@@ -118,12 +116,5 @@ export function changeDownloadSettings(payload: DownloadConfig): ChangeDownloadC
     return {
         payload,
         type: SELECT_DOWNLOAD_ID,
-    };
-}
-
-export function downloadImage(payload: number): DownloadImageAction {
-    return {
-        payload,
-        type: DOWNLOAD_IMAGE_DATA,
     };
 }

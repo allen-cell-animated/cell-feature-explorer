@@ -24,7 +24,6 @@ export const CHANGE_CLUSTER_NUMBER = makeConstant("selection", "change-cluster-n
 export const CHANGE_CLUSTERING_ALGORITHM = makeConstant("selection", "change-clustering-algorithm");
 export const TOGGLE_CLUSTERS_VISIBLE = makeConstant("selection", "toggle-clusters-on");
 export const SELECT_DOWNLOAD_ID = makeConstant("selection", "select-download-id");
-export const DOWNLOAD_IMAGE_DATA = makeConstant("selection", "download-image");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";

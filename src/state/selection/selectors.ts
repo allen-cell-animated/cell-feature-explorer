@@ -12,6 +12,7 @@ import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
+    DOWNLOAD_URL_PREFIX,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
@@ -40,6 +41,7 @@ import {
     State,
     Thumbnail,
 } from "../types";
+import { convertFileInfoToAICSId } from "../util";
 
 import { CLUSTERING_MAP } from "./constants";
 import { DownloadConfig } from "./types";
@@ -233,8 +235,10 @@ export const getThumbnails = createSelector([
             const cellLineId = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
             const fovId = fileInfo[pointIndex][FOV_ID_KEY];
             const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
+            const downloadHref = `${DOWNLOAD_URL_PREFIX}id=${convertFileInfoToAICSId(fileInfo[pointIndex])}`;
             return {
                 cellID,
+                downloadHref,
                 pointIndex,
                 src,
             };

@@ -48,6 +48,7 @@ export interface Annotation {
 
 export interface Thumbnail {
     pointIndex: number;
+    downloadHref: string;
     src: string;
     cellID: string;
     empty?: boolean;

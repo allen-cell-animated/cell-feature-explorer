@@ -1,8 +1,14 @@
+@import "../../styles/colors.css";
+
 .container {
     & :global(.ant-card-loading-block) {
         animation: none;
     }
-    & :global(.ant-card-actions li) {
+    & :global(.ant-card-meta-title) {
+        color: var(--text-gray);
+    }
+    & :global(.ant-card-actions li),
+    & :global(.ant-card-actions a) {
         color: white;
     }
     & :global(.ant-card-body) {
