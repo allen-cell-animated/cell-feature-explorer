@@ -47,7 +47,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             className={styles.container}
             loading={props.empty}
             cover={props.src &&
-                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>)
+                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
             }
             actions={props.empty ? [] : [
                 <span
