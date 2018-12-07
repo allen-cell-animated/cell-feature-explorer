@@ -24,7 +24,8 @@ export const makeFeatureData = (
     measuredFeatures1: number[],
     measuredFeatures2: number[]
 ): MetaData[] => (
-    zipWith(cellIds, proteinNames, measuredFeatures1, measuredFeatures2, (cellId, proteinName, feature1, feature2) => (
+    zipWith(cellIds, proteinNames, measuredFeatures1, measuredFeatures2,
+        (cellId, proteinName, feature1, feature2) => (
         {
             clusters: {
                 [KMEANS_KEY]: {
@@ -32,9 +33,9 @@ export const makeFeatureData = (
                 },
             },
             file_info : {
-                [CELL_ID_KEY]: cellId,
-                [CELL_LINE_NAME_KEY]: "",
-                [FOV_ID_KEY]: "",
+                [CELL_ID_KEY]: cellId.split("_")[2] || cellId,
+                [CELL_LINE_NAME_KEY]: cellId.split("_")[0] || cellId,
+                [FOV_ID_KEY]: cellId.split("_")[1] || cellId,
                 [PROTEIN_NAME_KEY]: proteinName,
             },
             measured_features: {
@@ -57,6 +58,10 @@ export const mockState = (
     },
     selection: {
         colorBy: INITIAL_COLOR_BY,
+        downloadConfig: {
+            key: "",
+            type: "",
+        },
         plotByOnX: INITIAL_PLOT_BY_ON_X,
         plotByOnY: INITIAL_PLOT_BY_ON_Y,
         proteinColors: INITIAL_COLORS,
