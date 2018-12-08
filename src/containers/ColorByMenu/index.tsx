@@ -280,7 +280,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         <Col span={6}>
                             Color by:
                         </Col>
-                        <Col span={6}>
+                        <Col span={18}>
                             <AxisDropDown
                                 axisId={COLOR_BY_SELECTOR}
                             />

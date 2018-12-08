@@ -18,3 +18,7 @@
   display: flex;
   justify-content: space-between;
 }
+
+.color-by-row :global(.ant-select) {
+  width: 100%;
+}
