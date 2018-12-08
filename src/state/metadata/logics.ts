@@ -10,6 +10,7 @@ import { createLogic } from "redux-logic";
 import { ReduxLogicDeps } from "../types";
 
 import {
+    CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
@@ -17,7 +18,11 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 
-import { changeClusteringNumber } from "../selection/actions";
+import {
+    changeClusteringNumber,
+    selectCellFor3DViewer,
+    selectPoint,
+} from "../selection/actions";
 import { CLUSTERING_MAP } from "../selection/constants";
 import { ClusteringTypeChoices } from "../selection/types";
 
@@ -88,15 +93,20 @@ const requestFeatureDataLogic = createLogic({
                     };
                 }));
             })
-            .then((metaData: MetaData[]) => {
+            .then((metaData: MetaData[]): MetaData => {
                 dispatch((receiveMetadata(metaData)));
-
+                // set the clustering options based on the dataset
                 map(metaData[0].clusters, (value, clusteringName: ClusteringTypeChoices) => {
                     const initVal = keys(value)[Math.floor(keys(value).length / 2)];
                     dispatch(changeClusteringNumber(CLUSTERING_MAP(clusteringName), initVal));
                 });
+                return metaData[0];
             })
-
+            .then((metaDatum) => {
+                // select first cell on both plot and load in 3D to make it clear what the user can do
+                dispatch(selectPoint(0));
+                dispatch(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));
+            })
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
             })
