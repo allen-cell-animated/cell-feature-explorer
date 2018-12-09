@@ -1,4 +1,4 @@
-FROM docker-virtual.artifactory.corp.alleninstitute.org/aics-nginx:20171121-3
+FROM docker-virtual.artifactory.corp.alleninstitute.org/aics-nginx:1.1.2-1.0.0
 
 ARG TEMPLATE_DIR
 ARG FILENAME
