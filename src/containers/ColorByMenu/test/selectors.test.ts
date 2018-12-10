@@ -84,7 +84,7 @@ describe("ColorByMenu selectors", () => {
                 }
                 return acc;
                     }, init);
-            const expectedIds: string[] = map(expectedIndexes, (index: number) => cellIDs[index]);
+            const expectedIds: string[] = map(expectedIndexes, (index: number) => `C${cellIDs[index].split("_")[2]}`);
 
             const result: string[] = getListOfCellIdsByDownloadConfig(state);
             expect(result).to.deep.equal(expectedIds);
