@@ -235,7 +235,7 @@ export const getThumbnails = createSelector([
             const cellLineId = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
             const fovId = fileInfo[pointIndex][FOV_ID_KEY];
             const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
-            const downloadHref = `${DOWNLOAD_URL_PREFIX}id=${convertFileInfoToAICSId(fileInfo[pointIndex])}`;
+            const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(fileInfo[pointIndex])}`;
             return {
                 cellID,
                 downloadHref,
