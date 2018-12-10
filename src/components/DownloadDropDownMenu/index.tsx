@@ -123,7 +123,10 @@ export default class DownloadDropDownMenu extends React.Component<DownloadDropDo
         } = this.props;
         const alreadyDownloaded = this.state.alreadyDownloaded[downloadConfig.key];
         const menu = (
-            <Menu onClick={this.handleMenuClick}>
+            <Menu
+                className={styles.menu}
+                onClick={this.handleMenuClick}
+            >
                 {downloadUrls.map((url, index) =>
                     (<Menu.Item key={index} onClick={this.saveDownloadUrl}>
                         {includes(alreadyDownloaded, index.toString()) ?
