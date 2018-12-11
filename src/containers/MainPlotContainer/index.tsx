@@ -1,3 +1,4 @@
+import { Popover } from "antd";
 import {
     filter,
     includes,
@@ -15,26 +16,29 @@ import {
 } from "react-redux";
 
 import MainPlot from "../../components/MainPlot";
+import MouseFollower from "../../components/MouseFollower";
+import PopoverCard, { PopoverCardProps } from "../../components/PopoverCard/index";
 
 import {
+    CELL_ID_KEY,
+    PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
-import {
-    Annotation,
-    State,
-} from "../../state/types";
-
 import metadataStateBranch from "../../state/metadata";
 import { RequestAction } from "../../state/metadata/types";
-
 import selectionStateBranch from "../../state/selection";
 import {
     DeselectPointAction,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
+import {
+    Annotation,
+    State,
+} from "../../state/types";
+import { convertFileInfoToImgSrc } from "../../state/util";
 
 import AxisDropDown from "../AxisDropDown";
 
@@ -46,6 +50,7 @@ interface MainPlotContainerProps {
     annotations: Annotation[];
     clickedPoints: number[];
     plotDataArray: Data[];
+    filtersToExclude: string[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
@@ -54,31 +59,67 @@ interface MainPlotContainerProps {
     requestFeatureData: ActionCreator<RequestAction>;
 }
 
-class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
+interface MainPlotContainerState {
+    popoverContent: JSX.Element | null;
+}
+
+class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
 
     constructor(props: MainPlotContainerProps) {
         super(props);
         this.onPointClicked = this.onPointClicked.bind(this);
+        this.onPlotHovered = this.onPlotHovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
+        this.state = {
+            popoverContent: null,
+        };
     }
 
     public componentWillMount() {
         this.props.requestCellLineData();
     }
 
-    public onPointClicked(clicked: PlotMouseEvent) {
+    // TODO: retype once plotly has id and fullData types
+    public onPointClicked(clicked: any) {
         const { points } = clicked;
         const {
             clickedPoints,
             handleSelectPoint,
             handleDeselectPoint,
         } = this.props;
-        points.forEach((point) => {
+        points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
-                if (includes(clickedPoints, point.pointIndex)) {
-                    handleDeselectPoint(point.pointIndex);
+                if (includes(clickedPoints, Number(point.id))) {
+                    handleDeselectPoint(Number(point.id));
+                } else if (point.fullData.marker.opacity) {
+                    handleSelectPoint(Number(point.id));
+                }
+            }
+        });
+    }
+
+    // TODO: retype once plotly has customdata and fullData types
+    public onPlotHovered(hovered: any) {
+        const { points } = hovered;
+        const {
+            filtersToExclude,
+        } = this.props;
+        points.forEach((point: any) => {
+            if (point.data.name === SCATTER_PLOT_NAME ) {
+                const fileInfo = point.data.customdata[point.pointIndex];
+                if (!includes(filtersToExclude, point.fullData.name) && fileInfo) {
+
+                    this.setState({popoverContent:
+                        (
+                            <PopoverCard
+                                title={fileInfo[PROTEIN_NAME_KEY]}
+                                description={fileInfo[CELL_ID_KEY]}
+                                src={convertFileInfoToImgSrc(fileInfo)}
+                            />
+                        ),
+                    });
                 } else {
-                    handleSelectPoint(point.pointIndex);
+                    this.setState({popoverContent: null});
                 }
             }
         });
@@ -91,7 +132,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
-        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "pointIndex");
+        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
         handleSelectGroupOfPoints(key, payload);
         handleSelectionToolUsed();
     }
@@ -106,19 +147,32 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
         }
 
         return (
+            <React.Fragment>
+                <Popover
+                    placement="right"
+                    content={this.state.popoverContent}
+                    visible={!!this.state.popoverContent}
+                >
+                    <MouseFollower/>
+                </Popover>
             <div
                 id="main-plot"
                 className={styles.container}
             >
+
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
+
                 <MainPlot
                     plotDataArray={plotDataArray}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
                     onGroupSelected={this.onGroupSelected}
+                    onPlotHovered={this.onPlotHovered}
                 />
             </div>
+            </React.Fragment>
+
         );
     }
 }
@@ -127,6 +181,7 @@ function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
+        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         plotDataArray: getScatterPlotDataArray(state),
     };
 }
