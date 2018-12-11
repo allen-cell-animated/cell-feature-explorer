@@ -62,6 +62,7 @@ export const mockState = (
             key: "",
             type: "",
         },
+        filterExclude: [],
         plotByOnX: INITIAL_PLOT_BY_ON_X,
         plotByOnY: INITIAL_PLOT_BY_ON_Y,
         proteinColors: INITIAL_COLORS,

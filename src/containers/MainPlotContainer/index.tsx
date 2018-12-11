@@ -6,7 +6,6 @@ import {
 } from "lodash";
 import {
     Data,
-    PlotMouseEvent,
     PlotSelectionEvent,
 } from "plotly.js";
 import * as React from "react";
@@ -17,7 +16,7 @@ import {
 
 import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
-import PopoverCard, { PopoverCardProps } from "../../components/PopoverCard/index";
+import PopoverCard from "../../components/PopoverCard/index";
 
 import {
     CELL_ID_KEY,
@@ -70,6 +69,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         this.onPointClicked = this.onPointClicked.bind(this);
         this.onPlotHovered = this.onPlotHovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
+        this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.state = {
             popoverContent: null,
         };
@@ -125,6 +125,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         });
     }
 
+    public onPlotUnhovered({relatedTarget}: any) {
+        // prevents click events from triggering the popover to close
+        if (relatedTarget.className) {
+            this.setState({popoverContent: null});
+        }
+    }
+
     public onGroupSelected(eventData: PlotSelectionEvent) {
         const { points } = eventData;
         const {
@@ -158,12 +165,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             <div
                 id="main-plot"
                 className={styles.container}
+                onMouseLeave={this.onPlotUnhovered}
             >
 
                 <AxisDropDown axisId={X_AXIS_ID}/>
                 <AxisDropDown axisId={Y_AXIS_ID}/>
 
                 <MainPlot
+
                     plotDataArray={plotDataArray}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}

@@ -127,7 +127,7 @@ describe("Selection selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    selectedPoints: [0, 1],
+                    selectedPoints: [1, 2],
                 },
             };
 
@@ -146,7 +146,7 @@ describe("Selection selectors", () => {
                     ...newMockState.selection,
                     plotByOnX: "feature1",
                     plotByOnY: "feature2",
-                    selectedPoints: [0, 1],
+                    selectedPoints: [1, 2],
                 },
             };
             const result: Annotation[] = getAnnotations(state);

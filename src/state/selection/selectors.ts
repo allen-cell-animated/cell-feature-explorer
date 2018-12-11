@@ -301,7 +301,7 @@ export const getAnnotations = createSelector(
          yaxis
      ): Annotation[] => {
         return clickedScatterPointIDs.map((cellID) => {
-            const pointIndex = findIndex(fileInfo, {[CELL_ID_KEY]: cellID});
+            const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
             const fovID = fileInfo[pointIndex][FOV_ID_KEY];
             const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
             const x = measuredData[pointIndex][xaxis];
