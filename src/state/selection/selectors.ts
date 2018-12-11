@@ -44,7 +44,7 @@ import {
     Thumbnail,
 } from "../types";
 import {
-    convertFileInfoToAICSId,
+    convertFileInfoToAICSId, convertFileInfoToImgSrc,
     getFileInfoDatumFromCellId,
 } from "../util";
 
@@ -272,11 +272,12 @@ export const getThumbnails = createSelector([
             if (cellData) {
                 const cellLineId = cellData[CELL_LINE_NAME_KEY];
                 const fovId = cellData[FOV_ID_KEY];
-                const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
+                const src = convertFileInfoToImgSrc(cellData);
                 const downloadHref = `${DOWNLOAD_URL_PREFIX}id=${convertFileInfoToAICSId(cellData)}`;
                 acc.push({
                     cellID,
                     downloadHref,
+                    labledStructure: cellData[PROTEIN_NAME_KEY],
                     src,
                 });
             }

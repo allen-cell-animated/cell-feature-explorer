@@ -3,3 +3,7 @@
     justify-content: space-between;
     margin-bottom: 2em;
 }
+
+.container :global(.ant-list-item-content) {
+    width: 100%;
+}
