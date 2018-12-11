@@ -60,7 +60,7 @@ export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: st
 }
 
 export function convertFileInfoToAICSId(datum: FileInfo): string {
-    return `${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}`;
+    return `C${datum[CELL_ID_KEY]}`;
 }
 
 export function convertFileInfoToImgSrc(datum: FileInfo): string {
