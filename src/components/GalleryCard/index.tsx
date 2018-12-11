@@ -19,14 +19,13 @@ interface GalleryCardProps {
     downloadHref: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => ChangeSelectionAction;
-    pointIndex: number;
     empty?: boolean;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
-        props.handleDeselectPoint(props.pointIndex);
+        props.handleDeselectPoint(Number(props.title));
     };
 
     const openCellin3D = () => {

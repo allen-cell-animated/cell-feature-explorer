@@ -104,7 +104,7 @@ const requestFeatureDataLogic = createLogic({
             })
             .then((metaDatum) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
-                dispatch(selectPoint(0));
+                dispatch(selectPoint(Number(metaDatum.file_info[CELL_ID_KEY])));
                 dispatch(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));
             })
             .catch((reason) => {

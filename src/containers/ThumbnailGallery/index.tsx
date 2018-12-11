@@ -77,7 +77,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     title={item.cellID}
                     downloadHref={item.downloadHref}
                     src={item.src}
-                    pointIndex={item.pointIndex}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
                 />
