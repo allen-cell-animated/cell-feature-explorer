@@ -37,6 +37,14 @@
     white-space: nowrap;
 }
 
+.first-column {
+    margin-top: 5px;
+}
+
 .container :global(.ant-badge.ant-badge-not-a-wrapper) {
     padding-right: 0;
+}
+
+.container button {
+    margin: 0.2em 0em 0.2em 1em;
 }

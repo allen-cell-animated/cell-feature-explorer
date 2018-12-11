@@ -16,6 +16,7 @@ const styles = require("./style.css");
 interface GalleryCardProps {
     title: string;
     src: string;
+    downloadHref: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => ChangeSelectionAction;
     pointIndex: number;
@@ -36,21 +37,28 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         }), 3000);
         props.handleOpenIn3D(props.title);
     };
+
     return (
         <Card
             className={styles.container}
             loading={props.empty}
             cover={props.src &&
-                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}/${props.src}`}/>)
+                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
             }
-            actions={[
+            actions={props.empty ? [] : [
                 <span
                     key={`${props.title}-load`}
                     onClick={openCellin3D}
-                >3D <Icon
-                    type="arrows-alt"
-                />
+                >3D
                 </span>,
+                <a
+                    key={`${props.title}-download-link`}
+                    href={props.downloadHref}
+                >
+                    <Icon
+                        type="download"
+                    />
+                </a>,
                 <Icon
                     key={`${props.title}-close`}
                     type="close"

@@ -1,6 +1,7 @@
 import {
     map,
 } from "lodash";
+
 import { createSelector } from "reselect";
 
 import {
@@ -8,7 +9,8 @@ import {
     GENERAL_PLOT_SETTINGS,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
-} from "../../constants/index";
+} from "../../constants";
+
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
@@ -17,7 +19,10 @@ import {
     getMainPlotData,
     getSelectedGroupsData
 } from "../../state/selection/selectors";
-import { ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import {
+    ContinuousPlotData,
+    GroupedPlotData
+} from "../../state/types";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;

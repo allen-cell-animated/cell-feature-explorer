@@ -10,7 +10,7 @@ import {
 } from "../selectors";
 
 describe("Metadata branch selectors", () => {
-    const cellIDs = ["AICS-1", "AICS-2", "AICS-3", "AICS-4"];
+    const cellIDs = ["AICS-1_1_1", "AICS-2_2_2", "AICS-3_3_3", "AICS-4_4_4"];
     const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
     const feature1Values = [1, 4, 2, 1];
     const feature2Values = [2, 4, 2, 4];

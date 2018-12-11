@@ -1,6 +1,5 @@
 import {
     filter,
-    includes,
     pickBy,
 } from "lodash";
 import { AnyAction } from "redux";
@@ -22,6 +21,7 @@ import {
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
+    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -31,6 +31,7 @@ import {
 import {
     BoolToggleAction,
     ChangeClusterNumberAction,
+    ChangeDownloadConfigAction,
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
@@ -47,6 +48,10 @@ export const initialState = {
     clusteringAlgorithm: KMEANS_KEY,
     clusteringDistance: "",
     colorBy: INITIAL_COLOR_BY,
+    downloadConfig: {
+        key: "",
+        type: "",
+    },
     filterExclude: [],
     numberOfClusters: "",
     plotByOnX: INITIAL_PLOT_BY_ON_X,
@@ -154,6 +159,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             showClusters: action.payload,
+        }),
+    },
+    [SELECT_DOWNLOAD_ID]: {
+        accepts: (action: AnyAction): action is ChangeDownloadConfigAction => action.type === SELECT_DOWNLOAD_ID,
+        perform: (state: SelectionStateBranch, action: ChangeDownloadConfigAction) => ({
+            ...state,
+            downloadConfig: action.payload,
         }),
     },
 };

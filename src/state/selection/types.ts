@@ -17,6 +17,11 @@ export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |
 export type ClusteringTypeChoices = KMEANS_KEY | DBSCAN_KEY | AGGLOMERATIVE_KEY;
 export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
 
+export interface DownloadConfig {
+    key: string;
+    type: string;
+}
+
 export interface SelectionStateBranch {
     [key: string]: any;
 }
@@ -64,6 +69,10 @@ export interface ChangeSelectionAction {
     type: string;
 }
 
+export interface ChangeDownloadConfigAction {
+    payload: DownloadConfig;
+    type: string;
+}
 export interface BoolToggleAction {
     payload: boolean;
     type: string;

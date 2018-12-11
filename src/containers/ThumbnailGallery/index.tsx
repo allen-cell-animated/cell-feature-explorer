@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import GalleryCard from "../../components/GalleryCard";
 import {
     clearAllSelectedPoints,
-    deselectPoint, selectCellFor3DViewer,
+    deselectPoint,
+    selectCellFor3DViewer,
 } from "../../state/selection/actions";
 import { getThumbnails } from "../../state/selection/selectors";
 import {
@@ -74,6 +75,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                 <GalleryCard
                     empty={item.empty}
                     title={item.cellID}
+                    downloadHref={item.downloadHref}
                     src={item.src}
                     pointIndex={item.pointIndex}
                     handleDeselectPoint={handleDeselectPoint}

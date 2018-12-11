@@ -6,6 +6,7 @@ import {
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     OPEN_CELL_IN_3D,
+    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -15,8 +16,10 @@ import {
 import {
     BoolToggleAction,
     ChangeClusterNumberAction,
+    ChangeDownloadConfigAction,
     ChangeSelectionAction,
     DeselectPointAction,
+    DownloadConfig,
     ResetSelectionAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
@@ -106,5 +109,12 @@ export function toggleShowClusters(payload: boolean): BoolToggleAction {
     return {
         payload,
         type: TOGGLE_CLUSTERS_VISIBLE,
+    };
+}
+
+export function changeDownloadSettings(payload: DownloadConfig): ChangeDownloadConfigAction {
+    return {
+        payload,
+        type: SELECT_DOWNLOAD_ID,
     };
 }

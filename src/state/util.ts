@@ -3,7 +3,12 @@ import {
     Reducer,
 } from "redux";
 
-import { APP_ID } from "../constants";
+import {
+    APP_ID,
+    CELL_ID_KEY,
+} from "../constants";
+
+import { FileInfo } from "./metadata/types";
 
 import {
     BatchedAction,
@@ -46,4 +51,8 @@ export function enableBatching<S>(reducer: Reducer<S>): Reducer<S> {
         }
         return reducer(state, action);
     };
+}
+
+export function convertFileInfoToAICSId(datum: FileInfo): string {
+    return `C${datum[CELL_ID_KEY]}`;
 }
