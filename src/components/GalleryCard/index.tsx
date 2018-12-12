@@ -18,7 +18,7 @@ interface GalleryCardProps {
     src: string;
     selected: boolean;
     downloadHref: string;
-    description: string;
+    cellID: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => ChangeSelectionAction;
     empty?: boolean;
@@ -27,7 +27,7 @@ interface GalleryCardProps {
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.title));
+        props.handleDeselectPoint(Number(props.cellID));
     };
 
     const openCellin3D = () => {
@@ -36,7 +36,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             left: 0,
             top: 2500,
         }), 3000);
-        props.handleOpenIn3D(props.title);
+        props.handleOpenIn3D(props.cellID);
     };
 
     return (
@@ -70,7 +70,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             <Meta
                 title={props.title}
-                description={props.description}
+                description={props.cellID}
             />
         </Card>
     );
