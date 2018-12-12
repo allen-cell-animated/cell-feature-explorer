@@ -1,4 +1,3 @@
-import { Popover } from "antd";
 import {
     filter,
     includes,
@@ -17,8 +16,6 @@ import {
 import MainPlot from "../../components/MainPlot";
 
 import {
-    CELL_ID_KEY,
-    PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
@@ -36,7 +33,6 @@ import {
     Annotation,
     State,
 } from "../../state/types";
-import { convertFileInfoToImgSrc } from "../../state/util";
 
 import AxisDropDown from "../AxisDropDown";
 
@@ -48,7 +44,6 @@ interface MainPlotContainerProps {
     annotations: Annotation[];
     clickedPoints: number[];
     plotDataArray: Data[];
-    filtersToExclude: string[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
@@ -77,7 +72,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             handleSelectPoint,
             handleDeselectPoint,
         } = this.props;
-        points.forEach((point) => {
+        points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
                 if (includes(clickedPoints, Number(point.id))) {
                     handleDeselectPoint(Number(point.id));
@@ -131,7 +126,6 @@ function mapStateToProps(state: State) {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
-        filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         plotDataArray: getScatterPlotDataArray(state),
     };
 }
