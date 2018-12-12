@@ -273,7 +273,7 @@ export const getThumbnails = createSelector([
                 const cellLineId = cellData[CELL_LINE_NAME_KEY];
                 const fovId = cellData[FOV_ID_KEY];
                 const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
-                const downloadHref = `${DOWNLOAD_URL_PREFIX}id=${convertFileInfoToAICSId(cellData)}`;
+                const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(cellData)}`;
                 acc.push({
                     cellID,
                     downloadHref,
