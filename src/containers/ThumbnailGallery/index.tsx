@@ -51,7 +51,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         return (
             <div id="gallery" className={styles.container}>
                 <section className={styles.galleryHeader}>
-                    <h3><Icon type="picture"/> Thumbnail gallery</h3>
+                    <h2><Icon type="picture"/>  Gallery</h2>
                     {data.length > 0 ?
                         <Button
                             icon="close"

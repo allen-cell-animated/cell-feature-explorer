@@ -59,7 +59,7 @@ class App extends React.Component<AppProps, {}> {
         return (
                 <Layout className={styles.container}>
                     <Header>
-                        <h3><Icon type="dot-chart"/> Plot</h3>
+                        <h2><Icon type="dot-chart"/> Plot</h2>
                         <AffixedNav
                         />
                     </Header>
@@ -87,7 +87,7 @@ class App extends React.Component<AppProps, {}> {
                         <ThumbnailGallery />
                     </Footer>
                     <div className={styles.cellViewerContainer}>
-                        <h3 className={styles.header}><Icon type="sync"/> 3D Cell Viewer</h3>
+                        <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
                         <CellViewer
                             cellId={selected3DCell}
                             fovId={selected3DCellFOV}
