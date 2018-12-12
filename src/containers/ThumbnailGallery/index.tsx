@@ -54,7 +54,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     <h3><Icon type="picture"/> Thumbnail gallery</h3>
                     {data.length > 0 ?
                         <Button
-                            type="primary"
                             icon="close"
                             onClick={handleClearAllSelectedPoints}
                         >Clear All
