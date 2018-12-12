@@ -14,7 +14,7 @@ const { Meta } = Card;
 const styles = require("./style.css");
 
 interface GalleryCardProps {
-    title: string;
+    cellID: string;
     src: string;
     downloadHref: string;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
@@ -25,7 +25,7 @@ interface GalleryCardProps {
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.title));
+        props.handleDeselectPoint(Number(props.cellID));
     };
 
     const openCellin3D = () => {
@@ -34,7 +34,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             left: 0,
             top: 2500,
         }), 3000);
-        props.handleOpenIn3D(props.title);
+        props.handleOpenIn3D(props.cellID);
     };
 
     return (
@@ -46,12 +46,12 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             }
             actions={props.empty ? [] : [
                 <span
-                    key={`${props.title}-load`}
+                    key={`${props.cellID}-load`}
                     onClick={openCellin3D}
                 >3D
                 </span>,
                 <a
-                    key={`${props.title}-download-link`}
+                    key={`${props.cellID}-download-link`}
                     href={props.downloadHref}
                 >
                     <Icon
@@ -59,14 +59,14 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     />
                 </a>,
                 <Icon
-                    key={`${props.title}-close`}
+                    key={`${props.cellID}-close`}
                     type="close"
                     onClick={deselectPoint}
                 />,
             ]}
         >
             <Meta
-                title={props.title}
+                title={props.cellID}
             />
         </Card>
     );

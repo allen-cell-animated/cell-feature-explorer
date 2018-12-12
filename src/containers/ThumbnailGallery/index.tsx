@@ -74,7 +74,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             <List.Item>
                 <GalleryCard
                     empty={item.empty}
-                    title={item.cellID}
+                    cellID={item.cellID}
                     downloadHref={item.downloadHref}
                     src={item.src}
                     handleDeselectPoint={handleDeselectPoint}
