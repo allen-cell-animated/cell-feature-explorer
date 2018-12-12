@@ -133,6 +133,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
+        if (!eventData) {
+            return;
+        }
         const { points } = eventData;
         const {
             handleSelectGroupOfPoints,
