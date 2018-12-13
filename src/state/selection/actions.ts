@@ -76,7 +76,7 @@ export function toggleFilterByProteinName(payload: string): ChangeSelectionActio
     };
 }
 
-export function selectCellFor3DViewer(payload: string): ChangeSelectionAction {
+export function selectCellFor3DViewer(payload: number): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,

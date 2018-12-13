@@ -53,7 +53,7 @@ export interface Thumbnail {
     downloadHref: string;
     labeledStructure: string;
     src: string;
-    cellID: string;
+    cellID: number;
     empty?: boolean;
 }
 

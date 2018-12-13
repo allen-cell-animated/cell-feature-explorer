@@ -8,6 +8,7 @@ import {
 import { createSelector } from "reselect";
 
 import {
+    CELL_ID_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -107,10 +108,9 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 return acc;
             }, returnArray);
         } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
-            const selectedIndices = selectedGroups[downloadConfig.key];
-
-            return reduce(fileInfo, (acc, cur: FileInfo, index) => {
-                if (includes(selectedIndices, index)) {
+            const selectedCellIds: number[] = map(selectedGroups[downloadConfig.key], Number);
+            return reduce(fileInfo, (acc, cur: FileInfo) => {
+                if (includes(selectedCellIds, cur[CELL_ID_KEY])) {
                     acc.push(convertFileInfoToAICSId(cur));
                 }
                 return acc;

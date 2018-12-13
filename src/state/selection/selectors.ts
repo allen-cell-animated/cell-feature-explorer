@@ -270,12 +270,10 @@ export const getThumbnails = createSelector([
         return reduce(clickedScatterPointIDs, (acc, cellID) => {
             const cellData: FileInfo | undefined = getFileInfoDatumFromCellId(fileInfo, cellID);
             if (cellData) {
-                const cellLineId = cellData[CELL_LINE_NAME_KEY];
-                const fovId = cellData[FOV_ID_KEY];
                 const src = convertFileInfoToImgSrc(cellData);
                 const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(cellData)}`;
                 acc.push({
-                    cellID,
+                    cellID: Number(cellID),
                     downloadHref,
                     labeledStructure: cellData[PROTEIN_NAME_KEY],
                     src,

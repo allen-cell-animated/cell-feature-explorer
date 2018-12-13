@@ -17,9 +17,8 @@ import {
     getThumbnails,
 } from "../../state/selection/selectors";
 import {
-    ChangeSelectionAction,
     DeselectPointAction,
-    ResetSelectionAction,
+    ResetSelectionAction, SelectPointAction,
 } from "../../state/selection/types";
 import {
     State,
@@ -33,7 +32,7 @@ interface ThumbnailGalleryProps {
     selectedCell: number;
     handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => ChangeSelectionAction;
+    handleOpenIn3D: (payload: number) => SelectPointAction;
 }
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
