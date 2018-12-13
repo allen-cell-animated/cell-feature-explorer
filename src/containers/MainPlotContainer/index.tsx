@@ -65,12 +65,7 @@ interface MainPlotContainerProps {
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
 }
 
-interface MainPlotContainerState {
-    popoverContent: JSX.Element | null;
-
-}
-
-class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
+class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
     constructor(props: MainPlotContainerProps) {
         super(props);
@@ -79,9 +74,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
-        this.state = {
-            popoverContent: null,
-        };
     }
 
     public componentWillMount() {

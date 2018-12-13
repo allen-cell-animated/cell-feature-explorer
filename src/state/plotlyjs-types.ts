@@ -5,7 +5,6 @@ import {
     Datum,
     ErrorBar,
     Label,
-    LayoutAxis,
     ScatterLine,
     ScatterMarkerLine,
     TypedArray
@@ -125,22 +124,4 @@ export interface PlotData {
     visible: boolean | "legendonly";
     transforms: DataTransform[];
     orientation: "v" | "h";
-}
-
-export interface PlotDatum {
-    curveNumber: number;
-    data: PlotData;
-    id?: string;
-    fullData: any;
-    pointIndex: number;
-    pointNumber: number;
-    x: Datum;
-    xaxis: LayoutAxis;
-    y: Datum;
-    yaxis: LayoutAxis;
-}
-
-export interface PlotMouseEvent {
-    points: PlotDatum[];
-    event: MouseEvent;
 }
