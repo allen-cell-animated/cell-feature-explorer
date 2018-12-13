@@ -60,6 +60,11 @@ export interface  SelectPointAction {
     type: string;
 }
 
+export interface  SelectCellIn3DAction {
+    payload: number;
+    type: string;
+}
+
 export interface ResetSelectionAction {
     type: string;
 }

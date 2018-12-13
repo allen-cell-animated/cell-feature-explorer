@@ -21,9 +21,9 @@ import {
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
-    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
+    SET_DOWNLOAD_CONFIG,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -36,7 +36,7 @@ import {
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     ResetSelectionAction,
-    SelectAxisAction,
+    SelectAxisAction, SelectCellIn3DAction,
     SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
@@ -73,7 +73,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [OPEN_CELL_IN_3D] : {
-        accepts: (action: AnyAction): action is ChangeSelectionAction => action.type === OPEN_CELL_IN_3D,
+        accepts: (action: AnyAction): action is SelectCellIn3DAction => action.type === OPEN_CELL_IN_3D,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
             ...state,
             cellSelectedFor3D: action.payload,
@@ -161,8 +161,8 @@ const actionToConfigMap: TypeToDescriptionMap = {
             showClusters: action.payload,
         }),
     },
-    [SELECT_DOWNLOAD_ID]: {
-        accepts: (action: AnyAction): action is ChangeDownloadConfigAction => action.type === SELECT_DOWNLOAD_ID,
+    [SET_DOWNLOAD_CONFIG]: {
+        accepts: (action: AnyAction): action is ChangeDownloadConfigAction => action.type === SET_DOWNLOAD_CONFIG,
         perform: (state: SelectionStateBranch, action: ChangeDownloadConfigAction) => ({
             ...state,
             downloadConfig: action.payload,

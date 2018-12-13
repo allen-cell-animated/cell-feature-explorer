@@ -6,9 +6,9 @@ import {
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     OPEN_CELL_IN_3D,
-    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
+    SET_DOWNLOAD_CONFIG,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -115,6 +115,6 @@ export function toggleShowClusters(payload: boolean): BoolToggleAction {
 export function changeDownloadSettings(payload: DownloadConfig): ChangeDownloadConfigAction {
     return {
         payload,
-        type: SELECT_DOWNLOAD_ID,
+        type: SET_DOWNLOAD_CONFIG,
     };
 }

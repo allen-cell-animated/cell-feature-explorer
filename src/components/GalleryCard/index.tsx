@@ -6,8 +6,8 @@ import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
-    ChangeSelectionAction,
-    DeselectPointAction, SelectPointAction,
+    DeselectPointAction,
+    SelectCellIn3DAction,
 } from "../../state/selection/types";
 
 const { Meta } = Card;
@@ -20,7 +20,7 @@ interface GalleryCardProps {
     downloadHref: string;
     cellID: number;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: number) => SelectPointAction;
+    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
     empty?: boolean;
 }
 
