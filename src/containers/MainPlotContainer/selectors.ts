@@ -59,7 +59,6 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: CLUSTERS_PLOT_NAME,
     } : null;
-
     return {
         clusteringPlotData,
         mainPlotData,
@@ -83,7 +82,7 @@ function colorSettings(
                             marker:
                                 {
                                     color: ele.color,
-                                    opacity: ele.opacity,
+                                    opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
                                 }},
                     };
                 }),
@@ -106,6 +105,9 @@ function colorSettings(
 
 function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
     const plotSettings =  {
+        customdata: plotData.customdata,
+        hoverinfo: "none" as "none",
+        ids: plotData.ids,
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
             symbol: "circle",

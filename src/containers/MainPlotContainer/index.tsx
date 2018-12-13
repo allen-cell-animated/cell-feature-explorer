@@ -5,7 +5,6 @@ import {
 } from "lodash";
 import {
     Data,
-    PlotMouseEvent,
     PlotSelectionEvent,
 } from "plotly.js";
 import * as React from "react";
@@ -21,11 +20,6 @@ import {
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
-import {
-    Annotation,
-    State,
-} from "../../state/types";
-
 import metadataStateBranch from "../../state/metadata";
 import { RequestAction } from "../../state/metadata/types";
 
@@ -35,6 +29,10 @@ import {
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
+import {
+    Annotation,
+    State,
+} from "../../state/types";
 
 import AxisDropDown from "../AxisDropDown";
 
@@ -66,19 +64,20 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
         this.props.requestCellLineData();
     }
 
-    public onPointClicked(clicked: PlotMouseEvent) {
+    // TODO: retype once plotly has id and fullData types
+    public onPointClicked(clicked: any) {
         const { points } = clicked;
         const {
             clickedPoints,
             handleSelectPoint,
             handleDeselectPoint,
         } = this.props;
-        points.forEach((point) => {
+        points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
-                if (includes(clickedPoints, point.pointIndex)) {
-                    handleDeselectPoint(point.pointIndex);
-                } else {
-                    handleSelectPoint(point.pointIndex);
+                if (includes(clickedPoints, Number(point.id))) {
+                    handleDeselectPoint(Number(point.id));
+                } else if (point.fullData.marker.opacity) {
+                    handleSelectPoint(Number(point.id));
                 }
             }
         });
@@ -91,7 +90,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
-        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "pointIndex");
+        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
         handleSelectGroupOfPoints(key, payload);
         handleSelectionToolUsed();
     }
