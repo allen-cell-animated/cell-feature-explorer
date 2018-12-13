@@ -51,7 +51,7 @@ export interface Annotation {
 
 export interface Thumbnail {
     downloadHref: string;
-    labledStructure: string;
+    labeledStructure: string;
     src: string;
     cellID: string;
     empty?: boolean;

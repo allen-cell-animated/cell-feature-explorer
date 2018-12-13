@@ -1,6 +1,5 @@
 import {
     map,
-    sortBy,
 } from "lodash";
 
 import { createSelector } from "reselect";

@@ -277,7 +277,7 @@ export const getThumbnails = createSelector([
                 acc.push({
                     cellID,
                     downloadHref,
-                    labledStructure: cellData[PROTEIN_NAME_KEY],
+                    labeledStructure: cellData[PROTEIN_NAME_KEY],
                     src,
                 });
             }
