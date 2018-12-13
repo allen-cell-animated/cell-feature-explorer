@@ -2,20 +2,15 @@ import React from "react";
 
 const styles = require("./style.css");
 
-const MouseFollower: React.SFC = () => {
-
-    document.addEventListener("mousemove", (e) => {
-       const follower = document.getElementById("follower");
-       if (follower) {
-           follower.style.left = `${e.pageX + 10}px`;
-           follower.style.top = `${e.pageY}px`;
-       }
-    });
-
+interface MouseFollowerProps {
+    pageX: number;
+    pageY: number;
+}
+const MouseFollower: React.SFC<MouseFollowerProps> = (props) => {
     return (
         <div
             className={styles.follower}
-            id="follower"
+            style={{left: `${props.pageX + 10}px`, top: `${props.pageY}px`}}
         />
     );
 };

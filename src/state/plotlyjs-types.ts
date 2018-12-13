@@ -73,7 +73,6 @@ export interface PlotMarker {
 export type DataTransform = Partial<Transform>;
 
 export interface PlotData {
-    customdata: any[];
     type: "bar" | "histogram" | "pointcloud" | "scatter" | "scattergl" | "scatter3d" | "surface";
     x: Datum[] | Datum[][] | TypedArray;
     y: Datum[] | Datum[][] | TypedArray;

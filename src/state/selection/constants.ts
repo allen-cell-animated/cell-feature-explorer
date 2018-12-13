@@ -24,6 +24,8 @@ export const CHANGE_CLUSTER_NUMBER = makeConstant("selection", "change-cluster-n
 export const CHANGE_CLUSTERING_ALGORITHM = makeConstant("selection", "change-clustering-algorithm");
 export const TOGGLE_CLUSTERS_VISIBLE = makeConstant("selection", "toggle-clusters-on");
 export const SET_DOWNLOAD_CONFIG = makeConstant("selection", "set-download-config");
+export const SET_MOUSE_POSITION = makeConstant("selection", "set-mouse-position");
+export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";

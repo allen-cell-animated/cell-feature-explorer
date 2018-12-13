@@ -18,7 +18,6 @@ describe("Thumbnail selectors", () => {
 
     const newMockState = mockState(cellIDs, proteinNames, feature1Values, feature2Values);
 
-
     describe("getThumbnails selector", () => {
         it("it returns a thumbnail object for every index in selectedPoints array", () => {
 

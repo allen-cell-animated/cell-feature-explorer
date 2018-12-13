@@ -2,6 +2,7 @@ import {
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
+    CHANGE_HOVERED_POINT_ID,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -9,6 +10,7 @@ import {
     SELECT_GROUP,
     SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
+    SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -17,9 +19,12 @@ import {
     BoolToggleAction,
     ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
+    ChangeHoveredPointAction,
+    ChangeMousePositionAction,
     ChangeSelectionAction,
     DeselectPointAction,
     DownloadConfig,
+    MousePosition,
     ResetSelectionAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
@@ -116,5 +121,19 @@ export function changeDownloadSettings(payload: DownloadConfig): ChangeDownloadC
     return {
         payload,
         type: SET_DOWNLOAD_CONFIG,
+    };
+}
+
+export function changeMousePosition(payload: MousePosition): ChangeMousePositionAction {
+    return {
+        payload,
+        type: SET_MOUSE_POSITION,
+    };
+}
+
+export function changeHoveredPoint(payload: number): ChangeHoveredPointAction {
+    return {
+        payload,
+        type: CHANGE_HOVERED_POINT_ID,
     };
 }

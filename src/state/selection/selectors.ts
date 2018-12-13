@@ -14,7 +14,6 @@ import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
-    DOWNLOAD_URL_PREFIX,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
@@ -36,15 +35,12 @@ import {
 import {
     Annotation,
     ContinuousPlotData,
-    GroupedPlotData,
     NumberOrString,
     SelectedGroupDatum,
     SelectedGroups,
     State,
-    Thumbnail,
 } from "../types";
 import {
-    convertFileInfoToAICSId, convertFileInfoToImgSrc,
     getFileInfoDatumFromCellId,
 } from "../util";
 
@@ -70,6 +66,8 @@ export const getClusteringAlgorithm = (state: State) => state.selection.clusteri
 export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
 export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
+export const getMousePosition = (state: State) => state.selection.mousePosition;
+export const getHoveredPointId = (state: State) => state.selection.hoveredPointId;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
@@ -156,6 +154,11 @@ export const getColorByValues = createSelector([getPossibleColorByData, getColor
         map(metaData, colorBy)
     )
 );
+
+export const getHoveredPointData = createSelector([getHoveredPointId, getFileInfo],
+    (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
+    return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
+});
 
 export const getAnnotations = createSelector(
     [

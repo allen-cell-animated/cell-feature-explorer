@@ -6,7 +6,8 @@ import { createSelector } from "reselect";
 
 import {
     CLUSTERS_PLOT_NAME,
-    GENERAL_PLOT_SETTINGS, PROTEIN_NAME_KEY,
+    GENERAL_PLOT_SETTINGS,
+    PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
@@ -58,7 +59,6 @@ export const getMainPlotData = createSelector(
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
-            customdata: filteredFileInfo,
             groupBy: colorBy === PROTEIN_NAME_KEY,
             groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
                 return {
@@ -151,7 +151,6 @@ function colorSettings(
 
 function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
     const plotSettings =  {
-        customdata: plotData.customdata,
         hoverinfo: "none" as "none",
         ids: plotData.ids,
         marker: {

@@ -26,10 +26,13 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { RequestAction } from "../../state/metadata/types";
+import { FileInfo, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
+    ChangeHoveredPointAction,
+    ChangeMousePositionAction,
     DeselectPointAction,
+    MousePosition,
     SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -47,8 +50,11 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
+    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
     clickedPoints: number[];
+    hoveredPointData: FileInfo;
     plotDataArray: Data[];
+    mousePosition: MousePosition;
     filtersToExclude: string[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
@@ -56,10 +62,12 @@ interface MainPlotContainerProps {
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
+    updateMousePosition: ActionCreator<ChangeMousePositionAction>;
 }
 
 interface MainPlotContainerState {
     popoverContent: JSX.Element | null;
+
 }
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
@@ -70,6 +78,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         this.onPlotHovered = this.onPlotHovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
+        this.renderPopover = this.renderPopover.bind(this);
         this.state = {
             popoverContent: null,
         };
@@ -98,37 +107,36 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         });
     }
 
-    // TODO: retype once plotly has customdata and fullData types
+    // TODO: retype once plotly has id and fullData types
     public onPlotHovered(hovered: any) {
-        const { points } = hovered;
+        const { points, event } = hovered;
         const {
             filtersToExclude,
+            updateMousePosition,
+            changeHoverCellId,
         } = this.props;
+        updateMousePosition({
+            pageX: event.pageX,
+            pageY: event.pageY,
+        });
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
-                const fileInfo = point.data.customdata[point.pointIndex];
-                if (!includes(filtersToExclude, point.fullData.name) && fileInfo) {
-
-                    this.setState({popoverContent:
-                        (
-                            <PopoverCard
-                                title={fileInfo[PROTEIN_NAME_KEY]}
-                                description={fileInfo[CELL_ID_KEY]}
-                                src={convertFileInfoToImgSrc(fileInfo)}
-                            />
-                        ),
-                    });
+                if (!includes(filtersToExclude, point.fullData.name)) {
+                    changeHoverCellId(Number(point.id));
                 } else {
-                    this.setState({popoverContent: null});
+                    changeHoverCellId(-1);
                 }
             }
         });
     }
 
     public onPlotUnhovered({relatedTarget}: any) {
+        const {
+            changeHoverCellId,
+        } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
-            this.setState({popoverContent: null});
+            changeHoverCellId(-1);
         }
     }
 
@@ -147,23 +155,42 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         handleSelectionToolUsed();
     }
 
+    public renderPopover() {
+        const {
+            hoveredPointData,
+        } = this.props;
+        return (hoveredPointData &&
+            (
+                <PopoverCard
+                    title={hoveredPointData[PROTEIN_NAME_KEY]}
+                    description={hoveredPointData[CELL_ID_KEY].toString()}
+                    src={convertFileInfoToImgSrc(hoveredPointData)}
+                />
+            )
+        );
+    }
+
     public render() {
         const {
             annotations,
             plotDataArray,
+            mousePosition,
         } = this.props;
         if (plotDataArray.length === 0) {
             return null;
         }
-
+        const popover = this.renderPopover();
         return (
             <React.Fragment>
                 <Popover
                     placement="right"
-                    content={this.state.popoverContent}
-                    visible={!!this.state.popoverContent}
+                    content={popover}
+                    visible={!!popover}
                 >
-                    <MouseFollower/>
+                    <MouseFollower
+                        pageX={mousePosition.pageX}
+                        pageY={mousePosition.pageY}
+                    />
                 </Popover>
             <div
                 id="main-plot"
@@ -175,7 +202,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                 <AxisDropDown axisId={Y_AXIS_ID}/>
 
                 <MainPlot
-
                     plotDataArray={plotDataArray}
                     onPointClicked={this.onPointClicked}
                     annotations={annotations}
@@ -194,16 +220,20 @@ function mapStateToProps(state: State) {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
+        mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
     };
 }
 
 const dispatchToPropsMap = {
+    changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
+    updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(MainPlotContainer);

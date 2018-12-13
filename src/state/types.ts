@@ -65,7 +65,6 @@ export interface SelectedGroupDatum {
 
 export interface ContinuousPlotData {
     color: Color | Color[] | number | number[];
-    customdata?: FileInfo[];
     ids?: string[];
     x: number[];
     y: number[];
@@ -80,7 +79,6 @@ interface GroupSettings {
     color: Color | number;
 }
 export interface GroupedPlotData {
-    customdata?: FileInfo[];
     ids?: string[];
     x: number[];
     y: number[];

@@ -22,6 +22,11 @@ export interface DownloadConfig {
     type: string;
 }
 
+export interface MousePosition {
+    pageX: number;
+    pageY: number;
+}
+
 export interface SelectionStateBranch {
     [key: string]: any;
 }
@@ -86,5 +91,15 @@ export interface BoolToggleAction {
 export interface ChangeClusterNumberAction {
     payload: string;
     clusteringKey: string;
+    type: string;
+}
+
+export interface ChangeMousePositionAction {
+    payload: MousePosition;
+    type: string;
+}
+
+export interface ChangeHoveredPointAction {
+    payload: number;
     type: string;
 }
