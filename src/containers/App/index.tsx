@@ -10,6 +10,7 @@ import {
     getSelected3DCell,
     getSelected3DCellCellLine,
     getSelected3DCellFOV,
+    getSelected3DCellLabeledStructure,
 } from "../../state/selection/selectors";
 
 import CellViewer from "../../components/CellViewer/index";
@@ -27,6 +28,7 @@ interface AppProps {
     selected3DCell: string;
     selected3DCellFOV: string;
     selected3DCellCellLine: string;
+    selected3DCellStructureName: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -55,6 +57,7 @@ class App extends React.Component<AppProps, {}> {
             selected3DCell,
             selected3DCellFOV,
             selected3DCellCellLine,
+            selected3DCellStructureName,
         } = this.props;
         return (
                 <Layout className={styles.container}>
@@ -87,7 +90,14 @@ class App extends React.Component<AppProps, {}> {
                         <ThumbnailGallery />
                     </Footer>
                     <div className={styles.cellViewerContainer}>
-                        <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
+                        <h2 className={styles.header}><Icon type="sync"/> 3D Viewer </h2>
+                        {selected3DCell && (
+                            <h4 className={styles.selectedInfo}>
+                                <span className={styles.label}>Viewing cell:</span> {selected3DCell},
+                                <span className={styles.label}> labeled structure: </span>
+                                {selected3DCellStructureName}
+                            </h4>
+                        )}
                         <CellViewer
                             cellId={selected3DCell}
                             fovId={selected3DCellFOV}
@@ -105,6 +115,7 @@ function mapStateToProps(state: State) {
         selected3DCell: getSelected3DCell(state),
         selected3DCellCellLine: getSelected3DCellCellLine(state),
         selected3DCellFOV: getSelected3DCellFOV(state),
+        selected3DCellStructureName: getSelected3DCellLabeledStructure(state),
         };
 }
 

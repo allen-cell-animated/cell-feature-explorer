@@ -21,4 +21,13 @@
 
 .header {
     padding: 24px 50px;
+    display: inline-block;
+}
+
+.selected-info {
+    display: inline-block;
+}
+
+.label {
+    color: var(--text-gray);
 }

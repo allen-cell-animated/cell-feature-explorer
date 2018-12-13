@@ -5,14 +5,12 @@ import {
     Annotation,
     NumberOrString,
     State,
-    Thumbnail,
 } from "../../types";
 
 import {
     getAnnotations,
     getSelectedGroupKeys,
     getSelectedSetTotals,
-    getThumbnails,
     getXValues,
     getYValues,
 } from "../selectors";
@@ -116,23 +114,6 @@ describe("Selection selectors", () => {
 
             const result: number[] = getSelectedSetTotals(state);
             expect(result).to.deep.equal([total1, total2]);
-        });
-
-    });
-
-    describe("getThumbnails selector", () => {
-        it("it returns a thumbnail object for every index in selectedPoints array", () => {
-
-            const state: State = {
-                ...newMockState,
-                selection: {
-                    ...newMockState.selection,
-                    selectedPoints: [1, 2],
-                },
-            };
-
-            const result: Thumbnail[] = getThumbnails(state);
-            expect(result).to.have.lengthOf(2);
         });
 
     });

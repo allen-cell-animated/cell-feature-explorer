@@ -14,7 +14,6 @@ import {
 } from "../../state/selection/actions";
 import {
     getSelected3DCell,
-    getThumbnails,
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
@@ -25,6 +24,8 @@ import {
     State,
     Thumbnail,
 } from "../../state/types";
+
+import { getThumbnails } from "./selectors";
 
 const styles = require("./style.css");
 

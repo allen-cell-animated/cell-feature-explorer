@@ -6,27 +6,73 @@ import { createSelector } from "reselect";
 
 import {
     CLUSTERS_PLOT_NAME,
-    GENERAL_PLOT_SETTINGS,
+    GENERAL_PLOT_SETTINGS, PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
 
+import { getProteinNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
     getClusteringResult,
     getClustersOn,
-    getMainPlotData,
-    getSelectedGroupsData
+    getColorBySelection,
+    getColorByValues,
+    getFilteredFileInfo,
+    getIds,
+    getProteinColors,
+    getSelectedGroupsData,
+    getXValues,
+    getYValues,
 } from "../../state/selection/selectors";
 import {
     ContinuousPlotData,
-    GroupedPlotData
+    GroupedPlotData,
 } from "../../state/types";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
 }
+
+export const getMainPlotData = createSelector(
+    [
+        getXValues,
+        getYValues,
+        getIds,
+        getFilteredFileInfo,
+        getColorByValues,
+        getColorBySelection,
+        getProteinColors,
+        getProteinNames,
+    ],
+    (
+        xValues,
+        yValues,
+        ids,
+        filteredFileInfo,
+        colorByValues,
+        colorBy,
+        proteinColors,
+        proteinNames
+    ): GroupedPlotData | ContinuousPlotData => {
+        return {
+            color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
+            customdata: filteredFileInfo,
+            groupBy: colorBy === PROTEIN_NAME_KEY,
+            groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
+                return {
+                    color: proteinColors[index],
+                    name,
+                };
+            }) : null,
+            groups: colorByValues,
+            ids,
+            x: xValues,
+            y: yValues,
+        };
+    }
+);
 
 export const composePlotlyData = createSelector([
         getMainPlotData,
