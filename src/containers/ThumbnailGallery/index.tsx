@@ -12,24 +12,29 @@ import {
     deselectPoint,
     selectCellFor3DViewer,
 } from "../../state/selection/actions";
-import { getThumbnails } from "../../state/selection/selectors";
 import {
-    ChangeSelectionAction,
+    getSelected3DCell,
+} from "../../state/selection/selectors";
+import {
     DeselectPointAction,
     ResetSelectionAction,
+    SelectCellIn3DAction,
 } from "../../state/selection/types";
 import {
     State,
     Thumbnail,
 } from "../../state/types";
 
+import { getThumbnails } from "./selectors";
+
 const styles = require("./style.css");
 
 interface ThumbnailGalleryProps {
     data: Thumbnail[];
+    selectedCell: number;
     handleClearAllSelectedPoints: () => ResetSelectionAction;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => ChangeSelectionAction;
+    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
 }
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
@@ -45,19 +50,18 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
             handleClearAllSelectedPoints,
         } = this.props;
         return (
-            <div id="gallery">
+            <div id="gallery" className={styles.container}>
                 <section className={styles.galleryHeader}>
-                    <h3><Icon type="picture"/> Thumbnail gallery</h3>
+                    <h2><Icon type="picture"/>  Gallery</h2>
                     {data.length > 0 ?
                         <Button
-                            type="primary"
                             icon="close"
                             onClick={handleClearAllSelectedPoints}
                         >Clear All
                         </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
                 </section>
                 <List
-                    grid={{ gutter: 8, xs: 1, sm: 2, md: 4, lg: 6, xl: 12 }}
+                    grid={{ gutter: 12, xs: 1, sm: 2, md: 4, lg: 6, xl: 12 }}
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />
@@ -69,6 +73,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
         const {
             handleDeselectPoint,
             handleOpenIn3D,
+            selectedCell,
         } = this.props;
         return (
             <List.Item>
@@ -77,8 +82,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
                     cellID={item.cellID}
                     downloadHref={item.downloadHref}
                     src={item.src}
+                    title={item.labeledStructure}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
+                    selected={Number(selectedCell) === Number(item.cellID)}
                 />
             </List.Item>
         );
@@ -88,6 +95,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, {}> {
 function mapStateToProps(state: State) {
     return {
         data: getThumbnails(state),
+        selectedCell: getSelected3DCell(state),
     };
 }
 

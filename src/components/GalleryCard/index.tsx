@@ -6,19 +6,21 @@ import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
-    ChangeSelectionAction,
     DeselectPointAction,
+    SelectCellIn3DAction,
 } from "../../state/selection/types";
 
 const { Meta } = Card;
 const styles = require("./style.css");
 
 interface GalleryCardProps {
-    cellID: string;
+    title: string;
     src: string;
+    selected: boolean;
     downloadHref: string;
+    cellID: number;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => ChangeSelectionAction;
+    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
     empty?: boolean;
 }
 
@@ -41,6 +43,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <Card
             className={styles.container}
             loading={props.empty}
+            bordered={props.selected}
             cover={props.src &&
                 (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
             }
@@ -66,7 +69,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             ]}
         >
             <Meta
-                title={props.cellID}
+                title={props.title}
+                description={props.cellID}
             />
         </Card>
     );

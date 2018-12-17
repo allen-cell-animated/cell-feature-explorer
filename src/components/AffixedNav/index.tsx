@@ -5,10 +5,16 @@ import {
 import React from "react";
 const { Link } = Anchor;
 
+const styles = require("./style.css");
+const offsetTop = 65;
+
 const AffixedNav: React.SFC = () => {
 
         return (
                 <Anchor
+                    offsetTop={offsetTop}
+                    showInkInFixed={true}
+                    className={styles.container}
                 >
                     <Link
                         href="#main-plot"

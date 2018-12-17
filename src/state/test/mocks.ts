@@ -33,7 +33,7 @@ export const makeFeatureData = (
                 },
             },
             file_info : {
-                [CELL_ID_KEY]: cellId.split("_")[2] || cellId,
+                [CELL_ID_KEY]: Number(cellId.split("_")[2]),
                 [CELL_LINE_NAME_KEY]: cellId.split("_")[0] || cellId,
                 [FOV_ID_KEY]: cellId.split("_")[1] || cellId,
                 [PROTEIN_NAME_KEY]: proteinName,

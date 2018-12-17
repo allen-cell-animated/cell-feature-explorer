@@ -12,6 +12,7 @@ import {
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
+    CHANGE_HOVERED_POINT_ID,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -21,9 +22,10 @@ import {
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
-    SELECT_DOWNLOAD_ID,
     SELECT_GROUP,
     SELECT_POINT,
+    SET_DOWNLOAD_CONFIG,
+    SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -32,11 +34,14 @@ import {
     BoolToggleAction,
     ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
+    ChangeHoveredPointAction,
+    ChangeMousePositionAction,
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     ResetSelectionAction,
     SelectAxisAction,
+    SelectCellIn3DAction,
     SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
@@ -53,6 +58,11 @@ export const initialState = {
         type: "",
     },
     filterExclude: [],
+    hoveredPointId: -1,
+    mousePosition: {
+        pageX: 0,
+        pageY: 0,
+    },
     numberOfClusters: "",
     plotByOnX: INITIAL_PLOT_BY_ON_X,
     plotByOnY: INITIAL_PLOT_BY_ON_Y,
@@ -73,7 +83,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [OPEN_CELL_IN_3D] : {
-        accepts: (action: AnyAction): action is ChangeSelectionAction => action.type === OPEN_CELL_IN_3D,
+        accepts: (action: AnyAction): action is SelectCellIn3DAction => action.type === OPEN_CELL_IN_3D,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
             ...state,
             cellSelectedFor3D: action.payload,
@@ -161,11 +171,25 @@ const actionToConfigMap: TypeToDescriptionMap = {
             showClusters: action.payload,
         }),
     },
-    [SELECT_DOWNLOAD_ID]: {
-        accepts: (action: AnyAction): action is ChangeDownloadConfigAction => action.type === SELECT_DOWNLOAD_ID,
+    [SET_DOWNLOAD_CONFIG]: {
+        accepts: (action: AnyAction): action is ChangeDownloadConfigAction => action.type === SET_DOWNLOAD_CONFIG,
         perform: (state: SelectionStateBranch, action: ChangeDownloadConfigAction) => ({
             ...state,
             downloadConfig: action.payload,
+        }),
+    },
+    [SET_MOUSE_POSITION]: {
+        accepts: (action: AnyAction): action is ChangeMousePositionAction => action.type === SET_MOUSE_POSITION,
+        perform: (state: SelectionStateBranch, action: ChangeMousePositionAction) => ({
+            ...state,
+            mousePosition: action.payload,
+        }),
+    },
+    [CHANGE_HOVERED_POINT_ID]: {
+        accepts: (action: AnyAction): action is ChangeHoveredPointAction => action.type === CHANGE_HOVERED_POINT_ID,
+        perform: (state: SelectionStateBranch, action: ChangeMousePositionAction) => ({
+            ...state,
+            hoveredPointId: action.payload,
         }),
     },
 };
