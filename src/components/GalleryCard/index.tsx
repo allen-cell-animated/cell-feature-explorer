@@ -70,8 +70,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             ]}
         >
             <Meta
-                title={props.title}
-                description={props.cellID}
+                description={props.title}
+                title={props.cellID}
             />
         </Card>
     );

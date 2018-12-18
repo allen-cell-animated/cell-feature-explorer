@@ -1,24 +1,45 @@
 @import "../../styles/colors.css";
 
 .container {
+
     & :global(.ant-card-loading-block) {
         animation: none;
     }
     & :global(.ant-card-meta-title) {
         color: var(--text-gray);
     }
+    & :global(.ant-card-actions) {
+        flex: 1 100%;
+    }
+    & :global(.ant-card-cover) {
+        flex: 1;
+        min-width: 110px;
+        max-width: 128px;
+  }
     & :global(.ant-card-actions li),
     & :global(.ant-card-actions a) {
         color: white;
     }
     & :global(.ant-card-body) {
-        padding: 6px;
+        flex: 1;
+        overflow: hidden;
+        padding: 3px;
       }
       img {
           max-height: 118px;
       }
 
 }
+
+.container {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 220px;
+    border: 1px solid var(--background-dark-gray);
+}
+.container:global(.ant-card-bordered) {
+      border: 1px solid white;
+  }
 
 .container:hover{
       border: 1px solid var(--dimgray);

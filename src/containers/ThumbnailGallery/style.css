@@ -1,7 +1,6 @@
 .gallery-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 2em;
 }
 
 .container :global(.ant-list-item-content) {

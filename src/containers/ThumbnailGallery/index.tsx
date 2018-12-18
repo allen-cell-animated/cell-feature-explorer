@@ -118,7 +118,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             help={this.state.message}
                         >
                         <Search
-                            placeholder="search by cell id"
+                            placeholder="add image by cell id"
                             onSearch={this.searchValidate}
                             onChange={this.resetSearch}
                         />
@@ -133,7 +133,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
                 </section>
                 <List
-                    grid={{ gutter: 12, xs: 1, sm: 2, md: 4, lg: 6, xl: 12 }}
+                    grid={{ gutter: 12, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />

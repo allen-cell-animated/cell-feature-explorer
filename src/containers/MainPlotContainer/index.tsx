@@ -168,10 +168,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             plotDataArray,
             mousePosition,
         } = this.props;
+
         if (plotDataArray.length === 0) {
             return null;
         }
+
         const popover = this.renderPopover();
+
         return (
             <React.Fragment>
                 <Popover
