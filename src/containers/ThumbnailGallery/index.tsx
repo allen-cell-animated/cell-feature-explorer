@@ -109,9 +109,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
+                <h2><Icon type="picture"/>  Gallery</h2>
+
                 <section className={styles.galleryHeader}>
-                    <h2><Icon type="picture"/>  Gallery</h2>
-                    <div>
                         <FormItem
                             hasFeedback={true}
                             validateStatus={this.state.inputStatus}
@@ -123,7 +123,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             onChange={this.resetSearch}
                         />
                         </FormItem>
-                    </div>
                     {data.length > 0 ?
                         <Button
                             icon="close"
