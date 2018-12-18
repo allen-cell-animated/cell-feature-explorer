@@ -23,12 +23,11 @@
     & :global(.ant-card-body) {
         flex: 1;
         overflow: hidden;
-        padding: 3px;
+        padding: 6px;
       }
       img {
           max-height: 118px;
       }
-
 }
 
 .container {
@@ -37,10 +36,11 @@
     max-width: 220px;
     border: 1px solid var(--background-dark-gray);
 }
+
 .container:global(.ant-card-bordered) {
       border: 1px solid white;
-  }
+}
 
-.container:hover{
+.container:hover {
       border: 1px solid var(--dimgray);
 }
