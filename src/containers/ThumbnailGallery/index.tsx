@@ -177,7 +177,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     cellID={item.cellID}
                     downloadHref={item.downloadHref}
                     src={item.src}
-                    title={item.labeledStructure}
+                    labeledStructure={item.labeledStructure}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
                     selected={Number(selectedCell) === item.cellID}

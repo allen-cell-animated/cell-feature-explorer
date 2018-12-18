@@ -14,7 +14,7 @@ const { Meta } = Card;
 const styles = require("./style.css");
 
 interface GalleryCardProps {
-    title: string;
+    labeledStructure: string;
     src: string;
     selected: boolean;
     downloadHref: string;
@@ -70,7 +70,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             ]}
         >
             <Meta
-                description={props.title}
+                description={props.labeledStructure}
                 title={props.cellID}
             />
         </Card>
