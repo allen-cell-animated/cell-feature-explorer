@@ -16,7 +16,7 @@ import GalleryCard from "../../components/GalleryCard";
 import {
     clearAllSelectedPoints,
     deselectPoint,
-    selectCellFor3DViewer, selectPoint,
+    selectCellFor3DViewer, selectPoint, setHoveredGalleryCard,
 } from "../../state/selection/actions";
 import {
     getClickedScatterPoints,
@@ -47,9 +47,10 @@ interface ThumbnailGalleryProps {
     ids: string[];
     selectedCell: number;
     addSearchedCell: ActionCreator<SelectPointAction>;
-    handleClearAllSelectedPoints: () => ResetSelectionAction;
-    handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
+    handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
+    handleDeselectPoint: ActionCreator<DeselectPointAction>;
+    handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
+    setHovered: ActionCreator<SelectPointAction>;
 }
 
 interface ThumbnailGalleryState {
@@ -69,6 +70,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.renderGalleryCard = this.renderGalleryCard.bind(this);
         this.searchValidate = this.searchValidate.bind(this);
         this.resetSearch = this.resetSearch.bind(this);
+        this.hoverCard = this.hoverCard.bind(this);
+        this.unHover = this.unHover.bind(this);
         this.state = {
             ...initialState,
         };
@@ -138,6 +141,20 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         );
     }
 
+    private hoverCard({currentTarget}: React.MouseEvent<HTMLElement>) {
+        const {setHovered} = this.props;
+        if (currentTarget.id) {
+            return setHovered(Number(currentTarget.id));
+        }
+        setHovered(Number(-1));
+    }
+
+    private unHover() {
+        const {setHovered} = this.props;
+        setHovered(Number(-1));
+
+    }
+
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
@@ -145,7 +162,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             selectedCell,
         } = this.props;
         return (
-            <List.Item>
+            <List.Item
+            >
+                <div
+                    onMouseEnter={this.hoverCard}
+                    onMouseLeave={this.unHover}
+                    id={item.cellID ? item.cellID.toString() : ""}
+                >
+
                 <GalleryCard
                     empty={item.empty}
                     cellID={item.cellID}
@@ -156,6 +180,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     handleOpenIn3D={handleOpenIn3D}
                     selected={Number(selectedCell) === item.cellID}
                 />
+                </div>
+
             </List.Item>
         );
     }
@@ -175,6 +201,7 @@ const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,
+    setHovered: setHoveredGalleryCard,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);

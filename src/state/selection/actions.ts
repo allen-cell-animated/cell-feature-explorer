@@ -2,6 +2,7 @@ import {
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
+    CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
@@ -135,5 +136,12 @@ export function changeHoveredPoint(payload: number): ChangeHoveredPointAction {
     return {
         payload,
         type: CHANGE_HOVERED_POINT_ID,
+    };
+}
+
+export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction {
+    return {
+        payload,
+        type: CHANGE_HOVERED_GALLERY_CARD,
     };
 }

@@ -44,6 +44,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             className={styles.container}
             loading={props.empty}
             bordered={props.selected}
+            hoverable={true}
             cover={props.src &&
                 (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
             }

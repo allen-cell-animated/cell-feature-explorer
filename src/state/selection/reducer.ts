@@ -12,6 +12,7 @@ import {
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
+    CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
@@ -58,6 +59,7 @@ export const initialState = {
         type: "",
     },
     filterExclude: [],
+    hoveredCardId: -1,
     hoveredPointId: -1,
     mousePosition: {
         pageX: 0,
@@ -187,9 +189,16 @@ const actionToConfigMap: TypeToDescriptionMap = {
     },
     [CHANGE_HOVERED_POINT_ID]: {
         accepts: (action: AnyAction): action is ChangeHoveredPointAction => action.type === CHANGE_HOVERED_POINT_ID,
-        perform: (state: SelectionStateBranch, action: ChangeMousePositionAction) => ({
+        perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
             hoveredPointId: action.payload,
+        }),
+    },
+    [CHANGE_HOVERED_GALLERY_CARD]: {
+        accepts: (action: AnyAction): action is ChangeHoveredPointAction => action.type === CHANGE_HOVERED_GALLERY_CARD,
+        perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
+            ...state,
+            hoveredCardId: action.payload,
         }),
     },
 };

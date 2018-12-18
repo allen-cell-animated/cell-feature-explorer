@@ -1,6 +1,7 @@
 import {
     AGGLOMERATIVE_KEY,
-    CLUSTER_DISTANCE_KEY, CLUSTER_NUMBER_KEY,
+    CLUSTER_DISTANCE_KEY,
+    CLUSTER_NUMBER_KEY,
     DBSCAN_KEY, KMEANS_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
@@ -26,6 +27,7 @@ export const TOGGLE_CLUSTERS_VISIBLE = makeConstant("selection", "toggle-cluster
 export const SET_DOWNLOAD_CONFIG = makeConstant("selection", "set-download-config");
 export const SET_MOUSE_POSITION = makeConstant("selection", "set-mouse-position");
 export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
+export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";

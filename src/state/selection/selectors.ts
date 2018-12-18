@@ -68,6 +68,7 @@ export const getClusteringDistance = (state: State) => state.selection.clusterin
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
 export const getMousePosition = (state: State) => state.selection.mousePosition;
 export const getHoveredPointId = (state: State) => state.selection.hoveredPointId;
+export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
@@ -167,13 +168,15 @@ export const getAnnotations = createSelector(
         getClickedScatterPoints,
         getPlotByOnX,
         getPlotByOnY,
+        getHoveredCardId,
     ],
     (
         measuredData: MeasuredFeatures[],
         fileInfo: FileInfo[],
         clickedScatterPointIDs: string[],
         xaxis,
-        yaxis
+        yaxis,
+        hovered
     ): Annotation[] => {
         return clickedScatterPointIDs.map((cellID) => {
             const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
@@ -185,6 +188,7 @@ export const getAnnotations = createSelector(
                 cellID,
                 cellLine,
                 fovID,
+                hovered: cellID === hovered,
                 pointIndex,
                 x,
                 y,

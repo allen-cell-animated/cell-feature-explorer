@@ -19,3 +19,7 @@
       }
 
 }
+
+.container:hover{
+      border: 1px solid var(--dimgray);
+}
