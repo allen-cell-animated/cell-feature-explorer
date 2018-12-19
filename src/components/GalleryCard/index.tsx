@@ -14,7 +14,7 @@ const { Meta } = Card;
 const styles = require("./style.css");
 
 interface GalleryCardProps {
-    title: string;
+    labeledStructure: string;
     src: string;
     selected: boolean;
     downloadHref: string;
@@ -44,6 +44,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             className={styles.container}
             loading={props.empty}
             bordered={props.selected}
+            hoverable={true}
             cover={props.src &&
                 (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
             }
@@ -69,8 +70,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             ]}
         >
             <Meta
-                title={props.title}
-                description={props.cellID}
+                description={props.labeledStructure}
+                title={props.cellID}
             />
         </Card>
     );
