@@ -176,7 +176,7 @@ export const getAnnotations = createSelector(
         clickedScatterPointIDs: string[],
         xaxis,
         yaxis,
-        hovered
+        currentHoveredCellId
     ): Annotation[] => {
         return clickedScatterPointIDs.map((cellID) => {
             const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
@@ -188,7 +188,7 @@ export const getAnnotations = createSelector(
                 cellID,
                 cellLine,
                 fovID,
-                hovered: cellID === hovered,
+                hovered: cellID === currentHoveredCellId,
                 pointIndex,
                 x,
                 y,

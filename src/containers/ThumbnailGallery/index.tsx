@@ -63,6 +63,12 @@ const initialState = {
     message: "",
 };
 
+const messages = {
+    error: "That id is not in our dataset.",
+    success: initialState.message,
+    warning: "That cell is already in the gallery.",
+};
+
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailGalleryState> {
 
     constructor(props: ThumbnailGalleryProps) {
@@ -82,19 +88,19 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         if (includes(map(clickedPoints, (ele) => ele.toString()), value)) {
             return this.setState({
                 inputStatus: "warning",
-                message: "that cell is already in the gallery",
+                message: messages.warning,
             });
         }
         if (includes(ids, value)) {
             addSearchedCell(value);
             return this.setState({
                 inputStatus: "success",
-                message: initialState.message,
+                message: messages.success,
             });
         }
         this.setState({
             inputStatus: "error",
-            message: "that id is not in our dataset",
+            message: messages.error,
         });
     }
 
