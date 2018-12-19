@@ -97,7 +97,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
 
         return annotations.map((point, index) => {
             const lastOne =  index + 1  === annotations.length;
-            const show = (lastOne && this.state.showFullAnnotation);
+            const show = lastOne && this.state.showFullAnnotation;
             const hasText = !!show || !!point.hovered;
             return {
                 arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
