@@ -141,7 +141,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
                 </section>
                 <List
-                    grid={{ gutter: 12, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
+                    itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                 />
@@ -170,27 +170,18 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             selectedCell,
         } = this.props;
         return (
-            <List.Item
-            >
-                <div
+                <GalleryCard
                     onMouseEnter={this.hoverCard}
                     onMouseLeave={this.unHover}
-                    id={item.cellID ? item.cellID.toString() : ""}
-                >
-
-                <GalleryCard
-                    empty={item.empty}
-                    cellID={item.cellID}
-                    downloadHref={item.downloadHref}
-                    src={item.src}
                     labeledStructure={item.labeledStructure}
+                    src={item.src}
+                    selected={selectedCell === item.cellID}
+                    downloadHref={item.downloadHref}
+                    cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
-                    selected={Number(selectedCell) === item.cellID}
+                    empty={item.empty}
                 />
-                </div>
-
-            </List.Item>
         );
     }
 }
