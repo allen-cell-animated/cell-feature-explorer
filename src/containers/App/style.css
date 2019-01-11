@@ -31,3 +31,16 @@
 .label {
     color: var(--text-gray);
 }
+
+.header-section {
+    border-top: 0.5px solid var(--dimgray);
+    background-color: var(--header-gray);
+}
+
+:global(.ant-collapse),
+:global(.ant-collapse-header),
+:global(.ant-collapse > .ant-collapse-item:last-child),
+:global(.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header)
+{
+    border-radius: 0;
+}

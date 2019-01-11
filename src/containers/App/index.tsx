@@ -1,4 +1,5 @@
 import {
+    Anchor,
     Icon,
     Layout,
 } from "antd";
@@ -61,12 +62,31 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
         return (
                 <Layout className={styles.container}>
-                    <Header>
-                        <h2><Icon type="dot-chart"/> Plot</h2>
-                        <AffixedNav
-                        />
-                    </Header>
+
+                    <Sider
+                        width={330}
+                        collapsible={true}
+                        defaultCollapsed={true}
+                        reverseArrow={true}
+                        style={{
+                            backgroundColor: "#4b4b4bd1",
+                            height: "100vh",
+                            overflow: "auto",
+                            position: "fixed",
+                            right: 0,
+                            zIndex: 3000,
+                        }}
+                    >
+
+                        <ThumbnailGallery />
+
+                    </Sider>
                     <Layout>
+                        <Header className={styles.headerSection}>
+                            <h2><Icon type="dot-chart"/> Plot</h2>
+                        </Header>
+                    <Layout>
+
                         <Sider
                             className={styles.colorMenu}
                         >
@@ -84,26 +104,28 @@ class App extends React.Component<AppProps, {}> {
                                 />
                             </div>
                         </Content>
-                        <Sider/>
+                        <Sider />
+
                     </Layout>
-                    <Footer>
-                        <ThumbnailGallery />
-                    </Footer>
+
                     <div className={styles.cellViewerContainer}>
-                        <h2 className={styles.header}><Icon type="sync"/> 3D Viewer </h2>
-                        {selected3DCell && (
-                            <h4 className={styles.selectedInfo}>
-                                <span className={styles.label}>Viewing cell:</span> {selected3DCell},
-                                <span className={styles.label}> labeled structure: </span>
-                                {selected3DCellStructureName}
-                            </h4>
-                        )}
+                        <section className={styles.headerSection}>
+                            <h2 className={styles.header}><Icon type="sync"/> 3D Viewer </h2>
+                            {selected3DCell && (
+                                <h4 className={styles.selectedInfo}>
+                                    <span className={styles.label}>Viewing cell:</span> {selected3DCell},
+                                    <span className={styles.label}> labeled structure: </span>
+                                    {selected3DCellStructureName}
+                                </h4>
+                            )}
+                        </section>
                         <CellViewer
                             cellId={selected3DCell}
                             fovId={selected3DCellFOV}
                             cellLineName={selected3DCellCellLine}
                         />
                     </div>
+                    </Layout>
                 </Layout>
         );
     }
