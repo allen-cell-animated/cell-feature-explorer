@@ -132,12 +132,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             onChange={this.resetSearch}
                         />
                         </FormItem>
-                    {data.length > 0 ?
+                    {data.length > 0 &&
                         <Button
                             icon="close"
                             onClick={handleClearAllSelectedPoints}
                         >Clear All
-                        </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
+                        </Button>}
 
                 </section>
                 <List

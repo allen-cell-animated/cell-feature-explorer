@@ -49,3 +49,24 @@
 .container .selected {
     border: 1px solid white;
 }
+
+.container :global(.ant-list-item-meta) {
+    padding-left: 16px;
+}
+
+.container :global(.ant-list-item-meta-description) {
+    min-width: 100px;
+}
+
+.container :global(.ant-list-item-action) {
+    margin-right: 16px;
+    margin-left: 0;
+}
+
+.container :global(.ant-list-item-action li) {
+    color: white;
+}
+
+.container :global(.ant-list-item-action a) {
+    color: white;
+}

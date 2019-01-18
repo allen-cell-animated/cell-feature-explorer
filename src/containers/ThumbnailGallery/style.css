@@ -5,10 +5,6 @@
     justify-content: flex-start;
 }
 
-.container :global(.ant-list-item-content) {
-    width: 100%;
-}
-
 .gallery-header :global(.ant-btn) {
     margin-top: 3px;
 }
@@ -17,22 +13,27 @@
     margin-right: 1em;
 }
 
+.container :global(.ant-list-item-content) {
+    width: 100%;
+}
+
 .container :global(.ant-avatar) {
     height: 110px;
     width: 110px;
 }
 
+.listItem {
+    border-bottom: 0.5px solid var(--text-gray);
+}
+
+.container :global(.ant-list-split .ant-list-item:last-child) {
+    margin-bottom: 48px;  /*for collapse button height */
+}
+
+/* collapsed sider styling*/
 :global(.ant-layout-sider-collapsed .ant-avatar) {
     height: 70px;
     width: 70px;
-}
-
-:global(.ant-layout-sider-collapsed .ant-list-item-meta) {
-    padding-left: 4px;
-}
-
-:global(.ant-list-item-meta) {
-    padding-left: 16px;
 }
 
 :global(.ant-layout-sider-collapsed .ant-list-item-meta-content),
@@ -40,23 +41,6 @@
     display: none;
 }
 
-.container :global(.ant-list-item-meta-description) {
-    min-width: 100px;
-}
-
-.container :global(.ant-list-item-action) {
-    margin-right: 16px;
-    margin-left: 0;
-}
-
-.container :global(.ant-list-item-action li) {
-    color: white;
-}
-
-.container :global(.ant-list-item-action a) {
-    color: white;
-}
-
-.listItem {
-    border-bottom: 0.5px solid var(--text-gray);
+:global(.ant-layout-sider-collapsed .ant-list-item-meta) {
+    padding-left: 4px;
 }

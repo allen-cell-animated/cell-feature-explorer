@@ -1,11 +1,5 @@
 @import "../../styles/colors.css";
 
-.color-menu {
-    min-width: 200px;
-    max-width: 400px!important;
-    flex: 1!important;
-}
-
 :global(.ant-affix) {
     z-index: 99999;
 }
@@ -43,4 +37,12 @@
 :global(.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header)
 {
     border-radius: 0;
+}
+
+:global(.ant-layout-sider-trigger) {
+    background: var(--light-gray);
+}
+
+.color-menu :global(.ant-layout-sider-trigger) {
+    position: inherit;
 }

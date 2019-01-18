@@ -1,5 +1,4 @@
 import {
-    Anchor,
     Icon,
     Layout,
 } from "antd";
@@ -14,16 +13,21 @@ import {
     getSelected3DCellLabeledStructure,
 } from "../../state/selection/selectors";
 
+import BackToPlot from "../../components/BackToPlot/index";
+
 import CellViewer from "../../components/CellViewer/index";
 import ColorByMenu from "../../containers/ColorByMenu";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 
-import AffixedNav from "../../components/AffixedNav";
 import { State } from "../../state/types";
 
+const {
+    Content,
+    Header,
+    Sider,
+} = Layout;
 const styles = require("./style.css");
-const { Header, Footer, Sider, Content } = Layout;
 
 interface AppProps {
     selected3DCell: string;
@@ -37,6 +41,8 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
+        galleryCollapsed: true,
+        initClick: true,
         openKeys: [App.panelKeys[0]],
     };
 
@@ -44,6 +50,9 @@ class App extends React.Component<AppProps, {}> {
         super(props);
         this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
         this.onPanelClicked = this.onPanelClicked.bind(this);
+        this.toggleGallery = this.toggleGallery.bind(this);
+        this.onGraphClicked = this.onGraphClicked.bind(this);
+
     }
     public onSelectionToolUsed() {
         this.setState({openKeys: uniq([...this.state.openKeys, App.panelKeys[1]])});
@@ -51,6 +60,22 @@ class App extends React.Component<AppProps, {}> {
 
     public onPanelClicked(value: string[]) {
         this.setState({openKeys: value});
+    }
+
+    public onGraphClicked() {
+        const {
+            initClick,
+        } = this.state;
+        if (initClick) {
+            this.setState({
+                galleryCollapsed: false,
+                initClick: false,
+            });
+        }
+    }
+
+    public toggleGallery(value: boolean) {
+        this.setState({galleryCollapsed: value});
     }
 
     public render() {
@@ -62,10 +87,13 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
         return (
                 <Layout className={styles.container}>
+                    <BackToPlot />
 
                     <Sider
                         width={330}
                         collapsible={true}
+                        collapsed={this.state.galleryCollapsed}
+                        onCollapse={this.toggleGallery}
                         defaultCollapsed={true}
                         reverseArrow={true}
                         style={{
@@ -77,7 +105,6 @@ class App extends React.Component<AppProps, {}> {
                             zIndex: 3000,
                         }}
                     >
-
                         <ThumbnailGallery />
 
                     </Sider>
@@ -89,6 +116,9 @@ class App extends React.Component<AppProps, {}> {
 
                         <Sider
                             className={styles.colorMenu}
+                            width={450}
+                            collapsible={false}
+                            collapsedWidth={250}
                         >
                             <ColorByMenu
                                 panelKeys={App.panelKeys}
@@ -101,6 +131,7 @@ class App extends React.Component<AppProps, {}> {
                             <div className={styles.plotView} >
                                 <MainPlotContainer
                                     handleSelectionToolUsed={this.onSelectionToolUsed}
+                                    handleClickedChart={this.onGraphClicked}
                                 />
                             </div>
                         </Content>

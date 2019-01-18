@@ -4,7 +4,7 @@ import {
     Icon,
     List,
 } from "antd";
-import { map, noop } from "lodash";
+import { map } from "lodash";
 import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
@@ -24,6 +24,8 @@ interface GalleryCardProps {
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
     empty?: boolean;
+    onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
+    onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
@@ -79,39 +81,42 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
-            onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave}
+            {... {
+                // props not in ant.d component, but do exist
+                id: props.cellID,
+                onMouseEnter: props.onMouseEnter,
+                onMouseLeave: props.onMouseLeave,
 
+            }}
         >
-
             <List.Item.Meta
                 avatar={props.src && (
-                    <Avatar
+                    <div
                         onClick={openCellin3D}
+                    >
+                    <Avatar
                         className={props.selected && styles.selected}
                         alt="thumbnail of microscopy image"
                         src={`${THUMBNAIL_BASE_URL}${props.src}`}
                     />
+                    </div>
                 )}
             />
                 { !props.empty &&
                     <React.Fragment>
-                    <ul className={styles.infoList}>
-                        <li className={styles.title}>
-                            {props.cellID}
-                        </li>
-                        <li>
-                            {props.labeledStructure}
-                        </li>
-                    </ul>
-
-                    <div className={styles.actionList}>
-                        {map(actions, (action) => (action))}
-                    </div>
-
+                        <ul className={styles.infoList}>
+                            <li className={styles.title}>
+                                {props.cellID}
+                            </li>
+                            <li>
+                                {props.labeledStructure}
+                            </li>
+                        </ul>
+                        <div className={styles.actionList}>
+                            {map(actions, (action) => (action))}
+                        </div>
                     </React.Fragment>
                 }
-
         </List.Item>
     );
 };
