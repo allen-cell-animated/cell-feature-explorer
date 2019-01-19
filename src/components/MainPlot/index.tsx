@@ -56,7 +56,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: {
-                    b: 10,
+                    b: 20,
                     r: 20,
                     t: 10,
                 },
