@@ -83,6 +83,15 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         };
     }
 
+    public componentDidUpdate() {
+        const endOfGallery = document.querySelector("#end-of-gallery");
+        if (endOfGallery) {
+            endOfGallery.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    }
+
     public searchValidate(value: string) {
         const { clickedPoints, ids, addSearchedCell } = this.props;
         if (includes(map(clickedPoints, (ele) => ele.toString()), value)) {
@@ -118,19 +127,20 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
-                <h2><Icon type="picture"/>  Gallery</h2>
+                <h2 className={styles.galleryTitle}><Icon type="picture"/>  Gallery</h2>
 
                 <section className={styles.galleryHeader}>
                         <FormItem
                             hasFeedback={true}
+                            className={styles.searchForCell}
                             validateStatus={this.state.inputStatus}
                             help={this.state.message}
                         >
-                        <Search
-                            placeholder="add image by cell id"
-                            onSearch={this.searchValidate}
-                            onChange={this.resetSearch}
-                        />
+                            <Search
+                                placeholder="add image by cell id"
+                                onSearch={this.searchValidate}
+                                onChange={this.resetSearch}
+                            />
                         </FormItem>
                     {data.length > 0 &&
                         <Button
@@ -144,6 +154,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
+                    footer={<div id="end-of-gallery" />}
                 />
             </div>
         );
