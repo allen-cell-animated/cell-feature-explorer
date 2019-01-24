@@ -1,7 +1,10 @@
 import {
-    Card,
+    Avatar,
+    Button,
     Icon,
+    List,
 } from "antd";
+import { map } from "lodash";
 import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
@@ -10,7 +13,6 @@ import {
     SelectCellIn3DAction,
 } from "../../state/selection/types";
 
-const { Meta } = Card;
 const styles = require("./style.css");
 
 interface GalleryCardProps {
@@ -22,6 +24,8 @@ interface GalleryCardProps {
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
     empty?: boolean;
+    onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
+    onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
@@ -39,41 +43,81 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         props.handleOpenIn3D(props.cellID);
     };
 
-    return (
-        <Card
-            className={styles.container}
-            loading={props.empty}
-            bordered={props.selected}
-            hoverable={true}
-            cover={props.src &&
-                (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
-            }
-            actions={props.empty ? [] : [
-                <span
-                    key={`${props.cellID}-load`}
-                    onClick={openCellin3D}
-                >3D
-                </span>,
-                <a
-                    key={`${props.cellID}-download-link`}
-                    href={props.downloadHref}
-                >
-                    <Icon
-                        type="download"
-                    />
-                </a>,
+    const actions = [
+        (
+            <Button
+                className={props.selected ? styles.disabled : ""}
+                key={`${props.cellID}-load`}
+                onClick={openCellin3D}
+            >3D
+            </Button>
+        ),
+        (
+            <Button
+                key={`${props.cellID}-download-link`}
+            >
+            <a
+                href={props.downloadHref}
+            >
                 <Icon
-                    key={`${props.cellID}-close`}
-                    type="close"
-                    onClick={deselectPoint}
-                />,
-            ]}
-        >
-            <Meta
-                description={props.labeledStructure}
-                title={props.cellID}
+                    type="download"
+                />
+            </a>
+            </Button>
+        ),
+        (
+            <Button
+                onClick={deselectPoint}
+                key={`${props.cellID}-close`}
+            >
+            <Icon
+                type="close"
             />
-        </Card>
+            </Button>
+        ),
+    ];
+
+    return (
+        <List.Item
+            key={props.cellID}
+            className={styles.container}
+            {... {
+                // props not in ant.d component, but do exist
+                id: props.cellID,
+                onMouseEnter: props.onMouseEnter,
+                onMouseLeave: props.onMouseLeave,
+
+            }}
+        >
+            <List.Item.Meta
+                avatar={props.src && (
+                    <div
+                        onClick={openCellin3D}
+                    >
+                    <Avatar
+                        className={props.selected && styles.selected}
+                        alt="thumbnail of microscopy image"
+                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                    />
+                    </div>
+                )}
+            />
+                { !props.empty &&
+                    <React.Fragment>
+                        <ul className={styles.infoList}>
+                            <li className={styles.title}>
+                                {props.cellID}
+                            </li>
+                            <li>
+                                {props.labeledStructure}
+                            </li>
+                        </ul>
+                        <div className={styles.actionList}>
+                            {actions}
+                        </div>
+                    </React.Fragment>
+                }
+        </List.Item>
     );
 };
 

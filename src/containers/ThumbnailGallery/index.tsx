@@ -83,6 +83,15 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         };
     }
 
+    public componentDidUpdate() {
+        const endOfGallery = document.querySelector("#end-of-gallery");
+        if (endOfGallery) {
+            endOfGallery.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    }
+
     public searchValidate(value: string) {
         const { clickedPoints, ids, addSearchedCell } = this.props;
         if (includes(map(clickedPoints, (ele) => ele.toString()), value)) {
@@ -118,32 +127,34 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
-                <h2><Icon type="picture"/>  Gallery</h2>
+                <h2 className={styles.galleryTitle}><Icon type="picture"/>  Gallery</h2>
 
                 <section className={styles.galleryHeader}>
                         <FormItem
                             hasFeedback={true}
+                            className={styles.searchForCell}
                             validateStatus={this.state.inputStatus}
                             help={this.state.message}
                         >
-                        <Search
-                            placeholder="add image by cell id"
-                            onSearch={this.searchValidate}
-                            onChange={this.resetSearch}
-                        />
+                            <Search
+                                placeholder="add image by cell id"
+                                onSearch={this.searchValidate}
+                                onChange={this.resetSearch}
+                            />
                         </FormItem>
-                    {data.length > 0 ?
+                    {data.length > 0 &&
                         <Button
                             icon="close"
                             onClick={handleClearAllSelectedPoints}
                         >Clear All
-                        </Button> : <h4>Clicked points on the plot will appear in this section</h4>}
+                        </Button>}
 
                 </section>
                 <List
-                    grid={{ gutter: 12, xs: 1, sm: 2, md: 4, lg: 4, xl: 6 }}
+                    itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
+                    footer={<div id="end-of-gallery" />}
                 />
             </div>
         );
@@ -170,27 +181,18 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             selectedCell,
         } = this.props;
         return (
-            <List.Item
-            >
-                <div
+                <GalleryCard
                     onMouseEnter={this.hoverCard}
                     onMouseLeave={this.unHover}
-                    id={item.cellID ? item.cellID.toString() : ""}
-                >
-
-                <GalleryCard
-                    empty={item.empty}
-                    cellID={item.cellID}
-                    downloadHref={item.downloadHref}
-                    src={item.src}
                     labeledStructure={item.labeledStructure}
+                    src={item.src}
+                    selected={selectedCell === item.cellID}
+                    downloadHref={item.downloadHref}
+                    cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={handleOpenIn3D}
-                    selected={Number(selectedCell) === item.cellID}
+                    empty={item.empty}
                 />
-                </div>
-
-            </List.Item>
         );
     }
 }

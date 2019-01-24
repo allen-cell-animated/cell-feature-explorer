@@ -64,6 +64,7 @@ export const GENERAL_PLOT_SETTINGS = {
         top: 10,
     },
     moveDropdownCutoffWidth: 370,
+    plotHeight: 580,
     showLegendCutoffHeight: 635,
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",

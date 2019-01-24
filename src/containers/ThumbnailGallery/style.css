@@ -1,16 +1,89 @@
+@import "../../styles/colors.css";
+
+.gallery-title {
+    padding: 1em;
+}
+
 .gallery-header {
     display: flex;
-    justify-content: flex-start;
+    flex-flow: row wrap;
+    margin: auto;
+}
+
+.gallery-header :global(.ant-btn) {
+    margin: auto;
+    margin-top: 3px;
+}
+
+.gallery-header :global(.ant-form-item) {
+    margin: auto;
+    margin-right: 1em;
 }
 
 .container :global(.ant-list-item-content) {
     width: 100%;
 }
 
-.gallery-header :global(.ant-btn) {
-    margin-top: 3px;
+.container :global(.ant-avatar) {
+    height: 110px;
+    width: 110px;
 }
 
-.gallery-header :global(.ant-form-item) {
-    margin-right: 1em;
+.list-item {
+    border-bottom: 0.5px solid var(--text-gray);
+}
+
+.container :global(.ant-list-split .ant-list-item:last-child) {
+    margin-bottom: 48px;  /*for collapse button height */
+}
+
+/* collapsed sider styling*/
+:global(.ant-layout-sider-collapsed .ant-list-item-meta-content),
+:global(.ant-layout-sider-collapsed .ant-list-item-content),
+:global(.ant-layout-sider-collapsed) .search-for-cell {
+    display: none;
+}
+
+:global(.ant-layout-sider-collapsed) .gallery-title,
+:global(.ant-layout-sider-collapsed button span) {
+    font-size: 1em;
+}
+
+:global(.ant-layout-sider-collapsed button) {
+    font-size: 0.8em;
+    padding: 2px;
+}
+
+:global(.ant-layout-sider-collapsed .ant-btn span) {
+    margin-left: 2px;
+}
+
+:global(.ant-layout-sider-collapsed .ant-avatar) {
+    height: 70px;
+    width: 70px;
+}
+
+:global(.ant-layout-sider-collapsed .ant-list-item-meta) {
+    padding-left: 4px;
+}
+
+:global(.ant-layout-sider-collapsed) .gallery-title-small {
+    font-size: 3em;
+    display: block;
+    text-align: center;
+    margin: auto;
+}
+
+:global(.ant-layout-sider-collapsed) .gallery-header {
+    text-align: center;
+    justify-content: space-between;
+}
+
+:global(.ant-layout-sider-collapsed) .gallery-header :global(.ant-form-item),
+:global(.ant-layout-sider-collapsed) .gallery-header :global(.ant-btn) {
+    margin: auto;
+}
+
+:global(.ant-layout-sider-collapsed .ant-form-item){
+    margin-bottom: 0;
 }

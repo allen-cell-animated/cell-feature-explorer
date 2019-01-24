@@ -58,6 +58,7 @@ interface MainPlotContainerProps {
     filtersToExclude: string[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
+    handleClickedChart: () => void;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
     requestCellLineData: ActionCreator<RequestAction>;
@@ -87,7 +88,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             clickedPoints,
             handleSelectPoint,
             handleDeselectPoint,
+            handleClickedChart,
         } = this.props;
+        handleClickedChart();
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
                 if (includes(clickedPoints, Number(point.id))) {

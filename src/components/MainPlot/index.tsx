@@ -52,10 +52,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             layout: {
                 annotations: this.makeAnnotations(),
                 autosize: true,
+                height: GENERAL_PLOT_SETTINGS.plotHeight,
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: {
-                    b: 30,
+                    b: 20,
                     r: 20,
                     t: 10,
                 },
