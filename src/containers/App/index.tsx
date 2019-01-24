@@ -63,9 +63,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public onGraphClicked() {
-        const {
-            initClick,
-        } = this.state;
+        const { initClick } = this.state;
         if (initClick) {
             this.setState({
                 galleryCollapsed: false,
@@ -85,6 +83,13 @@ class App extends React.Component<AppProps, {}> {
             selected3DCellCellLine,
             selected3DCellStructureName,
         } = this.props;
+
+        const {
+            galleryCollapsed,
+            openKeys,
+            defaultActiveKey,
+        } = this.state;
+
         return (
                 <Layout className={styles.container}>
                     <BackToPlot />
@@ -92,14 +97,13 @@ class App extends React.Component<AppProps, {}> {
                     <Sider
                         width={330}
                         collapsible={true}
-                        collapsed={this.state.galleryCollapsed}
+                        collapsed={galleryCollapsed}
                         onCollapse={this.toggleGallery}
                         defaultCollapsed={true}
                         className={styles.sider}
                         reverseArrow={true}
                     >
                         <ThumbnailGallery />
-
                     </Sider>
                     <Layout>
                         <Header className={styles.headerSection}>
@@ -115,8 +119,8 @@ class App extends React.Component<AppProps, {}> {
                         >
                             <ColorByMenu
                                 panelKeys={App.panelKeys}
-                                openKeys={this.state.openKeys}
-                                defaultActiveKey={this.state.defaultActiveKey}
+                                openKeys={openKeys}
+                                defaultActiveKey={defaultActiveKey}
                                 onPanelClicked={this.onPanelClicked}
                             />
                         </Sider>
