@@ -95,15 +95,8 @@ class App extends React.Component<AppProps, {}> {
                         collapsed={this.state.galleryCollapsed}
                         onCollapse={this.toggleGallery}
                         defaultCollapsed={true}
+                        className={styles.sider}
                         reverseArrow={true}
-                        style={{
-                            backgroundColor: "#4b4b4bd1",
-                            height: "100vh",
-                            overflow: "auto",
-                            position: "fixed",
-                            right: 0,
-                            zIndex: 3000,
-                        }}
                     >
                         <ThumbnailGallery />
 

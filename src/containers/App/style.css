@@ -31,6 +31,15 @@
     background-color: var(--header-gray);
 }
 
+.sider {
+    background-color: #4b4b4bd1;
+    height: 100vh;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    z-index: 3000;
+}
+
 :global(.ant-collapse),
 :global(.ant-collapse-header),
 :global(.ant-collapse > .ant-collapse-item:last-child),
