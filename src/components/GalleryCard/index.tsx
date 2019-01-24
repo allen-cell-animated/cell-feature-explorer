@@ -113,7 +113,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                             </li>
                         </ul>
                         <div className={styles.actionList}>
-                            {map(actions, (action) => (action))}
+                            {actions}
                         </div>
                     </React.Fragment>
                 }
