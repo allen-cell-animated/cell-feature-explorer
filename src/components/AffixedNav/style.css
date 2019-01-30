@@ -1,0 +1,6 @@
+@import "../../styles/colors.css";
+.container {
+    min-width: 120px;
+    background-color: var(--dimgray);
+    box-shadow: 0 2px 8px black;
+}

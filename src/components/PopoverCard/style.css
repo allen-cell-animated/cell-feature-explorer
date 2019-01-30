@@ -1,0 +1,7 @@
+.container {
+    width: 80px;
+}
+
+.container :global(.ant-card-body) {
+    padding: 2px;
+}

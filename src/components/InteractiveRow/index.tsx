@@ -3,8 +3,12 @@ import {
     Button,
     Checkbox,
 } from "antd";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import React from "react";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
+import React, { MouseEvent } from "react";
+
+import { DownloadConfig } from "../../state/selection/types";
+
+import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 const styles = require("./style.css");
 
@@ -15,26 +19,31 @@ interface InteractiveRowProps {
     total: number;
     checked?: boolean;
     closeable?: boolean;
+    downloadConfig: DownloadConfig;
+    downloadUrls: string[];
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
+    handleDownload: (id: string) => void;
 }
 
 export default class InteractiveRow extends React.Component<InteractiveRowProps, {}> {
     private static defaultProps = {
         closeable: false,
+        downloadUrls: [],
         hideable: true,
     };
     constructor(props: InteractiveRowProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
     }
-    public onClose(event: any ) {
+
+    public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
         const {
             handleClose,
         } = this.props;
-        if (event.target && event.target.id && handleClose) {
-            handleClose(event.target.id);
+        if (currentTarget && currentTarget.id && handleClose) {
+            handleClose(currentTarget.id);
         }
     }
 
@@ -48,12 +57,16 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             total,
             onBarClicked,
             checked,
+            downloadUrls,
+            downloadConfig,
+            handleDownload,
         } = this.props;
+
         return (
             <div
                 className={styles.container}
             >
-                <div>
+                <div className={styles.firstColumn}>
                 {hideable &&
                     <Checkbox
                         onChange={onBarClicked}
@@ -73,18 +86,26 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
 
                 </div>
                 <div>
-
                     <span className={styles.label}>{total}</span>
-                </div>
-                {closeable &&
-                    <Button
-                        size="small"
-                        icon="close"
+                    <DownloadDropDownMenu
+                        color={color}
                         id={id}
-                        ghost={true}
-                        onClick={this.onClose}
+                        name={name}
+                        total={total}
+                        downloadConfig={downloadConfig}
+                        downloadUrls={downloadUrls}
+                        handleDownload={handleDownload}
                     />
-                }
+                    {closeable &&
+                        <Button
+                            icon="close"
+                            size="small"
+                            id={id}
+                            ghost={true}
+                            onClick={this.onClose}
+                        />
+                    }
+                </div>
             </div>
         );
     }

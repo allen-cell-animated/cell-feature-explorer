@@ -1,9 +1,17 @@
+import { find } from "lodash";
 import {
     AnyAction,
     Reducer,
 } from "redux";
 
-import { APP_ID } from "../constants";
+import {
+    APP_ID,
+    CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
+} from "../constants";
+
+import { FileInfo } from "./metadata/types";
 
 import {
     BatchedAction,
@@ -46,4 +54,15 @@ export function enableBatching<S>(reducer: Reducer<S>): Reducer<S> {
         }
         return reducer(state, action);
     };
+}
+export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string | number): FileInfo | undefined {
+    return find(fileInfoArray, (datum: FileInfo) => Number(datum[CELL_ID_KEY]) === Number(cellId));
+}
+
+export function convertFileInfoToAICSId(datum: FileInfo): string {
+    return `C${datum[CELL_ID_KEY]}`;
+}
+
+export function convertFileInfoToImgSrc(datum: FileInfo): string {
+    return `/${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
 }

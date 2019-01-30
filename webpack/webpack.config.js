@@ -52,6 +52,7 @@ module.exports = ({ analyze, env } = {}) => ({
                                     },
                                     {
                                         libraryName: 'antd',
+                                        libraryDirectory: "es",
                                         style: true,
                                     }
                                 ]),

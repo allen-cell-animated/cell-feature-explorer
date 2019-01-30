@@ -1,4 +1,6 @@
+import { isEqual } from "lodash";
 import {
+    Annotations,
     Data,
     PlotMouseEvent,
     PlotSelectionEvent,
@@ -18,6 +20,7 @@ interface MainPlotProps {
     annotations: Annotation[];
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
+    onPlotHovered: (hovered: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
 }
 
@@ -25,6 +28,8 @@ interface MainPlotState {
     layout: any;
     showFullAnnotation: boolean;
 }
+
+type PlotlyAnnotation =  Partial<Annotations>;
 
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     public static makeAxis(domain: number[], hoverformat: string, zeroline: boolean) {
@@ -47,10 +52,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             layout: {
                 annotations: this.makeAnnotations(),
                 autosize: true,
+                height: GENERAL_PLOT_SETTINGS.plotHeight,
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: {
-                    b: 30,
+                    b: 20,
                     r: 20,
                     t: 10,
                 },
@@ -66,7 +72,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps) {
-        if (prevProps.annotations.length !== this.props.annotations.length) {
+        if (!isEqual(prevProps.annotations, this.props.annotations)) {
             this.setState({layout: {
                 ...this.state.layout,
                 annotations: this.makeAnnotations(),
@@ -78,20 +84,30 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.setState({showFullAnnotation: false});
     }
 
-    public makeAnnotations(): Annotation[] {
+    public makeAnnotations(): PlotlyAnnotation[] {
         const { annotations } = this.props;
+        const getText = (point: Annotation, show: boolean) => {
+            if (show) {
+                return `Cell ${point.cellID}<br><i>click "3D" button in gallery to load in 3D</i>`;
+            }
+            if (point.hovered ) {
+                return `Cell ${point.cellID}`;
+            }
+            return "";
+        };
 
-        return annotations.map((point: Annotation, index) => {
+        return annotations.map((point, index) => {
             const lastOne =  index + 1  === annotations.length;
             const show = lastOne && this.state.showFullAnnotation;
+            const hasText = !!show || !!point.hovered;
             return {
-                arrowcolor: "#fff",
+                arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
                 arrowhead: 6,
                 ax: 0,
-                ay: show ? -80 : 0,
-                bgcolor: "#a4a2a45c",
-                bordercolor: "#fff",
-                borderpad:  show ? 4 : 0,
+                ay: show ? -60 : point.hovered ? -20 : 0,
+                bgcolor: "#00000094",
+                bordercolor: point.hovered ? "#7440f1" : "#ffffffab",
+                borderpad:  hasText ? 4 : 0,
                 borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
@@ -103,8 +119,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
                 fovID: point.fovID,
                 pointIndex: point.pointIndex,
-                // TODO full AICS cell name?
-                text: show ? `Cell ${point.cellID}<br><i>click "3D" button in gallery to load in 3D</i>` : "",
+                text: getText(point, show),
                 x: point.x,
                 y: point.y,
             };
@@ -112,7 +127,12 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public render() {
-        const { onPointClicked, onGroupSelected, plotDataArray } = this.props;
+        const {
+            onPointClicked,
+            onPlotHovered,
+            onGroupSelected,
+            plotDataArray,
+        } = this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
@@ -135,6 +155,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 config={options}
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
+                onHover={onPlotHovered}
                 onSelected={onGroupSelected}
             />
         );

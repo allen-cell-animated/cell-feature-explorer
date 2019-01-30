@@ -17,6 +17,16 @@ export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |
 export type ClusteringTypeChoices = KMEANS_KEY | DBSCAN_KEY | AGGLOMERATIVE_KEY;
 export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
 
+export interface DownloadConfig {
+    key: string;
+    type: string;
+}
+
+export interface MousePosition {
+    pageX: number;
+    pageY: number;
+}
+
 export interface SelectionStateBranch {
     [key: string]: any;
 }
@@ -55,6 +65,11 @@ export interface  SelectPointAction {
     type: string;
 }
 
+export interface  SelectCellIn3DAction {
+    payload: number;
+    type: string;
+}
+
 export interface ResetSelectionAction {
     type: string;
 }
@@ -64,6 +79,10 @@ export interface ChangeSelectionAction {
     type: string;
 }
 
+export interface ChangeDownloadConfigAction {
+    payload: DownloadConfig;
+    type: string;
+}
 export interface BoolToggleAction {
     payload: boolean;
     type: string;
@@ -72,5 +91,15 @@ export interface BoolToggleAction {
 export interface ChangeClusterNumberAction {
     payload: string;
     clusteringKey: string;
+    type: string;
+}
+
+export interface ChangeMousePositionAction {
+    payload: MousePosition;
+    type: string;
+}
+
+export interface ChangeHoveredPointAction {
+    payload: number;
     type: string;
 }

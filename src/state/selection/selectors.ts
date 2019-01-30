@@ -1,5 +1,7 @@
 import {
+    filter,
     find,
+    findIndex,
     includes,
     keys,
     map,
@@ -33,15 +35,20 @@ import {
 import {
     Annotation,
     ContinuousPlotData,
-    GroupedPlotData,
     NumberOrString,
     SelectedGroupDatum,
     SelectedGroups,
     State,
-    Thumbnail,
 } from "../types";
+import {
+    getFileInfoDatumFromCellId,
+} from "../util";
 
 import { CLUSTERING_MAP } from "./constants";
+import {
+    ClusteringDatum,
+    DownloadConfig,
+} from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -58,75 +65,51 @@ export const getClustersOn = (state: State) => state.selection.showClusters;
 export const getClusteringAlgorithm = (state: State) => state.selection.clusteringAlgorithm;
 export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
 export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
+export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
+export const getMousePosition = (state: State) => state.selection.mousePosition;
+export const getHoveredPointId = (state: State) => state.selection.hoveredPointId;
+export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 // COMPOSED SELECTORS
-export const getSelected3DCellFOV = createSelector([getSelected3DCell, getFileInfo],
-    (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
-        const fileInfo = find(fileInfoArray, {[CELL_ID_KEY]: selected3DCellId});
-        return fileInfo ? fileInfo[FOV_ID_KEY] : "";
-    }
-);
 
-export const getSelected3DCellCellLine = createSelector([getSelected3DCell, getFileInfo],
-    (selected3DCellId: string, fileInfoArray: FileInfo[]) => {
-        const fileInfo = find(fileInfoArray, {[CELL_ID_KEY]: selected3DCellId});
-        return fileInfo ? fileInfo[CELL_LINE_NAME_KEY] : "";
+// MAIN PLOT SELECTORS
+export const getFilteredData = createSelector([getFiltersToExclude, getFullMetaDataArray],
+    (filtersToExclude, fullMetaDataArray) => {
+    if (!filtersToExclude.length) {
+        return fullMetaDataArray;
     }
-);
+    return filter(fullMetaDataArray,
+        (metaDatum) => !includes(filtersToExclude, metaDatum.file_info[PROTEIN_NAME_KEY]
+        ));
+});
 
-export const getXValues = createSelector([getMeasuredData, getPlotByOnX],
+export const getFilteredMeasuredData = createSelector([getFilteredData],
+    (fullMetaData): MeasuredFeatures[] => {
+    return map(fullMetaData, "measured_features");
+});
+
+export const getFilteredFileInfo = createSelector([getFilteredData], (fullMetaData): FileInfo[] => {
+    return map(fullMetaData, "file_info");
+});
+
+export const getXValues = createSelector([getFilteredMeasuredData, getPlotByOnX],
     (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => (
-         map(measuredData, (metaDatum: MeasuredFeatures) => (metaDatum[plotByOnX]))
+        map(measuredData, (metaDatum: MeasuredFeatures) => (metaDatum[plotByOnX]))
     )
 );
 
-export const getYValues = createSelector([getMeasuredData, getPlotByOnY],
+export const getYValues = createSelector([getFilteredMeasuredData, getPlotByOnY],
     (measuredData: MeasuredFeatures[], plotByOnY: string): number[] => (
         measuredData.map((metaDatum: MeasuredFeatures) => (metaDatum[plotByOnY]))
     )
 );
 
-export const getSelectedGroupsData = createSelector(
-    [
-        getMeasuredData,
-        getSelectedGroups,
-        getPlotByOnX,
-        getPlotByOnY,
-        getSelectionSetColors,
-    ],
-    (
-        measuredDataArray,
-        selectedGroups,
-        plotByOnX,
-        plotByOnY,
-        selectedGroupColorMapping
-
-    ): ContinuousPlotData => {
-        const dataArray = mapValues(selectedGroups, (value, key) => {
-            // for each point index, get x, y, and color for the point.
-            return map(value, (pointIndex) => {
-
-                const measuredFeatures = measuredDataArray[pointIndex];
-                return {
-                    groupColor: selectedGroupColorMapping[key],
-                    x: measuredFeatures[plotByOnX],
-                    y: measuredFeatures[plotByOnY],
-                };
-            });
-        });
-        // flatten into array
-        const flattened = reduce(dataArray, (accum: SelectedGroupDatum[], value) =>
-                [...accum, ...value],
-            []
-        );
-        return {
-            color: map(flattened, "groupColor"),
-            x: map( flattened, "x"),
-            y: map( flattened, "y"),
-        };
+export const getIds = createSelector([getFilteredFileInfo],
+    (fileInfoArray: FileInfo[]) => {
+        return map(fileInfoArray, (fileInfo) => fileInfo[CELL_ID_KEY].toString());
     }
 );
 
-export const getPossibleColorByData = createSelector([getFullMetaDataArray], (metaData): MetadataStateBranch[] => (
+export const getPossibleColorByData = createSelector([getFilteredData], (metaData): MetadataStateBranch[] => (
     map(metaData, (ele) => (
             {
                 ...ele.measured_features,
@@ -165,7 +148,7 @@ export const getOpacity = createSelector(
         return map(arrayToMap, (proteinName) => (
             includes(filtersToExclude, proteinName) ? 0 : GENERAL_PLOT_SETTINGS.unselectedCircleOpacity
         ));
-});
+    });
 
 export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
     (metaData: MetadataStateBranch[], colorBy: string): (string[] | number[]) => (
@@ -173,39 +156,110 @@ export const getColorByValues = createSelector([getPossibleColorByData, getColor
     )
 );
 
-export const getMainPlotData = createSelector(
+export const getHoveredPointData = createSelector([getHoveredPointId, getFileInfo],
+    (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
+    return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
+});
+
+export const getAnnotations = createSelector(
     [
-        getXValues,
-        getYValues,
-        getColorByValues,
-        getOpacity,
-        getColorBySelection,
-        getProteinColors,
-        getProteinNames,
+        getMeasuredData,
+        getFileInfo,
+        getClickedScatterPoints,
+        getPlotByOnX,
+        getPlotByOnY,
+        getHoveredCardId,
     ],
     (
-        xValues,
-        yValues,
-        colorByValues,
-        opacity,
-        colorBy,
-        proteinColors,
-        proteinNames
-    ): GroupedPlotData | ContinuousPlotData => {
-    return {
-        color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
-        groupBy: colorBy === PROTEIN_NAME_KEY,
-        groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
+        measuredData: MeasuredFeatures[],
+        fileInfo: FileInfo[],
+        clickedScatterPointIDs: string[],
+        xaxis,
+        yaxis,
+        currentHoveredCellId
+    ): Annotation[] => {
+        return clickedScatterPointIDs.map((cellID) => {
+            const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
+            const fovID = fileInfo[pointIndex][FOV_ID_KEY];
+            const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
+            const x = measuredData[pointIndex][xaxis];
+            const y = measuredData[pointIndex][yaxis];
             return {
-                color: proteinColors[index],
-                name,
-                opacity: opacity[index],
+                cellID,
+                cellLine,
+                fovID,
+                hovered: cellID === currentHoveredCellId,
+                pointIndex,
+                x,
+                y,
             };
-        }) : null,
-        groups: colorByValues,
-        opacity,
-        x: xValues,
-        y: yValues,
+        });
+    }
+);
+
+// 3D VIEWER SELECTORS
+export const getSelected3DCellFileInfo = createSelector([getSelected3DCell, getFileInfo],
+    (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo | undefined => {
+        return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId);
+    }
+);
+
+export const getSelected3DCellFOV = createSelector([getSelected3DCellFileInfo],
+    (fileInfo: FileInfo | undefined): string => {
+        return fileInfo ? fileInfo[FOV_ID_KEY] : "";
+    }
+);
+
+export const getSelected3DCellCellLine = createSelector([getSelected3DCellFileInfo],
+    (fileInfo: FileInfo | undefined): string => {
+        return fileInfo ? fileInfo[CELL_LINE_NAME_KEY] : "";
+    }
+);
+
+export const getSelected3DCellLabeledStructure = createSelector([getSelected3DCellFileInfo],
+    (fileInfo: FileInfo | undefined): string => {
+        return fileInfo ? fileInfo[PROTEIN_NAME_KEY] : "";
+    }
+);
+
+// SELECTED GROUPS SELECTORS
+export const getSelectedGroupsData = createSelector(
+    [
+        getFullMetaDataArray,
+        getSelectedGroups,
+        getPlotByOnX,
+        getPlotByOnY,
+        getSelectionSetColors,
+    ],
+    (
+        metaData,
+        selectedGroups,
+        plotByOnX,
+        plotByOnY,
+        selectedGroupColorMapping
+
+    ): ContinuousPlotData => {
+        const dataArray = mapValues(selectedGroups, (value, key) => {
+            // for each point index, get x, y, and color for the point.
+            return map(value, (cellId) => {
+                // ids are converted to strings for plotly, so converting both to numbers to be sure
+                const fullDatum = find(metaData, (ele) => Number(ele.file_info[CELL_ID_KEY]) === Number(cellId));
+                return {
+                    groupColor: selectedGroupColorMapping[key],
+                    x: fullDatum.measured_features[plotByOnX],
+                    y: fullDatum.measured_features[plotByOnY],
+                };
+            });
+        });
+        // flatten into array
+        const flattened = reduce(dataArray, (accum: SelectedGroupDatum[], value) =>
+                [...accum, ...value],
+            []
+        );
+        return {
+            color: map(flattened, "groupColor"),
+            x: map( flattened, "x"),
+            y: map( flattened, "y"),
         };
     }
 );
@@ -221,58 +275,7 @@ export const getSelectedSetTotals = createSelector([getSelectedGroups], (selecte
     }
 );
 
-export const getThumbnails = createSelector([
-        getFileInfo,
-        getClickedScatterPoints,
-    ],
-    (fileInfo: FileInfo[], clickedScatterPointIndices: number[]): Thumbnail[] => {
-        return clickedScatterPointIndices.map((pointIndex) => {
-            const cellID = fileInfo[pointIndex][CELL_ID_KEY];
-            const cellLineId = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
-            const fovId = fileInfo[pointIndex][FOV_ID_KEY];
-            const src = `/${cellLineId}/${cellLineId}_${fovId}_${cellID}.png`;
-            return {
-                cellID,
-                pointIndex,
-                src,
-            };
-        });
-    }
-);
-
-export const getAnnotations = createSelector(
-    [
-        getMeasuredData,
-        getFileInfo,
-        getClickedScatterPoints,
-        getPlotByOnX,
-        getPlotByOnY,
-    ],
-     (
-         measuredData: MeasuredFeatures[],
-         fileInfo: FileInfo[],
-         clickedScatterPointIndices: number[],
-         xaxis,
-         yaxis
-     ): Annotation[] => {
-        return clickedScatterPointIndices.map((pointIndex) => {
-            const cellID = fileInfo[pointIndex][CELL_ID_KEY];
-            const fovID = fileInfo[pointIndex][FOV_ID_KEY];
-            const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
-            const x = measuredData[pointIndex][xaxis];
-            const y = measuredData[pointIndex][yaxis];
-            return {
-                cellID,
-                cellLine,
-                fovID,
-                pointIndex,
-                x,
-                y,
-            };
-        });
-    }
-);
-
+// CLUSTERING SELECTORS
 export const getClusteringRange = createSelector([getClusterData, getClusteringAlgorithm],
     (clusterData, clusteringAlgorithm): string[] => {
         if (clusterData[0]) {
@@ -281,6 +284,10 @@ export const getClusteringRange = createSelector([getClusterData, getClusteringA
         return [];
     }
 );
+
+export const getFilteredClusteringData = createSelector([getFilteredData], (fullMetaData): ClusteringDatum[] => {
+    return map(fullMetaData, "clusters");
+});
 
 export const getClusteringSetting = createSelector(
     [getClusteringAlgorithm, getClusteringDistance, getNumberOfClusters],
@@ -291,7 +298,7 @@ export const getClusteringSetting = createSelector(
 
 export const getClusteringResult = createSelector(
     [
-        getClusterData,
+        getFilteredClusteringData,
         getClusteringAlgorithm,
         getClusteringSetting,
         getXValues,

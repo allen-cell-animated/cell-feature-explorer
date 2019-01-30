@@ -1,15 +1,72 @@
-.container {
-    & :global(.ant-card-loading-block) {
-        animation: none;
-    }
-    & :global(.ant-card-actions li) {
-        color: white;
-    }
-    & :global(.ant-card-body) {
-        padding: 6px;
-      }
-      img {
-          max-height: 118px;
-      }
+@import "../../styles/colors.css";
 
+.container :global(.ant-list-item-content) {
+    flex-flow: column;
+}
+
+.container :global(.ant-list-item-meta-description) {
+    min-width: 100px;
+}
+.infoList {
+    list-style: none;
+    padding-left: 0;
+}
+
+.actionList button {
+    border: none;
+    border-right: 1px solid white;
+    border-radius: 0;
+    background-color: transparent;
+    height: inherit;
+    color: white;
+}
+
+.actionList a {
+    color: white;
+}
+
+.actionList button:first-of-type{
+    padding-left: 0;
+}
+
+.actionList button:last-of-type{
+    border-right: none;
+}
+
+.title {
+    color: white;
+}
+
+.actionList .disabled {
+    color: var(--text-gray)
+}
+
+.container :global(.ant-avatar) {
+    border: 1px solid var(--dimgray);
+    cursor: pointer;
+}
+
+.container .selected {
+    border: 1px solid white;
+}
+
+.container :global(.ant-list-item-meta) {
+    padding-left: 16px;
+}
+
+.container :global(.ant-list-item-meta-description) {
+    min-width: 100px;
+}
+
+.container :global(.ant-list-item-action) {
+    margin-right: 16px;
+    margin-left: 0;
+}
+
+.container :global(.ant-list-item-action li) {
+    color: white;
+}
+
+.container :global(.ant-list-item-action a) {
+    color: white;
 }

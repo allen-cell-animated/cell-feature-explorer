@@ -2,7 +2,10 @@ import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
 import { AnyAction } from "redux";
 
-import { MetadataStateBranch } from "./metadata/types";
+import {
+    FileInfo,
+    MetadataStateBranch,
+} from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
 
 export type NumberOrString = number | string;
@@ -40,6 +43,7 @@ export interface TypeToDescriptionMap {
 export interface Annotation {
     cellLine: string;
     cellID: string;
+    hovered: boolean;
     fovID: string;
     pointIndex: number;
     x: number;
@@ -47,9 +51,10 @@ export interface Annotation {
 }
 
 export interface Thumbnail {
-    pointIndex: number;
+    downloadHref: string;
+    labeledStructure: string;
     src: string;
-    cellID: string;
+    cellID: number;
     empty?: boolean;
 }
 
@@ -61,20 +66,21 @@ export interface SelectedGroupDatum {
 
 export interface ContinuousPlotData {
     color: Color | Color[] | number | number[];
+    ids?: string[];
     x: number[];
     y: number[];
+    opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
-    opacity?: number[] | number;
     groupColors?: Color[];
 }
 
 interface GroupSettings {
     name: string;
     color: Color | number;
-    opacity: number;
 }
 export interface GroupedPlotData {
+    ids?: string[];
     x: number[];
     y: number[];
     groupBy: boolean;

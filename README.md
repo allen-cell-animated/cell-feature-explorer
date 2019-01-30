@@ -72,6 +72,9 @@ and a Docker image running an Nginx server, serving those same build artifacts.
 | `PORT` | - | 80 | Port on which the app will run **inside** the container. |
 ___
 
+### Deploy to github: 
+* add remote: `git remote add github https://github.com/meganrm/cell-feature-explorer` and get push access
+* run `npm run deploy`
 
 ## Known TODOs
 1. Extract common utilities into separate NPM packages: [DT-17](https://aicsjira.corp.alleninstitute.org/browse/DT-17)

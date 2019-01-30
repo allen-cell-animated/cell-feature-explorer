@@ -5,20 +5,18 @@ import {
     Annotation,
     NumberOrString,
     State,
-    Thumbnail,
 } from "../../types";
 
 import {
     getAnnotations,
     getSelectedGroupKeys,
     getSelectedSetTotals,
-    getThumbnails,
     getXValues,
     getYValues,
 } from "../selectors";
 
 describe("Selection selectors", () => {
-    const cellIDs = ["AICS-1", "AICS-2", "AICS-3", "AICS-4"];
+    const cellIDs = ["AICS-1_1_1", "AICS-2_2_2", "AICS-3_3_3", "AICS-4_4_4"];
     const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
     const feature1Values = [1, 4, 2, 1];
     const feature2Values = [2, 4, 2, 4];
@@ -120,23 +118,6 @@ describe("Selection selectors", () => {
 
     });
 
-    describe("getThumbnails selector", () => {
-        it("it returns a thumbnail object for every index in selectedPoints array", () => {
-
-            const state: State = {
-                ...newMockState,
-                selection: {
-                    ...newMockState.selection,
-                    selectedPoints: [0, 1],
-                },
-            };
-
-            const result: Thumbnail[] = getThumbnails(state);
-            expect(result).to.have.lengthOf(2);
-        });
-
-    });
-
     describe("getAnnotations selector", () => {
         it("it returns an Annotation object for every index in selectedPoints array", () => {
 
@@ -146,7 +127,7 @@ describe("Selection selectors", () => {
                     ...newMockState.selection,
                     plotByOnX: "feature1",
                     plotByOnY: "feature2",
-                    selectedPoints: [0, 1],
+                    selectedPoints: [1, 2],
                 },
             };
             const result: Annotation[] = getAnnotations(state);

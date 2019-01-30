@@ -1,27 +1,78 @@
 import {
     map,
 } from "lodash";
+
 import { createSelector } from "reselect";
 
 import {
     CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
+    PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
-} from "../../constants/index";
+} from "../../constants";
+
+import { getProteinNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
     getClusteringResult,
     getClustersOn,
-    getMainPlotData,
-    getSelectedGroupsData
+    getColorBySelection,
+    getColorByValues,
+    getFilteredFileInfo,
+    getIds,
+    getProteinColors,
+    getSelectedGroupsData,
+    getXValues,
+    getYValues,
 } from "../../state/selection/selectors";
-import { ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import {
+    ContinuousPlotData,
+    GroupedPlotData,
+} from "../../state/types";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
 }
+
+export const getMainPlotData = createSelector(
+    [
+        getXValues,
+        getYValues,
+        getIds,
+        getFilteredFileInfo,
+        getColorByValues,
+        getColorBySelection,
+        getProteinColors,
+        getProteinNames,
+    ],
+    (
+        xValues,
+        yValues,
+        ids,
+        filteredFileInfo,
+        colorByValues,
+        colorBy,
+        proteinColors,
+        proteinNames
+    ): GroupedPlotData | ContinuousPlotData => {
+        return {
+            color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
+            groupBy: colorBy === PROTEIN_NAME_KEY,
+            groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
+                return {
+                    color: proteinColors[index],
+                    name,
+                };
+            }) : null,
+            groups: colorByValues,
+            ids,
+            x: xValues,
+            y: yValues,
+        };
+    }
+);
 
 export const composePlotlyData = createSelector([
         getMainPlotData,
@@ -54,7 +105,6 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: CLUSTERS_PLOT_NAME,
     } : null;
-
     return {
         clusteringPlotData,
         mainPlotData,
@@ -78,7 +128,7 @@ function colorSettings(
                             marker:
                                 {
                                     color: ele.color,
-                                    opacity: ele.opacity,
+                                    opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
                                 }},
                     };
                 }),
@@ -101,6 +151,8 @@ function colorSettings(
 
 function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
     const plotSettings =  {
+        hoverinfo: "none" as "none",
+        ids: plotData.ids,
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
             symbol: "circle",
