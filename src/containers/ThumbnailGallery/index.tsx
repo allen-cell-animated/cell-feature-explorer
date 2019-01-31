@@ -82,6 +82,7 @@ const messages = {
 };
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailGalleryState> {
+    private endOfAlbum: React.RefObject<HTMLDivElement>;
 
     constructor(props: ThumbnailGalleryProps) {
         super(props);
@@ -90,6 +91,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.resetSearch = this.resetSearch.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
         this.unHover = this.unHover.bind(this);
+        this.endOfAlbum = React.createRef();
         this.state = {
             ...initialState,
         };
@@ -101,9 +103,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     public componentDidUpdate() {
-        const endOfGallery = document.querySelector("#end-of-gallery");
-        if (endOfGallery) {
-            endOfGallery.scrollIntoView({
+        const endOfGallery = this.endOfAlbum;
+        if (endOfGallery.current) {
+            endOfGallery.current.scrollIntoView({
                 behavior: "smooth",
             });
         }
@@ -206,7 +208,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
-                    footer={<div id="end-of-gallery" />}
+                    footer={<div ref={this.endOfAlbum} />}
                 />
             </div>
         );
