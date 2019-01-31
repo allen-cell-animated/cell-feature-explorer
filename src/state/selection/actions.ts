@@ -1,4 +1,5 @@
 import {
+    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
@@ -26,7 +27,7 @@ import {
     DeselectPointAction,
     DownloadConfig,
     MousePosition,
-    ResetSelectionAction,
+    ResetSelectionAction, SelectAlbumAction,
     SelectAxisAction,
     SelectGroupOfPointsAction,
     SelectPointAction,
@@ -40,7 +41,7 @@ export function changeAxis(axisId: string, payload: string): SelectAxisAction {
     };
 }
 
-export function selectGroupOfPoints(key: string | number, payload: number[]): SelectGroupOfPointsAction  {
+export function lassoOrBoxSelectGroup(key: string | number, payload: number[]): SelectGroupOfPointsAction  {
     return {
         key,
         payload,
@@ -143,5 +144,12 @@ export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction
     return {
         payload,
         type: CHANGE_HOVERED_GALLERY_CARD,
+    };
+}
+
+export function addAlbumToGallery(payload: number[]): SelectAlbumAction {
+    return {
+        payload,
+        type: ADD_ALBUM_TO_GALLERY,
     };
 }

@@ -227,7 +227,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
-    handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
+    handleSelectGroupOfPoints: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,

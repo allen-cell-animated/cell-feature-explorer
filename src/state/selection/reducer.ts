@@ -1,6 +1,7 @@
 import {
     filter,
     pickBy,
+    uniq,
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -9,6 +10,7 @@ import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
+    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
@@ -40,7 +42,7 @@ import {
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
-    ResetSelectionAction,
+    ResetSelectionAction, SelectAlbumAction,
     SelectAxisAction,
     SelectCellIn3DAction,
     SelectGroupOfPointsAction,
@@ -199,6 +201,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
             hoveredCardId: action.payload,
+        }),
+    },
+    [ADD_ALBUM_TO_GALLERY]: {
+        accepts: (action: AnyAction): action is SelectAlbumAction => action.type === ADD_ALBUM_TO_GALLERY,
+        perform: (state: SelectionStateBranch, action: SelectAlbumAction) => ({
+            ...state,
+            selectedPoints : uniq([...state.selectedPoints, ...action.payload]),
         }),
     },
 };

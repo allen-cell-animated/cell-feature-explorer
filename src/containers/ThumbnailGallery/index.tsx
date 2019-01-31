@@ -5,7 +5,11 @@ import {
     Input,
     List,
 } from "antd";
-import { includes, map } from "lodash";
+import {
+    find,
+    includes,
+    map,
+} from "lodash";
 import * as React from "react";
 import {
     ActionCreator,
@@ -13,10 +17,11 @@ import {
 } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
-
 import { requestAlbumData } from "../../state/metadata/actions";
+import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
 import {
+    addAlbumToGallery,
     clearAllSelectedPoints,
     deselectPoint,
     selectCellFor3DViewer, selectPoint, setHoveredGalleryCard,
@@ -28,11 +33,12 @@ import {
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
-    ResetSelectionAction,
+    ResetSelectionAction, SelectAlbumAction,
     SelectCellIn3DAction,
     SelectPointAction,
 } from "../../state/selection/types";
 import {
+    AlbumData,
     State,
     Thumbnail,
 } from "../../state/types";
@@ -45,6 +51,7 @@ const FormItem = Form.Item;
 const styles = require("./style.css");
 
 interface ThumbnailGalleryProps {
+    albumData: AlbumData[];
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
@@ -52,6 +59,7 @@ interface ThumbnailGalleryProps {
     selectedCell: number;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
+    handleSelectAlbum: ActionCreator<SelectAlbumAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
     setHovered: ActionCreator<SelectPointAction>;
@@ -129,6 +137,39 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         });
     }
 
+    public getAlbum(id: number) {
+        const {
+            albumData,
+            handleSelectAlbum,
+        } = this.props;
+        const album = find(albumData, {album_id: id});
+        if (album) {
+            handleSelectAlbum(album.cell_ids);
+        }
+    }
+
+    public renderAlbumButtons() {
+        const {
+            albumData,
+        } = this.props;
+        return map(albumData, (album) => {
+            const handleClick = () => {
+                this.getAlbum(album.album_id);
+            };
+            return (album.cell_ids.length > 0 &&
+                (
+                    <Button
+                        key={album.album_id}
+                        onClick={handleClick}
+                    >
+                        {album.title}
+                    </Button>
+                )
+            );
+
+        });
+    }
+
     public render() {
         const {
             data,
@@ -151,6 +192,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 onChange={this.resetSearch}
                             />
                         </FormItem>
+                    {this.renderAlbumButtons()}
+
                     {data.length > 0 &&
                         <Button
                             icon="close"
@@ -208,6 +251,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
 function mapStateToProps(state: State) {
     return {
+        albumData: getAllAlbumData(state),
         clickedPoints: getClickedScatterPoints(state),
         data: getThumbnails(state),
         ids: getIds(state),
@@ -221,6 +265,7 @@ const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,
+    handleSelectAlbum: addAlbumToGallery,
     setHovered: setHoveredGalleryCard,
 };
 

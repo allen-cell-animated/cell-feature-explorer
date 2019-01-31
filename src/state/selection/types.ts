@@ -103,3 +103,8 @@ export interface ChangeHoveredPointAction {
     payload: number;
     type: string;
 }
+
+export interface SelectAlbumAction {
+    payload: number[];
+    type: string;
+}
