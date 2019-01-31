@@ -13,6 +13,9 @@ import {
 } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
+
+import { requestAlbumData } from "../../state/metadata/actions";
+import { RequestAction } from "../../state/metadata/types";
 import {
     clearAllSelectedPoints,
     deselectPoint,
@@ -45,6 +48,7 @@ interface ThumbnailGalleryProps {
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
+    getAlbumData: ActionCreator<RequestAction>;
     selectedCell: number;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
@@ -81,6 +85,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.state = {
             ...initialState,
         };
+    }
+
+    public componentDidMount() {
+        const { getAlbumData } = this.props;
+        getAlbumData();
     }
 
     public componentDidUpdate() {
@@ -208,6 +217,7 @@ function mapStateToProps(state: State) {
 
 const dispatchToPropsMap = {
     addSearchedCell: selectPoint,
+    getAlbumData: requestAlbumData,
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,

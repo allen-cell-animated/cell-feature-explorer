@@ -103,3 +103,9 @@ export interface SelectedGroups {
     [key: number]: number[];
     [key: string]: number[];
 }
+
+export interface AlbumData {
+    album_id: number;
+    cell_ids: number[];
+    title: string;
+}
