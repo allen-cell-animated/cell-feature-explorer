@@ -148,6 +148,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         }
     }
 
+    // This is a placeholder to get the functionally in, but not what the final UI will be
+    // TODO: create UI based on design
     public renderAlbumButtons() {
         const {
             albumData,
@@ -192,8 +194,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 onChange={this.resetSearch}
                             />
                         </FormItem>
-                    {this.renderAlbumButtons()}
-
                     {data.length > 0 &&
                         <Button
                             icon="close"
