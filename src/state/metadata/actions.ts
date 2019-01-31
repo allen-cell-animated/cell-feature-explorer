@@ -1,4 +1,4 @@
-import { AlbumData } from "../types";
+import { Album } from "../types";
 
 import {
     RECEIVE_ALBUM_DATA,
@@ -49,7 +49,7 @@ export function requestAlbumData(): RequestAction {
     };
 }
 
-export function receiveAlbumData(payload: AlbumData[]): ReceiveAlbumDataAction {
+export function receiveAlbumData(payload: Album[]): ReceiveAlbumDataAction {
     return {
         payload,
         type: RECEIVE_ALBUM_DATA,

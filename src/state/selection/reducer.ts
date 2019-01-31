@@ -25,7 +25,7 @@ import {
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
-    SELECT_GROUP,
+    SELECT_GROUP_VIA_PLOT,
     SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
@@ -42,11 +42,11 @@ import {
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
+    LassoOrBoxSelectAction,
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
     SelectCellIn3DAction,
-    SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
 } from "./types";
@@ -94,9 +94,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
             cellSelectedFor3D: action.payload,
         }),
     },
-    [SELECT_GROUP]: {
-        accepts: (action: AnyAction): action is SelectGroupOfPointsAction => action.type === SELECT_GROUP,
-        perform: (state: SelectionStateBranch, action: SelectGroupOfPointsAction) => ({
+    [SELECT_GROUP_VIA_PLOT]: {
+        accepts: (action: AnyAction): action is LassoOrBoxSelectAction => action.type === SELECT_GROUP_VIA_PLOT,
+        perform: (state: SelectionStateBranch, action: LassoOrBoxSelectAction) => ({
             ...state,
             selectedGroupColors: {
                 ...state.selectedGroupColors,

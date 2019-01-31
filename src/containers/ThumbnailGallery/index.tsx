@@ -38,7 +38,7 @@ import {
     SelectPointAction,
 } from "../../state/selection/types";
 import {
-    AlbumData,
+    Album,
     State,
     Thumbnail,
 } from "../../state/types";
@@ -51,7 +51,7 @@ const FormItem = Form.Item;
 const styles = require("./style.css");
 
 interface ThumbnailGalleryProps {
-    albumData: AlbumData[];
+    albumData: Album[];
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
