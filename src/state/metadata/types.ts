@@ -6,6 +6,7 @@ import {
     FOV_ID_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
+import { Album } from "../types";
 
 export interface MetadataStateBranch {
     [key: string]: any;
@@ -42,6 +43,11 @@ export interface ReceiveAction {
 
 export interface ReceiveCellLineAction {
     payload: CellLineDef;
+    type: string;
+}
+
+export interface ReceiveAlbumDataAction {
+    payload: Album[];
     type: string;
 }
 

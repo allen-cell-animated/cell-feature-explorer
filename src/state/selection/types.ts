@@ -38,7 +38,7 @@ export interface ClusteringDatum {
     [key: string]: OneCluster;
 }
 
-export interface SelectGroupOfPointsAction {
+export interface LassoOrBoxSelectAction {
     key: string | number;
     payload: number[];
     type: string;
@@ -101,5 +101,10 @@ export interface ChangeMousePositionAction {
 
 export interface ChangeHoveredPointAction {
     payload: number;
+    type: string;
+}
+
+export interface SelectAlbumAction {
+    payload: number[];
     type: string;
 }

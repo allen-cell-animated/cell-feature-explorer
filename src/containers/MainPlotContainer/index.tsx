@@ -32,8 +32,8 @@ import {
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     DeselectPointAction,
+    LassoOrBoxSelectAction,
     MousePosition,
-    SelectGroupOfPointsAction,
     SelectPointAction,
 } from "../../state/selection/types";
 import {
@@ -60,7 +60,7 @@ interface MainPlotContainerProps {
     handleSelectPoint: ActionCreator<SelectPointAction>;
     handleClickedChart: () => void;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
-    handleSelectGroupOfPoints: ActionCreator<SelectGroupOfPointsAction>;
+    handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
@@ -141,12 +141,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
         }
         const { points } = eventData;
         const {
-            handleSelectGroupOfPoints,
+            handleLassoOrBoxSelect,
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
         const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
-        handleSelectGroupOfPoints(key, payload);
+        handleLassoOrBoxSelect(key, payload);
         handleSelectionToolUsed();
     }
 
@@ -227,7 +227,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
-    handleSelectGroupOfPoints: selectionStateBranch.actions.selectGroupOfPoints,
+    handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,

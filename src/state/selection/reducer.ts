@@ -1,6 +1,7 @@
 import {
     filter,
     pickBy,
+    uniq,
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -9,6 +10,7 @@ import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
+    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
@@ -23,7 +25,7 @@ import {
     INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
-    SELECT_GROUP,
+    SELECT_GROUP_VIA_PLOT,
     SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
@@ -40,10 +42,11 @@ import {
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
+    LassoOrBoxSelectAction,
     ResetSelectionAction,
+    SelectAlbumAction,
     SelectAxisAction,
     SelectCellIn3DAction,
-    SelectGroupOfPointsAction,
     SelectionStateBranch,
     SelectPointAction,
 } from "./types";
@@ -91,9 +94,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
             cellSelectedFor3D: action.payload,
         }),
     },
-    [SELECT_GROUP]: {
-        accepts: (action: AnyAction): action is SelectGroupOfPointsAction => action.type === SELECT_GROUP,
-        perform: (state: SelectionStateBranch, action: SelectGroupOfPointsAction) => ({
+    [SELECT_GROUP_VIA_PLOT]: {
+        accepts: (action: AnyAction): action is LassoOrBoxSelectAction => action.type === SELECT_GROUP_VIA_PLOT,
+        perform: (state: SelectionStateBranch, action: LassoOrBoxSelectAction) => ({
             ...state,
             selectedGroupColors: {
                 ...state.selectedGroupColors,
@@ -199,6 +202,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
             hoveredCardId: action.payload,
+        }),
+    },
+    [ADD_ALBUM_TO_GALLERY]: {
+        accepts: (action: AnyAction): action is SelectAlbumAction => action.type === ADD_ALBUM_TO_GALLERY,
+        perform: (state: SelectionStateBranch, action: SelectAlbumAction) => ({
+            ...state,
+            selectedPoints : uniq([...state.selectedPoints, ...action.payload]),
         }),
     },
 };

@@ -1,4 +1,5 @@
 import {
+    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
@@ -8,7 +9,7 @@ import {
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
     OPEN_CELL_IN_3D,
-    SELECT_GROUP,
+    SELECT_GROUP_VIA_PLOT,
     SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
@@ -25,10 +26,11 @@ import {
     ChangeSelectionAction,
     DeselectPointAction,
     DownloadConfig,
+    LassoOrBoxSelectAction,
     MousePosition,
     ResetSelectionAction,
+    SelectAlbumAction,
     SelectAxisAction,
-    SelectGroupOfPointsAction,
     SelectPointAction,
 } from "./types";
 
@@ -40,11 +42,11 @@ export function changeAxis(axisId: string, payload: string): SelectAxisAction {
     };
 }
 
-export function selectGroupOfPoints(key: string | number, payload: number[]): SelectGroupOfPointsAction  {
+export function lassoOrBoxSelectGroup(key: string | number, payload: number[]): LassoOrBoxSelectAction  {
     return {
         key,
         payload,
-        type: SELECT_GROUP,
+        type: SELECT_GROUP_VIA_PLOT,
     };
 }
 
@@ -143,5 +145,12 @@ export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction
     return {
         payload,
         type: CHANGE_HOVERED_GALLERY_CARD,
+    };
+}
+
+export function addAlbumToGallery(payload: number[]): SelectAlbumAction {
+    return {
+        payload,
+        type: ADD_ALBUM_TO_GALLERY,
     };
 }

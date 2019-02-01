@@ -26,9 +26,22 @@ import {
 import { CLUSTERING_MAP } from "../selection/constants";
 import { ClusteringTypeChoices } from "../selection/types";
 
-import { receiveCellLineData, receiveMetadata, requestFeatureData } from "./actions";
-import { REQUEST_CELL_LINE_DATA, REQUEST_FEATURE_DATA } from "./constants";
-import { CellLineDef, MetaData, MetadataStateBranch } from "./types";
+import {
+    receiveCellLineData,
+    receiveMetadata,
+    requestFeatureData,
+} from "./actions";
+import {
+    RECEIVE_ALBUM_DATA,
+    REQUEST_ALBUM_DATA,
+    REQUEST_CELL_LINE_DATA,
+    REQUEST_FEATURE_DATA,
+} from "./constants";
+import {
+    CellLineDef,
+    MetaData,
+    MetadataStateBranch,
+} from "./types";
 
 const requestCellLineData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -61,9 +74,6 @@ const requestCellLineData = createLogic({
 });
 
 const requestFeatureDataLogic = createLogic({
-    // processOptions: {
-    //     successType: receiveMetadata,
-    // },
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const {
             baseApiUrl,
@@ -116,7 +126,28 @@ const requestFeatureDataLogic = createLogic({
     type: REQUEST_FEATURE_DATA,
 });
 
+const requestAlbumData = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const {
+            baseApiUrl,
+            httpClient,
+        } = deps;
+        return httpClient
+            .get(`${baseApiUrl}/albums.json`)
+            .then((metadata: AxiosResponse) => metadata.data)
+            .catch((reason) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_ALBUM_DATA,
+    },
+    type: REQUEST_ALBUM_DATA,
+
+});
+
 export default [
+    requestAlbumData,
     requestCellLineData,
     requestFeatureDataLogic,
 ];

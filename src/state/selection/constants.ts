@@ -13,7 +13,7 @@ import {
 } from "./types";
 
 export const CHANGE_AXIS = makeConstant("selection", "deselect-file");
-export const SELECT_GROUP = makeConstant("selection", "select_group");
+export const SELECT_GROUP_VIA_PLOT = makeConstant("selection", "select_group");
 export const DESELECT_POINT = makeConstant("selection", "deselect-point");
 export const SELECT_POINT = makeConstant("selection", "select-point");
 export const DESELECT_ALL_POINTS = makeConstant("selection", "deselect-all-points");
@@ -28,6 +28,7 @@ export const SET_DOWNLOAD_CONFIG = makeConstant("selection", "set-download-confi
 export const SET_MOUSE_POSITION = makeConstant("selection", "set-mouse-position");
 export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
 export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
+export const ADD_ALBUM_TO_GALLERY = makeConstant("selection", "add-album-to-gallery");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
