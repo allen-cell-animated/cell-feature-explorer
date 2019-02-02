@@ -2,22 +2,36 @@
 
 .gallery-title {
     padding: 1em;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
 }
 
 .gallery-header {
+    padding: 1em 0.75em;
     display: flex;
     flex-flow: row wrap;
     margin: auto;
+    justify-content: space-around;
+    background-color: var(--background-dim-gray);
+}
+
+.gallery-header-actions {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    & input {
+        background-color: var(--background-dim-gray);
+      }
 }
 
 .gallery-header :global(.ant-btn) {
-    margin: auto;
     margin-top: 3px;
+    align-self: flex-end;
 }
 
 .gallery-header :global(.ant-form-item) {
     margin: auto;
-    margin-right: 1em;
 }
 
 .container :global(.ant-list-item-content) {
@@ -35,6 +49,16 @@
 
 .container :global(.ant-list-split .ant-list-item:last-child) {
     margin-bottom: 48px;  /*for collapse button height */
+}
+
+.container :global(.ant-list-item-meta-avatar) {
+    margin-right: 0;
+}
+
+.container :global(.ant-list-split .ant-list-item),
+.container :global(.ant-list-something-after-last-item .ant-spin-container > .ant-list-item:last-child)
+{
+    border-bottom: 1px solid var(--border-gray);
 }
 
 /* collapsed sider styling*/
@@ -63,25 +87,20 @@
     width: 70px;
 }
 
-:global(.ant-layout-sider-collapsed .ant-list-item-meta) {
-    padding-left: 4px;
-}
-
-:global(.ant-layout-sider-collapsed) .gallery-title-small {
-    font-size: 3em;
-    display: block;
-    text-align: center;
-    margin: auto;
-}
-
 :global(.ant-layout-sider-collapsed) .gallery-header {
     text-align: center;
     justify-content: space-between;
 }
 
+:global(.ant-layout-sider-collapsed h2) {
+    display: flex;
+    flex-flow: column;
+}
+
 :global(.ant-layout-sider-collapsed) .gallery-header :global(.ant-form-item),
 :global(.ant-layout-sider-collapsed) .gallery-header :global(.ant-btn) {
     margin: auto;
+    padding: 5px;
 }
 
 :global(.ant-layout-sider-collapsed .ant-form-item){

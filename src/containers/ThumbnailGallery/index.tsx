@@ -181,29 +181,34 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
-                <h2 className={styles.galleryTitle}><Icon type="picture"/>  Gallery</h2>
+                <div className={styles.galleryHeader}>
+                    <h2><Icon type="picture"/>  Gallery
+                    </h2>
+                <div className={styles.galleryHeaderActions}>
 
-                <section className={styles.galleryHeader}>
-                        <FormItem
-                            hasFeedback={true}
-                            className={styles.searchForCell}
-                            validateStatus={this.state.inputStatus}
-                            help={this.state.message}
-                        >
-                            <Search
-                                placeholder="add image by cell id"
-                                onSearch={this.searchValidate}
-                                onChange={this.resetSearch}
-                            />
-                        </FormItem>
                     {data.length > 0 &&
-                        <Button
-                            icon="close"
-                            onClick={handleClearAllSelectedPoints}
-                        >Clear All
-                        </Button>}
+                    <Button
+                        icon="close"
+                        type="primary"
+                        onClick={handleClearAllSelectedPoints}
+                    >Clear All
+                    </Button>}
+                    <FormItem
+                        hasFeedback={true}
+                        className={styles.searchForCell}
+                        validateStatus={this.state.inputStatus}
+                        help={this.state.message}
+                    >
+                        <Search
+                            placeholder="add image by cell id"
+                            onSearch={this.searchValidate}
+                            onChange={this.resetSearch}
+                        />
+                    </FormItem>
 
-                </section>
+                </div>
+                </div>
+
                 <List
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
