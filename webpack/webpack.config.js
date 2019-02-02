@@ -152,7 +152,8 @@ module.exports = ({ analyze, env } = {}) => ({
     },
     plugins: getPluginsByEnv(env, analyze),
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        mainFields: ['module', 'main', 'browser']
     },
     stats: analyze ? "none" : stats,
 });

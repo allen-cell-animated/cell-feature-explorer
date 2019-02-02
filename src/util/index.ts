@@ -3,6 +3,8 @@ import {
     isFunction,
 } from "lodash";
 
+export { default as UrlState } from "./UrlState";
+
 export function bindAll<T>(obj: T, methods: Array<() => any>) {
     const setOfMethods = new Set(methods);
     forOwn(obj.constructor.prototype, (value, key) => {

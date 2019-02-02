@@ -1,3 +1,5 @@
+import { URLSearchParamMap } from "../../util/UrlState";
+
 import {
     ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
@@ -13,6 +15,7 @@ import {
     SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
+    SYNC_STATE_WITH_URL,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
@@ -88,6 +91,13 @@ export function selectCellFor3DViewer(payload: number): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
+    };
+}
+
+export function syncStateWithURL(payload: URLSearchParamMap) {
+    return {
+        payload,
+        type: SYNC_STATE_WITH_URL,
     };
 }
 

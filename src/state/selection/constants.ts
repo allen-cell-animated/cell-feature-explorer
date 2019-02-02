@@ -26,6 +26,7 @@ export const CHANGE_CLUSTERING_ALGORITHM = makeConstant("selection", "change-clu
 export const TOGGLE_CLUSTERS_VISIBLE = makeConstant("selection", "toggle-clusters-on");
 export const SET_DOWNLOAD_CONFIG = makeConstant("selection", "set-download-config");
 export const SET_MOUSE_POSITION = makeConstant("selection", "set-mouse-position");
+export const SYNC_STATE_WITH_URL = makeConstant("select", "sync-with-url");
 export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
 export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
 export const ADD_ALBUM_TO_GALLERY = makeConstant("selection", "add-album-to-gallery");
