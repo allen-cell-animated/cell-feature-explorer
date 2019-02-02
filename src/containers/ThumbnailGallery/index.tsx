@@ -102,7 +102,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         getAlbumData();
     }
 
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: ThumbnailGalleryProps) {
         const endOfGallery = this.endOfAlbum;
         const { clickedPoints } = this.props;
         if (endOfGallery.current && prevProps.clickedPoints.length !== clickedPoints.length) {
