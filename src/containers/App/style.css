@@ -36,9 +36,13 @@
     height: 100vh;
     position: fixed;
     right: 0;
-    overflow-y: visible;
     z-index: 3000;
     border-left: 0.5px solid var(--dimgray);
+    padding-bottom: 0;
+}
+
+.sider :global(.ant-layout-sider-children) {
+    overflow: scroll;
 }
 
 :global(.ant-collapse),

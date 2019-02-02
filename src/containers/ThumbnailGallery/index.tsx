@@ -102,9 +102,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         getAlbumData();
     }
 
-    public componentDidUpdate() {
+    public componentDidUpdate(prevProps) {
         const endOfGallery = this.endOfAlbum;
-        if (endOfGallery.current) {
+        const { clickedPoints } = this.props;
+        if (endOfGallery.current && prevProps.clickedPoints.length !== clickedPoints.length) {
             endOfGallery.current.scrollIntoView({
                 behavior: "smooth",
             });
