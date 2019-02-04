@@ -1,4 +1,8 @@
-import { reduce } from "lodash";
+import {
+    castArray,
+    map,
+    reduce,
+} from "lodash";
 import { AnyAction } from "redux";
 
 import {
@@ -23,14 +27,15 @@ export enum URLSearchParam {
     showClusters,
 }
 
-type URLSearchParamValue = string | number | boolean;
+type URLSearchParamValue = string | number | boolean | string[] | number[];
 
 export interface URLSearchParamMap {
     [index: string]: URLSearchParamValue;
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: URLSearchParamValue, searchParamMap: URLSearchParamMap) => AnyAction | undefined;
+    [index: string]: (value: URLSearchParamValue, searchParamMap: URLSearchParamMap) =>
+        AnyAction | AnyAction[] | undefined;
 }
 
 interface StateToUrlSearchParamMap {
@@ -43,7 +48,12 @@ export default class UrlState {
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
-        [URLSearchParam.selectedPoint]: (point) => selectPoint(Number(point)),
+        [URLSearchParam.selectedPoint]: (selection) => {
+            if (Array.isArray(selection)) {
+                return map<number | string, AnyAction>(selection, (point) => selectPoint(Number(point)))
+            }
+            return selectPoint(Number(selection))
+        },
         [URLSearchParam.showClusters]: (showClusters) => toggleShowClusters(Boolean(showClusters)),
     };
 
@@ -63,7 +73,7 @@ export default class UrlState {
                 const action = this.urlParamToActionCreatorMap[searchParamKey](searchParamValue, searchParameterMap);
 
                 if (action) {
-                    return [...accum, action];
+                    return [...accum, ...castArray(action)];
                 }
             }
             return accum;
