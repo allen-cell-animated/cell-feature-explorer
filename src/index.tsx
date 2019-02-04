@@ -28,7 +28,7 @@ const urlState = new UrlState();
 store.subscribe(function updateURL() {
     const state = store.getState();
     try {
-        messenger.postMessage(urlState.toUrlSearchParameterMap(state));
+        messenger.postMessage(urlState.toUrlSearchParameterMap(state.selection));
     } catch (error) {
         // one common scenario in which this would fail is in dev/staging, in which this application
         // is not being run inside an iframe.
