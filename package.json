@@ -63,7 +63,7 @@
     "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
-    "@aics/browsing-context-messaging": "^1.1.0",
+    "@aics/browsing-context-messaging": "~1.1",
     "antd": "^3.7.2",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
