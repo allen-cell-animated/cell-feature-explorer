@@ -14,7 +14,7 @@ import {
 } from "../state/selection/actions";
 import { SelectionStateBranch } from "../state/selection/types";
 
-enum URLSearchParam {
+export enum URLSearchParam {
     cellSelectedFor3D,
     colorBy,
     plotByOnX,
