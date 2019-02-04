@@ -1,106 +1,115 @@
-node ("docker")
-    {
-        def is_master=(env.BRANCH_NAME == 'master')
-        parameters { booleanParam(name: 'promote_artifact', defaultValue: false, description: '') }
-        def is_promote=(params.promote_artifact)
-        echo "BUILDTYPE: " + (is_promote ? "Promote Image" : "Build, Publish and Tag")
-
-        try {
-            def VENV_BIN = "/local1/virtualenvs/jenkinstools/bin"
-            def PYTHON = "${VENV_BIN}/python3"
-
-            stage ("git") {
-                def git_url=gitUrl()
-                if (env.BRANCH_NAME == null) {
-                    git url: "${git_url}"
-                }
-                else {
-                    println "*** BRANCH ${env.BRANCH_NAME}"
-                    git url: "${git_url}", branch: "${env.BRANCH_NAME}"
-                }
-            }
-
-            // Checkout the branch to build. This will use the jenkins user key in stash
-            if (!is_promote) {
-                stage("lint") {
-                    sh "./gradlew -i lint"
-                }
-
-                stage("test") {
-                    sh "./gradlew --stacktrace test"
-                }
-
-                if (is_master) {
-                    stage ("prepare version") {
-                        sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s prepare"
-                    }
-                }
-
-                stage ("build and push") {
-                    if (is_master) {
-                        env.DEPLOYMENT_ENV = 'production'
-                    } else {
-                        env.DEPLOYMENT_ENV = 'staging'
-                    }
-
-                    sh './gradlew -i snapshotPublishTarGzAndDockerImage'
-                }
-
-                if (is_master) {
-                    stage ("tag and commit") {
-                        sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s tag"
-                    }
-                }
-            } else {
-                stage("promote") {
-                    sh "${PYTHON} ${VENV_BIN}/promote_artifact -t maven -g ${params.git_tag}"
-                }
-            }
-
-            currentBuild.result = "SUCCESS"
-        }
-        catch(e) {
-            // If there was an exception thrown, the build failed
-            currentBuild.result = "FAILURE"
-            throw e
-        }
-        finally {
-            if (!is_promote) {
-                sh './gradlew -i dockerCleanAndArtifactClean'
-            }
-
-            println currentBuild.result  // this prints null
-            // Slack
-            notifyBuildOnSlack(currentBuild.result, is_master)
-            // Email
-            step([$class: 'Mailer',
-                  notifyEveryUnstableBuild: true,
-                  recipients: '!AICS_DevOps@alleninstitute.org',
-                  sendToIndividuals: true])
+pipeline {
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: "HOURS")
+    }
+    agent {
+        node {
+            label "docker"
         }
     }
+    triggers {
+        pollSCM("H */4 * * 1-5")
+    }
+    parameters {
+        booleanParam(name: "PROMOTE_ARTIFACT", defaultValue: false, description: "Only run promote job")
+        gitParameter(name: "GIT_TAG", defaultValue: "master", type: "PT_TAG", sortMode: "DESCENDING_SMART", description: "Select a Git tag specifying the artifact which should be promoted. This value is only used in promote jobs.")
+    }
+    environment {
+        VENV_BIN = "/local1/virtualenvs/jenkinstools/bin"
+        PYTHON = "${VENV_BIN}/python3"
+    }
+    stages {
+        stage ("initialize") {
+            steps {
+                this.notifyBB("INPROGRESS")
+                git url: "${env.GIT_URL}", branch: "${env.BRANCH_NAME}"
+            }
+        }
 
-def gitUrl() {
-    checkout scm
-    sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+        stage ("lint, typeCheck, and test") {
+            when {
+                not { expression { return params.PROMOTE_ARTIFACT } }
+            }
+            steps {
+                sh "./gradlew lint"
+                sh "./gradlew typeCheck"
+                sh "./gradlew test"
+            }
+        }
+
+        stage ("build and push: non-master branch") {
+            when {
+                not { branch "master" }
+                not { expression { return params.PROMOTE_ARTIFACT } }
+            }
+            environment {
+                DEPLOYMENT_ENV = "staging"
+            }
+            steps {
+                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+            }
+            post {
+                always {
+                    sh "./gradlew dockerClean"
+                }
+            }
+        }
+
+        stage ("build and push: master branch") {
+            when {
+                branch "master"
+                not { expression { return params.PROMOTE_ARTIFACT } }
+            }
+            environment {
+                DEPLOYMENT_ENV = "production"
+            }
+            steps {
+                sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s prepare"
+                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+                sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s tag"
+            }
+            post {
+                always {
+                    sh "./gradlew dockerClean"
+                }
+            }
+        }
+
+        stage ("promote") {
+            when {
+                expression { return params.PROMOTE_ARTIFACT }
+            }
+            steps {
+                sh "${PYTHON} ${VENV_BIN}/promote_artifact -t maven -g ${params.GIT_TAG}"
+            }
+        }
+    }
+    post {
+        always {
+            this.notifyBB(currentBuild.result)
+        }
+        cleanup {
+            deleteDir()
+        }
+    }
 }
 
-def notifyBuildOnSlack(String buildStatus = 'STARTED', Boolean is_release) {
-    // build status of null means successful
-    buildStatus =  buildStatus ?: 'SUCCESS'
-    buildType = is_release ? 'RELEASE' : 'SNAPSHOT'
+def notifyBB(String state) {
+    // on success, result is null
+    state = state ?: "SUCCESS"
 
-    // Default values
-    def subject = "${buildStatus} ${buildType}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-    def summary = "${subject} (${env.BUILD_URL})"
-
-    // Override default values based on build status
-    if (buildStatus == 'SUCCESS') {
-        colorCode = is_release ? '#008000' : '#00FF00'
-    } else {
-        colorCode = is_release ? '#800000' : '#FF0000'
+    if (state == "SUCCESS" || state == "FAILURE") {
+        currentBuild.result = state
     }
 
-    // Send notifications
-    slackSend (color: colorCode, message: summary)
+    notifyBitbucket commitSha1: "${GIT_COMMIT}",
+            credentialsId: "aea50792-dda8-40e4-a683-79e8c83e72a6",
+            disableInprogressNotification: false,
+            considerUnstableAsSuccess: true,
+            ignoreUnverifiedSSLPeer: false,
+            includeBuildNumberInKey: false,
+            prependParentProjectKey: false,
+            projectKey: "SW",
+            stashServerBaseUrl: "https://aicsbitbucket.corp.alleninstitute.org"
 }
