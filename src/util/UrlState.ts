@@ -2,6 +2,11 @@ import {
     castArray,
     map,
     reduce,
+    isBoolean,
+    isEmpty,
+    isNaN,
+    isNil,
+    isString,
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -19,12 +24,12 @@ import {
 import { SelectionStateBranch } from "../state/selection/types";
 
 export enum URLSearchParam {
-    cellSelectedFor3D,
-    colorBy,
-    plotByOnX,
-    plotByOnY,
-    selectedPoint,
-    showClusters,
+    cellSelectedFor3D = "cellSelectedFor3D",
+    colorBy = "colorBy",
+    plotByOnX = "plotByOnX",
+    plotByOnY = "plotByOnY",
+    selectedPoint = "selectedPoint",
+    showClusters = "showClusters",
 }
 
 type URLSearchParamValue = string | number | boolean | string[] | number[];
@@ -83,7 +88,7 @@ export default class UrlState {
     public toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>) {
         const initial: URLSearchParamMap = {};
         return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
-            if (this.stateToUrlParamMap.hasOwnProperty(selectionStateKey)) {
+            if (this.stateToUrlParamMap.hasOwnProperty(selectionStateKey) && this.valueIsMeaningfulToMarshall(selectionStateValue)) {
                 return {
                     ...accum,
                     ...this.stateToUrlParamMap[selectionStateKey](selectionStateValue),
@@ -91,5 +96,21 @@ export default class UrlState {
             }
             return accum;
         }, initial);
+    }
+
+    private valueIsMeaningfulToMarshall(selection: any): boolean {
+        /**
+         * Return false if value is not a boolean and it is an empty array, empty string, NaN, undefined, or null
+         * Else, return true
+         */
+        if (isBoolean(selection)) {
+            return true;
+        }
+
+        if (Array.isArray(selection) || isString(selection)) {
+            return !isEmpty(selection);
+        }
+
+        return !isNaN(selection) && !isNil(selection);
     }
 }

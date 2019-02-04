@@ -13,6 +13,12 @@ import {
 } from "../../state/selection/actions";
 
 import UrlState, { URLSearchParam } from "../UrlState";
+import {
+    INITIAL_COLOR_BY,
+    INITIAL_COLORS,
+    INITIAL_PLOT_BY_ON_X,
+    INITIAL_PLOT_BY_ON_Y
+} from "../../state/selection/constants";
 
 describe("UrlState utility class", () => {
     let urlState: UrlState;
@@ -62,6 +68,42 @@ describe("UrlState utility class", () => {
     });
 
     describe("toUrlSearchParameterMap", () => {
+        it("re-maps app state to a key:value object", () => {
+            const selections = {
+                cellSelectedFor3D: 10,
+                colorBy: INITIAL_COLOR_BY,
+                selectedPoints: [1, 3, 5],
+                showClusters: false,
+                plotByOnX: INITIAL_PLOT_BY_ON_X,
+                plotByOnY: INITIAL_PLOT_BY_ON_Y,
+            };
 
+            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+                [URLSearchParam.cellSelectedFor3D]: 10,
+                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
+                [URLSearchParam.selectedPoint]: [1, 3, 5],
+                [URLSearchParam.showClusters]: false,
+                [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
+                [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+            });
+        });
+
+        it("omits values that are not meaningful to include in the URL", () => {
+            const selections = {
+                cellSelectedFor3D: null,
+                colorBy: INITIAL_COLOR_BY,
+                selectedPoints: [],
+                showClusters: false,
+                plotByOnX: INITIAL_PLOT_BY_ON_X,
+                plotByOnY: INITIAL_PLOT_BY_ON_Y,
+            };
+
+            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
+                [URLSearchParam.showClusters]: false,
+                [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
+                [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+            });
+        });
     });
 });
