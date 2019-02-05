@@ -11,14 +11,13 @@ import {
     selectPoint,
     toggleShowClusters,
 } from "../../state/selection/actions";
-
-import UrlState, { URLSearchParam } from "../UrlState";
 import {
     INITIAL_COLOR_BY,
-    INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y
 } from "../../state/selection/constants";
+
+import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
     let urlState: UrlState;
@@ -30,7 +29,7 @@ describe("UrlState utility class", () => {
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
             expect(urlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: 2
+                [URLSearchParam.cellSelectedFor3D]: 2,
             }))
                 .to.be.an("array")
                 .of.length(1)
@@ -72,19 +71,19 @@ describe("UrlState utility class", () => {
             const selections = {
                 cellSelectedFor3D: 10,
                 colorBy: INITIAL_COLOR_BY,
-                selectedPoints: [1, 3, 5],
-                showClusters: false,
                 plotByOnX: INITIAL_PLOT_BY_ON_X,
                 plotByOnY: INITIAL_PLOT_BY_ON_Y,
+                selectedPoints: [1, 3, 5],
+                showClusters: false,
             };
 
             expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: 10,
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
-                [URLSearchParam.selectedPoint]: [1, 3, 5],
-                [URLSearchParam.showClusters]: false,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+                [URLSearchParam.selectedPoint]: [1, 3, 5],
+                [URLSearchParam.showClusters]: false,
             });
         });
 
@@ -92,17 +91,17 @@ describe("UrlState utility class", () => {
             const selections = {
                 cellSelectedFor3D: null,
                 colorBy: INITIAL_COLOR_BY,
-                selectedPoints: [],
-                showClusters: false,
                 plotByOnX: INITIAL_PLOT_BY_ON_X,
                 plotByOnY: INITIAL_PLOT_BY_ON_Y,
+                selectedPoints: [],
+                showClusters: false,
             };
 
             expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
-                [URLSearchParam.showClusters]: false,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+                [URLSearchParam.showClusters]: false,
             });
         });
     });

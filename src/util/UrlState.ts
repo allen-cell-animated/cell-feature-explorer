@@ -1,12 +1,12 @@
 import {
     castArray,
-    map,
-    reduce,
     isBoolean,
     isEmpty,
     isNaN,
     isNil,
     isString,
+    map,
+    reduce,
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -55,9 +55,9 @@ export default class UrlState {
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
         [URLSearchParam.selectedPoint]: (selection) => {
             if (Array.isArray(selection)) {
-                return map<number | string, AnyAction>(selection, (point) => selectPoint(Number(point)))
+                return map<number | string, AnyAction>(selection, (point) => selectPoint(Number(point)));
             }
-            return selectPoint(Number(selection))
+            return selectPoint(Number(selection));
         },
         [URLSearchParam.showClusters]: (showClusters) => toggleShowClusters(Boolean(showClusters)),
     };
@@ -88,7 +88,10 @@ export default class UrlState {
     public toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>) {
         const initial: URLSearchParamMap = {};
         return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
-            if (this.stateToUrlParamMap.hasOwnProperty(selectionStateKey) && this.valueIsMeaningfulToMarshall(selectionStateValue)) {
+            if (
+                this.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
+                this.valueIsMeaningfulToMarshall(selectionStateValue)
+            ) {
                 return {
                     ...accum,
                     ...this.stateToUrlParamMap[selectionStateKey](selectionStateValue),
