@@ -64,6 +64,16 @@ describe("UrlState utility class", () => {
         it("maps an empty obj of URL params to an empty arr of redux actions", () => {
             expect(urlState.toReduxActions({})).to.eql([]);
         });
+
+        it("ignores search params that are not explicitly configured", () => {
+            expect(urlState.toReduxActions({
+                [URLSearchParam.cellSelectedFor3D]: 2,
+                "superFakeMadeUpUrlParam": "superFakeMadeUpValue",
+            }))
+                .to.be.an("array")
+                .of.length(1)
+                .and.to.have.deep.members([selectCellFor3DViewer(2)]);
+        });
     });
 
     describe("toUrlSearchParameterMap", () => {
@@ -102,6 +112,17 @@ describe("UrlState utility class", () => {
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
                 [URLSearchParam.showClusters]: false,
+            });
+        });
+
+        it("omits values that are not explicitly configured", () => {
+            const selections = {
+                colorBy: INITIAL_COLOR_BY,
+                fakeSelectionKey: "superFake",
+            };
+
+            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
             });
         });
     });
