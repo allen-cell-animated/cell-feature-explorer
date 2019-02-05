@@ -68,7 +68,7 @@ describe("UrlState utility class", () => {
         it("ignores search params that are not explicitly configured", () => {
             expect(urlState.toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: 2,
-                "superFakeMadeUpUrlParam": "superFakeMadeUpValue",
+                superFakeMadeUpUrlParam: "superFakeMadeUpValue",
             }))
                 .to.be.an("array")
                 .of.length(1)
