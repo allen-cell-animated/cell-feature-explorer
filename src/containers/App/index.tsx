@@ -100,6 +100,7 @@ class App extends React.Component<AppProps, {}> {
                         collapsed={galleryCollapsed}
                         onCollapse={this.toggleGallery}
                         defaultCollapsed={true}
+                        collapsedWidth={100}
                         className={styles.sider}
                         reverseArrow={true}
                     >

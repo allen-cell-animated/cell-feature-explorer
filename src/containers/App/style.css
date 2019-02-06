@@ -34,10 +34,14 @@
 .sider {
     background-color: #4b4b4bd1;
     height: 100vh;
-    overflow: auto;
     position: fixed;
     right: 0;
     z-index: 3000;
+    padding-bottom: 0;
+}
+
+.sider :global(.ant-layout-sider-children) {
+    overflow: scroll;
 }
 
 :global(.ant-collapse),
@@ -48,10 +52,22 @@
     border-radius: 0;
 }
 
-:global(.ant-layout-sider-trigger) {
-    background: var(--light-gray);
-}
-
 .color-menu :global(.ant-layout-sider-trigger) {
     position: inherit;
 }
+
+.sider :global(.ant-layout-sider-trigger) {
+    width: 20px !important;
+    height: 100%;
+    position: absolute;
+    left: -20px;
+    top: 0px;
+    background-color: var(--header-gray);
+    border-left: 0.5px solid var(--border-gray);
+    & i {
+        position: absolute;
+        top: 50%;
+        left: 3.5px;
+    }
+}
+
