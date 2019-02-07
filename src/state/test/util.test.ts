@@ -118,7 +118,7 @@ describe("state utilities", () => {
             }
         };
 
-        const batchingReducer = enableBatching<MockState>(reducer);
+        const batchingReducer = enableBatching<MockState>(reducer, initialState);
 
         it("applies all actions in a batched action to state", () => {
             const enableBeans = toggleBurritoIngredientCreator("beans", true);

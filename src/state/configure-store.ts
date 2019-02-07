@@ -1,4 +1,5 @@
 import axios from "axios";
+import { merge } from "lodash";
 import {
     applyMiddleware,
     combineReducers,
@@ -10,6 +11,7 @@ import { BASE_API_URL } from "../constants";
 
 import {
     enableBatching,
+    initialState,
     metadata,
     selection,
     State,
@@ -30,13 +32,16 @@ const reduxLogicDependencies = {
     httpClient: axios,
 };
 
-export default function createReduxStore(initialState?: State) {
-    const logicMiddleware = createLogicMiddleware(logics, reduxLogicDependencies);
-    const middleware = applyMiddleware(logicMiddleware);
-    const rootReducer = enableBatching<State>(combineReducers(reducers));
+export default function createReduxStore(preloadedState?: Partial<State>) {
+    const logicMiddleware = createLogicMiddleware(logics);
+    logicMiddleware.addDeps(reduxLogicDependencies);
 
-    if (initialState) {
-        return createStore(rootReducer, initialState, middleware);
+    const middleware = applyMiddleware(logicMiddleware);
+    const rootReducer = enableBatching<State>(combineReducers(reducers), initialState);
+
+    if (preloadedState) {
+        const mergedState = merge({}, initialState, preloadedState);
+        return createStore(rootReducer, mergedState, middleware);
     }
 
     return createStore(rootReducer, middleware);

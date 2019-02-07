@@ -47,14 +47,15 @@ function actionIsBatched(action: AnyAction): action is BatchedAction {
     return action && action.batch && Array.isArray(action.payload);
 }
 
-export function enableBatching<S>(reducer: Reducer<S>): Reducer<S> {
-    return function batchingReducer(state: S, action: AnyAction): S {
+export function enableBatching<S>(reducer: Reducer<S>, initialState: S): Reducer<S> {
+    return function batchingReducer(state: S = initialState, action: AnyAction): S {
         if (actionIsBatched(action)) {
             return action.payload.reduce(batchingReducer, state);
         }
         return reducer(state, action);
     };
 }
+
 export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string | number): FileInfo | undefined {
     return find(fileInfoArray, (datum: FileInfo) => Number(datum[CELL_ID_KEY]) === Number(cellId));
 }
