@@ -35,6 +35,26 @@ describe("UrlState utility class", () => {
                [Y_AXIS_ID]: "feature_y",
             });
         });
+
+        it("adds cellSelectedFor3D to list of selected points if not already there", () => {
+            expect(UrlState.toAppState({
+                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.selectedPoint]: ["1"],
+            })).to.deep.equal({
+                cellSelectedFor3D: 2,
+                selectedPoints: [2, 1],
+            });
+        });
+
+        it("does not duplicate cellSelectedFor3D in list of selected points if it is already there", () => {
+            expect(UrlState.toAppState({
+                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.selectedPoint]: ["2"],
+            })).to.deep.equal({
+                cellSelectedFor3D: 2,
+                selectedPoints: [2],
+            });
+        });
     });
 
     describe("toReduxActions", () => {

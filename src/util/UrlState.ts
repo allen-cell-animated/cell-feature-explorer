@@ -7,6 +7,7 @@ import {
     isNil,
     isString,
     map,
+    mergeWith,
     reduce,
 } from "lodash";
 import { AnyAction } from "redux";
@@ -43,7 +44,7 @@ interface URLSearchParamToActionCreatorMap {
 }
 
 interface URLSearchParamToStateMap {
-    [index: string]: (value: URLSearchParamValue) => { [key: string]: StateValue };
+    [index: string]: (value: URLSearchParamValue, collection: URLSearchParamMap) => { [key: string]: StateValue };
 }
 
 interface StateToUrlSearchParamMap {
@@ -55,10 +56,12 @@ export default class UrlState {
         const initial: Partial<SelectionStateBranch> = {};
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
            if (UrlState.urlParamToStateMap.hasOwnProperty(searchParamKey)) {
-               return {
-                   ...accum,
-                   ...(UrlState.urlParamToStateMap[searchParamKey](searchParamValue)),
-               };
+               const result = UrlState.urlParamToStateMap[searchParamKey](searchParamValue, searchParameterMap);
+               return mergeWith({}, accum, result, (accumValue, resultValue) => {
+                   if (Array.isArray(accumValue)) {
+                       return accumValue.concat(resultValue);
+                   }
+               });
            }
            return accum;
         }, initial);
@@ -120,7 +123,15 @@ export default class UrlState {
     };
 
     private static urlParamToStateMap: URLSearchParamToStateMap = {
-        [URLSearchParam.cellSelectedFor3D]: (cellId) => ({ cellSelectedFor3D: Number(cellId) }),
+        [URLSearchParam.cellSelectedFor3D]: (cellId, params) => {
+            const base = { cellSelectedFor3D: Number(cellId) };
+
+            if (!includes(castArray(params[URLSearchParam.selectedPoint]), cellId)) {
+                Object.assign(base, { selectedPoints: [Number(cellId)] });
+            }
+
+            return base;
+        },
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
