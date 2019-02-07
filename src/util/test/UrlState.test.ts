@@ -40,11 +40,30 @@ describe("UrlState utility class", () => {
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
             expect(UrlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.plotByOnX]: "feature_x",
             }))
                 .to.be.an("array")
                 .of.length(1)
-                .and.to.have.deep.members([selectCellFor3DViewer(2)]);
+                .and.to.have.deep.members([changeAxis(X_AXIS_ID, "feature_x")]);
+        });
+
+        it("adds cellSelectedFor3D to list of selected points if not already there", () => {
+            expect(UrlState.toReduxActions({
+                [URLSearchParam.cellSelectedFor3D]: "2",
+            }))
+                .to.be.an("array")
+                .of.length(2)
+                .and.to.have.deep.members([selectPoint(2), selectCellFor3DViewer(2)]);
+        });
+
+        it("does not duplicate cellSelectedFor3D in list of selected points if it is already there", () => {
+            expect(UrlState.toReduxActions({
+                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.selectedPoint]: ["2"],
+            }))
+                .to.be.an("array")
+                .of.length(2)
+                .and.to.have.deep.members([selectPoint(2), selectCellFor3DViewer(2)]);
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
@@ -76,12 +95,12 @@ describe("UrlState utility class", () => {
 
         it("ignores search params that are not explicitly configured", () => {
             expect(UrlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.colorBy]: "feature_z",
                 superFakeMadeUpUrlParam: "superFakeMadeUpValue",
             }))
                 .to.be.an("array")
                 .of.length(1)
-                .and.to.have.deep.members([selectCellFor3DViewer(2)]);
+                .and.to.have.deep.members([changeAxis(COLOR_BY_SELECTOR, "feature_z")]);
         });
     });
 

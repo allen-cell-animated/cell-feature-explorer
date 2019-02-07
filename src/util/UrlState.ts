@@ -1,5 +1,6 @@
 import {
     castArray,
+    includes,
     isBoolean,
     isEmpty,
     isNaN,
@@ -38,7 +39,7 @@ export interface URLSearchParamMap {
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: URLSearchParamValue) => AnyAction | AnyAction[];
+    [index: string]: (value: URLSearchParamValue, collection: URLSearchParamMap) => AnyAction | AnyAction[];
 }
 
 interface URLSearchParamToStateMap {
@@ -67,7 +68,7 @@ export default class UrlState {
         const initial: AnyAction[] = [];
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
             if (UrlState.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
-                const action = UrlState.urlParamToActionCreatorMap[searchParamKey](searchParamValue);
+                const action = UrlState.urlParamToActionCreatorMap[searchParamKey](searchParamValue, searchParameterMap);
 
                 if (action) {
                     return [...accum, ...castArray(action)];
@@ -94,7 +95,16 @@ export default class UrlState {
     }
 
     private static urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
-        [URLSearchParam.cellSelectedFor3D]: (cellId) => selectCellFor3DViewer(Number(cellId)),
+        [URLSearchParam.cellSelectedFor3D]: (cellId, params) => {
+            // add this cell to the list of selected points if it does not already exist
+            const selectCellFor3DAction = selectCellFor3DViewer(Number(cellId));
+            const selectedPoints = castArray(params[URLSearchParam.selectedPoint]);
+            if (!includes(selectedPoints, cellId)) {
+                return [selectPoint(Number(cellId)), selectCellFor3DAction];
+            }
+
+            return selectCellFor3DAction;
+        },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
