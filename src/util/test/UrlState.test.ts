@@ -20,71 +20,10 @@ import {
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
-    describe("urlParamsHaveChanged", () => {
-        it("returns true before it is expected to have anything to compare against", () => {
-            const nextParams = {
-                [URLSearchParam.cellSelectedFor3D]: 2,
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
-            };
-
-            expect(new UrlState().urlParamsHaveChanged({}, nextParams)).to.equal(true);
-        });
-
-        it("returns true when compared against initialized url params", () => {
-            const prevParams = {
-                [URLSearchParam.colorBy]: "feature_z",
-            };
-
-            const nextParams = {
-                [URLSearchParam.colorBy]: "feature_A",
-            };
-
-            expect(new UrlState().urlParamsHaveChanged(prevParams, nextParams)).to.equal(true);
-        });
-
-        it("returns true when compared against prev params stored from a toReduxActions call", () => {
-            const prevParams = {
-                [URLSearchParam.colorBy]: "feature_z",
-            };
-
-            const nextParams = {
-                [URLSearchParam.colorBy]: "feature_A",
-            };
-
-            const urlState = new UrlState();
-            urlState.toReduxActions(prevParams);
-
-            expect(urlState.urlParamsHaveChanged(prevParams, nextParams)).to.equal(true);
-        });
-
-        it("returns false when params have not deeply changed", () => {
-            const prevParams = {
-                [URLSearchParam.cellSelectedFor3D]: 2,
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
-            };
-
-            const nextParams = {
-                [URLSearchParam.cellSelectedFor3D]: 2,
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
-            };
-
-            expect(new UrlState().urlParamsHaveChanged(prevParams, nextParams)).to.equal(false);
-        });
-    });
-
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
             expect(new UrlState().toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.cellSelectedFor3D]: "2",
             }))
                 .to.be.an("array")
                 .of.length(1)
@@ -93,11 +32,11 @@ describe("UrlState utility class", () => {
 
         it("maps multiple key value pairs to multiple redux actions", () => {
             expect(new UrlState().toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.cellSelectedFor3D]: "2",
                 [URLSearchParam.plotByOnX]: "feature_x",
                 [URLSearchParam.plotByOnY]: "feature_y",
                 [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
+                [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
             }))
                 .to.be.an("array")
                 .of.length(9)
@@ -120,7 +59,7 @@ describe("UrlState utility class", () => {
 
         it("ignores search params that are not explicitly configured", () => {
             expect(new UrlState().toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.cellSelectedFor3D]: "2",
                 superFakeMadeUpUrlParam: "superFakeMadeUpValue",
             }))
                 .to.be.an("array")

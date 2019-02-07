@@ -2,7 +2,6 @@ import {
     castArray,
     isBoolean,
     isEmpty,
-    isEqual,
     isNaN,
     isNil,
     isString,
@@ -31,22 +30,23 @@ export enum URLSearchParam {
     selectedPoint = "selectedPoint",
 }
 
-type Value = string | number | string[] | number[];
+type StateValue = string | number | number[] | boolean;
+type URLSearchParamValue = string | string[];
 
 export interface URLSearchParamMap {
-    [index: string]: Value;
+    [index: string]: URLSearchParamValue;
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: any) => AnyAction | AnyAction[] | undefined;
+    [index: string]: (value: URLSearchParamValue) => AnyAction | AnyAction[] | undefined;
 }
 
 interface URLSearchParamToStateMap {
-    [index: string]: (value: any) => { [key: string]: any };
+    [index: string]: (value: URLSearchParamValue) => { [key: string]: StateValue };
 }
 
 interface StateToUrlSearchParamMap {
-    [index: string]: (value: any) => { [key: string]: any };
+    [index: string]: (value: StateValue) => { [key: string]: URLSearchParamValue };
 }
 
 export default class UrlState {
@@ -65,25 +65,19 @@ export default class UrlState {
 
     private urlParamToStateMap: URLSearchParamToStateMap = {
         [URLSearchParam.cellSelectedFor3D]: (cellId) => ({ cellSelectedFor3D: Number(cellId) }),
-        [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: colorBy }),
-        [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: plotByOnX }),
-        [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: plotByOnY }),
+        [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
+        [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
+        [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
         [URLSearchParam.selectedPoint]: (selection) => ({ selectedPoints: map(castArray(selection), Number) }),
     };
 
     private stateToUrlParamMap: StateToUrlSearchParamMap = {
-        cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: value }),
-        [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: value }),
-        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: value }),
-        [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: value }),
-        [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: value }),
+        cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
+        [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
+        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as number[]), String) }),
+        [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
+        [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
     };
-
-    public urlParamsHaveChanged(prevParams: URLSearchParamMap, nextParams: URLSearchParamMap): boolean {
-        return Object.getOwnPropertyNames(this.urlParamToActionCreatorMap).some((key) =>
-            !isEqual(prevParams[key], nextParams[key])
-        );
-    }
 
     public toAppState(searchParameterMap: URLSearchParamMap): Partial<SelectionStateBranch> {
         const initial: Partial<SelectionStateBranch> = {};
@@ -112,12 +106,12 @@ export default class UrlState {
         }, initial);
     }
 
-    public toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>) {
+    public toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>): URLSearchParamMap {
         const initial: URLSearchParamMap = {};
         return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
             if (
                 this.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
-                this.valueIsMeaningfulToMarshall(selectionStateValue)
+                UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
             ) {
                 return {
                     ...accum,
@@ -128,7 +122,7 @@ export default class UrlState {
         }, initial);
     }
 
-    private valueIsMeaningfulToMarshall(selection: any): boolean {
+    private static valueIsMeaningfulToSerialize(selection: any): boolean {
         /**
          * Return false if value is not a boolean and it is an empty array, empty string, NaN, undefined, or null
          * Else, return true
