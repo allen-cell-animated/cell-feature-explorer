@@ -20,15 +20,70 @@ import {
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
-    let urlState: UrlState;
+    describe("urlParamsHaveChanged", () => {
+        it("returns true before it is expected to have anything to compare against", () => {
+            const nextParams = {
+                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.plotByOnX]: "feature_x",
+                [URLSearchParam.plotByOnY]: "feature_y",
+                [URLSearchParam.colorBy]: "feature_z",
+                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
+            };
 
-    beforeEach(() => {
-       urlState = new UrlState();
+            expect(new UrlState().urlParamsHaveChanged({}, nextParams)).to.equal(true);
+        });
+
+        it("returns true when compared against initialized url params", () => {
+            const prevParams = {
+                [URLSearchParam.colorBy]: "feature_z",
+            };
+
+            const nextParams = {
+                [URLSearchParam.colorBy]: "feature_A",
+            };
+
+            expect(new UrlState().urlParamsHaveChanged(prevParams, nextParams)).to.equal(true);
+        });
+
+        it("returns true when compared against prev params stored from a toReduxActions call", () => {
+            const prevParams = {
+                [URLSearchParam.colorBy]: "feature_z",
+            };
+
+            const nextParams = {
+                [URLSearchParam.colorBy]: "feature_A",
+            };
+
+            const urlState = new UrlState();
+            urlState.toReduxActions(prevParams);
+
+            expect(urlState.urlParamsHaveChanged(prevParams, nextParams)).to.equal(true);
+        });
+
+        it("returns false when params have not deeply changed", () => {
+            const prevParams = {
+                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.plotByOnX]: "feature_x",
+                [URLSearchParam.plotByOnY]: "feature_y",
+                [URLSearchParam.colorBy]: "feature_z",
+                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
+            };
+
+            const nextParams = {
+                [URLSearchParam.cellSelectedFor3D]: 2,
+                [URLSearchParam.plotByOnX]: "feature_x",
+                [URLSearchParam.plotByOnY]: "feature_y",
+                [URLSearchParam.colorBy]: "feature_z",
+                [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
+            };
+
+            expect(new UrlState().urlParamsHaveChanged(prevParams, nextParams)).to.equal(false);
+        });
     });
 
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
-            expect(urlState.toReduxActions({
+            expect(new UrlState().toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: 2,
             }))
                 .to.be.an("array")
@@ -37,22 +92,20 @@ describe("UrlState utility class", () => {
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
-            expect(urlState.toReduxActions({
+            expect(new UrlState().toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: 2,
                 [URLSearchParam.plotByOnX]: "feature_x",
                 [URLSearchParam.plotByOnY]: "feature_y",
                 [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.showClusters]: true,
                 [URLSearchParam.selectedPoint]: [1, 2, 3, 4, 5],
             }))
                 .to.be.an("array")
-                .of.length(10)
+                .of.length(9)
                 .and.to.have.deep.members([
                     selectCellFor3DViewer(2),
                     changeAxis(X_AXIS_ID, "feature_x"),
                     changeAxis(Y_AXIS_ID, "feature_y"),
                     changeAxis(COLOR_BY_SELECTOR, "feature_z"),
-                    toggleShowClusters(true),
                     selectPoint(1),
                     selectPoint(2),
                     selectPoint(3),
@@ -62,11 +115,11 @@ describe("UrlState utility class", () => {
         });
 
         it("maps an empty obj of URL params to an empty arr of redux actions", () => {
-            expect(urlState.toReduxActions({})).to.eql([]);
+            expect(new UrlState().toReduxActions({})).to.eql([]);
         });
 
         it("ignores search params that are not explicitly configured", () => {
-            expect(urlState.toReduxActions({
+            expect(new UrlState().toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: 2,
                 superFakeMadeUpUrlParam: "superFakeMadeUpValue",
             }))
@@ -84,16 +137,14 @@ describe("UrlState utility class", () => {
                 plotByOnX: INITIAL_PLOT_BY_ON_X,
                 plotByOnY: INITIAL_PLOT_BY_ON_Y,
                 selectedPoints: [1, 3, 5],
-                showClusters: false,
             };
 
-            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: 10,
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
                 [URLSearchParam.selectedPoint]: [1, 3, 5],
-                [URLSearchParam.showClusters]: false,
             });
         });
 
@@ -104,14 +155,12 @@ describe("UrlState utility class", () => {
                 plotByOnX: INITIAL_PLOT_BY_ON_X,
                 plotByOnY: INITIAL_PLOT_BY_ON_Y,
                 selectedPoints: [],
-                showClusters: false,
             };
 
-            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
-                [URLSearchParam.showClusters]: false,
             });
         });
 
@@ -121,7 +170,7 @@ describe("UrlState utility class", () => {
                 fakeSelectionKey: "superFake",
             };
 
-            expect(urlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
             });
         });

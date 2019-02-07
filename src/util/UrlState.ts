@@ -2,6 +2,7 @@ import {
     castArray,
     isBoolean,
     isEmpty,
+    isEqual,
     isNaN,
     isNil,
     isString,
@@ -19,7 +20,6 @@ import {
     changeAxis,
     selectCellFor3DViewer,
     selectPoint,
-    toggleShowClusters,
 } from "../state/selection/actions";
 import { SelectionStateBranch } from "../state/selection/types";
 
@@ -29,22 +29,24 @@ export enum URLSearchParam {
     plotByOnX = "plotByOnX",
     plotByOnY = "plotByOnY",
     selectedPoint = "selectedPoint",
-    showClusters = "showClusters",
 }
 
-type URLSearchParamValue = string | number | boolean | string[] | number[];
+type Value = string | number | string[] | number[];
 
 export interface URLSearchParamMap {
-    [index: string]: URLSearchParamValue;
+    [index: string]: Value;
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: URLSearchParamValue, searchParamMap: URLSearchParamMap) =>
-        AnyAction | AnyAction[] | undefined;
+    [index: string]: (value: any) => AnyAction | AnyAction[] | undefined;
+}
+
+interface URLSearchParamToStateMap {
+    [index: string]: (value: any) => { [key: string]: any };
 }
 
 interface StateToUrlSearchParamMap {
-    [index: string]: (value: any) => { [key: string]: URLSearchParamValue };
+    [index: string]: (value: any) => { [key: string]: any };
 }
 
 export default class UrlState {
@@ -59,23 +61,48 @@ export default class UrlState {
             }
             return selectPoint(Number(selection));
         },
-        [URLSearchParam.showClusters]: (showClusters) => toggleShowClusters(Boolean(showClusters)),
+    };
+
+    private urlParamToStateMap: URLSearchParamToStateMap = {
+        [URLSearchParam.cellSelectedFor3D]: (cellId) => ({ cellSelectedFor3D: Number(cellId) }),
+        [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: colorBy }),
+        [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: plotByOnX }),
+        [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: plotByOnY }),
+        [URLSearchParam.selectedPoint]: (selection) => ({ selectedPoints: map(castArray(selection), Number) }),
     };
 
     private stateToUrlParamMap: StateToUrlSearchParamMap = {
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: value }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: value }),
         selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: value }),
-        showClusters: (value) => ({ [URLSearchParam.showClusters]: value }),
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: value }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: value }),
     };
+
+    public urlParamsHaveChanged(prevParams: URLSearchParamMap, nextParams: URLSearchParamMap): boolean {
+        return Object.getOwnPropertyNames(this.urlParamToActionCreatorMap).some((key) =>
+            !isEqual(prevParams[key], nextParams[key])
+        );
+    }
+
+    public toAppState(searchParameterMap: URLSearchParamMap): Partial<SelectionStateBranch> {
+        const initial: Partial<SelectionStateBranch> = {};
+        return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
+           if (this.urlParamToStateMap.hasOwnProperty(searchParamKey)) {
+               return {
+                   ...accum,
+                   ...(this.urlParamToStateMap[searchParamKey](searchParamValue)),
+               };
+           }
+           return accum;
+        }, initial);
+    }
 
     public toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
         const initial: AnyAction[] = [];
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
             if (this.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
-                const action = this.urlParamToActionCreatorMap[searchParamKey](searchParamValue, searchParameterMap);
+                const action = this.urlParamToActionCreatorMap[searchParamKey](searchParamValue);
 
                 if (action) {
                     return [...accum, ...castArray(action)];
