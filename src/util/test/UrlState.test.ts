@@ -9,7 +9,6 @@ import {
     changeAxis,
     selectCellFor3DViewer,
     selectPoint,
-    toggleShowClusters,
 } from "../../state/selection/actions";
 import {
     INITIAL_COLOR_BY,
@@ -20,9 +19,27 @@ import {
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
+    describe("toAppState", () => {
+        it("maps URL search params directly to the shape of the selection state branch", () => {
+            expect(UrlState.toAppState({
+                [URLSearchParam.cellSelectedFor3D]: "2",
+                [URLSearchParam.plotByOnX]: "feature_x",
+                [URLSearchParam.plotByOnY]: "feature_y",
+                [URLSearchParam.colorBy]: "feature_z",
+                [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+            })).to.deep.equal({
+               cellSelectedFor3D: 2,
+               [COLOR_BY_SELECTOR]: "feature_z",
+               selectedPoints: [1, 2, 3, 4, 5],
+               [X_AXIS_ID]: "feature_x",
+               [Y_AXIS_ID]: "feature_y",
+            });
+        });
+    });
+
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
-            expect(new UrlState().toReduxActions({
+            expect(UrlState.toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: "2",
             }))
                 .to.be.an("array")
@@ -31,7 +48,7 @@ describe("UrlState utility class", () => {
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
-            expect(new UrlState().toReduxActions({
+            expect(UrlState.toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: "2",
                 [URLSearchParam.plotByOnX]: "feature_x",
                 [URLSearchParam.plotByOnY]: "feature_y",
@@ -54,11 +71,11 @@ describe("UrlState utility class", () => {
         });
 
         it("maps an empty obj of URL params to an empty arr of redux actions", () => {
-            expect(new UrlState().toReduxActions({})).to.eql([]);
+            expect(UrlState.toReduxActions({})).to.eql([]);
         });
 
         it("ignores search params that are not explicitly configured", () => {
-            expect(new UrlState().toReduxActions({
+            expect(UrlState.toReduxActions({
                 [URLSearchParam.cellSelectedFor3D]: "2",
                 superFakeMadeUpUrlParam: "superFakeMadeUpValue",
             }))
@@ -78,12 +95,12 @@ describe("UrlState utility class", () => {
                 selectedPoints: [1, 3, 5],
             };
 
-            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
-                [URLSearchParam.cellSelectedFor3D]: 10,
+            expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+                [URLSearchParam.cellSelectedFor3D]: "10",
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
-                [URLSearchParam.selectedPoint]: [1, 3, 5],
+                [URLSearchParam.selectedPoint]: ["1", "3", "5"],
             });
         });
 
@@ -96,7 +113,7 @@ describe("UrlState utility class", () => {
                 selectedPoints: [],
             };
 
-            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
+            expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
@@ -109,7 +126,7 @@ describe("UrlState utility class", () => {
                 fakeSelectionKey: "superFake",
             };
 
-            expect(new UrlState().toUrlSearchParameterMap(selections)).to.deep.equal({
+            expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
             });
         });

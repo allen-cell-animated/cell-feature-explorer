@@ -18,8 +18,7 @@ import {
 import { UrlState } from "./util";
 
 const pram = new Pram(createHistory());
-const urlState = new UrlState();
-const store = createReduxStore({ selection: urlState.toAppState(pram.getParams())});
+const store = createReduxStore({ selection: UrlState.toAppState(pram.getParams())});
 
 // in the case that this application is run within an iframe, setup communication between this app
 // and it host page to capture any URL search params that are intended to modify the state of this app
@@ -41,7 +40,7 @@ pram.onChange(function notifyHostFrameOfURLChange(urlParams) {
 // keep the URL in sync with the state of this app
 store.subscribe(function updateURL() {
     const state = store.getState();
-    pram.replaceParams(urlState.toUrlSearchParameterMap(state.selection));
+    pram.replaceParams(UrlState.toUrlSearchParameterMap(state.selection));
 });
 
 render(

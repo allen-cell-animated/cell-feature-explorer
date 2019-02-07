@@ -38,7 +38,7 @@ export interface URLSearchParamMap {
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: URLSearchParamValue) => AnyAction | AnyAction[] | undefined;
+    [index: string]: (value: URLSearchParamValue) => AnyAction | AnyAction[];
 }
 
 interface URLSearchParamToStateMap {
@@ -50,7 +50,50 @@ interface StateToUrlSearchParamMap {
 }
 
 export default class UrlState {
-    private urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
+    public static toAppState(searchParameterMap: URLSearchParamMap): Partial<SelectionStateBranch> {
+        const initial: Partial<SelectionStateBranch> = {};
+        return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
+           if (UrlState.urlParamToStateMap.hasOwnProperty(searchParamKey)) {
+               return {
+                   ...accum,
+                   ...(UrlState.urlParamToStateMap[searchParamKey](searchParamValue)),
+               };
+           }
+           return accum;
+        }, initial);
+    }
+
+    public static toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
+        const initial: AnyAction[] = [];
+        return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
+            if (UrlState.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
+                const action = UrlState.urlParamToActionCreatorMap[searchParamKey](searchParamValue);
+
+                if (action) {
+                    return [...accum, ...castArray(action)];
+                }
+            }
+            return accum;
+        }, initial);
+    }
+
+    public static toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>): URLSearchParamMap {
+        const initial: URLSearchParamMap = {};
+        return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
+            if (
+                UrlState.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
+                UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
+            ) {
+                return {
+                    ...accum,
+                    ...this.stateToUrlParamMap[selectionStateKey](selectionStateValue),
+                };
+            }
+            return accum;
+        }, initial);
+    }
+
+    private static urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
         [URLSearchParam.cellSelectedFor3D]: (cellId) => selectCellFor3DViewer(Number(cellId)),
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
@@ -63,7 +106,7 @@ export default class UrlState {
         },
     };
 
-    private urlParamToStateMap: URLSearchParamToStateMap = {
+    private static urlParamToStateMap: URLSearchParamToStateMap = {
         [URLSearchParam.cellSelectedFor3D]: (cellId) => ({ cellSelectedFor3D: Number(cellId) }),
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
@@ -71,56 +114,13 @@ export default class UrlState {
         [URLSearchParam.selectedPoint]: (selection) => ({ selectedPoints: map(castArray(selection), Number) }),
     };
 
-    private stateToUrlParamMap: StateToUrlSearchParamMap = {
+    private static stateToUrlParamMap: StateToUrlSearchParamMap = {
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
         selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as number[]), String) }),
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
     };
-
-    public toAppState(searchParameterMap: URLSearchParamMap): Partial<SelectionStateBranch> {
-        const initial: Partial<SelectionStateBranch> = {};
-        return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
-           if (this.urlParamToStateMap.hasOwnProperty(searchParamKey)) {
-               return {
-                   ...accum,
-                   ...(this.urlParamToStateMap[searchParamKey](searchParamValue)),
-               };
-           }
-           return accum;
-        }, initial);
-    }
-
-    public toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
-        const initial: AnyAction[] = [];
-        return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
-            if (this.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
-                const action = this.urlParamToActionCreatorMap[searchParamKey](searchParamValue);
-
-                if (action) {
-                    return [...accum, ...castArray(action)];
-                }
-            }
-            return accum;
-        }, initial);
-    }
-
-    public toUrlSearchParameterMap(selections: Partial<SelectionStateBranch>): URLSearchParamMap {
-        const initial: URLSearchParamMap = {};
-        return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
-            if (
-                this.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
-                UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
-            ) {
-                return {
-                    ...accum,
-                    ...this.stateToUrlParamMap[selectionStateKey](selectionStateValue),
-                };
-            }
-            return accum;
-        }, initial);
-    }
 
     private static valueIsMeaningfulToSerialize(selection: any): boolean {
         /**
