@@ -68,7 +68,10 @@ export default class UrlState {
         const initial: AnyAction[] = [];
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
             if (UrlState.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
-                const action = UrlState.urlParamToActionCreatorMap[searchParamKey](searchParamValue, searchParameterMap);
+                const action = UrlState.urlParamToActionCreatorMap[searchParamKey](
+                    searchParamValue,
+                    searchParameterMap
+                );
 
                 if (action) {
                     return [...accum, ...castArray(action)];
