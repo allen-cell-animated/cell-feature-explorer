@@ -128,7 +128,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is SelectPointAction => action.type === SELECT_POINT,
         perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
             ...state,
-            selectedPoints : [...state.selectedPoints, action.payload],
+            selectedPoints : uniq([...state.selectedPoints, action.payload]),
         }),
     },
     [DESELECT_ALL_POINTS]: {
