@@ -1,5 +1,4 @@
 import {
-    compact,
     filter,
     find,
     findIndex,
