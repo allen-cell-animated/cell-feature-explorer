@@ -161,11 +161,19 @@ export const getHoveredPointData = createSelector([getHoveredPointId, getFileInf
     return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
 });
 
+const getSelectedScatterPointsWithAvailableMetadata = createSelector([
+    getFileInfo,
+    getClickedScatterPoints,
+], (fileInfo: FileInfo[], clickedScatterPointIDs: number[]): number[] => {
+    const setOfAvailableCellIds = new Set(map(fileInfo, CELL_ID_KEY));
+    return filter(clickedScatterPointIDs, (id) => setOfAvailableCellIds.has(id));
+});
+
 export const getAnnotations = createSelector(
     [
         getMeasuredData,
         getFileInfo,
-        getClickedScatterPoints,
+        getSelectedScatterPointsWithAvailableMetadata,
         getPlotByOnX,
         getPlotByOnY,
         getHoveredCardId,
@@ -173,7 +181,7 @@ export const getAnnotations = createSelector(
     (
         measuredData: MeasuredFeatures[],
         fileInfo: FileInfo[],
-        clickedScatterPointIDs: string[],
+        clickedScatterPointIDs: number[],
         xaxis,
         yaxis,
         currentHoveredCellId

@@ -1,13 +1,12 @@
 import { AxiosResponse } from "axios";
 import {
+    isEmpty,
     keys,
     map,
     reduce,
     shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
-
-import { ReduxLogicDeps } from "../types";
 
 import {
     CELL_ID_KEY,
@@ -16,7 +15,7 @@ import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     PROTEIN_NAME_KEY,
-} from "../../constants/index";
+} from "../../constants";
 
 import {
     changeClusteringNumber,
@@ -24,7 +23,13 @@ import {
     selectPoint,
 } from "../selection/actions";
 import { CLUSTERING_MAP } from "../selection/constants";
+import {
+    getClickedScatterPoints,
+    getSelected3DCell,
+} from "../selection/selectors";
 import { ClusteringTypeChoices } from "../selection/types";
+import { ReduxLogicDeps } from "../types";
+import { batchActions } from "../util";
 
 import {
     receiveCellLineData,
@@ -114,8 +119,21 @@ const requestFeatureDataLogic = createLogic({
             })
             .then((metaDatum) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
-                dispatch(selectPoint(Number(metaDatum.file_info[CELL_ID_KEY])));
-                dispatch(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));
+                // BUT only if those selections have not been previously made (e.g., passed through URL params)
+                const state = getState();
+                const actions = [];
+
+                if (isEmpty(getClickedScatterPoints(state))) {
+                    actions.push(selectPoint(Number(metaDatum.file_info[CELL_ID_KEY])));
+                }
+
+                if (!getSelected3DCell(state)) {
+                    actions.push(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));
+                }
+
+                if (!isEmpty(actions)) {
+                    dispatch(batchActions(actions));
+                }
             })
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console

@@ -8,6 +8,7 @@ import { SinonStub } from "sinon";
 
 import {
     enableBatching,
+    initialState,
     metadata,
     selection,
     State,
@@ -30,13 +31,15 @@ const logics = [
     ...selection.logics,
 ];
 
-export function createReduxStore(initialState: State, reduxLogicDependencies: ReduxLogicDependencies) {
-    const logicMiddleware = createLogicMiddleware(logics, reduxLogicDependencies);
-    const middleware = applyMiddleware(logicMiddleware);
-    const rootReducer = enableBatching<State>(combineReducers(reducers));
+export function createReduxStore(preloadedState: State, reduxLogicDependencies: ReduxLogicDependencies) {
+    const logicMiddleware = createLogicMiddleware(logics);
+    logicMiddleware.addDeps(reduxLogicDependencies);
 
-    if (initialState) {
-        return createStore(rootReducer, initialState, middleware);
+    const middleware = applyMiddleware(logicMiddleware);
+    const rootReducer = enableBatching<State>(combineReducers(reducers), initialState);
+
+    if (preloadedState) {
+        return createStore(rootReducer, preloadedState, middleware);
     }
     return createStore(rootReducer, middleware);
 }
