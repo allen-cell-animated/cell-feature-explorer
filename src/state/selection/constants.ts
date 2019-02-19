@@ -79,7 +79,7 @@ export const INITIAL_SELECTION_COLORS = [
     "#ffed6f",
 ];
 
-export const CLUSTERING_MAP = (key: ClusteringTypeChoices): ClusteringNumberChoices => {
+export const CLUSTERING_MAP = (key: string): ClusteringNumberChoices => {
     const map: {[key: string]: ClusteringNumberChoices} = {
         [AGGLOMERATIVE_KEY]: CLUSTER_NUMBER_KEY,
         [DBSCAN_KEY]: CLUSTER_DISTANCE_KEY,

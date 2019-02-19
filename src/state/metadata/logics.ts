@@ -27,7 +27,9 @@ import {
     getClickedScatterPoints,
     getSelected3DCell,
 } from "../selection/selectors";
-import { ClusteringTypeChoices } from "../selection/types";
+import {
+    ChangeClusterNumberAction,
+} from "../selection/types";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -109,12 +111,14 @@ const requestFeatureDataLogic = createLogic({
                 }));
             })
             .then((metaData: MetaData[]): MetaData => {
-                dispatch((receiveMetadata(metaData)));
                 // set the clustering options based on the dataset
-                map(metaData[0].clusters, (value, clusteringName: ClusteringTypeChoices) => {
+                const changeClusterNumberActions = map(metaData[0].clusters,
+                    (value, clusteringName: string): ChangeClusterNumberAction => {
                     const initVal = keys(value)[Math.floor(keys(value).length / 2)];
-                    dispatch(changeClusteringNumber(CLUSTERING_MAP(clusteringName), initVal));
+                    return changeClusteringNumber(CLUSTERING_MAP(clusteringName), initVal);
                 });
+
+                dispatch(batchActions([...changeClusterNumberActions, receiveMetadata(metaData)]));
                 return metaData[0];
             })
             .then((metaDatum) => {
