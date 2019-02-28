@@ -12,6 +12,7 @@ import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
@@ -22,6 +23,7 @@ import {
 import {
     getClusterData,
     getFileInfo,
+    getFullCellLineDefs,
     getFullMetaDataArray,
     getMeasuredData,
     getProteinLabels,
@@ -224,9 +226,15 @@ export const getSelected3DCellCellLine = createSelector([getSelected3DCellFileIn
     }
 );
 
-export const getSelected3DCellLabeledStructure = createSelector([getSelected3DCellFileInfo],
+export const getSelected3DCellLabeledProtein = createSelector([getSelected3DCellFileInfo],
     (fileInfo: FileInfo | undefined): string => {
         return fileInfo ? fileInfo[PROTEIN_NAME_KEY] : "";
+    }
+);
+
+export const getSelected3DCellLabeledStructure = createSelector([getFullCellLineDefs, getSelected3DCellCellLine],
+    (cellLineDefs, cellLineId): string => {
+        return cellLineDefs[cellLineId] ? cellLineDefs[cellLineId][CELL_LINE_DEF_STRUCTURE_KEY] : "";
     }
 );
 
