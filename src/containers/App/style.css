@@ -26,11 +26,10 @@
     color: var(--text-gray);
 }
 
-
 .header-section {
-    border-top: 0.5px solid var(--dimgray);
     text-align: center;
     display: block;
+    border-top: 0.5px solid var(--dimgray);
     border-bottom: 0.5px solid var(--dimgray);
 }
 
