@@ -143,7 +143,7 @@ class App extends React.Component<AppProps, {}> {
                     <div className={styles.cellViewerContainer}>
                         <section className={styles.headerSection}>
                             <h2 className={styles.header}><Icon type="sync"/> 3D Viewer </h2>
-                            {selected3DCell && (
+                            {selected3DCell && selected3DCellStructureName && (
                                 <h4 className={styles.selectedInfo}>
                                     <span className={styles.label}>Viewing cell:</span> {selected3DCell},
                                     <span className={styles.label}> Protein (structure): </span>
