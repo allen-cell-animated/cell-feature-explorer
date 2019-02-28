@@ -1,5 +1,4 @@
 import {
-    Collapse,
     Icon,
     Layout,
 } from "antd";
@@ -29,7 +28,7 @@ const {
     Header,
     Sider,
 } = Layout;
-const { Panel } = Collapse;
+
 const styles = require("./style.css");
 
 interface AppProps {
