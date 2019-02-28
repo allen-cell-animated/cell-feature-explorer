@@ -10,6 +10,7 @@ import {
     getSelected3DCell,
     getSelected3DCellCellLine,
     getSelected3DCellFOV,
+    getSelected3DCellLabeledProtein,
     getSelected3DCellLabeledStructure,
 } from "../../state/selection/selectors";
 
@@ -34,6 +35,7 @@ interface AppProps {
     selected3DCellFOV: string;
     selected3DCellCellLine: string;
     selected3DCellStructureName: string;
+    selected3DCellProteinName: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -81,6 +83,7 @@ class App extends React.Component<AppProps, {}> {
             selected3DCell,
             selected3DCellFOV,
             selected3DCellCellLine,
+            selected3DCellProteinName,
             selected3DCellStructureName,
         } = this.props;
 
@@ -143,8 +146,8 @@ class App extends React.Component<AppProps, {}> {
                             {selected3DCell && (
                                 <h4 className={styles.selectedInfo}>
                                     <span className={styles.label}>Viewing cell:</span> {selected3DCell},
-                                    <span className={styles.label}> labeled structure: </span>
-                                    {selected3DCellStructureName}
+                                    <span className={styles.label}> Protein (structure): </span>
+                                    {selected3DCellProteinName} ({selected3DCellStructureName})
                                 </h4>
                             )}
                         </section>
@@ -166,6 +169,7 @@ function mapStateToProps(state: State) {
         selected3DCell: getSelected3DCell(state),
         selected3DCellCellLine: getSelected3DCellCellLine(state),
         selected3DCellFOV: getSelected3DCellFOV(state),
+        selected3DCellProteinName: getSelected3DCellLabeledProtein(state),
         selected3DCellStructureName: getSelected3DCellLabeledStructure(state),
         };
 }
