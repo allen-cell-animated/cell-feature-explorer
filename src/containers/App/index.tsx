@@ -95,9 +95,7 @@ class App extends React.Component<AppProps, {}> {
 
         return (
                 <Layout className={styles.container}>
-                    <BackToPlot
-                        galleryCollapsed={galleryCollapsed}
-                    />
+                    <BackToPlot />
 
                     <Sider
                         width={330}

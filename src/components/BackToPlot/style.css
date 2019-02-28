@@ -1,26 +1,12 @@
 @import "../../styles/colors.css";
 
 .container {
-    right: 136px;
-    bottom: 14px;
-    height: 60px;
-    width: 60px;
-    transition: all 0.2s;
 }
-
-.shifted-container {
-    right: 364px;
-}
-
 .back-top-inner {
     text-align: center;
     background-color: var(--header-gray);
-    border: 1px solid var(--border-gray);
-    height: 60px;
-    width: 60px;
-    padding-top: 5px;
-    border-radius: 5px;
-    & i {
-        font-size: 1.6em;
-    }
+    height: 40px;
+    width: 40px;
+    border-radius: 4px;
+
 }
