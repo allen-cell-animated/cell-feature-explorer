@@ -1,4 +1,5 @@
 import {
+    Collapse,
     Icon,
     Layout,
 } from "antd";
@@ -28,6 +29,7 @@ const {
     Header,
     Sider,
 } = Layout;
+const { Panel } = Collapse;
 const styles = require("./style.css");
 
 interface AppProps {
@@ -143,8 +145,8 @@ class App extends React.Component<AppProps, {}> {
                     </Layout>
 
                     <div className={styles.cellViewerContainer}>
-                        <section className={styles.headerSection}>
-                            <h2 className={styles.header}><Icon type="sync"/> 3D Viewer </h2>
+                        <Header className={styles.headerSection}>
+                            <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
                             {selected3DCell && selected3DCellStructureName && (
                                 <h4 className={styles.selectedInfo}>
                                     <span className={styles.label}>Viewing cell:</span> {selected3DCell},
@@ -152,7 +154,7 @@ class App extends React.Component<AppProps, {}> {
                                     {selected3DCellProteinName} ({selected3DCellStructureName})
                                 </h4>
                             )}
-                        </section>
+                        </Header>
                         <CellViewer
                             cellId={selected3DCell}
                             fovId={selected3DCellFOV}

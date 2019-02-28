@@ -14,8 +14,8 @@
 }
 
 .header {
-    padding: 24px 50px;
     display: inline-block;
+    margin-right: 1em;
 }
 
 .selected-info {
@@ -26,9 +26,12 @@
     color: var(--text-gray);
 }
 
+
 .header-section {
     border-top: 0.5px solid var(--dimgray);
-    background-color: var(--header-gray);
+    text-align: center;
+    display: block;
+    border-bottom: 0.5px solid var(--dimgray);
 }
 
 .sider {
@@ -52,6 +55,14 @@
     border-radius: 0;
 }
 
+.color-menu {
+    min-height: 80vh;
+}
+
+.color-menu :global(.ant-collapse) {
+    border-top: 0;
+    border-left: 0;
+}
 .color-menu :global(.ant-layout-sider-trigger) {
     position: inherit;
 }
