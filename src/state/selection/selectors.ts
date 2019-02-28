@@ -11,7 +11,8 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY, CELL_LINE_DEF_STRUCTURE_KEY,
+    CELL_ID_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
@@ -21,7 +22,8 @@ import {
 
 import {
     getClusterData,
-    getFileInfo, getFullCellLineDefs,
+    getFileInfo,
+    getFullCellLineDefs,
     getFullMetaDataArray,
     getMeasuredData,
     getProteinLabels,
