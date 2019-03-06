@@ -1,24 +1,11 @@
-:global(.ant-progress-outer) {
-    width: 60%;
-}
-:global(.ant-checkbox-inner) {
+
+.container :global(.ant-checkbox-inner) {
     background-color: inherit;
 }
-:global(.ant-progress-text) {
-    width: initial!important;
-}
 
-:global(.ant-progress-inner) {
-    background-color: transparent;
-}
-
-:global(.ant-badge) {
+.container :global(.ant-badge) {
     margin: auto;
     padding: 4px;
-}
-
-:global(.ant-progress-status-success .ant-progress-text) {
-     color: #ffffff;
 }
 
 .container{
@@ -28,6 +15,7 @@
 
 .container :global(.ant-badge sup) {
     box-shadow: none;
+    transform: translateX(-50%);
 }
 
 .label {
