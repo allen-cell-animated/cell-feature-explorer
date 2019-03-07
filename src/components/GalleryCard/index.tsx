@@ -83,7 +83,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             className={styles.container}
             {... {
                 // props not in ant.d component, but do exist
-                id: props.cellID,
+                id: props.cellID ? props.cellID.toString() : "",
                 onMouseEnter: props.onMouseEnter,
                 onMouseLeave: props.onMouseLeave,
 
