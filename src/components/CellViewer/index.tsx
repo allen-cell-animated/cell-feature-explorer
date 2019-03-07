@@ -1,6 +1,5 @@
 import React from "react";
 
-import { CELL_VIEWER_URL } from "../../constants/index";
 import { ImageViewerApp } from "ac-3d-viewer";
 
 const styles = require("./style.css");
