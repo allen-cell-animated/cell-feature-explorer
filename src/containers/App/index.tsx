@@ -95,7 +95,10 @@ class App extends React.Component<AppProps, {}> {
         } = this.state;
 
         return (
-                <Layout className={styles.container}>
+                <Layout
+                    className={styles.container}
+                    tagName="section"
+                >
                     <BackToPlot
                         galleryCollapsed={galleryCollapsed}
                     />
@@ -112,11 +115,18 @@ class App extends React.Component<AppProps, {}> {
                     >
                         <ThumbnailGallery />
                     </Sider>
-                    <Layout>
-                        <Header className={styles.headerSection}>
+                    <Layout
+                        tagName="section"
+                    >
+                        <Header
+                            className={styles.headerSection}
+                            tagName="header"
+                        >
                             <h2><Icon type="dot-chart"/> Plot</h2>
                         </Header>
-                    <Layout>
+                    <Layout
+                        tagName="section"
+                    >
 
                         <Sider
                             className={styles.colorMenu}
@@ -131,7 +141,10 @@ class App extends React.Component<AppProps, {}> {
                                 onPanelClicked={this.onPanelClicked}
                             />
                         </Sider>
-                        <Content className={styles.content}>
+                        <Content
+                            className={styles.content}
+                            tagName="main"
+                        >
                             <div className={styles.plotView} >
                                 <MainPlotContainer
                                     handleSelectionToolUsed={this.onSelectionToolUsed}
@@ -144,7 +157,10 @@ class App extends React.Component<AppProps, {}> {
                     </Layout>
 
                     <div className={styles.cellViewerContainer}>
-                        <Header className={styles.headerSection}>
+                        <Header
+                            className={styles.headerSection}
+                            tagName="header"
+                        >
                             <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
                             {selected3DCell && selected3DCellStructureName && (
                                 <h4 className={styles.selectedInfo}>
