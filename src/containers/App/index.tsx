@@ -104,7 +104,7 @@ class App extends React.Component<AppProps, {}> {
                     />
 
                     <Sider
-                        width={330}
+                        width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
                         onCollapse={this.toggleGallery}
@@ -113,10 +113,14 @@ class App extends React.Component<AppProps, {}> {
                         className={styles.sider}
                         reverseArrow={true}
                     >
-                        <ThumbnailGallery />
+                        <ThumbnailGallery
+                            collapsed={galleryCollapsed}
+
+                        />
                     </Sider>
                     <Layout
                         tagName="section"
+                        className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
                         <Header
                             className={styles.headerSection}

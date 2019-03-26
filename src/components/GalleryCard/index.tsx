@@ -1,6 +1,7 @@
 import {
     Avatar,
     Button,
+    Card,
     Icon,
     List,
 } from "antd";
@@ -89,7 +90,11 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
             }}
         >
-            <List.Item.Meta
+            <Card
+                border={true}
+            >
+            <Card.Meta
+                title={props.labeledStructure}
                 avatar={props.src && (
                     <div
                         onClick={openCellin3D}
@@ -101,22 +106,14 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     />
                     </div>
                 )}
+                description={props.cellID}
             />
                 { !props.empty &&
-                    <React.Fragment>
-                        <ul className={styles.infoList}>
-                            <li className={styles.title}>
-                                {props.cellID}
-                            </li>
-                            <li>
-                                {props.labeledStructure}
-                            </li>
-                        </ul>
                         <div className={styles.actionList}>
                             {actions}
                         </div>
-                    </React.Fragment>
                 }
+            </Card>
         </List.Item>
     );
 };

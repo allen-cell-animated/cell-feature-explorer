@@ -7,6 +7,20 @@
 .container :global(.ant-list-item-meta-description) {
     min-width: 100px;
 }
+
+.container :global(.ant-card-meta) {
+    margin: -15px 0;
+}
+
+.container :global(.ant-card-meta-detail) {
+    margin-top: 1em;
+}
+
+.container :global(.ant-card-bordered) {
+    border-color: var(--border-gray);
+    background-color: var(--header-gray);
+}
+
 .infoList {
     list-style: none;
     padding-left: 0;

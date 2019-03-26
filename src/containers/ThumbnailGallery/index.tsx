@@ -1,12 +1,17 @@
 import {
     Button,
+    Col,
     Form,
     Icon,
     Input,
     List,
+    message,
+    Popconfirm,
+    Radio,
+    Row,
 } from "antd";
+import { RadioChangeEvent } from "antd/es/radio";
 import {
-    find,
     includes,
     map,
 } from "lodash";
@@ -24,16 +29,20 @@ import {
     addAlbumToGallery,
     clearAllSelectedPoints,
     deselectPoint,
-    selectCellFor3DViewer, selectPoint, setHoveredGalleryCard,
+    selectCellFor3DViewer,
+    selectPoint,
+    setHoveredGalleryCard,
 } from "../../state/selection/actions";
 import {
     getClickedScatterPoints,
     getIds,
     getSelected3DCell,
+    getSelectedAlbum,
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
-    ResetSelectionAction, SelectAlbumAction,
+    ResetSelectionAction,
+    SelectAlbumAction,
     SelectCellIn3DAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -43,7 +52,7 @@ import {
     Thumbnail,
 } from "../../state/types";
 
-import { getThumbnails } from "./selectors";
+import {getSelectedAlbumName, getThumbnails} from "./selectors";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -52,11 +61,14 @@ const styles = require("./style.css");
 
 interface ThumbnailGalleryProps {
     albumData: Album[];
+    collapsed: boolean;
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
     getAlbumData: ActionCreator<RequestAction>;
     selectedCell: number;
+    selectedAlbum: number;
+    selectedAlbumName: string;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
     handleSelectAlbum: ActionCreator<SelectAlbumAction>;
@@ -91,6 +103,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.resetSearch = this.resetSearch.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
         this.unHover = this.unHover.bind(this);
+        this.renderCollapsedView = this.renderCollapsedView.bind(this);
+        this.renderFullView = this.renderFullView.bind(this);
+        this.selectAlbum = this.selectAlbum.bind(this);
         this.endOfAlbum = React.createRef();
         this.state = {
             ...initialState,
@@ -140,14 +155,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         });
     }
 
-    public getAlbum(id: number) {
+    public selectAlbum({target}: RadioChangeEvent) {
         const {
-            albumData,
             handleSelectAlbum,
         } = this.props;
-        const album = find(albumData, {album_id: id});
-        if (album) {
-            handleSelectAlbum(album.cell_ids);
+        if (target) {
+            handleSelectAlbum(target.value);
         }
     }
 
@@ -156,68 +169,126 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     public renderAlbumButtons() {
         const {
             albumData,
+            selectedAlbum,
         } = this.props;
-        return map(albumData, (album) => {
-            const handleClick = () => {
-                this.getAlbum(album.album_id);
-            };
-            return (album.cell_ids.length > 0 &&
-                (
-                    <Button
-                        key={album.album_id}
-                        onClick={handleClick}
-                    >
-                        {album.title}
-                    </Button>
-                )
-            );
+        return (
+            <FormItem
+                label="ALBUMS"
+            >
+                <Radio.Group
+                        defaultValue={selectedAlbum}
+                        onChange={this.selectAlbum}
+                        size="large"
+                >
+                    <Radio.Button value={0}>
+                        My Selections
+                    </Radio.Button>
+                    {map(albumData, (album) => {
 
-        });
+                        return (album.cell_ids.length > 0 &&
+                            (
+                                <Radio.Button
+                                    key={album.album_id}
+                                    value={album.album_id}
+                                >
+                                    {album.title} ({album.cell_ids.length})
+                                </Radio.Button>
+                            )
+                        );
+
+                    })}
+                </Radio.Group>
+            </FormItem>
+
+        );
     }
 
-    public render() {
+    public renderFullView() {
         const {
             data,
             handleClearAllSelectedPoints,
+            selectedAlbum,
+            selectedAlbumName,
+        } = this.props;
+        return (
+            <Row id="gallery" className={styles.container} type="flex" gutter={32}>
+                <Col span={18} className={styles.galleryGrid}>
+                    <div className={styles.galleryHeader}>
+                        <h2>{selectedAlbumName}</h2>
+                        {data.length && !selectedAlbum &&
+                        <Popconfirm
+                            title="Are you sure you want to unselect all?" onConfirm={handleClearAllSelectedPoints} okText="Yes" cancelText="No">
+                            <Button
+                                icon="close"
+                                type="primary"
+                            >Clear All
+                            </Button>
+                        </Popconfirm>
+
+                        }
+                    </div>
+                    <List
+                        itemLayout="horizontal"
+                        grid={{
+                            gutter: 16,
+                            lg: 4,
+                            md: 4,
+                            sm: 2,
+                            xl: 6,
+                            xs: 1,
+                            xxl: 3,
+                        }}
+                        dataSource={data.length > 0 ? data : [{empty: true}]}
+                        renderItem={this.renderGalleryCard}
+                        footer={<div ref={this.endOfAlbum} />}
+                    />
+                </Col>
+                <Col span={6} className={styles.albumSideBar}>
+                    <div className={styles.sideBarHeader}>
+                        <h2><Icon type="picture"/>  Gallery
+                        </h2>
+                        <FormItem
+                            hasFeedback={true}
+                            className={styles.searchForCell}
+                            validateStatus={this.state.inputStatus}
+                            help={this.state.message}
+                        >
+                            <Search
+                                    placeholder="add image by cell id"
+                                    onSearch={this.searchValidate}
+                                    onChange={this.resetSearch}
+                            />
+                        </FormItem>
+                    </div>
+                {this.renderAlbumButtons()}
+                </Col>
+            </Row>);
+    }
+
+    public renderCollapsedView() {
+        const {
+            data,
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
                     <h2><Icon type="picture"/>  Gallery
                     </h2>
-                <div className={styles.galleryHeaderActions}>
-
-                    {data.length > 0 &&
-                    <Button
-                        icon="close"
-                        type="primary"
-                        onClick={handleClearAllSelectedPoints}
-                    >Clear All
-                    </Button>}
-                    <FormItem
-                        hasFeedback={true}
-                        className={styles.searchForCell}
-                        validateStatus={this.state.inputStatus}
-                        help={this.state.message}
-                    >
-                        <Search
-                            placeholder="add image by cell id"
-                            onSearch={this.searchValidate}
-                            onChange={this.resetSearch}
-                        />
-                    </FormItem>
-
                 </div>
-                </div>
-
                 <List
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
                     renderItem={this.renderGalleryCard}
                     footer={<div ref={this.endOfAlbum} />}
                 />
-            </div>
-        );
+            </div>);
+    }
+
+    public render() {
+        const {
+            collapsed,
+        } = this.props;
+        return collapsed ? this.renderCollapsedView() : this.renderFullView();
     }
 
     private hoverCard({currentTarget}: React.MouseEvent<HTMLElement>) {
@@ -263,6 +334,8 @@ function mapStateToProps(state: State) {
         clickedPoints: getClickedScatterPoints(state),
         data: getThumbnails(state),
         ids: getIds(state),
+        selectedAlbum: getSelectedAlbum(state),
+        selectedAlbumName: getSelectedAlbumName(state),
         selectedCell: getSelected3DCell(state),
     };
 }

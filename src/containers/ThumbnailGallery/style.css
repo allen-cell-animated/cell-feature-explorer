@@ -1,12 +1,11 @@
 @import "../../styles/colors.css";
 
 .gallery-header {
-    padding: 1em 0.75em;
+    padding: 1em 1em 1em 0em;
     display: flex;
     flex-flow: row wrap;
     margin: auto;
-    justify-content: space-around;
-    background-color: var(--header-gray);
+    justify-content: space-between;
     & :global(.ant-btn) {
           margin-top: 3px;
           align-self: flex-end;
@@ -16,6 +15,13 @@
     }
 }
 
+.side-bar-header {
+    padding: 1em 1em 1em 0em;
+}
+
+.gallery-grid {
+    border-right: 1px solid var(--border-gray);
+}
 .gallery-header-actions {
     display: flex;
     flex-flow: column;
@@ -23,6 +29,25 @@
     & input {
         background-color: var(--header-gray);
       }
+}
+
+/*not in the dom tree but seems ok to be global*/
+:global(.ant-popover) {
+    z-index: 20000;
+}
+
+:global(.ant-popover-inner-content) {
+    padding: 0.5em;
+}
+
+.container :global(.ant-radio-button-wrapper) {
+    background: transparent;
+    display: block;
+    border: none;
+}
+
+.container :global(.ant-radio-button-wrapper):before {
+    background-color: transparent;
 }
 
 .gallery-title {
@@ -43,18 +68,8 @@
     width: 100%;
 }
 
-.list-item {
-    border-bottom: 0.5px solid var(--text-gray);
-}
-
 .container :global(.ant-list-item-meta-avatar) {
     margin-right: 0;
-}
-
-.container :global(.ant-list-split .ant-list-item),
-.container :global(.ant-list-something-after-last-item .ant-spin-container > .ant-list-item:last-child)
-{
-    border-bottom: 1px solid var(--border-gray);
 }
 
 /* collapsed sider styling*/
