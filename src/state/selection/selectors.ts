@@ -71,6 +71,8 @@ export const getDownloadConfig = (state: State): DownloadConfig => state.selecti
 export const getMousePosition = (state: State) => state.selection.mousePosition;
 export const getHoveredPointId = (state: State) => state.selection.hoveredPointId;
 export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
+export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
+
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS

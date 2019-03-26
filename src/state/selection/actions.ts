@@ -1,12 +1,12 @@
 import { URLSearchParamMap } from "../../util/UrlState";
 
 import {
-    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
     CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
+    CHANGE_SELECTED_ALBUM,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -158,9 +158,9 @@ export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction
     };
 }
 
-export function addAlbumToGallery(payload: number[]): SelectAlbumAction {
+export function addAlbumToGallery(payload: number): SelectAlbumAction {
     return {
         payload,
-        type: ADD_ALBUM_TO_GALLERY,
+        type: CHANGE_SELECTED_ALBUM,
     };
 }
