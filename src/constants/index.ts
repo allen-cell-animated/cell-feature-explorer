@@ -72,3 +72,8 @@ export const GENERAL_PLOT_SETTINGS = {
     xAxisInitial: "Nuclear Volume (fL)",
     yAxisInitial: "Cellular Volume (fL)",
 };
+
+export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x"];
+export const OBS_MEMBRANE_NAMES = ["CMDRP"];
+export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
+export const OBS_DNA_NAMES = ["H3342_3", "H3342"];
