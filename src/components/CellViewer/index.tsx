@@ -22,18 +22,18 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
         return null;
     }
 
-    const cleanName = (name: string) => {
+    const standardizeNames = (name: string) => {
         if (includes(OBS_MEMBRANE_NAMES, name)) {
-            return "CMDRP";
+            return OBS_MEMBRANE_NAMES[0];
         }
         if (includes(OBS_STRUCTURE_NAMES, name)) {
-            return "EGFP";
+            return OBS_STRUCTURE_NAMES[0];
         }
         if (includes(OBS_DNA_NAMES, name)) {
-            return "H3342";
+            return OBS_DNA_NAMES[0];
         }
         if (includes(BRIGHT_FIELD_NAMES, name)) {
-            return "Bright_100";
+            return BRIGHT_FIELD_NAMES[0];
         }
         return name;
     };
@@ -47,7 +47,7 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
                 fovPath={`${cellLineName}/${cellLineName}_${fovId}`}
                 defaultVolumesOn={[0, 1, 2]}
                 defaultSurfacesOn={[]}
-                channelNameClean={cleanName}
+                channelNameClean={standardizeNames}
             />
 
         </div>
