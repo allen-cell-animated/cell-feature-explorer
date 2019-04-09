@@ -5,7 +5,6 @@ import {
     Icon,
     Input,
     List,
-    message,
     Popconfirm,
     Radio,
     Row,
@@ -52,7 +51,10 @@ import {
     Thumbnail,
 } from "../../state/types";
 
-import {getSelectedAlbumName, getThumbnails} from "./selectors";
+import {
+    getSelectedAlbumName,
+    getThumbnails,
+} from "./selectors";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -75,6 +77,7 @@ interface ThumbnailGalleryProps {
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
     setHovered: ActionCreator<SelectPointAction>;
+    toggleGallery: (value: boolean) => void;
 }
 
 interface ThumbnailGalleryState {
@@ -106,6 +109,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.renderCollapsedView = this.renderCollapsedView.bind(this);
         this.renderFullView = this.renderFullView.bind(this);
         this.selectAlbum = this.selectAlbum.bind(this);
+        this.closeGallery = this.closeGallery.bind(this);
         this.endOfAlbum = React.createRef();
         this.state = {
             ...initialState,
@@ -203,13 +207,18 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         );
     }
 
+    public closeGallery() {
+        const { toggleGallery } = this.props;
+        toggleGallery(true);
+    }
+
     public renderFullView() {
         const {
             data,
             handleClearAllSelectedPoints,
             selectedAlbum,
             selectedAlbumName,
-        } = this.props;
+    } = this.props;
         return (
             <Row id="gallery" className={styles.container} type="flex" gutter={32}>
                 <Col span={18} className={styles.galleryGrid}>
@@ -217,7 +226,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         <h2>{selectedAlbumName}</h2>
                         {data.length && !selectedAlbum &&
                         <Popconfirm
-                            title="Are you sure you want to unselect all?" onConfirm={handleClearAllSelectedPoints} okText="Yes" cancelText="No">
+                            title="Are you sure you want to unselect all?"
+                            onConfirm={handleClearAllSelectedPoints}
+                            okText="Yes"
+                            cancelText="No"
+                        >
                             <Button
                                 icon="close"
                                 type="primary"
@@ -247,6 +260,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     <div className={styles.sideBarHeader}>
                         <h2><Icon type="picture"/>  Gallery
                         </h2>
+                        <Icon
+                            type="close"
+                            style={{ fontSize: "2em"}}
+                            onClick={this.closeGallery}
+                        />
+                    </div>
                         <FormItem
                             hasFeedback={true}
                             className={styles.searchForCell}
@@ -259,7 +278,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                     onChange={this.resetSearch}
                             />
                         </FormItem>
-                    </div>
                 {this.renderAlbumButtons()}
                 </Col>
             </Row>);

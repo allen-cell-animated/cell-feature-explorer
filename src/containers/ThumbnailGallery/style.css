@@ -1,5 +1,7 @@
 @import "../../styles/colors.css";
-
+.container {
+    padding: 0em 1em;
+}
 .gallery-header {
     padding: 1em 1em 1em 0em;
     display: flex;
@@ -16,7 +18,13 @@
 }
 
 .side-bar-header {
-    padding: 1em 1em 1em 0em;
+    padding: 1em 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.album-side-bar {
+    padding-right: 32px;
 }
 
 .gallery-grid {

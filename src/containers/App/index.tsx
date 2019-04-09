@@ -115,7 +115,7 @@ class App extends React.Component<AppProps, {}> {
                     >
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
-
+                            toggleGallery={this.toggleGallery}
                         />
                     </Sider>
                     <Layout

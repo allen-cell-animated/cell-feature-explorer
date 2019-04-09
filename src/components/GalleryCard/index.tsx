@@ -91,7 +91,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             }}
         >
             <Card
-                border={true}
+                bordered={true}
             >
             <Card.Meta
                 title={props.labeledStructure}

@@ -77,11 +77,14 @@
     top: 0px;
     background-color:  var(--header-gray);
     border-left: 0.5px solid var(--border-gray);
+    border-right: none;
+
 & i {
+      display: block;
       position: absolute;
       left: 3.5px;
-      border-left: none;
-      background-color: transparent;
+    top: 50%;
+      /*line-height: 100vh;*/
 
 
   }
@@ -104,14 +107,10 @@
     top: 0px;
     background-color:#000000a1;
     border-left: 0.5px solid var(--border-gray);
-    & i {
-          position: absolute;
-          left: 95%;
-          height: 100%;
-          line-height: 100vh;
-          background-color:  var(--header-gray);
-          border-left: 0.5px solid var(--border-gray);
+    border-right: 0.5px solid var(--border-gray);
 
+    & i {
+          display: none;
       }
 }
 
