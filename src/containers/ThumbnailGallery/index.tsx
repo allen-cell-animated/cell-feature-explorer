@@ -21,6 +21,8 @@ import {
 } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
+import MinGalleryCard from "../../components/MinGalleryCard";
+import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
@@ -55,7 +57,6 @@ import {
     getSelectedAlbumName,
     getThumbnails,
 } from "./selectors";
-import MinGalleryCard from "../../components/MinGalleryCard/index";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -177,6 +178,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         const {
             albumData,
             selectedAlbum,
+            clickedPoints,
         } = this.props;
         return (
             <FormItem
@@ -187,8 +189,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         onChange={this.selectAlbum}
                         size="large"
                 >
-                    <Radio.Button value={0}>
-                        My Selections
+                    <Radio.Button
+                        key="my-selections"
+                        value={MY_SELECTIONS_ID}
+                    >
+                        {`My Selections (${clickedPoints.length})`}
                     </Radio.Button>
                     {map(albumData, (album) => {
 
@@ -215,7 +220,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
-    public selectCell(cellId: number) {
+    public selectCell(cellId: number): SelectCellIn3DAction {
         const { handleOpenIn3D } = this.props;
         setTimeout(window.scroll({
             behavior: "smooth",
@@ -223,7 +228,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             top: 2500,
         }), 3000);
         this.closeGallery();
-        handleOpenIn3D(cellId);
+        return handleOpenIn3D(cellId);
     }
 
     public renderFullView() {
@@ -332,10 +337,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     }
 
-    private renderMinGalleryCard(item: Tumbnail) {
+    private renderMinGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
-            handleOpenIn3D,
             selectedCell,
         } = this.props;
         return (
@@ -357,7 +361,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
-            handleOpenIn3D,
             selectedCell,
         } = this.props;
         return (

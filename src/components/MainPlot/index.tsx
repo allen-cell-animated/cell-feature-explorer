@@ -88,7 +88,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         const { annotations } = this.props;
         const getText = (point: Annotation, show: boolean) => {
             if (show) {
-                return `Cell ${point.cellID}<br><i>click "3D" button in gallery to load in 3D</i>`;
+                return `Cell ${point.cellID}<br><i>click thumbnail in gallery to load in 3D</i>`;
             }
             if (point.hovered ) {
                 return `Cell ${point.cellID}`;

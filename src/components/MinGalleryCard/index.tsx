@@ -31,47 +31,9 @@ interface GalleryCardProps {
 
 const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
-    const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.cellID));
-    };
-
     const openCellin3D = () => {
         props.handleOpenIn3D(props.cellID);
     };
-
-    const actions = [
-        (
-            <Button
-                className={props.selected ? styles.disabled : ""}
-                key={`${props.cellID}-load`}
-                onClick={openCellin3D}
-            >3D
-            </Button>
-        ),
-        (
-            <Button
-                key={`${props.cellID}-download-link`}
-            >
-            <a
-                href={props.downloadHref}
-            >
-                <Icon
-                    type="download"
-                />
-            </a>
-            </Button>
-        ),
-        (
-            <Button
-                onClick={deselectPoint}
-                key={`${props.cellID}-close`}
-            >
-            <Icon
-                type="close"
-            />
-            </Button>
-        ),
-    ];
 
     return (
         <List.Item
@@ -101,11 +63,6 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 )}
                 description={props.cellID}
             />
-                { !props.empty &&
-                        <div className={styles.actionList}>
-                            {actions}
-                        </div>
-                }
         </List.Item>
     );
 };

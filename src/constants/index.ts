@@ -41,6 +41,8 @@ declare const DOWNLOAD_URL_PREFIX: string;
 const _DOWNLOAD_URL_PREFIX = DOWNLOAD_URL_PREFIX;
 export {_DOWNLOAD_URL_PREFIX as DOWNLOAD_URL_PREFIX};
 
+export const MY_SELECTIONS_ID = 0;
+
 export const DISABLE_COLOR = "#6e6e6e";
 export const OFF_COLOR = "#000";
 
