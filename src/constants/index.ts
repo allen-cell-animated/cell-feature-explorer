@@ -19,7 +19,7 @@ export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
-export const DBSCAN_KEY = "DBSCAN";
+export const SPECTRAL_KEY = "Spectral";
 
 export const CLUSTER_NUMBER_KEY = "numberOfClusters";
 export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
