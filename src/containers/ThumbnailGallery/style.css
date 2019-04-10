@@ -1,6 +1,7 @@
 @import "../../styles/colors.css";
 .container {
     padding: 0em 1em;
+    flex-flow: row;
 }
 .gallery-header {
     padding: 1em 1em 1em 0em;
@@ -25,11 +26,17 @@
 
 .album-side-bar {
     padding-right: 32px;
+    min-width: 333px;
+    border-left: 1px solid var(--border-gray);
 }
 
-.gallery-grid {
-    border-right: 1px solid var(--border-gray);
+
+.list :global(.ant-row){
+    display: flex;
+    flex-flow: wrap;
+    margin: auto;
 }
+
 .gallery-header-actions {
     display: flex;
     flex-flow: column;
@@ -81,6 +88,10 @@
 }
 
 /* collapsed sider styling*/
+:global(.ant-layout-sider-collapsed) .container {
+    padding: 0;
+}
+
 :global(.ant-layout-sider-collapsed .ant-list-item-meta-content),
 :global(.ant-layout-sider-collapsed .ant-list-item-content),
 :global(.ant-layout-sider-collapsed) .search-for-cell {
@@ -92,9 +103,9 @@
     font-size: 1em;
 }
 
-:global(.ant-layout-sider-collapsed button) {
-    font-size: 0.8em;
-    padding: 2px;
+:global(.ant-layout-sider-collapsed) .gallery-header {
+    padding: 1em 1em 1em 1em;
+
 }
 
 :global(.ant-layout-sider-collapsed .ant-btn span) {

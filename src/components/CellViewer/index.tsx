@@ -48,6 +48,7 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
                 defaultVolumesOn={[0, 1, 2]}
                 defaultSurfacesOn={[]}
                 channelNameClean={standardizeNames}
+                appHeight="75vh"
             />
 
         </div>

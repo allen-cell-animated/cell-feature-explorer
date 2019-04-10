@@ -29,7 +29,7 @@ interface GalleryCardProps {
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
-const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
         props.handleDeselectPoint(Number(props.cellID));
@@ -85,10 +85,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
             }}
         >
-            <Card
-                bordered={true}
-            >
-            <Card.Meta
+
+            <List.Item.Meta
                 title={props.labeledStructure}
                 avatar={props.src && (
                     <div
@@ -108,9 +106,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                             {actions}
                         </div>
                 }
-            </Card>
         </List.Item>
     );
 };
 
-export default GalleryCard;
+export default MinGalleryCard;

@@ -55,6 +55,7 @@ import {
     getSelectedAlbumName,
     getThumbnails,
 } from "./selectors";
+import MinGalleryCard from "../../components/MinGalleryCard/index";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -102,6 +103,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     constructor(props: ThumbnailGalleryProps) {
         super(props);
         this.renderGalleryCard = this.renderGalleryCard.bind(this);
+        this.renderMinGalleryCard = this.renderMinGalleryCard.bind(this);
         this.searchValidate = this.searchValidate.bind(this);
         this.resetSearch = this.resetSearch.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
@@ -110,6 +112,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.renderFullView = this.renderFullView.bind(this);
         this.selectAlbum = this.selectAlbum.bind(this);
         this.closeGallery = this.closeGallery.bind(this);
+        this.selectCell = this.selectCell.bind(this);
         this.endOfAlbum = React.createRef();
         this.state = {
             ...initialState,
@@ -212,6 +215,17 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
+    public selectCell(cellId: number) {
+        const { handleOpenIn3D } = this.props;
+        setTimeout(window.scroll({
+            behavior: "smooth",
+            left: 0,
+            top: 2500,
+        }), 3000);
+        this.closeGallery();
+        handleOpenIn3D(cellId);
+    }
+
     public renderFullView() {
         const {
             data,
@@ -220,11 +234,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             selectedAlbumName,
     } = this.props;
         return (
-            <Row id="gallery" className={styles.container} type="flex" gutter={32}>
-                <Col span={18} className={styles.galleryGrid}>
+            <Row id="gallery" className={styles.container} type="flex" gutter={32} justify="space-between">
+                <Col className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
-                        {data.length && !selectedAlbum &&
+                        {data.length > 0 && !selectedAlbum &&
                         <Popconfirm
                             title="Are you sure you want to unselect all?"
                             onConfirm={handleClearAllSelectedPoints}
@@ -244,19 +258,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         itemLayout="horizontal"
                         grid={{
                             gutter: 16,
-                            lg: 4,
-                            md: 4,
-                            sm: 2,
-                            xl: 6,
-                            xs: 1,
-                            xxl: 3,
                         }}
+                        className={styles.list}
                         dataSource={data.length > 0 ? data : [{empty: true}]}
                         renderItem={this.renderGalleryCard}
                         footer={<div ref={this.endOfAlbum} />}
                     />
                 </Col>
-                <Col span={6} className={styles.albumSideBar}>
+                <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
                         <h2><Icon type="picture"/>  Gallery
                         </h2>
@@ -296,7 +305,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <List
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
-                    renderItem={this.renderGalleryCard}
+                    renderItem={this.renderMinGalleryCard}
                     footer={<div ref={this.endOfAlbum} />}
                 />
             </div>);
@@ -323,6 +332,28 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     }
 
+    private renderMinGalleryCard(item: Tumbnail) {
+        const {
+            handleDeselectPoint,
+            handleOpenIn3D,
+            selectedCell,
+        } = this.props;
+        return (
+            <MinGalleryCard
+                onMouseEnter={this.hoverCard}
+                onMouseLeave={this.unHover}
+                labeledStructure={item.labeledStructure}
+                src={item.src}
+                selected={selectedCell === item.cellID}
+                downloadHref={item.downloadHref}
+                cellID={item.cellID}
+                handleDeselectPoint={handleDeselectPoint}
+                handleOpenIn3D={this.selectCell}
+                empty={item.empty}
+            />
+        );
+    }
+
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
@@ -339,7 +370,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     downloadHref={item.downloadHref}
                     cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
-                    handleOpenIn3D={handleOpenIn3D}
+                    handleOpenIn3D={this.selectCell}
                     empty={item.empty}
                 />
         );
