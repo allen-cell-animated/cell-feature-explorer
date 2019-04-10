@@ -1,11 +1,7 @@
 import {
     Avatar,
-    Button,
-    Card,
-    Icon,
     List,
 } from "antd";
-import { map } from "lodash";
 import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
@@ -49,7 +45,6 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
 
             <List.Item.Meta
-                title={props.labeledStructure}
                 avatar={props.src && (
                     <div
                         onClick={openCellin3D}
@@ -61,7 +56,6 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     />
                     </div>
                 )}
-                description={props.cellID}
             />
         </List.Item>
     );
