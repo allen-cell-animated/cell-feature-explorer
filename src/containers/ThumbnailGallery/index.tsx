@@ -27,9 +27,9 @@ import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
 import {
-    addAlbumToGallery,
     clearAllSelectedPoints,
     deselectPoint,
+    selectAlbum,
     selectCellFor3DViewer,
     selectPoint,
     setHoveredGalleryCard,
@@ -398,7 +398,7 @@ const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,
-    handleSelectAlbum: addAlbumToGallery,
+    handleSelectAlbum: selectAlbum,
     setHovered: setHoveredGalleryCard,
 };
 

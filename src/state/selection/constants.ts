@@ -2,7 +2,7 @@ import {
     AGGLOMERATIVE_KEY,
     CLUSTER_DISTANCE_KEY,
     CLUSTER_NUMBER_KEY,
-    DBSCAN_KEY, KMEANS_KEY,
+    DBSCAN_KEY, KMEANS_KEY, MY_SELECTIONS_ID,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
@@ -34,7 +34,7 @@ export const CHANGE_SELECTED_ALBUM = makeConstant("selection", "change-selected-
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
 export const INITIAL_PLOT_BY_ON_Y = "Cellular Volume (fL)";
-export const INITIAL_ALBUM = 0;
+export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 
 export const INITIAL_COLORS = [
     "#a6cee3",
