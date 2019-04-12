@@ -158,7 +158,7 @@ export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction
     };
 }
 
-export function addAlbumToGallery(payload: number): SelectAlbumAction {
+export function selectAlbum(payload: number): SelectAlbumAction {
     return {
         payload,
         type: CHANGE_SELECTED_ALBUM,
