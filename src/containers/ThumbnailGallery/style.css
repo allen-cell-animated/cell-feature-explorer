@@ -1,12 +1,14 @@
 @import "../../styles/colors.css";
-
+.container {
+    padding: 0em 1em;
+    flex-flow: row;
+}
 .gallery-header {
-    padding: 1em 0.75em;
+    padding: 1em 1em 1em 0em;
     display: flex;
     flex-flow: row wrap;
     margin: auto;
-    justify-content: space-around;
-    background-color: var(--header-gray);
+    justify-content: space-between;
     & :global(.ant-btn) {
           margin-top: 3px;
           align-self: flex-end;
@@ -16,6 +18,37 @@
     }
 }
 
+.side-bar-header {
+    padding: 1em 1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.album-side-bar {
+    padding-right: 32px;
+    min-width: 333px;
+    border-left: 1px solid var(--border-gray);
+    position: fixed;
+    right: 0;
+}
+
+.album-side-bar :global(.ant-radio-button-wrapper:first-child) {
+    border-radius: 0;
+}
+
+.album-side-bar :global(.ant-radio-button-wrapper-checked:first-child) {
+    box-shadow: -1px 0 0 0 #f2edfe !important;
+}
+
+.list {
+    margin-right: 333px;
+}
+.list :global(.ant-row){
+    display: flex;
+    flex-flow: wrap;
+    margin: auto;
+}
+
 .gallery-header-actions {
     display: flex;
     flex-flow: column;
@@ -23,6 +56,21 @@
     & input {
         background-color: var(--header-gray);
       }
+}
+
+/*not in the dom tree but seems ok to be global*/
+:global(.ant-popover) {
+    z-index: 20000;
+}
+
+.container :global(.ant-radio-button-wrapper) {
+    background: transparent;
+    display: block;
+    border: none;
+}
+
+.container :global(.ant-radio-button-wrapper):before {
+    background-color: transparent;
 }
 
 .gallery-title {
@@ -43,21 +91,15 @@
     width: 100%;
 }
 
-.list-item {
-    border-bottom: 0.5px solid var(--text-gray);
-}
-
 .container :global(.ant-list-item-meta-avatar) {
     margin-right: 0;
 }
 
-.container :global(.ant-list-split .ant-list-item),
-.container :global(.ant-list-something-after-last-item .ant-spin-container > .ant-list-item:last-child)
-{
-    border-bottom: 1px solid var(--border-gray);
+/* collapsed sider styling*/
+:global(.ant-layout-sider-collapsed) .container {
+    padding: 0;
 }
 
-/* collapsed sider styling*/
 :global(.ant-layout-sider-collapsed .ant-list-item-meta-content),
 :global(.ant-layout-sider-collapsed .ant-list-item-content),
 :global(.ant-layout-sider-collapsed) .search-for-cell {
@@ -69,9 +111,9 @@
     font-size: 1em;
 }
 
-:global(.ant-layout-sider-collapsed button) {
-    font-size: 0.8em;
-    padding: 2px;
+:global(.ant-layout-sider-collapsed) .gallery-header {
+    padding: 1em;
+
 }
 
 :global(.ant-layout-sider-collapsed .ant-btn span) {

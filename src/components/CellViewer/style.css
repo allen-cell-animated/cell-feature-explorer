@@ -3,3 +3,7 @@
     height: 45vw;
     width: 100%;
 }
+
+.cell-viewer :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
+    transform: translateY(-100%);
+}

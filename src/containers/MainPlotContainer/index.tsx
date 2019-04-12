@@ -54,11 +54,11 @@ interface MainPlotContainerProps {
     clickedPoints: number[];
     hoveredPointData: FileInfo;
     plotDataArray: Data[];
+    galleryCollapsed: boolean;
     mousePosition: MousePosition;
     filtersToExclude: string[];
     handleSelectionToolUsed: () => void;
     handleSelectPoint: ActionCreator<SelectPointAction>;
-    handleClickedChart: () => void;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     requestCellLineData: ActionCreator<RequestAction>;
@@ -88,9 +88,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
             clickedPoints,
             handleSelectPoint,
             handleDeselectPoint,
-            handleClickedChart,
         } = this.props;
-        handleClickedChart();
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
                 if (includes(clickedPoints, Number(point.id))) {
@@ -153,8 +151,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     public renderPopover() {
         const {
             hoveredPointData,
+            galleryCollapsed,
         } = this.props;
-        return (hoveredPointData &&
+        return (hoveredPointData && galleryCollapsed &&
             (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
@@ -184,29 +183,35 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
                     placement="right"
                     content={popover}
                     visible={!!popover}
+                    {... {
+                        // props not in ant.d component, but do exist
+                        // needed to style this component since it's out of the DOM structure
+                        id: "thumbnail-popover",
+
+                    }}
                 >
                     <MouseFollower
                         pageX={mousePosition.pageX}
                         pageY={mousePosition.pageY}
                     />
                 </Popover>
-            <div
-                id="main-plot"
-                className={styles.container}
-                onMouseLeave={this.onPlotUnhovered}
-            >
+                <div
+                    id="main-plot"
+                    className={styles.container}
+                    onMouseLeave={this.onPlotUnhovered}
+                >
 
-                <AxisDropDown axisId={X_AXIS_ID}/>
-                <AxisDropDown axisId={Y_AXIS_ID}/>
+                    <AxisDropDown axisId={X_AXIS_ID}/>
+                    <AxisDropDown axisId={Y_AXIS_ID}/>
 
-                <MainPlot
-                    plotDataArray={plotDataArray}
-                    onPointClicked={this.onPointClicked}
-                    annotations={annotations}
-                    onGroupSelected={this.onGroupSelected}
-                    onPlotHovered={this.onPlotHovered}
-                />
-            </div>
+                    <MainPlot
+                        plotDataArray={plotDataArray}
+                        onPointClicked={this.onPointClicked}
+                        annotations={annotations}
+                        onGroupSelected={this.onGroupSelected}
+                        onPlotHovered={this.onPlotHovered}
+                    />
+                </div>
             </React.Fragment>
 
         );

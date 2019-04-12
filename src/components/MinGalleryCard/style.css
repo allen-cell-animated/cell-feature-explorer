@@ -3,6 +3,9 @@
 .container {
     width: 300px;
 }
+.container:global(.ant-list-item) {
+    border-bottom: 0.5px solid var(--border-gray);
+}
 
 .container :global(.ant-list-item-content) {
     flex-flow: column;

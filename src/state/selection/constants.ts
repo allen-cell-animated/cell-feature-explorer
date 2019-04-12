@@ -2,7 +2,7 @@ import {
     AGGLOMERATIVE_KEY,
     CLUSTER_DISTANCE_KEY,
     CLUSTER_NUMBER_KEY,
-    DBSCAN_KEY, KMEANS_KEY,
+    DBSCAN_KEY, KMEANS_KEY, MY_SELECTIONS_ID,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
@@ -29,11 +29,13 @@ export const SET_MOUSE_POSITION = makeConstant("selection", "set-mouse-position"
 export const SYNC_STATE_WITH_URL = makeConstant("select", "sync-with-url");
 export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
 export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
-export const ADD_ALBUM_TO_GALLERY = makeConstant("selection", "add-album-to-gallery");
+export const CHANGE_SELECTED_ALBUM = makeConstant("selection", "change-selected-album");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
 export const INITIAL_PLOT_BY_ON_Y = "Cellular Volume (fL)";
+export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
+
 export const INITIAL_COLORS = [
     "#a6cee3",
     "#1f78b4",

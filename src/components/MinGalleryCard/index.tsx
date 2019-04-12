@@ -1,11 +1,7 @@
 import {
     Avatar,
-    Button,
-    Card,
-    Icon,
     List,
 } from "antd";
-import { map } from "lodash";
 import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
@@ -29,49 +25,11 @@ interface GalleryCardProps {
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
-const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
-
-    const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.cellID));
-    };
+const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const openCellin3D = () => {
         props.handleOpenIn3D(props.cellID);
     };
-
-    const actions = [
-        (
-            <Button
-                className={props.selected ? styles.disabled : ""}
-                key={`${props.cellID}-load`}
-                onClick={openCellin3D}
-            >3D
-            </Button>
-        ),
-        (
-            <Button
-                key={`${props.cellID}-download-link`}
-            >
-            <a
-                href={props.downloadHref}
-            >
-                <Icon
-                    type="download"
-                />
-            </a>
-            </Button>
-        ),
-        (
-            <Button
-                onClick={deselectPoint}
-                key={`${props.cellID}-close`}
-            >
-            <Icon
-                type="close"
-            />
-            </Button>
-        ),
-    ];
 
     return (
         <List.Item
@@ -85,11 +43,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
             }}
         >
-            <Card
-                bordered={true}
-            >
-            <Card.Meta
-                title={props.labeledStructure}
+
+            <List.Item.Meta
                 avatar={props.src && (
                     <div
                         onClick={openCellin3D}
@@ -101,16 +56,9 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     />
                     </div>
                 )}
-                description={props.cellID}
             />
-                { !props.empty &&
-                        <div className={styles.actionList}>
-                            {actions}
-                        </div>
-                }
-            </Card>
         </List.Item>
     );
 };
 
-export default GalleryCard;
+export default MinGalleryCard;

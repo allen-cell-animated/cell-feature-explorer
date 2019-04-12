@@ -1,12 +1,16 @@
 import {
     Button,
+    Col,
     Form,
     Icon,
     Input,
     List,
+    Popconfirm,
+    Radio,
+    Row,
 } from "antd";
+import { RadioChangeEvent } from "antd/es/radio";
 import {
-    find,
     includes,
     map,
 } from "lodash";
@@ -17,23 +21,29 @@ import {
 } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
+import MinGalleryCard from "../../components/MinGalleryCard";
+import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
 import {
-    addAlbumToGallery,
     clearAllSelectedPoints,
     deselectPoint,
-    selectCellFor3DViewer, selectPoint, setHoveredGalleryCard,
+    selectAlbum,
+    selectCellFor3DViewer,
+    selectPoint,
+    setHoveredGalleryCard,
 } from "../../state/selection/actions";
 import {
     getClickedScatterPoints,
     getIds,
     getSelected3DCell,
+    getSelectedAlbum,
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
-    ResetSelectionAction, SelectAlbumAction,
+    ResetSelectionAction,
+    SelectAlbumAction,
     SelectCellIn3DAction,
     SelectPointAction,
 } from "../../state/selection/types";
@@ -43,7 +53,10 @@ import {
     Thumbnail,
 } from "../../state/types";
 
-import { getThumbnails } from "./selectors";
+import {
+    getSelectedAlbumName,
+    getThumbnails,
+} from "./selectors";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -52,17 +65,21 @@ const styles = require("./style.css");
 
 interface ThumbnailGalleryProps {
     albumData: Album[];
+    collapsed: boolean;
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
     getAlbumData: ActionCreator<RequestAction>;
     selectedCell: number;
+    selectedAlbum: number;
+    selectedAlbumName: string;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
     handleSelectAlbum: ActionCreator<SelectAlbumAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
     setHovered: ActionCreator<SelectPointAction>;
+    toggleGallery: (value: boolean) => void;
 }
 
 interface ThumbnailGalleryState {
@@ -87,10 +104,16 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     constructor(props: ThumbnailGalleryProps) {
         super(props);
         this.renderGalleryCard = this.renderGalleryCard.bind(this);
+        this.renderMinGalleryCard = this.renderMinGalleryCard.bind(this);
         this.searchValidate = this.searchValidate.bind(this);
         this.resetSearch = this.resetSearch.bind(this);
         this.hoverCard = this.hoverCard.bind(this);
         this.unHover = this.unHover.bind(this);
+        this.renderCollapsedView = this.renderCollapsedView.bind(this);
+        this.renderFullView = this.renderFullView.bind(this);
+        this.selectAlbum = this.selectAlbum.bind(this);
+        this.closeGallery = this.closeGallery.bind(this);
+        this.selectCell = this.selectCell.bind(this);
         this.endOfAlbum = React.createRef();
         this.state = {
             ...initialState,
@@ -140,14 +163,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         });
     }
 
-    public getAlbum(id: number) {
+    public selectAlbum({target}: RadioChangeEvent) {
         const {
-            albumData,
             handleSelectAlbum,
         } = this.props;
-        const album = find(albumData, {album_id: id});
-        if (album) {
-            handleSelectAlbum(album.cell_ids);
+        if (target) {
+            handleSelectAlbum(target.value);
         }
     }
 
@@ -156,68 +177,150 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     public renderAlbumButtons() {
         const {
             albumData,
+            selectedAlbum,
+            clickedPoints,
         } = this.props;
-        return map(albumData, (album) => {
-            const handleClick = () => {
-                this.getAlbum(album.album_id);
-            };
-            return (album.cell_ids.length > 0 &&
-                (
-                    <Button
-                        key={album.album_id}
-                        onClick={handleClick}
+        return (
+            <FormItem
+                label="ALBUMS"
+            >
+                <Radio.Group
+                        defaultValue={selectedAlbum}
+                        onChange={this.selectAlbum}
+                        size="large"
+                >
+                    <Radio.Button
+                        key="my-selections"
+                        value={MY_SELECTIONS_ID}
                     >
-                        {album.title}
-                    </Button>
-                )
-            );
+                        {`My Selections (${clickedPoints.length})`}
+                    </Radio.Button>
+                    {map(albumData, (album) => {
 
-        });
+                        return (album.cell_ids.length > 0 &&
+                            (
+                                <Radio.Button
+                                    key={album.album_id}
+                                    value={album.album_id}
+                                >
+                                    {album.title} ({album.cell_ids.length})
+                                </Radio.Button>
+                            )
+                        );
+
+                    })}
+                </Radio.Group>
+            </FormItem>
+
+        );
     }
 
-    public render() {
+    public closeGallery() {
+        const { toggleGallery } = this.props;
+        toggleGallery(true);
+    }
+
+    public selectCell(cellId: number): SelectCellIn3DAction {
+        const { handleOpenIn3D } = this.props;
+        setTimeout(window.scroll({
+            behavior: "smooth",
+            left: 0,
+            top: 2500,
+        }), 3000);
+        this.closeGallery();
+        return handleOpenIn3D(cellId);
+    }
+
+    public renderFullView() {
         const {
             data,
             handleClearAllSelectedPoints,
+            selectedAlbum,
+            selectedAlbumName,
+    } = this.props;
+        return (
+            <Row id="gallery" className={styles.container} type="flex" gutter={32} justify="space-between">
+                <Col className={styles.galleryGrid}>
+                    <div className={styles.galleryHeader}>
+                        <h2>{selectedAlbumName}</h2>
+                        {data.length > 0 && !selectedAlbum &&
+                        <Popconfirm
+                            title="Are you sure you want to unselect all?"
+                            onConfirm={handleClearAllSelectedPoints}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button
+                                icon="close"
+                                type="primary"
+                            >Clear All
+                            </Button>
+                        </Popconfirm>
+
+                        }
+                    </div>
+                    <List
+                        itemLayout="horizontal"
+                        grid={{
+                            gutter: 16,
+                        }}
+                        className={styles.list}
+                        dataSource={data.length > 0 ? data : [{empty: true}]}
+                        renderItem={this.renderGalleryCard}
+                        footer={<div ref={this.endOfAlbum} />}
+                    />
+                </Col>
+                <Col className={styles.albumSideBar}>
+                    <div className={styles.sideBarHeader}>
+                        <h2><Icon type="picture"/>  Gallery
+                        </h2>
+                        <Icon
+                            type="close"
+                            style={{ fontSize: "2em"}}
+                            onClick={this.closeGallery}
+                        />
+                    </div>
+                        <FormItem
+                            hasFeedback={true}
+                            className={styles.searchForCell}
+                            validateStatus={this.state.inputStatus}
+                            help={this.state.message}
+                        >
+                            <Search
+                                    placeholder="add image by cell id"
+                                    onSearch={this.searchValidate}
+                                    onChange={this.resetSearch}
+                            />
+                        </FormItem>
+                {this.renderAlbumButtons()}
+                </Col>
+            </Row>);
+    }
+
+    public renderCollapsedView() {
+        const {
+            data,
         } = this.props;
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
                     <h2><Icon type="picture"/>  Gallery
                     </h2>
-                <div className={styles.galleryHeaderActions}>
-
-                    {data.length > 0 &&
-                    <Button
-                        icon="close"
-                        type="primary"
-                        onClick={handleClearAllSelectedPoints}
-                    >Clear All
-                    </Button>}
-                    <FormItem
-                        hasFeedback={true}
-                        className={styles.searchForCell}
-                        validateStatus={this.state.inputStatus}
-                        help={this.state.message}
-                    >
-                        <Search
-                            placeholder="add image by cell id"
-                            onSearch={this.searchValidate}
-                            onChange={this.resetSearch}
-                        />
-                    </FormItem>
-
                 </div>
-                </div>
-
                 <List
                     itemLayout="horizontal"
                     dataSource={data.length > 0 ? data : [{empty: true}]}
-                    renderItem={this.renderGalleryCard}
+                    renderItem={this.renderMinGalleryCard}
                     footer={<div ref={this.endOfAlbum} />}
                 />
-            </div>
-        );
+            </div>);
+    }
+
+    public render() {
+        const {
+            collapsed,
+        } = this.props;
+        return collapsed ? this.renderCollapsedView() : this.renderFullView();
     }
 
     private hoverCard({currentTarget}: React.MouseEvent<HTMLElement>) {
@@ -234,10 +337,30 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     }
 
+    private renderMinGalleryCard(item: Thumbnail) {
+        const {
+            handleDeselectPoint,
+            selectedCell,
+        } = this.props;
+        return (
+            <MinGalleryCard
+                onMouseEnter={this.hoverCard}
+                onMouseLeave={this.unHover}
+                labeledStructure={item.labeledStructure}
+                src={item.src}
+                selected={selectedCell === item.cellID}
+                downloadHref={item.downloadHref}
+                cellID={item.cellID}
+                handleDeselectPoint={handleDeselectPoint}
+                handleOpenIn3D={this.selectCell}
+                empty={item.empty}
+            />
+        );
+    }
+
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
-            handleOpenIn3D,
             selectedCell,
         } = this.props;
         return (
@@ -250,7 +373,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     downloadHref={item.downloadHref}
                     cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
-                    handleOpenIn3D={handleOpenIn3D}
+                    handleOpenIn3D={this.selectCell}
                     empty={item.empty}
                 />
         );
@@ -263,6 +386,8 @@ function mapStateToProps(state: State) {
         clickedPoints: getClickedScatterPoints(state),
         data: getThumbnails(state),
         ids: getIds(state),
+        selectedAlbum: getSelectedAlbum(state),
+        selectedAlbumName: getSelectedAlbumName(state),
         selectedCell: getSelected3DCell(state),
     };
 }
@@ -273,7 +398,7 @@ const dispatchToPropsMap = {
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,
-    handleSelectAlbum: addAlbumToGallery,
+    handleSelectAlbum: selectAlbum,
     setHovered: setHoveredGalleryCard,
 };
 

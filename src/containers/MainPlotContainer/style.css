@@ -25,7 +25,7 @@
     fill: white!important;
 }
 
-:global(.ant-popover-inner-content) {
+:global(#thumbnail-popover .ant-popover-inner-content) {
     box-shadow: 0 2px 8px black ;
     padding: 0;
 }

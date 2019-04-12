@@ -10,12 +10,12 @@ import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
-    ADD_ALBUM_TO_GALLERY,
     CHANGE_AXIS,
     CHANGE_CLUSTER_NUMBER,
     CHANGE_CLUSTERING_ALGORITHM,
     CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
+    CHANGE_SELECTED_ALBUM,
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
@@ -23,6 +23,7 @@ import {
     INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
+    INITIAL_SELECTED_ALBUM_ID,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
     SELECT_GROUP_VIA_PLOT,
@@ -72,6 +73,7 @@ export const initialState = {
     plotByOnX: INITIAL_PLOT_BY_ON_X,
     plotByOnY: INITIAL_PLOT_BY_ON_Y,
     proteinColors: INITIAL_COLORS,
+    selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},
     selectedGroups: {},
     selectedPoints: [],
@@ -204,11 +206,11 @@ const actionToConfigMap: TypeToDescriptionMap = {
             hoveredCardId: action.payload,
         }),
     },
-    [ADD_ALBUM_TO_GALLERY]: {
-        accepts: (action: AnyAction): action is SelectAlbumAction => action.type === ADD_ALBUM_TO_GALLERY,
+    [CHANGE_SELECTED_ALBUM]: {
+        accepts: (action: AnyAction): action is SelectAlbumAction => action.type === CHANGE_SELECTED_ALBUM,
         perform: (state: SelectionStateBranch, action: SelectAlbumAction) => ({
             ...state,
-            selectedPoints : uniq([...state.selectedPoints, ...action.payload]),
+            selectedAlbum: action.payload,
         }),
     },
 };

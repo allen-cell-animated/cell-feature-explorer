@@ -45,7 +45,6 @@ class App extends React.Component<AppProps, {}> {
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
         galleryCollapsed: true,
-        initClick: true,
         openKeys: [App.panelKeys[0]],
     };
 
@@ -54,25 +53,14 @@ class App extends React.Component<AppProps, {}> {
         this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
         this.onPanelClicked = this.onPanelClicked.bind(this);
         this.toggleGallery = this.toggleGallery.bind(this);
-        this.onGraphClicked = this.onGraphClicked.bind(this);
-
     }
+
     public onSelectionToolUsed() {
         this.setState({openKeys: uniq([...this.state.openKeys, App.panelKeys[1]])});
     }
 
     public onPanelClicked(value: string[]) {
         this.setState({openKeys: value});
-    }
-
-    public onGraphClicked() {
-        const { initClick } = this.state;
-        if (initClick) {
-            this.setState({
-                galleryCollapsed: false,
-                initClick: false,
-            });
-        }
     }
 
     public toggleGallery(value: boolean) {
@@ -99,12 +87,10 @@ class App extends React.Component<AppProps, {}> {
                     className={styles.container}
                     tagName="section"
                 >
-                    <BackToPlot
-                        galleryCollapsed={galleryCollapsed}
-                    />
+                    <BackToPlot />
 
                     <Sider
-                        width={330}
+                        width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
                         onCollapse={this.toggleGallery}
@@ -113,10 +99,14 @@ class App extends React.Component<AppProps, {}> {
                         className={styles.sider}
                         reverseArrow={true}
                     >
-                        <ThumbnailGallery />
+                        <ThumbnailGallery
+                            collapsed={galleryCollapsed}
+                            toggleGallery={this.toggleGallery}
+                        />
                     </Sider>
                     <Layout
                         tagName="section"
+                        className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
                         <Header
                             className={styles.headerSection}
@@ -148,7 +138,7 @@ class App extends React.Component<AppProps, {}> {
                             <div className={styles.plotView} >
                                 <MainPlotContainer
                                     handleSelectionToolUsed={this.onSelectionToolUsed}
-                                    handleClickedChart={this.onGraphClicked}
+                                    galleryCollapsed={galleryCollapsed}
                                 />
                             </div>
                         </Content>
