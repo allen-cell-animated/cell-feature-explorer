@@ -22,11 +22,11 @@ import {
 import {
     AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
-    DBSCAN_KEY,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     KMEANS_KEY,
-    PROTEIN_NAME_KEY
+    PROTEIN_NAME_KEY,
+    SPECTRAL_KEY,
 } from "../../constants";
 
 import metadataStateBranch from "../../state/metadata";
@@ -216,7 +216,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                     >
                         <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
                         <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
-                        <RadioButton value={DBSCAN_KEY}>DBSCAN</RadioButton>
+                        <RadioButton value={SPECTRAL_KEY}>Spectral</RadioButton>
                     </RadioGroup>
                 </Row>
                     <SliderWithCustomMarks

@@ -7,6 +7,7 @@ import {
     OBS_DNA_NAMES,
     OBS_MEMBRANE_NAMES,
     OBS_STRUCTURE_NAMES,
+    THUMBNAIL_BASE_URL,
 } from "../../constants/index";
 
 const styles = require("./style.css");
@@ -42,7 +43,7 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
         <div className={styles.cellViewer}>
             <ImageViewerApp
                 cellId={cellId}
-                baseUrl={"https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v1.3.0/Cell-Viewer_Thumbnails"}
+                baseUrl={`${THUMBNAIL_BASE_URL}`}
                 cellPath={`${cellLineName}/${cellLineName}_${fovId}_${cellId}`}
                 fovPath={`${cellLineName}/${cellLineName}_${fovId}`}
                 defaultVolumesOn={[0, 1, 2]}

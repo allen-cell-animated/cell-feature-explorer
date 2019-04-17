@@ -2,8 +2,10 @@ import {
     AGGLOMERATIVE_KEY,
     CLUSTER_DISTANCE_KEY,
     CLUSTER_NUMBER_KEY,
-    DBSCAN_KEY, KMEANS_KEY, MY_SELECTIONS_ID,
+    KMEANS_KEY,
+    MY_SELECTIONS_ID,
     PROTEIN_NAME_KEY,
+    SPECTRAL_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
 
@@ -84,7 +86,7 @@ export const INITIAL_SELECTION_COLORS = [
 export const CLUSTERING_MAP = (key: string): ClusteringNumberChoices => {
     const map: {[key: string]: ClusteringNumberChoices} = {
         [AGGLOMERATIVE_KEY]: CLUSTER_NUMBER_KEY,
-        [DBSCAN_KEY]: CLUSTER_DISTANCE_KEY,
+        [SPECTRAL_KEY]: CLUSTER_NUMBER_KEY,
         [KMEANS_KEY]: CLUSTER_NUMBER_KEY,
     };
     return map[key] || CLUSTER_NUMBER_KEY;
