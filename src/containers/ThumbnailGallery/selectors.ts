@@ -5,15 +5,17 @@ import {
 import { createSelector } from "reselect";
 
 import {
+    CELL_ID_KEY,
     DOWNLOAD_URL_PREFIX,
+    MITOTIC_STAGE_KEY, MITOTIC_STAGE_NAMES,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 
 import {
     getAllAlbumData,
-    getFileInfo,
+    getFullMetaDataArray,
 } from "../../state/metadata/selectors";
-import { FileInfo } from "../../state/metadata/types";
+import { MetaData } from "../../state/metadata/types";
 import {
     getClickedScatterPoints,
     getSelectedAlbum,
@@ -25,7 +27,6 @@ import {
 import {
     convertFileInfoToAICSId,
     convertFileInfoToImgSrc,
-    getFileInfoDatumFromCellId,
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
@@ -54,20 +55,24 @@ export const getIdsToShow = createSelector(
     ));
 
 export const getThumbnails = createSelector([
-        getFileInfo,
+        getFullMetaDataArray,
         getIdsToShow,
     ],
-    (fileInfo: FileInfo[], idsToShow: number[]): Thumbnail[] => {
+    (metaDataArray: MetaData[], idsToShow: number[]): Thumbnail[] => {
         const init: Thumbnail[] = [];
         return reduce(idsToShow, (acc: Thumbnail[], cellID: number) => {
-            const cellData: FileInfo | undefined = getFileInfoDatumFromCellId(fileInfo, cellID);
-            if (cellData) {
+            const fullCellData = find(metaDataArray, (datum) => (datum.file_info[CELL_ID_KEY] === cellID));
+            if (fullCellData) {
+                const cellData = fullCellData.file_info;
                 const src = convertFileInfoToImgSrc(cellData);
                 const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(cellData)}`;
+                const mitoticKey: number = fullCellData.measured_features[MITOTIC_STAGE_KEY];
+                const mitoticStage = MITOTIC_STAGE_NAMES[mitoticKey] as keyof typeof MITOTIC_STAGE_NAMES;
                 acc.push({
                     cellID: Number(cellID),
                     downloadHref,
                     labeledStructure: cellData[PROTEIN_NAME_KEY],
+                    mitoticStage,
                     src,
                 });
             }
