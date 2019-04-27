@@ -6,7 +6,7 @@ import { createSelector } from "reselect";
 
 import {
     CLUSTERS_PLOT_NAME,
-    GENERAL_PLOT_SETTINGS,
+    GENERAL_PLOT_SETTINGS, MITOTIC_COLORS, MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
@@ -36,6 +36,25 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
     return plotData.groupBy === true;
 }
 
+const getColors = (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
+    if (colorBy === PROTEIN_NAME_KEY) {
+        return map(proteinNames, (name: string, index) => {
+            return {
+                color: proteinColors[index],
+                name,
+            };
+        });
+    } else if (colorBy === MITOTIC_STAGE_KEY) {
+        return map(MITOTIC_COLORS, (value, key) => {
+            return {
+                color: value,
+                name: key,
+            };
+        });
+    }
+    return null;
+};
+
 export const getMainPlotData = createSelector(
     [
         getXValues,
@@ -59,13 +78,8 @@ export const getMainPlotData = createSelector(
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY,
-            groupSettings: colorBy === PROTEIN_NAME_KEY ? map(proteinNames, (name: string, index) => {
-                return {
-                    color: proteinColors[index],
-                    name,
-                };
-            }) : null,
+            groupBy: colorBy === PROTEIN_NAME_KEY || colorBy === MITOTIC_STAGE_KEY,
+            groupSettings: getColors(colorBy, proteinNames, proteinColors),
             groups: colorByValues,
             ids,
             x: xValues,

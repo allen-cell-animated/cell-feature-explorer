@@ -26,6 +26,14 @@ export enum MITOTIC_STAGE_NAMES {
     "Anaphase",
 }
 
+export const MITOTIC_COLORS: { [index: number]: string } = {
+    [MITOTIC_STAGE_NAMES.Anaphase]: "#c51b8a",
+    [MITOTIC_STAGE_NAMES.Metaphase]: "#43a2ca",
+    [MITOTIC_STAGE_NAMES.Prometaphase]: "#66c2a4",
+    [MITOTIC_STAGE_NAMES.Prophase]: "#fed98e",
+    [MITOTIC_STAGE_NAMES.Interphase]: "#838383",
+};
+
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
 export const SPECTRAL_KEY = "Spectral";
