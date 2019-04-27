@@ -52,7 +52,7 @@ export interface Annotation {
 export interface Thumbnail {
     downloadHref: string;
     labeledStructure: string;
-    mitoticStage: keyof typeof MITOTIC_STAGE_NAMES;
+    mitoticStage: number;
     src: string;
     cellID: number;
     empty?: boolean;

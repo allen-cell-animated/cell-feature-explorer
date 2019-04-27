@@ -88,3 +88,7 @@
 .container :global(.ant-list-item-action a) {
     color: white;
 }
+
+.stage {
+    color: var(--text-gray);
+}

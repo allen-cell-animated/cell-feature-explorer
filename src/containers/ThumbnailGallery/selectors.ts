@@ -67,12 +67,11 @@ export const getThumbnails = createSelector([
                 const src = convertFileInfoToImgSrc(cellData);
                 const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(cellData)}`;
                 const mitoticKey: number = fullCellData.measured_features[MITOTIC_STAGE_KEY];
-                const mitoticStage = MITOTIC_STAGE_NAMES[mitoticKey] as keyof typeof MITOTIC_STAGE_NAMES;
                 acc.push({
                     cellID: Number(cellID),
                     downloadHref,
                     labeledStructure: cellData[PROTEIN_NAME_KEY],
-                    mitoticStage,
+                    mitoticStage: mitoticKey,
                     src,
                 });
             }

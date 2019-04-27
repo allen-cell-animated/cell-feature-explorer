@@ -22,7 +22,10 @@ import {
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";
-import { MY_SELECTIONS_ID } from "../../constants";
+import {
+    MITOTIC_STAGE_NAMES,
+    MY_SELECTIONS_ID
+} from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";
@@ -69,6 +72,7 @@ interface ThumbnailGalleryProps {
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
+    mitoticStage?: number;
     getAlbumData: ActionCreator<RequestAction>;
     selectedCell: number;
     selectedAlbum: number;
@@ -368,6 +372,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     onMouseEnter={this.hoverCard}
                     onMouseLeave={this.unHover}
                     labeledStructure={item.labeledStructure}
+                    mitoticStage={item.mitoticStage}
                     src={item.src}
                     selected={selectedCell === item.cellID}
                     downloadHref={item.downloadHref}
