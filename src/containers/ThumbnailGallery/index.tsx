@@ -22,10 +22,7 @@ import {
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";
-import {
-    MITOTIC_STAGE_NAMES,
-    MY_SELECTIONS_ID
-} from "../../constants";
+import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
 import { RequestAction } from "../../state/metadata/types";

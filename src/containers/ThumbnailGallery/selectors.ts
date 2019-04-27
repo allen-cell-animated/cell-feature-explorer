@@ -7,7 +7,7 @@ import { createSelector } from "reselect";
 import {
     CELL_ID_KEY,
     DOWNLOAD_URL_PREFIX,
-    MITOTIC_STAGE_KEY, MITOTIC_STAGE_NAMES,
+    MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 

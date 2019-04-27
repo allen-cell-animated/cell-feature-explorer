@@ -2,8 +2,6 @@ import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
 import { AnyAction } from "redux";
 
-import { MITOTIC_STAGE_NAMES } from "../constants/index";
-
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
 

@@ -7,7 +7,10 @@ import {
 } from "antd";
 import React from "react";
 
-import { MITOTIC_STAGE_NAMES, THUMBNAIL_BASE_URL } from "../../constants";
+import {
+    MITOTIC_STAGE_NAMES,
+    THUMBNAIL_BASE_URL,
+} from "../../constants";
 import {
     DeselectPointAction,
     SelectCellIn3DAction,
