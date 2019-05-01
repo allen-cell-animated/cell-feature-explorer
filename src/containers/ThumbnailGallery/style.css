@@ -4,10 +4,11 @@
     flex-flow: row;
 }
 .gallery-header {
+    margin: auto;
     padding: 1em 1em 1em 0em;
+    margin-right: 333px;
     display: flex;
     flex-flow: row wrap;
-    margin: auto;
     justify-content: space-between;
     & :global(.ant-btn) {
           margin-top: 3px;
@@ -98,6 +99,10 @@
 /* collapsed sider styling*/
 :global(.ant-layout-sider-collapsed) .container {
     padding: 0;
+}
+
+:global(.ant-layout-sider-collapsed) .gallery-header {
+    margin: auto;
 }
 
 :global(.ant-layout-sider-collapsed .ant-list-item-meta-content),

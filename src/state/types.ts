@@ -2,10 +2,7 @@ import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
 import { AnyAction } from "redux";
 
-import {
-    FileInfo,
-    MetadataStateBranch,
-} from "./metadata/types";
+import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
 
 export type NumberOrString = number | string;
@@ -53,6 +50,7 @@ export interface Annotation {
 export interface Thumbnail {
     downloadHref: string;
     labeledStructure: string;
+    mitoticStage: number;
     src: string;
     cellID: number;
     empty?: boolean;

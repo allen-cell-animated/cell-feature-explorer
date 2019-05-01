@@ -33,6 +33,10 @@ const BASE_PLUGINS = [
             {
                 from: path.resolve(__dirname, '../src/data', 'cell-line-def.json'),
                 to: 'data'
+            },
+            {
+                from: path.resolve(__dirname, '../src/data', 'albums.json'),
+                to: 'data'
             }
         ]
     ),

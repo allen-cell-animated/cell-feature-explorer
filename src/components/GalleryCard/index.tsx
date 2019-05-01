@@ -5,10 +5,12 @@ import {
     Icon,
     List,
 } from "antd";
-import { map } from "lodash";
 import React from "react";
 
-import { THUMBNAIL_BASE_URL } from "../../constants";
+import {
+    MITOTIC_STAGE_NAMES,
+    THUMBNAIL_BASE_URL,
+} from "../../constants";
 import {
     DeselectPointAction,
     SelectCellIn3DAction,
@@ -22,6 +24,7 @@ interface GalleryCardProps {
     selected: boolean;
     downloadHref: string;
     cellID: number;
+    mitoticStage?: number;
     handleDeselectPoint: (payload: number) => DeselectPointAction;
     handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
     empty?: boolean;
@@ -73,6 +76,12 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         ),
     ];
 
+    let mitoticStage;
+
+    if (props.mitoticStage !== undefined) {
+        mitoticStage = MITOTIC_STAGE_NAMES[props.mitoticStage] as keyof typeof MITOTIC_STAGE_NAMES;
+    }
+
     return (
         <List.Item
             key={props.cellID}
@@ -103,7 +112,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 )}
                 description={props.cellID}
             />
-                { !props.empty &&
+                {mitoticStage && <span className={styles.stage}>{mitoticStage}</span>}
+                {!props.empty &&
                         <div className={styles.actionList}>
                             {actions}
                         </div>

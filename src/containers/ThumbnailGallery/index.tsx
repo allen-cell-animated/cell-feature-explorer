@@ -69,6 +69,7 @@ interface ThumbnailGalleryProps {
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
+    mitoticStage?: number;
     getAlbumData: ActionCreator<RequestAction>;
     selectedCell: number;
     selectedAlbum: number;
@@ -368,6 +369,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     onMouseEnter={this.hoverCard}
                     onMouseLeave={this.unHover}
                     labeledStructure={item.labeledStructure}
+                    mitoticStage={item.mitoticStage}
                     src={item.src}
                     selected={selectedCell === item.cellID}
                     downloadHref={item.downloadHref}

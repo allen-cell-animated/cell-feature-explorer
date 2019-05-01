@@ -16,6 +16,23 @@ export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId/DisplayName";
 export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
+export const MITOTIC_STAGE_KEY = "Interphase and Mitotic Stages (stage)";
+
+export enum MITOTIC_STAGE_NAMES {
+    "Interphase" = 0,
+    "Prophase",
+    "Prometaphase",
+    "Metaphase",
+    "Anaphase",
+}
+
+export const MITOTIC_COLORS: { [index: number]: string } = {
+    [MITOTIC_STAGE_NAMES.Anaphase]: "#c51b8a",
+    [MITOTIC_STAGE_NAMES.Metaphase]: "#43a2ca",
+    [MITOTIC_STAGE_NAMES.Prometaphase]: "#66c2a4",
+    [MITOTIC_STAGE_NAMES.Prophase]: "#fed98e",
+    [MITOTIC_STAGE_NAMES.Interphase]: "#838383",
+};
 
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
