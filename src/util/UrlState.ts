@@ -21,7 +21,7 @@ import {
     changeAxis,
     selectAlbum,
     selectCellFor3DViewer,
-    selectPoint,
+    selectPoint, toggleGallery,
 } from "../state/selection/actions";
 import { SelectionStateBranch } from "../state/selection/types";
 
@@ -32,6 +32,7 @@ export enum URLSearchParam {
     plotByOnY = "plotByOnY",
     selectedPoint = "selectedPoint",
     selectedAlbum = "selectedAlbum",
+    galleryCollapsed = "galleryCollapsed",
 }
 
 type StateValue = string | number | number[] | boolean;
@@ -114,6 +115,7 @@ export default class UrlState {
             return selectCellFor3DAction;
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
+        [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => toggleGallery(galleryCollapsed === "true"),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
         [URLSearchParam.selectedAlbum]: (album) => selectAlbum(Number(album)),
@@ -137,6 +139,7 @@ export default class UrlState {
             return base;
         },
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
+        [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => ({ galleryCollapsed: galleryCollapsed === "true" }),
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
         [URLSearchParam.selectedAlbum]: (album) => ({ selectedAlbum: Number(album) }),
@@ -146,6 +149,7 @@ export default class UrlState {
     private static stateToUrlParamMap: StateToUrlSearchParamMap = {
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
+        galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
         selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
         selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as number[]), String) }),
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
