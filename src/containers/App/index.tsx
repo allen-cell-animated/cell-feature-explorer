@@ -4,18 +4,12 @@ import {
 } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
-import { connect } from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 
-import {
-    getSelected3DCell,
-    getSelected3DCellCellLine,
-    getSelected3DCellFOV,
-    getSelected3DCellLabeledProtein,
-    getSelected3DCellLabeledStructure,
-} from "../../state/selection/selectors";
+import selectionStateBranch from "../../state/selection";
+import { BoolToggleAction } from "../../state/selection/types";
 
 import BackToPlot from "../../components/BackToPlot/index";
-
 import CellViewer from "../../components/CellViewer/index";
 import ColorByMenu from "../../containers/ColorByMenu";
 import MainPlotContainer from "../MainPlotContainer";
@@ -32,11 +26,13 @@ const {
 const styles = require("./style.css");
 
 interface AppProps {
+    galleryCollapsed: boolean;
     selected3DCell: string;
     selected3DCellFOV: string;
     selected3DCellCellLine: string;
     selected3DCellStructureName: string;
     selected3DCellProteinName: string;
+    toggleGallery: ActionCreator<BoolToggleAction>;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -44,7 +40,6 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
-        galleryCollapsed: true,
         openKeys: [App.panelKeys[0]],
     };
 
@@ -52,7 +47,6 @@ class App extends React.Component<AppProps, {}> {
         super(props);
         this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
         this.onPanelClicked = this.onPanelClicked.bind(this);
-        this.toggleGallery = this.toggleGallery.bind(this);
     }
 
     public onSelectionToolUsed() {
@@ -63,21 +57,18 @@ class App extends React.Component<AppProps, {}> {
         this.setState({openKeys: value});
     }
 
-    public toggleGallery(value: boolean) {
-        this.setState({galleryCollapsed: value});
-    }
-
     public render() {
         const {
+            galleryCollapsed,
             selected3DCell,
             selected3DCellFOV,
             selected3DCellCellLine,
             selected3DCellProteinName,
             selected3DCellStructureName,
+            toggleGallery,
         } = this.props;
 
         const {
-            galleryCollapsed,
             openKeys,
             defaultActiveKey,
         } = this.state;
@@ -93,7 +84,7 @@ class App extends React.Component<AppProps, {}> {
                         width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
-                        onCollapse={this.toggleGallery}
+                        onCollapse={toggleGallery}
                         defaultCollapsed={true}
                         collapsedWidth={100}
                         className={styles.sider}
@@ -101,7 +92,7 @@ class App extends React.Component<AppProps, {}> {
                     >
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
-                            toggleGallery={this.toggleGallery}
+                            toggleGallery={toggleGallery}
                         />
                     </Sider>
                     <Layout
@@ -175,12 +166,17 @@ class App extends React.Component<AppProps, {}> {
 
 function mapStateToProps(state: State) {
     return {
-        selected3DCell: getSelected3DCell(state),
-        selected3DCellCellLine: getSelected3DCellCellLine(state),
-        selected3DCellFOV: getSelected3DCellFOV(state),
-        selected3DCellProteinName: getSelected3DCellLabeledProtein(state),
-        selected3DCellStructureName: getSelected3DCellLabeledStructure(state),
-        };
+        galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
+        selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
+        selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
+        selected3DCellFOV: selectionStateBranch.selectors.getSelected3DCellFOV(state),
+        selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(state),
+        selected3DCellStructureName: selectionStateBranch.selectors.getSelected3DCellLabeledStructure(state),
+    };
 }
 
-export default connect(mapStateToProps, null)(App);
+const dispatchToPropsMap = {
+    toggleGallery: selectionStateBranch.actions.toggleGallery,
+};
+
+export default connect(mapStateToProps, dispatchToPropsMap)(App);

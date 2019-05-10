@@ -19,6 +19,7 @@ import {
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
+    TOGGLE_GALLERY_OPEN_CLOSE,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -162,5 +163,12 @@ export function selectAlbum(payload: number): SelectAlbumAction {
     return {
         payload,
         type: CHANGE_SELECTED_ALBUM,
+    };
+}
+
+export function toggleGallery(payload: boolean): BoolToggleAction {
+    return {
+        payload,
+        type: TOGGLE_GALLERY_OPEN_CLOSE,
     };
 }
