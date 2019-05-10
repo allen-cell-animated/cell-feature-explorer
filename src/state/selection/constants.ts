@@ -32,6 +32,7 @@ export const SYNC_STATE_WITH_URL = makeConstant("select", "sync-with-url");
 export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered-point");
 export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
 export const CHANGE_SELECTED_ALBUM = makeConstant("selection", "change-selected-album");
+export const TOGGLE_GALLERY_OPEN_CLOSE = makeConstant("selection", "toggle-gallery");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";

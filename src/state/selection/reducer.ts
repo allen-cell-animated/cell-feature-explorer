@@ -33,6 +33,7 @@ import {
     TOGGLE_APPLY_SELECTION_SET_COLOR,
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
+    TOGGLE_GALLERY_OPEN_CLOSE,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -63,6 +64,7 @@ export const initialState = {
         type: "",
     },
     filterExclude: [],
+    galleryCollapsed: true,
     hoveredCardId: -1,
     hoveredPointId: -1,
     mousePosition: {
@@ -211,6 +213,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: SelectAlbumAction) => ({
             ...state,
             selectedAlbum: action.payload,
+        }),
+    },
+    [TOGGLE_GALLERY_OPEN_CLOSE]: {
+        accepts: (action: AnyAction): action is BoolToggleAction => action.type === TOGGLE_GALLERY_OPEN_CLOSE,
+        perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
+            ...state,
+            galleryCollapsed: action.payload,
         }),
     },
 };
