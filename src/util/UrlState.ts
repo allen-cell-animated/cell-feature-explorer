@@ -21,7 +21,8 @@ import {
     changeAxis,
     selectAlbum,
     selectCellFor3DViewer,
-    selectPoint, toggleGallery,
+    selectPoint,
+    toggleGallery,
 } from "../state/selection/actions";
 import { SelectionStateBranch } from "../state/selection/types";
 
