@@ -217,7 +217,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
     },
     [TOGGLE_GALLERY_OPEN_CLOSE]: {
         accepts: (action: AnyAction): action is BoolToggleAction => action.type === TOGGLE_GALLERY_OPEN_CLOSE,
-        perform: (state: SelectionStateBranch, action: SelectAlbumAction) => ({
+        perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             galleryCollapsed: action.payload,
         }),
