@@ -283,9 +283,9 @@
     },
     {
         "StructureId/Name": "Plasma membrane",
-        "ProteinId/DisplayName": "None",
+        "ProteinId/DisplayName": "CAAX domain of K-Ras",
         "CellLineId/Name": "AICS-54",
-        "ProteinId/Name": "None"
+        "ProteinId/Name": "CAAX domain of K-Ras"
     },
     {
         "StructureId/Name": "Gap junctions",
@@ -514,5 +514,17 @@
         "ProteinId/DisplayName": "Histone-lysine N-methyltransferase EZH2",
         "CellLineId/Name": "AICS-95",
         "ProteinId/Name": "Histone-lysine N-methyltransferase EZH2"
+    },
+    {
+        "StructureId/Name": "Nuclear foci",
+        "ProteinId/DisplayName": "Proliferating cell nuclear antigen",
+        "CellLineId/Name": "AICS-88",
+        "ProteinId/Name": "Proliferating cell nuclear antigen"
+    },
+    {
+        "StructureId/Name": "RNA polymerase II",
+        "ProteinId/DisplayName": "DNA-directed RNA polymerase II subunit RPB1",
+        "CellLineId/Name": "AICS-96",
+        "ProteinId/Name": "DNA-directed RNA polymerase II subunit RPB1"
     }
 ]
