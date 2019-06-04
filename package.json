@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@aics/browsing-context-messaging": "~1.1",
-    "ac-3d-viewer": "^0.2.5",
+    "ac-3d-viewer": "^0.2.6",
     "antd": "^3.14.1",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
