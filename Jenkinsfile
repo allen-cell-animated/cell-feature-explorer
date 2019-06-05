@@ -27,13 +27,12 @@ pipeline {
             }
         }
 
-        stage ("lint, typeCheck, and test") {
+        stage ("lint, and test") {
             when {
                 not { expression { return params.PROMOTE_ARTIFACT } }
             }
             steps {
                 sh "./gradlew lint"
-                sh "./gradlew typeCheck"
                 sh "./gradlew test"
             }
         }
