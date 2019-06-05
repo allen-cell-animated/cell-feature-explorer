@@ -6,16 +6,14 @@ import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 
-import selectionStateBranch from "../../state/selection";
-import { BoolToggleAction } from "../../state/selection/types";
-
 import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
 import ColorByMenu from "../../containers/ColorByMenu";
+import selectionStateBranch from "../../state/selection";
+import { BoolToggleAction } from "../../state/selection/types";
+import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-
-import { State } from "../../state/types";
 
 const {
     Content,

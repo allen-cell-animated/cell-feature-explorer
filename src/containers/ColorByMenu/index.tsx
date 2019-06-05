@@ -7,7 +7,6 @@ import {
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { RadioChangeEvent } from "antd/es/radio";
-
 import {
     filter,
     includes,
@@ -19,6 +18,9 @@ import {
     connect,
 } from "react-redux";
 
+import BarChart from "../../components/BarChart";
+import ColorBySwitcher from "../../components/ColorBySwitcher";
+import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
     AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
@@ -28,9 +30,7 @@ import {
     PROTEIN_NAME_KEY,
     SPECTRAL_KEY,
 } from "../../constants";
-
 import metadataStateBranch from "../../state/metadata";
-
 import selectionStateBranch from "../../state/selection";
 import {
     CLUSTERING_LABEL,
@@ -46,14 +46,9 @@ import {
     DownloadConfig,
     SelectAxisAction,
 } from "../../state/selection/types";
-
 import {
     State,
 } from "../../state/types";
-
-import BarChart from "../../components/BarChart";
-import ColorBySwitcher from "../../components/ColorBySwitcher";
-import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import AxisDropDown from "../AxisDropDown";
 
 import {

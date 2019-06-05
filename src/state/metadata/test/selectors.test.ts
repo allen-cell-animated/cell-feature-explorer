@@ -1,9 +1,8 @@
 import { expect } from "chai";
 import { uniq } from "lodash";
 
-import { State } from "../../types";
-
 import { mockState } from "../../test/mocks";
+import { State } from "../../types";
 import {
     getFeatureNames,
     getProteinNames, getProteinTotals,

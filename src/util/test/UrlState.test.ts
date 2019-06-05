@@ -15,7 +15,6 @@ import {
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y
 } from "../../state/selection/constants";
-
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {

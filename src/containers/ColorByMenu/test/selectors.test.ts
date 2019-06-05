@@ -1,10 +1,9 @@
 import { expect } from "chai";
 import { map, reduce, uniq } from "lodash";
 
-import { State } from "../../../state/types";
-
 import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
+import { State } from "../../../state/types";
 import {
     getInteractivePanelData,
     getListOfCellIdsByDownloadConfig,

@@ -33,7 +33,6 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
-
 import { NumberOrString } from "../../state/types";
 import { convertFileInfoToAICSId } from "../../state/util";
 

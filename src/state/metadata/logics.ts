@@ -16,7 +16,6 @@ import {
     CELL_LINE_NAME_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
-
 import {
     changeClusteringNumber,
     selectCellFor3DViewer,

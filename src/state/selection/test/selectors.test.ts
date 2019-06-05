@@ -6,7 +6,6 @@ import {
     NumberOrString,
     State,
 } from "../../types";
-
 import {
     getAnnotations,
     getSelectedGroupKeys,

@@ -1,6 +1,5 @@
 import { initialState as metadataInitialState } from "./metadata/reducer";
 import { initialState as selectionInitialState } from "./selection/reducer";
-
 import { State } from "./types";
 
 export { default as metadata } from "./metadata";

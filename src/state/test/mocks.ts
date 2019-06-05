@@ -6,16 +6,13 @@ import {
     FOV_ID_KEY, KMEANS_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
-
+import { MetaData } from "../metadata/types";
 import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y,
 } from "../selection/constants";
-
-import { MetaData } from "../metadata/types";
-
 import { State } from "../types";
 
 export const makeFeatureData = (

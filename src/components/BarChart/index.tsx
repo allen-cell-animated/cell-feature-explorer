@@ -3,7 +3,6 @@ import { map } from "lodash";
 import React from "react";
 
 import { PanelData } from "../../containers/ColorByMenu/types";
-
 import { DownloadConfig } from "../../state/selection/types";
 import InteractiveRow from "../InteractiveRow";
 

@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { AnyAction } from "redux";
 
 import { APP_ID } from "../../constants";
-
 import { TypeToDescriptionMap } from "../types";
 import {
     batchActions,

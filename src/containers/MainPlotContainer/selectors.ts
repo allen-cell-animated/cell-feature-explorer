@@ -1,7 +1,6 @@
 import {
     map,
 } from "lodash";
-
 import { createSelector } from "reselect";
 
 import {
@@ -13,7 +12,6 @@ import {
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-
 import { getProteinNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
