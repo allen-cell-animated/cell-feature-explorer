@@ -74,7 +74,6 @@ class App extends React.Component<AppProps, {}> {
         return (
                 <Layout
                     className={styles.container}
-                    tagName="section"
                 >
                     <BackToPlot />
 
@@ -94,17 +93,14 @@ class App extends React.Component<AppProps, {}> {
                         />
                     </Sider>
                     <Layout
-                        tagName="section"
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
                         <Header
                             className={styles.headerSection}
-                            tagName="header"
                         >
                             <h2><Icon type="dot-chart"/> Plot</h2>
                         </Header>
                     <Layout
-                        tagName="section"
                     >
 
                         <Sider
@@ -122,7 +118,6 @@ class App extends React.Component<AppProps, {}> {
                         </Sider>
                         <Content
                             className={styles.content}
-                            tagName="main"
                         >
                             <div className={styles.plotView} >
                                 <MainPlotContainer
@@ -138,7 +133,6 @@ class App extends React.Component<AppProps, {}> {
                     <div className={styles.cellViewerContainer}>
                         <Header
                             className={styles.headerSection}
-                            tagName="header"
                         >
                             <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
                             {selected3DCell && selected3DCellStructureName && (

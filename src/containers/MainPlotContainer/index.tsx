@@ -5,7 +5,6 @@ import {
     map,
 } from "lodash";
 import {
-    Data,
     PlotSelectionEvent,
 } from "plotly.js";
 import * as React from "react";
@@ -48,17 +47,17 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
-    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
     clickedPoints: number[];
-    hoveredPointData: FileInfo;
-    plotDataArray: Data[];
-    galleryCollapsed: boolean;
-    mousePosition: MousePosition;
     filtersToExclude: string[];
-    handleSelectionToolUsed: () => void;
-    handleSelectPoint: ActionCreator<SelectPointAction>;
+    hoveredPointData: FileInfo;
+    mousePosition: MousePosition;
+    plotDataArray: any;
+    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
+    galleryCollapsed: boolean;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
+    handleSelectionToolUsed: () => void;
+    handleSelectPoint: ActionCreator<SelectPointAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
