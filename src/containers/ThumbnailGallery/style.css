@@ -1,12 +1,14 @@
 @import "../../styles/colors.css";
 .container {
+    --sideBarWidth: 333px;
+    --cardWidth: 300px;
     padding: 0em 1em;
     flex-flow: row;
 }
 .gallery-header {
     margin: auto;
     padding: 1em 1em 1em 0em;
-    margin-right: 333px;
+    margin-right:  var(--sideBarWidth);
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -27,7 +29,7 @@
 
 .album-side-bar {
     padding-right: 32px;
-    min-width: 333px;
+    min-width: var(--sideBarWidth);
     border-left: 1px solid var(--border-gray);
     position: fixed;
     right: 0;
@@ -42,7 +44,7 @@
 }
 
 .list {
-    margin-right: 333px;
+    margin-right: var(--sideBarWidth);
 }
 .list :global(.ant-row){
     display: flex;
@@ -81,6 +83,15 @@
     justify-content: space-around;
 }
 
+.search-for-cell {
+    max-width: var(--cardWidth);
+}
+
+.search-for-cell :global(.ant-form-item-children-icon) {
+    /* to keep feedback icon from overlapping search icon*/
+    right: 20px!important;
+}
+
 /*LIST STYLES*/
 
 .container :global(.ant-avatar) {
@@ -94,6 +105,10 @@
 
 .container :global(.ant-list-item-meta-avatar) {
     margin-right: 0;
+}
+
+.gallery-grid {
+    order: 1;
 }
 
 /* collapsed sider styling*/
@@ -148,4 +163,20 @@
 
 :global(.ant-layout-sider-collapsed .ant-form-item){
     margin-bottom: 0;
+}
+
+@media screen and (max-width:733px) {
+    .container {
+        flex-flow: column;
+    }
+    .album-side-bar{
+        position: initial;
+        border-color: transparent;
+    }
+    .list {
+        margin-right: 0;
+    }
+    .gallery-grid {
+        order: 2;
+    }
 }
