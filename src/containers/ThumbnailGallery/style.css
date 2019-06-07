@@ -179,4 +179,7 @@
     .gallery-grid {
         order: 2;
     }
+    .gallery-header {
+        margin-right: 0;
+    }
 }
