@@ -10,7 +10,6 @@ import {
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
-
 import {
     getAllAlbumData,
     getFullMetaDataArray,

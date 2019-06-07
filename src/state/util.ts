@@ -12,7 +12,6 @@ import {
 } from "../constants";
 
 import { FileInfo } from "./metadata/types";
-
 import {
     BatchedAction,
     TypeToDescriptionMap,

@@ -11,7 +11,6 @@ import Plot from "react-plotly.js";
 import {
     GENERAL_PLOT_SETTINGS,
 } from "../../constants";
-
 import {
     Annotation,
 } from "../../state/types";

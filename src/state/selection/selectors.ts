@@ -19,7 +19,6 @@ import {
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
 } from "../../constants";
-
 import {
     getClusterData,
     getFileInfo,

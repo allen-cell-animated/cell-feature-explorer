@@ -1,8 +1,7 @@
+import { MessageTarget } from "@aics/browsing-context-messaging";
 import "core-js/es6/map";
 import "core-js/es6/promise";
 import "core-js/es6/set";
-
-import { MessageTarget } from "@aics/browsing-context-messaging";
 import createHistory from "history/createBrowserHistory";
 import Pram from "pram";
 import * as React from "react";

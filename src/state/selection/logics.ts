@@ -1,7 +1,6 @@
 import { createLogic } from "redux-logic";
 
 import { UrlState } from "../../util";
-
 import {
     ReduxLogicDeps,
     ReduxLogicNextCb,

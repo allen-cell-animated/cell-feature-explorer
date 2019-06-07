@@ -7,7 +7,6 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
 import { DownloadConfig } from "../../state/selection/types";
-
 import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 const styles = require("./style.css");

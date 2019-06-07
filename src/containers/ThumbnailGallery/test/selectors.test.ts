@@ -5,7 +5,6 @@ import {
     State,
     Thumbnail,
 } from "../../../state/types";
-
 import {
     getThumbnails,
 } from "../selectors";

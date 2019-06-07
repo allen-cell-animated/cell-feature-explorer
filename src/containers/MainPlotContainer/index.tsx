@@ -5,7 +5,6 @@ import {
     map,
 } from "lodash";
 import {
-    Data,
     PlotSelectionEvent,
 } from "plotly.js";
 import * as React from "react";
@@ -17,7 +16,6 @@ import {
 import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
-
 import {
     CELL_ID_KEY,
     PROTEIN_NAME_KEY,
@@ -41,7 +39,6 @@ import {
     State,
 } from "../../state/types";
 import { convertFileInfoToImgSrc } from "../../state/util";
-
 import AxisDropDown from "../AxisDropDown";
 
 import { getScatterPlotDataArray } from "./selectors";
@@ -50,17 +47,17 @@ const styles = require("./style.css");
 
 interface MainPlotContainerProps {
     annotations: Annotation[];
-    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
     clickedPoints: number[];
-    hoveredPointData: FileInfo;
-    plotDataArray: Data[];
-    galleryCollapsed: boolean;
-    mousePosition: MousePosition;
     filtersToExclude: string[];
-    handleSelectionToolUsed: () => void;
-    handleSelectPoint: ActionCreator<SelectPointAction>;
+    hoveredPointData: FileInfo;
+    mousePosition: MousePosition;
+    plotDataArray: any;
+    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
+    galleryCollapsed: boolean;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
+    handleSelectionToolUsed: () => void;
+    handleSelectPoint: ActionCreator<SelectPointAction>;
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;

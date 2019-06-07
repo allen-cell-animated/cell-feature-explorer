@@ -6,16 +6,14 @@ import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 
-import selectionStateBranch from "../../state/selection";
-import { BoolToggleAction } from "../../state/selection/types";
-
 import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
 import ColorByMenu from "../../containers/ColorByMenu";
+import selectionStateBranch from "../../state/selection";
+import { BoolToggleAction } from "../../state/selection/types";
+import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-
-import { State } from "../../state/types";
 
 const {
     Content,
@@ -76,7 +74,6 @@ class App extends React.Component<AppProps, {}> {
         return (
                 <Layout
                     className={styles.container}
-                    tagName="section"
                 >
                     <BackToPlot />
 
@@ -96,17 +93,14 @@ class App extends React.Component<AppProps, {}> {
                         />
                     </Sider>
                     <Layout
-                        tagName="section"
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
                         <Header
                             className={styles.headerSection}
-                            tagName="header"
                         >
                             <h2><Icon type="dot-chart"/> Plot</h2>
                         </Header>
                     <Layout
-                        tagName="section"
                     >
 
                         <Sider
@@ -124,7 +118,6 @@ class App extends React.Component<AppProps, {}> {
                         </Sider>
                         <Content
                             className={styles.content}
-                            tagName="main"
                         >
                             <div className={styles.plotView} >
                                 <MainPlotContainer
@@ -140,7 +133,6 @@ class App extends React.Component<AppProps, {}> {
                     <div className={styles.cellViewerContainer}>
                         <Header
                             className={styles.headerSection}
-                            tagName="header"
                         >
                             <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
                             {selected3DCell && selected3DCellStructureName && (

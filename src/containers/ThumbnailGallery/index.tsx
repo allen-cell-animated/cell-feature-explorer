@@ -173,8 +173,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         }
     }
 
-    // This is a placeholder to get the functionally in, but not what the final UI will be
-    // TODO: create UI based on design
     public renderAlbumButtons() {
         const {
             albumData,
@@ -223,7 +221,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public selectCell(cellId: number): SelectCellIn3DAction {
         const { handleOpenIn3D } = this.props;
-        setTimeout(window.scroll({
+        window.setTimeout(window.scroll({
             behavior: "smooth",
             left: 0,
             top: 2500,
@@ -239,6 +237,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             selectedAlbum,
             selectedAlbumName,
     } = this.props;
+
+        // TypeScript didnt like dataSource having the empty card. Data is already typed, so this seemed fine
+        const dataSource: any = data.length > 0 ? data : [{empty: true}];
+
         return (
             <Row id="gallery" className={styles.container} type="flex" gutter={32} justify="space-between">
                 <Col className={styles.galleryGrid}>
@@ -266,7 +268,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             gutter: 16,
                         }}
                         className={styles.list}
-                        dataSource={data.length > 0 ? data : [{empty: true}]}
+                        dataSource={dataSource}
                         renderItem={this.renderGalleryCard}
                         footer={<div ref={this.endOfAlbum} />}
                     />
@@ -302,6 +304,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         const {
             data,
         } = this.props;
+        // TypeScript didnt like dataSource having the empty card. Data is already typed, so this seemed fine
+        const dataSource: any = data.length > 0 ? data : [{empty: true}];
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
@@ -310,7 +314,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 </div>
                 <List
                     itemLayout="horizontal"
-                    dataSource={data.length > 0 ? data : [{empty: true}]}
+                    dataSource={dataSource}
                     renderItem={this.renderMinGalleryCard}
                     footer={<div ref={this.endOfAlbum} />}
                 />

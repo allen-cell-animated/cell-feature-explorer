@@ -44,19 +44,19 @@ export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
 // These lines are typing and exporting variables created by webpack DefinePlugin
 declare const CELL_VIEWER_URL: string;
 const _CELL_VIEWER_URL = CELL_VIEWER_URL;
-export {_CELL_VIEWER_URL as CELL_VIEWER_URL};
+export { _CELL_VIEWER_URL as CELL_VIEWER_URL };
 
 declare const BASE_API_URL: string;
 const _BASE_API_URL = BASE_API_URL;
-export {_BASE_API_URL as BASE_API_URL};
+export { _BASE_API_URL as BASE_API_URL };
 
 declare const THUMBNAIL_BASE_URL: string;
 const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
-export {_THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL};
+export { _THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL };
 
 declare const DOWNLOAD_URL_PREFIX: string;
 const _DOWNLOAD_URL_PREFIX = DOWNLOAD_URL_PREFIX;
-export {_DOWNLOAD_URL_PREFIX as DOWNLOAD_URL_PREFIX};
+export { _DOWNLOAD_URL_PREFIX as DOWNLOAD_URL_PREFIX };
 
 export const MY_SELECTIONS_ID = 0;
 
