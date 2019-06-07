@@ -63,6 +63,22 @@ export const INITIAL_COLORS = [
     "#c26cff",
     "#aeaeae",
     "#ff44ff",
+    "#6a3d9a",
+    "#ffff99",
+    "#ff00de",
+    "#24bcfa",
+    "#84df11",
+    "#ecc560",
+    "#ff72ff",
+    "#f58117",
+    "#f8311b",
+    "#5791db",
+    "#11a89a",
+    "#a70009",
+    "#ff6200",
+    "#fddb02",
+    "#f7db78",
+    "#f9a558",
     ];
 
 export const INITIAL_SELECTION_COLORS = [
