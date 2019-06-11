@@ -1,14 +1,18 @@
 @import "../../styles/colors.css";
-.container {
-    --sideBarWidth: 333px;
+:root {
+    --side-bar-width: 333px;
     --cardWidth: 300px;
+}
+
+.container {
+
     padding: 0em 1em;
     flex-flow: row;
 }
 .gallery-header {
     margin: auto;
     padding: 1em 1em 1em 0em;
-    margin-right:  var(--sideBarWidth);
+    margin-right:  var(--side-bar-width);
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -29,7 +33,7 @@
 
 .album-side-bar {
     padding-right: 32px;
-    min-width: var(--sideBarWidth);
+    min-width: var(--side-bar-width);
     border-left: 1px solid var(--border-gray);
     position: fixed;
     right: 0;
@@ -44,7 +48,7 @@
 }
 
 .list {
-    margin-right: var(--sideBarWidth);
+    margin-right: var(--side-bar-width);
 }
 .list :global(.ant-row){
     display: flex;
