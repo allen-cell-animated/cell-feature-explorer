@@ -10,9 +10,7 @@
   "scripts": {
     "dev": "webpack-dev-server --hot --public --config webpack.dev.js",
     "build": "webpack --config ./webpack/webpack.config.js  --env.env production",
-    "start": "npm run build && node ./server.js -p 9020",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist -o github"
+    "start": "npm run build && node ./server.js -p 9020"
   },
   "author": "",
   "license": "ISC",
@@ -39,7 +37,6 @@
     "enzyme-adapter-react-16": "^1.0.2",
     "extract-text-webpack-plugin": "^3.0.1",
     "fork-ts-checker-webpack-plugin": "^0.4.0",
-    "gh-pages": "^2.0.1",
     "html-webpack-plugin": "^2.30.1",
     "jsdom": "^11.10.0",
     "jsdom-global": "3.0.2",
