@@ -15,6 +15,10 @@
     right: 18%!important;
 }
 
+:global(.modebar-container) {
+    position: initial!important;
+}
+
 :global(.modebar-btn.active){
     background-color: var(--purple);
     color: white;
