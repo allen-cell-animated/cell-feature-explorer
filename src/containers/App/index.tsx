@@ -1,3 +1,5 @@
+import AllenCellHeader from "allencell-nav-bar";
+import "allencell-nav-bar/style/style.css";
 import {
     Icon,
     Layout,
@@ -14,7 +16,6 @@ import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-
 const {
     Content,
     Header,
@@ -38,6 +39,7 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
+        init: true,
         openKeys: [App.panelKeys[0]],
     };
 
@@ -45,6 +47,12 @@ class App extends React.Component<AppProps, {}> {
         super(props);
         this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
         this.onPanelClicked = this.onPanelClicked.bind(this);
+    }
+
+    public componentDidMount() {
+        setTimeout(() => {
+            this.setState({init: false});
+        }, 1000);
     }
 
     public onSelectionToolUsed() {
@@ -71,21 +79,23 @@ class App extends React.Component<AppProps, {}> {
             defaultActiveKey,
         } = this.state;
 
+
         return (
+
                 <Layout
                     className={styles.container}
                 >
                     <BackToPlot />
-
                     <Sider
                         width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
                         onCollapse={toggleGallery}
                         defaultCollapsed={true}
-                        collapsedWidth={100}
+                        collapsedWidth={this.state.init ? 0 : 100}
                         className={styles.sider}
                         reverseArrow={true}
+
                     >
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
@@ -95,6 +105,7 @@ class App extends React.Component<AppProps, {}> {
                     <Layout
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
+                        <AllenCellHeader className={this.state.init ? "" : "move-left"}/>
                         <Header
                             className={styles.headerSection}
                         >

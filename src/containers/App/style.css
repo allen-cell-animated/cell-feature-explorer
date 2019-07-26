@@ -35,6 +35,15 @@
     display: block;
     border-top: 0.5px solid var(--dimgray);
     border-bottom: 0.5px solid var(--dimgray);
+    margin-top: 60px;
+}
+
+:global(.allencell-header) {
+    transition: padding-right 0.2s;
+}
+
+:global(.allencell-header.move-left) {
+    padding-right: 150px;
 }
 
 .sider {
@@ -48,6 +57,10 @@
 
 .sider :global(.ant-layout-sider-children) {
     overflow: scroll;
+}
+
+.sider :global(.ant-layout-sider-zero-width-trigger.ant-layout-sider-zero-width-trigger-right) {
+    display: none;
 }
 
 :global(.ant-collapse),
@@ -83,7 +96,7 @@
       display: block;
       position: absolute;
       left: 3.5px;
-    top: 50%;
+      top: 50%;
       /*line-height: 100vh;*/
 
 
