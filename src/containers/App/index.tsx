@@ -39,7 +39,7 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
-        init: true,
+        hideGallery: true,
         openKeys: [App.panelKeys[0]],
     };
 
@@ -50,8 +50,9 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public componentDidMount() {
+        // animation to move gallery in and links over
         setTimeout(() => {
-            this.setState({init: false});
+            this.setState({hideGallery: false});
         }, 1000);
     }
 
@@ -75,7 +76,7 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
 
         const {
-            init,
+            hideGallery,
             openKeys,
             defaultActiveKey,
         } = this.state;
@@ -92,7 +93,7 @@ class App extends React.Component<AppProps, {}> {
                         collapsed={galleryCollapsed}
                         onCollapse={toggleGallery}
                         defaultCollapsed={true}
-                        collapsedWidth={init ? 0 : 100}
+                        collapsedWidth={hideGallery ? 0 : 100}
                         className={styles.sider}
                         reverseArrow={true}
 
@@ -106,7 +107,7 @@ class App extends React.Component<AppProps, {}> {
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
                         <AllenCellHeader
-                            className={init ? "" : "move-left"}
+                            className={hideGallery ? "" : "move-left"}
                             show={true}
                         />
                         <Header
