@@ -77,7 +77,7 @@ export const getMainPlotData = createSelector(
         proteinNames
     ): GroupedPlotData | ContinuousPlotData => {
         return {
-            color: colorBy === PROTEIN_NAME_KEY ? null : colorByValues,
+            color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
             groupBy: colorBy === PROTEIN_NAME_KEY || colorBy === MITOTIC_STAGE_KEY,
             groupSettings: getColors(colorBy, proteinNames, proteinColors),
             groups: colorByValues,

@@ -221,11 +221,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public selectCell(cellId: number): SelectCellIn3DAction {
         const { handleOpenIn3D } = this.props;
-        window.setTimeout(window.scroll({
-            behavior: "smooth",
-            left: 0,
-            top: 2500,
-        }), 3000);
+        window.setTimeout(this.scrollGallery, 3000);
         this.closeGallery();
         return handleOpenIn3D(cellId);
     }
@@ -361,6 +357,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 empty={item.empty}
             />
         );
+    }
+
+    private scrollGallery() {
+        window.scroll({
+            behavior: "smooth",
+            left: 0,
+            top: 2500,
+        });
     }
 
     private renderGalleryCard(item: Thumbnail) {
