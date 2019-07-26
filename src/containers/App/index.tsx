@@ -105,7 +105,10 @@ class App extends React.Component<AppProps, {}> {
                     <Layout
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
-                        <AllenCellHeader className={init ? "" : "move-left"}/>
+                        <AllenCellHeader
+                            className={init ? "" : "move-left"}
+                            show={true}
+                        />
                         <Header
                             className={styles.headerSection}
                         >
