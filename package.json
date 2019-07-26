@@ -63,6 +63,7 @@
   "dependencies": {
     "@aics/browsing-context-messaging": "~1.1",
     "ac-3d-viewer": "^0.2.6",
+    "allencell-nav-bar": "^1.0.0",
     "antd": "^3.16.6",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
