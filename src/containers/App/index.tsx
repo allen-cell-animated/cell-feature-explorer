@@ -75,10 +75,10 @@ class App extends React.Component<AppProps, {}> {
         } = this.props;
 
         const {
+            init,
             openKeys,
             defaultActiveKey,
         } = this.state;
-
 
         return (
 
@@ -92,7 +92,7 @@ class App extends React.Component<AppProps, {}> {
                         collapsed={galleryCollapsed}
                         onCollapse={toggleGallery}
                         defaultCollapsed={true}
-                        collapsedWidth={this.state.init ? 0 : 100}
+                        collapsedWidth={init ? 0 : 100}
                         className={styles.sider}
                         reverseArrow={true}
 
@@ -105,7 +105,7 @@ class App extends React.Component<AppProps, {}> {
                     <Layout
                         className={galleryCollapsed ? styles.noBlur : styles.blur}
                     >
-                        <AllenCellHeader className={this.state.init ? "" : "move-left"}/>
+                        <AllenCellHeader className={init ? "" : "move-left"}/>
                         <Header
                             className={styles.headerSection}
                         >
