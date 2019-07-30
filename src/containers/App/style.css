@@ -30,16 +30,33 @@
     color: var(--text-gray);
 }
 
+.header-main {
+    text-align: left;
+    display: block;
+    background-color: var(--background-dim-gray);
+    padding: 15px 50px;
+    height: initial;
+}
+
+.header-main h1 {
+    margin: 0;
+}
+
 .header-section {
     text-align: center;
     display: block;
     border-top: 0.5px solid var(--dimgray);
     border-bottom: 0.5px solid var(--dimgray);
-    margin-top: 60px;
 }
 
 :global(.allencell-header) {
-    transition: padding-right 0.2s;
+    /* disabling absolute positioning */
+    position: initial;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    -o-transform: none;
+    transform: none;
 }
 
 :global(.allencell-header.move-left) {
