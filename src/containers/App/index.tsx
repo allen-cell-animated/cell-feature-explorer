@@ -1,5 +1,7 @@
+import AllenCellHeader from "allencell-nav-bar";
+import "allencell-nav-bar/style/style.css";
 import {
-    Icon,
+    Affix,
     Layout,
 } from "antd";
 import { uniq } from "lodash";
@@ -14,7 +16,6 @@ import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-
 const {
     Content,
     Header,
@@ -72,83 +73,92 @@ class App extends React.Component<AppProps, {}> {
         } = this.state;
 
         return (
+
                 <Layout
                     className={styles.container}
                 >
                     <BackToPlot />
-
-                    <Sider
-                        width="100%"
-                        collapsible={true}
-                        collapsed={galleryCollapsed}
-                        onCollapse={toggleGallery}
-                        defaultCollapsed={true}
-                        collapsedWidth={100}
-                        className={styles.sider}
-                        reverseArrow={true}
-                    >
-                        <ThumbnailGallery
-                            collapsed={galleryCollapsed}
-                            toggleGallery={toggleGallery}
-                        />
-                    </Sider>
-                    <Layout
-                        className={galleryCollapsed ? styles.noBlur : styles.blur}
-                    >
-                        <Header
-                            className={styles.headerSection}
+                    <AllenCellHeader
+                        show={true}
+                    />
+                    <Layout>
+                        <Affix>
+                            <Sider
+                                width="100%"
+                                collapsible={true}
+                                collapsed={galleryCollapsed}
+                                onCollapse={toggleGallery}
+                                defaultCollapsed={true}
+                                collapsedWidth={100}
+                                className={styles.sider}
+                                reverseArrow={true}
+                            >
+                                <ThumbnailGallery
+                                    collapsed={galleryCollapsed}
+                                    toggleGallery={toggleGallery}
+                                />
+                            </Sider>
+                        </Affix>
+                        <Layout
+                            className={galleryCollapsed ? styles.noBlur : styles.blur}
                         >
-                            <h2><Icon type="dot-chart"/> Plot</h2>
-                        </Header>
-                    <Layout
-                    >
-
-                        <Sider
-                            className={styles.colorMenu}
-                            width={450}
-                            collapsible={false}
-                            collapsedWidth={250}
-                        >
-                            <ColorByMenu
-                                panelKeys={App.panelKeys}
-                                openKeys={openKeys}
-                                defaultActiveKey={defaultActiveKey}
-                                onPanelClicked={this.onPanelClicked}
-                            />
-                        </Sider>
-                        <Content
-                            className={styles.content}
-                        >
-                            <div className={styles.plotView} >
-                                <MainPlotContainer
-                                    handleSelectionToolUsed={this.onSelectionToolUsed}
-                                    galleryCollapsed={galleryCollapsed}
+                            <Header
+                                className={styles.headerMain}
+                            >
+                                <h1> Cell Feature Explorer</h1>
+                            </Header>
+                            <Header
+                                className={styles.headerSection}
+                            >
+                                <h2>Plot</h2>
+                            </Header>
+                            <Layout
+                            >
+                                <Sider
+                                    className={styles.colorMenu}
+                                    width={450}
+                                    collapsible={false}
+                                    collapsedWidth={250}
+                                >
+                                    <ColorByMenu
+                                        panelKeys={App.panelKeys}
+                                        openKeys={openKeys}
+                                        defaultActiveKey={defaultActiveKey}
+                                        onPanelClicked={this.onPanelClicked}
+                                    />
+                                </Sider>
+                                <Content
+                                    className={styles.content}
+                                >
+                                    <div className={styles.plotView} >
+                                        <MainPlotContainer
+                                            handleSelectionToolUsed={this.onSelectionToolUsed}
+                                            galleryCollapsed={galleryCollapsed}
+                                        />
+                                    </div>
+                                </Content>
+                                <Sider />
+                            </Layout>
+                            <div className={styles.cellViewerContainer}>
+                                <Header
+                                    className={styles.headerSection}
+                                >
+                                    <h2 className={styles.header}>3D Viewer</h2>
+                                    {selected3DCell && selected3DCellStructureName && (
+                                        <h4 className={styles.selectedInfo}>
+                                            <span className={styles.label}>Viewing cell:</span> {selected3DCell},
+                                            <span className={styles.label}> Protein (structure): </span>
+                                            {selected3DCellProteinName} ({selected3DCellStructureName})
+                                        </h4>
+                                    )}
+                                </Header>
+                                <CellViewer
+                                    cellId={selected3DCell}
+                                    fovId={selected3DCellFOV}
+                                    cellLineName={selected3DCellCellLine}
                                 />
                             </div>
-                        </Content>
-                        <Sider />
-
-                    </Layout>
-
-                    <div className={styles.cellViewerContainer}>
-                        <Header
-                            className={styles.headerSection}
-                        >
-                            <h2 className={styles.header}><Icon type="sync"/> 3D Viewer</h2>
-                            {selected3DCell && selected3DCellStructureName && (
-                                <h4 className={styles.selectedInfo}>
-                                    <span className={styles.label}>Viewing cell:</span> {selected3DCell},
-                                    <span className={styles.label}> Protein (structure): </span>
-                                    {selected3DCellProteinName} ({selected3DCellStructureName})
-                                </h4>
-                            )}
-                        </Header>
-                        <CellViewer
-                            cellId={selected3DCell}
-                            fovId={selected3DCellFOV}
-                            cellLineName={selected3DCellCellLine}
-                        />
-                    </div>
+                        </Layout>
                     </Layout>
                 </Layout>
         );
