@@ -96,3 +96,9 @@ export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x"];
 export const OBS_MEMBRANE_NAMES = ["CMDRP"];
 export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
 export const OBS_DNA_NAMES = ["H3342_3", "H3342"];
+
+export const DISCRETE_MEASURES = [
+    "Cell Segmentation (complete)",
+    "Interphase and Mitosis (stage)",
+    "Interphase and Mitotic Stages (stage)",
+];

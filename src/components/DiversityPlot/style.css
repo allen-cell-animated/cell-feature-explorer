@@ -1,0 +1,12 @@
+.diversity-plots :global(.main-svg){
+    overflow: visible!important;
+}
+
+.diversity-plots  :global(.yaxislayer-above) {
+    transform: translateX(45px);
+
+}
+
+.diversity-plots :global(.svg-container) {
+    z-index: 1;
+}

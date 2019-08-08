@@ -8,6 +8,7 @@ import {
 import { createSelector } from "reselect";
 
 import {
+    CELL_ID_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 import { ClusteringDatum } from "../selection/types";
@@ -26,6 +27,10 @@ export const getAllAlbumData = (state: State) => state.metadata.albums;
 
 export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
     return map(fullMetaData, "file_info");
+});
+
+export const getAllCellIds = createSelector([getFileInfo], (fileInfo) => {
+    return map(fileInfo, CELL_ID_KEY.toString());
 });
 
 export const getMeasuredData = createSelector([getFullMetaDataArray], (fullMetaData): MeasuredFeatures[] => {
@@ -56,6 +61,17 @@ export const getProteinNames = createSelector([getFileInfo], (fileInfo: Metadata
         });
     }
 );
+
+export const getProteinEnum = createSelector([getProteinNames], (proteinNames: string[]): enum => {
+    enum ProteinNames {}
+    console.log(proteinNames)
+    proteinNames.forEach((protein, index) => {
+        ProteinNames[protein] = index;
+    });
+    console.log(ProteinNames);
+
+    return ProteinNames;
+});
 
 export const getProteinTotals = createSelector([getFileInfo, getProteinNames],
     (featureData: MetadataStateBranch, proteinNames: string[]): number[] => {

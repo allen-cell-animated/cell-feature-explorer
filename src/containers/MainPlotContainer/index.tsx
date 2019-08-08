@@ -13,9 +13,10 @@ import {
     connect,
 } from "react-redux";
 
+import DiversityPlot from "../../components/DiversityPlot";
 import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
-import PopoverCard from "../../components/PopoverCard/index";
+import PopoverCard from "../../components/PopoverCard";
 import {
     CELL_ID_KEY,
     PROTEIN_NAME_KEY,
@@ -41,7 +42,7 @@ import {
 import { convertFileInfoToImgSrc } from "../../state/util";
 import AxisDropDown from "../AxisDropDown";
 
-import { getScatterPlotDataArray } from "./selectors";
+import { getHeatMapData, getScatterPlotDataArray } from "./selectors";
 
 const styles = require("./style.css");
 
@@ -61,6 +62,7 @@ interface MainPlotContainerProps {
     requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
+    heatMapData: any;
 }
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
@@ -165,6 +167,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
         const {
             annotations,
             plotDataArray,
+            heatMapData,
             mousePosition,
         } = this.props;
 
@@ -200,7 +203,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
 
                     <AxisDropDown axisId={X_AXIS_ID}/>
                     <AxisDropDown axisId={Y_AXIS_ID}/>
-
+                    <DiversityPlot
+                        plotDataArray={heatMapData}
+                        onPointClicked={this.onPointClicked}
+                        annotations={annotations}
+                        onGroupSelected={this.onGroupSelected}
+                        onPlotHovered={this.onPlotHovered}
+                    />
                     <MainPlot
                         plotDataArray={plotDataArray}
                         onPointClicked={this.onPointClicked}
@@ -220,6 +229,7 @@ function mapStateToProps(state: State) {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        heatMapData: getHeatMapData(state),
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),

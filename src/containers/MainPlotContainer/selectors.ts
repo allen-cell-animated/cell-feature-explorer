@@ -1,10 +1,12 @@
 import {
+    includes,
     map,
+    sortBy,
 } from "lodash";
 import { createSelector } from "reselect";
 
 import {
-    CLUSTERS_PLOT_NAME,
+    CLUSTERS_PLOT_NAME, DISCRETE_MEASURES,
     GENERAL_PLOT_SETTINGS,
     MITOTIC_COLORS,
     MITOTIC_STAGE_KEY,
@@ -12,7 +14,14 @@ import {
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getProteinNames } from "../../state/metadata/selectors";
+import {
+    getAllCellIds,
+    getFeatureNames,
+    getMeasuredData,
+    getProteinLabels,
+    getProteinEnum,
+    getProteinNames,
+} from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
@@ -223,6 +232,26 @@ function makeHistogramPlotY(data: number[]) {
     };
 }
 
+function makeHeatMap(data: any, continuous: boolean, proteinEnum) {
+    const continiousHoverTemplate = "%{y:.2f}<br>count: %{z}<extra></extra>";
+    const discreteHoverTemplate = "%{%{fullData.meta.proteinNames}[%{y}]}<br>count: %{z}<extra></extra>";
+    const meta = map(proteinEnum, (value, key) => key)
+    return  {
+        colorscale: "YIGnBu",
+        hovertemplate: continuous ? continiousHoverTemplate : discreteHoverTemplate,
+        ids: data.ids,
+        meta: {
+            proteinNames: meta,
+        },
+        showlegend: false,
+        showscale: false,
+        type: "histogram2d",
+        x: data.x,
+        y: data.y,
+
+    };
+}
+
 export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
     const {
         mainPlotData,
@@ -240,5 +269,35 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
     if (selectedGroupPlotData) {
         data.push(makeScatterPlotData(selectedGroupPlotData));
     }
+    return data;
+});
+
+export const getHeatMapData = createSelector(
+    [getProteinLabels, getProteinEnum, getFeatureNames, getMeasuredData, getAllCellIds],
+    (proteinLabels, proteinEnum, featureNames, measuredData, cellIds) => {
+    const featuresInOrder = sortBy(featureNames, (a, b) => {
+        if (includes(DISCRETE_MEASURES, a)) {
+            return 1;
+        } else if (includes(DISCRETE_MEASURES, a)) {
+            return  - 1;
+        }
+    });
+    const featurePlots = map(featuresInOrder, (featureName) => {
+        const x = Array(proteinLabels.length).fill(featureName);
+        const y = map(measuredData, (cell) => Number(cell[featureName]));
+        return makeHeatMap({x, y, ids: cellIds}, !includes(DISCRETE_MEASURES, featureName));
+    });
+    const xLabel = Array(proteinLabels.length).fill("labeled protein");
+
+    const data = [
+        makeHeatMap({
+            x: xLabel,
+            y: map(proteinLabels, (proteinName) => proteinEnum[proteinName]),
+            customdata: proteinLabels,
+            ids: cellIds
+        }, false, proteinEnum),
+            ...featurePlots,
+    ];
+
     return data;
 });
