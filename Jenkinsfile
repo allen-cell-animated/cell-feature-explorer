@@ -37,9 +37,6 @@ pipeline {
     }
     stages {
         stage ("initialize") {
-            when {
-                expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
-            }
             steps {
                 this.notifyBB("INPROGRESS")
                 // without credentialsId, the git parameters plugin fails to communicate with the repo
