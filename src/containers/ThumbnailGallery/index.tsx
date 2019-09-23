@@ -37,7 +37,7 @@ import {
 import {
     getClickedScatterPoints,
     getIds,
-    getSelected3DCell,
+    getSelected3DCell, getSelected3DCellFOV,
     getSelectedAlbum,
 } from "../../state/selection/selectors";
 import {
@@ -381,6 +381,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     src={item.src}
                     selected={selectedCell === item.cellID}
                     downloadHref={item.downloadHref}
+                    downloadFullField={item.fullFieldDownloadHref}
                     cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={this.selectCell}

@@ -2,8 +2,10 @@ import {
     Avatar,
     Button,
     Card,
+    Dropdown,
     Icon,
     List,
+    Menu,
 } from "antd";
 import React from "react";
 
@@ -30,6 +32,7 @@ interface GalleryCardProps {
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
+    downloadFullField: string;
 }
 
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
@@ -41,6 +44,24 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
     const openCellin3D = () => {
         props.handleOpenIn3D(props.cellID);
     };
+    const menu = (
+        <Menu className="download-dropdown">
+            <Menu.Item key="1">
+                <a
+                    href={props.downloadHref}
+                >
+                    <Icon type="download" /> Segmented cell
+                </a>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <a
+                    href={props.downloadFullField}
+                >
+                    <Icon type="download" /> Full field image
+                </a>
+            </Menu.Item>
+        </Menu>
+    );
 
     const actions = [
         (
@@ -52,17 +73,9 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             </Button>
         ),
         (
-            <Button
-                key={`${props.cellID}-download-link`}
-            >
-            <a
-                href={props.downloadHref}
-            >
-                <Icon
-                    type="download"
-                />
-            </a>
-            </Button>
+            <Dropdown overlay={menu} trigger={["click"]}>
+                <Button icon="download" />
+            </Dropdown>
         ),
         (
             <Button
