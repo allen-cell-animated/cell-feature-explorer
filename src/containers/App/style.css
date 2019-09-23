@@ -80,6 +80,10 @@
     display: none;
 }
 
+:global(.ant-dropdown) {
+    z-index: 5000;
+}
+
 :global(.ant-collapse),
 :global(.ant-collapse-header),
 :global(.ant-collapse > .ant-collapse-item:last-child),
