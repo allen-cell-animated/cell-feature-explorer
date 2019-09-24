@@ -14,8 +14,14 @@ import ColorByMenu from "../../containers/ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
+import {
+    convertFullFieldIdToDownloadId,
+    convertSingleImageIdToDownloadId,
+    formatDownloadOfSingleImage
+} from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
+
 const {
     Content,
     Header,
@@ -71,7 +77,6 @@ class App extends React.Component<AppProps, {}> {
             openKeys,
             defaultActiveKey,
         } = this.state;
-
         return (
 
                 <Layout
@@ -156,6 +161,10 @@ class App extends React.Component<AppProps, {}> {
                                     cellId={selected3DCell}
                                     fovId={selected3DCellFOV}
                                     cellLineName={selected3DCellCellLine}
+                                    fovDownloadHref={
+                                        formatDownloadOfSingleImage(convertFullFieldIdToDownloadId(selected3DCellFOV))}
+                                    cellDownloadHref={
+                                        formatDownloadOfSingleImage(convertSingleImageIdToDownloadId(selected3DCell))}
                                 />
                             </div>
                         </Layout>

@@ -6,7 +6,7 @@ import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
-    DOWNLOAD_URL_PREFIX,
+    FOV_ID_KEY,
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
@@ -26,6 +26,7 @@ import {
 import {
     convertFileInfoToAICSId,
     convertFileInfoToImgSrc,
+    formatDownloadOfSingleImage,
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
@@ -64,11 +65,14 @@ export const getThumbnails = createSelector([
             if (fullCellData) {
                 const cellData = fullCellData.file_info;
                 const src = convertFileInfoToImgSrc(cellData);
-                const downloadHref = `${DOWNLOAD_URL_PREFIX}&id=${convertFileInfoToAICSId(cellData)}`;
+                const fovId = cellData[FOV_ID_KEY];
+                const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
+                const fullFieldDownloadHref = formatDownloadOfSingleImage(fovId);
                 const mitoticKey: number = fullCellData.measured_features[MITOTIC_STAGE_KEY];
                 acc.push({
                     cellID: Number(cellID),
                     downloadHref,
+                    fullFieldDownloadHref,
                     labeledStructure: cellData[PROTEIN_NAME_KEY],
                     mitoticStage: mitoticKey,
                     src,
