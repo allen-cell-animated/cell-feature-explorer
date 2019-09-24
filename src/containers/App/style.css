@@ -83,7 +83,7 @@
 
 /* element is appended to the top level of the dom, so had to be adjusted globally. Tested and seems ok*/
 :global(.ant-dropdown) {
-    z-index: 5000;
+    z-index: 500000;
 }
 
 :global(.ant-collapse),
