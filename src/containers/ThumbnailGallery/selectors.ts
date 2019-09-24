@@ -5,7 +5,8 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_ID_KEY, FOV_ID_KEY,
+    CELL_ID_KEY,
+    FOV_ID_KEY,
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";

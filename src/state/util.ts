@@ -7,7 +7,8 @@ import {
 import {
     APP_ID,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY, DOWNLOAD_URL_PREFIX,
+    CELL_LINE_NAME_KEY,
+    DOWNLOAD_URL_PREFIX,
     FOV_ID_KEY,
 } from "../constants";
 

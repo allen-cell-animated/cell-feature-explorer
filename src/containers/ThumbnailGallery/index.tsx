@@ -37,7 +37,7 @@ import {
 import {
     getClickedScatterPoints,
     getIds,
-    getSelected3DCell, getSelected3DCellFOV,
+    getSelected3DCell,
     getSelectedAlbum,
 } from "../../state/selection/selectors";
 import {
