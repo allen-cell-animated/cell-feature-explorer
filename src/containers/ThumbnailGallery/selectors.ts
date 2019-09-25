@@ -26,6 +26,7 @@ import {
 import {
     convertFileInfoToAICSId,
     convertFileInfoToImgSrc,
+    convertFullFieldIdToDownloadId,
     formatDownloadOfSingleImage,
 } from "../../state/util";
 
@@ -67,7 +68,7 @@ export const getThumbnails = createSelector([
                 const src = convertFileInfoToImgSrc(cellData);
                 const fovId = cellData[FOV_ID_KEY];
                 const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
-                const fullFieldDownloadHref = formatDownloadOfSingleImage(fovId);
+                const fullFieldDownloadHref = formatDownloadOfSingleImage(convertFullFieldIdToDownloadId((fovId)));
                 const mitoticKey: number = fullCellData.measured_features[MITOTIC_STAGE_KEY];
                 acc.push({
                     cellID: Number(cellID),
