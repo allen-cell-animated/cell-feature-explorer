@@ -25,7 +25,8 @@ import {
 } from "../../state/types";
 import {
     convertFileInfoToAICSId,
-    convertFileInfoToImgSrc, convertFullFieldIdToDownloadId,
+    convertFileInfoToImgSrc,
+    convertFullFieldIdToDownloadId,
     formatDownloadOfSingleImage,
 } from "../../state/util";
 
