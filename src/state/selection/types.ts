@@ -108,3 +108,8 @@ export interface SelectAlbumAction {
     payload: number;
     type: string;
 }
+
+export interface TickConversion {
+    tickText: string[];
+    tickValues: number[];
+}

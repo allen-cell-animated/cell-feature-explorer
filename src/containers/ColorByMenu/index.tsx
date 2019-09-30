@@ -18,6 +18,7 @@ import {
     connect,
 } from "react-redux";
 
+import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
@@ -49,7 +50,7 @@ import {
 import {
     State,
 } from "../../state/types";
-import AxisDropDown from "../AxisDropDown";
+import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 
 import {
     createUrlFromListOfIds,
@@ -81,6 +82,7 @@ interface ColorByMenuProps {
     selectionSetsPanelData: PanelData[];
     showClusters: boolean;
     someProteinsOff: boolean;
+    colorByMenuOptions: string[];
     // dispatch props
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
@@ -268,6 +270,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             proteinPanelData,
             downloadUrls,
             downloadConfig,
+            colorBy,
+            colorByMenuOptions,
+            handleChangeAxis,
         } = this.props;
         return (
             <React.Fragment>
@@ -278,6 +283,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         <Col span={18}>
                             <AxisDropDown
                                 axisId={COLOR_BY_SELECTOR}
+                                value={colorBy}
+                                options={colorByMenuOptions}
+                                handleChangeAxis={handleChangeAxis}
                             />
                         </Col>
                 </Row>
@@ -349,6 +357,7 @@ function mapStateToProps(state: State) {
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
         clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
+        colorByMenuOptions: getColorByDisplayOptions(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),

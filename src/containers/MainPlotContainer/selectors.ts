@@ -1,18 +1,26 @@
 import {
+    includes,
     map,
+    max,
+    min,
+    range,
+    round,
 } from "lodash";
 import { createSelector } from "reselect";
+import { $enum, EnumWrapper, WidenEnumType } from "ts-enum-util";
 
 import {
+    CATEGORICAL_FEATURES, CATEGORY_ENUM,
     CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
+    getLabels,
     MITOTIC_COLORS,
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getProteinNames } from "../../state/metadata/selectors";
+import { getFeatureNames, getProteinNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
@@ -22,11 +30,14 @@ import {
     getColorByValues,
     getFilteredFileInfo,
     getIds,
+    getPlotByOnX,
+    getPlotByOnY,
     getProteinColors,
     getSelectedGroupsData,
     getXValues,
     getYValues,
 } from "../../state/selection/selectors";
+import { TickConversion } from "../../state/selection/types";
 import {
     ContinuousPlotData,
     GroupedPlotData,
@@ -241,4 +252,58 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
         data.push(makeScatterPlotData(selectedGroupPlotData));
     }
     return data;
+});
+
+export const getXDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    return featureNames;
+});
+
+export const getYDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    return featureNames;
+});
+
+export const getColorByDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    if (!includes(featureNames, PROTEIN_NAME_KEY)) {
+        return [PROTEIN_NAME_KEY, ...featureNames];
+    }
+    return featureNames;
+});
+
+const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) => {
+    return {
+        tickText:  $enum(categoryEnum).getKeys() as string[],
+        tickValues:  $enum(categoryEnum).getValues() as number[],
+    };
+};
+
+const makeNumberAxis = (totalValues: number[]): TickConversion => {
+    const maxValue = max(totalValues) || 3000; // primarily to keep typescript from worrying
+    const minValue =  min(totalValues) || 0; // that these are possibly undefined
+    const paddedRange  = round(maxValue - minValue + 20);
+    const interval = paddedRange / 6;
+    const values = range(0, 7, interval);
+    return {
+        tickText: map(values, (ele) => ele.toString()),
+        tickValues:  values,
+    };
+};
+
+export const getXTickConversion = createSelector([getPlotByOnX, getXValues], (plotByOnX, xValues): TickConversion => {
+    if (includes(CATEGORICAL_FEATURES, plotByOnX)) {
+        const categoryEnum = getLabels(plotByOnX);
+        if (categoryEnum) {
+            return makeNumberToTextConversion(categoryEnum);
+        }
+    }
+    return makeNumberAxis(xValues);
+});
+
+export const getYTickConversion = createSelector([getPlotByOnY, getYValues], (plotByOnY, yValues): TickConversion => {
+    if (includes(CATEGORICAL_FEATURES, plotByOnY)) {
+        const categoryEnum = getLabels(plotByOnY);
+        if (categoryEnum) {
+            return makeNumberToTextConversion(categoryEnum);
+        }
+    }
+    return makeNumberAxis(yValues);
 });
