@@ -276,15 +276,11 @@ const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) 
     };
 };
 
-const makeNumberAxis = (totalValues: number[]): TickConversion => {
-    const maxValue = max(totalValues) || 3000; // primarily to keep typescript from worrying
-    const minValue =  min(totalValues) || 0; // that these are possibly undefined
-    const paddedRange  = round(maxValue - minValue + 20);
-    const interval = paddedRange / 6;
-    const values = range(0, 7, interval);
+const makeNumberAxis = (): TickConversion => {
+    // return placeholder values for consistent data structure, plotly will auto compute the real values.
     return {
-        tickText: map(values, (ele) => ele.toString()),
-        tickValues:  values,
+        tickText: [""],
+        tickValues: [0],
     };
 };
 
@@ -295,7 +291,7 @@ export const getXTickConversion = createSelector([getPlotByOnX, getXValues], (pl
             return makeNumberToTextConversion(categoryEnum);
         }
     }
-    return makeNumberAxis(xValues);
+    return makeNumberAxis();
 });
 
 export const getYTickConversion = createSelector([getPlotByOnY, getYValues], (plotByOnY, yValues): TickConversion => {
@@ -305,5 +301,5 @@ export const getYTickConversion = createSelector([getPlotByOnY, getYValues], (pl
             return makeNumberToTextConversion(categoryEnum);
         }
     }
-    return makeNumberAxis(yValues);
+    return makeNumberAxis();
 });
