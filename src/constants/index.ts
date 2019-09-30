@@ -59,10 +59,10 @@ export function getLabels(name: string): { [index: number]: number } {
 }
 
 export const MITOTIC_COLORS: { [index: number]: string } = {
-    [MITOTIC_STAGE_LABELS.Anaphase]: "#c51b8a",
-    [MITOTIC_STAGE_LABELS.Metaphase]: "#43a2ca",
-    [MITOTIC_STAGE_LABELS.Prometaphase]: "#66c2a4",
-    [MITOTIC_STAGE_LABELS.Prophase]: "#fed98e",
+    [MITOTIC_STAGE_LABELS.Anaphase]: "#7f48f3",
+    [MITOTIC_STAGE_LABELS.Metaphase]: "#66c2a4",
+    [MITOTIC_STAGE_LABELS.Prometaphase]: "#fed98e",
+    [MITOTIC_STAGE_LABELS.Prophase]: "#c51b8a",
     [MITOTIC_STAGE_LABELS.Interphase]: "#838383",
 };
 
@@ -74,7 +74,7 @@ export const INTERPHASE_AND_MITOSIS_COLORS = {
 export const COMPLETENESS_COLORS = {
     [CELL_SEGMENTATION_LABELS.Complete]: "#7f48f3",
     [CELL_SEGMENTATION_LABELS.Incomplete]: "#fed98e",
-    [CELL_SEGMENTATION_LABELS["No data"]]: "#838383",
+    "-1" : "#838383", // couldn't do a lookup with a space in the name.
 };
 
 export const CATEGORY_TO_COLOR_LOOKUP: {
