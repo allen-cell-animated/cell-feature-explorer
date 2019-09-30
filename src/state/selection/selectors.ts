@@ -13,7 +13,9 @@ import { createSelector } from "reselect";
 import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES, CATEGORY_TO_COLOR_LOOKUP, CATEGORY_TO_ENUM_LOOKUP,
+    CATEGORICAL_FEATURES,
+    CATEGORY_TO_COLOR_LOOKUP,
+    CATEGORY_TO_ENUM_LOOKUP,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
