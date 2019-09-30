@@ -54,32 +54,40 @@ import {
 
 const styles = require("./style.css");
 
-interface MainPlotContainerProps {
+interface PropsFromState {
     annotations: Annotation[];
     clickedPoints: number[];
     filtersToExclude: string[];
-    hoveredPointData: FileInfo;
+    galleryCollapsed: boolean;
+    hoveredPointData: FileInfo | undefined;
     mousePosition: MousePosition;
     plotDataArray: any;
-    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
-    galleryCollapsed: boolean;
-    handleDeselectPoint: ActionCreator<DeselectPointAction>;
-    handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
-    handleSelectionToolUsed: () => void;
-    handleSelectPoint: ActionCreator<SelectPointAction>;
-    requestCellLineData: ActionCreator<RequestAction>;
-    requestFeatureData: ActionCreator<RequestAction>;
-    updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     xDropDownValue: string;
     yDropDownValue: string;
     yDropDownOptions: string[];
     xDropDownOptions: string[];
-    handleChangeAxis: ActionCreator<SelectAxisAction>;
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
 }
 
-class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
+interface DispatchProps {
+    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
+    handleDeselectPoint: ActionCreator<DeselectPointAction>;
+    handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
+    handleSelectPoint: ActionCreator<SelectPointAction>;
+    requestCellLineData: ActionCreator<RequestAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
+    updateMousePosition: ActionCreator<ChangeMousePositionAction>;
+    handleChangeAxis: ActionCreator<SelectAxisAction>;
+}
+
+interface OwnProps {
+    handleSelectionToolUsed: () => void;
+}
+
+type MainPlotContainerProps = PropsFromState & DispatchProps & OwnProps;
+
+class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     constructor(props: MainPlotContainerProps) {
         super(props);
@@ -252,12 +260,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, {}> {
     }
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State): PropsFromState {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
-        colorByValue: selectionStateBranch.selectors.getColorBySelection(state),
-        featureNames: metadataStateBranch.selectors.getFeatureNames(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
@@ -272,7 +278,7 @@ function mapStateToProps(state: State) {
     };
 }
 
-const dispatchToPropsMap = {
+const dispatchToPropsMap: DispatchProps = {
     changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
@@ -283,4 +289,5 @@ const dispatchToPropsMap = {
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };
 
-export default connect(mapStateToProps, dispatchToPropsMap)(MainPlotContainer);
+export default connect<PropsFromState, DispatchProps, OwnProps, State>
+    (mapStateToProps, dispatchToPropsMap)(MainPlotContainer);
