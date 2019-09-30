@@ -11,6 +11,7 @@ import {
 import { createSelector } from "reselect";
 
 import {
+    CATEGORICAL_FEATURES, CATEGORY_TO_COLOR_LOOKUP,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -120,6 +121,28 @@ export const getPossibleColorByData = createSelector([getFilteredData], (metaDat
             }
         )
     ))
+);
+
+export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors],
+    (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
+        if (colorBy === PROTEIN_NAME_KEY) {
+            return map(proteinNames, (name: string, index) => {
+                return {
+                    color: proteinColors[index],
+                    name,
+                };
+            });
+        } else if (includes(CATEGORICAL_FEATURES, colorBy)) {
+            const colors = CATEGORY_TO_COLOR_LOOKUP[colorBy];
+            return map(colors, (value, key) => {
+                return {
+                    color: value,
+                    name: key,
+                };
+            });
+        }
+        return null;
+    }
 );
 
 export const getFilteredOpacity = createSelector(

@@ -1,38 +1,30 @@
 import {
     includes,
     map,
-    max,
-    min,
-    range,
-    round,
 } from "lodash";
 import { createSelector } from "reselect";
-import { $enum, EnumWrapper, WidenEnumType } from "ts-enum-util";
+import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES, CATEGORY_ENUM, CATEGORY_TO_COLOR_LOOKUP,
+    CATEGORICAL_FEATURES,
     CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
     getLabels,
-    MITOTIC_COLORS,
-    MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getFeatureNames, getProteinNames } from "../../state/metadata/selectors";
+import { getFeatureNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
     getClusteringResult,
     getClustersOn,
     getColorBySelection,
-    getColorByValues,
-    getFilteredFileInfo,
+    getColorByValues, getColorsForPlot,
     getIds,
     getPlotByOnX,
     getPlotByOnY,
-    getProteinColors,
     getSelectedGroupsData,
     getXValues,
     getYValues,
@@ -47,51 +39,27 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
     return plotData.groupBy === true;
 }
 
-const getColorsForPlot = (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
-    if (colorBy === PROTEIN_NAME_KEY) {
-        return map(proteinNames, (name: string, index) => {
-            return {
-                color: proteinColors[index],
-                name,
-            };
-        });
-    } else if (includes(CATEGORICAL_FEATURES, colorBy)) {
-        const colors = CATEGORY_TO_COLOR_LOOKUP[colorBy];
-        return map(colors, (value, key) => {
-            return {
-                color: value,
-                name: key,
-            };
-        });
-    }
-    return null;
-};
-
 export const getMainPlotData = createSelector(
     [
         getXValues,
         getYValues,
         getIds,
-        getFilteredFileInfo,
         getColorByValues,
         getColorBySelection,
-        getProteinColors,
-        getProteinNames,
+        getColorsForPlot,
     ],
     (
         xValues,
         yValues,
         ids,
-        filteredFileInfo,
         colorByValues,
         colorBy,
-        proteinColors,
-        proteinNames
+        colorsForPlot
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
             groupBy: includes(CATEGORICAL_FEATURES, colorBy),
-            groupSettings: getColorsForPlot(colorBy, proteinNames, proteinColors),
+            groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
             x: xValues,
