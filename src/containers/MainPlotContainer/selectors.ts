@@ -58,7 +58,7 @@ export const getMainPlotData = createSelector(
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: includes(CATEGORICAL_FEATURES, colorBy),
+            groupBy: colorBy === PROTEIN_NAME_KEY || includes(CATEGORICAL_FEATURES, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
