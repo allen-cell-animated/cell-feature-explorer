@@ -138,7 +138,6 @@ class App extends React.Component<AppProps, {}> {
                                     <div className={styles.plotView} >
                                         <MainPlotContainer
                                             handleSelectionToolUsed={this.onSelectionToolUsed}
-                                            galleryCollapsed={galleryCollapsed}
                                         />
                                     </div>
                                 </Content>
