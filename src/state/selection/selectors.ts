@@ -7,11 +7,13 @@ import {
     map,
     mapValues,
     reduce,
+    values,
 } from "lodash";
 import { createSelector } from "reselect";
+import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES, CATEGORY_TO_COLOR_LOOKUP,
+    CATEGORICAL_FEATURES, CATEGORY_TO_COLOR_LOOKUP, CATEGORY_TO_ENUM_LOOKUP,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -48,7 +50,7 @@ import {
 
 import { CLUSTERING_MAP } from "./constants";
 import {
-    ClusteringDatum,
+    ClusteringDatum, ColorForPlot,
     DownloadConfig,
 } from "./types";
 
@@ -124,7 +126,7 @@ export const getPossibleColorByData = createSelector([getFilteredData], (metaDat
 );
 
 export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors],
-    (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
+    (colorBy: string, proteinNames: string[], proteinColors: string[]): ColorForPlot[] | null => {
         if (colorBy === PROTEIN_NAME_KEY) {
             return map(proteinNames, (name: string, index) => {
                 return {
@@ -142,6 +144,23 @@ export const getColorsForPlot = createSelector([getColorBySelection, getProteinN
             });
         }
         return null;
+    }
+);
+
+export const getCategoryCounts = createSelector([getMeasuredData, getColorBySelection],
+    (measuredData: MetadataStateBranch, colorBy: string): number[] => {
+        const categoryEnum = CATEGORY_TO_ENUM_LOOKUP[colorBy];
+        const categoryValues = $enum(categoryEnum).getValues();
+        const totals =  reduce(measuredData, (acc: {[key: number]: number}, cur) => {
+            const index = categoryValues.indexOf(cur[colorBy]);
+            if (acc[index]) {
+                acc[index] ++;
+            } else {
+                acc[index] = 1;
+            }
+            return acc;
+        }, {});
+        return values(totals);
     }
 );
 

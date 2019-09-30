@@ -113,3 +113,8 @@ export interface TickConversion {
     tickText: string[];
     tickValues: number[];
 }
+
+export interface ColorForPlot {
+    color: string;
+    name: string;
+}
