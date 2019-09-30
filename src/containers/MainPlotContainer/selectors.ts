@@ -10,7 +10,7 @@ import { createSelector } from "reselect";
 import { $enum, EnumWrapper, WidenEnumType } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES, CATEGORY_ENUM,
+    CATEGORICAL_FEATURES, CATEGORY_ENUM, CATEGORY_TO_COLOR_LOOKUP,
     CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
     getLabels,
@@ -47,7 +47,7 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
     return plotData.groupBy === true;
 }
 
-const getColors = (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
+const getColorsForPlot = (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
     if (colorBy === PROTEIN_NAME_KEY) {
         return map(proteinNames, (name: string, index) => {
             return {
@@ -55,8 +55,9 @@ const getColors = (colorBy: string, proteinNames: string[], proteinColors: strin
                 name,
             };
         });
-    } else if (colorBy === MITOTIC_STAGE_KEY) {
-        return map(MITOTIC_COLORS, (value, key) => {
+    } else if (includes(CATEGORICAL_FEATURES, colorBy)) {
+        const colors = CATEGORY_TO_COLOR_LOOKUP[colorBy];
+        return map(colors, (value, key) => {
             return {
                 color: value,
                 name: key,
@@ -89,8 +90,8 @@ export const getMainPlotData = createSelector(
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || colorBy === MITOTIC_STAGE_KEY,
-            groupSettings: getColors(colorBy, proteinNames, proteinColors),
+            groupBy: includes(CATEGORICAL_FEATURES, colorBy),
+            groupSettings: getColorsForPlot(colorBy, proteinNames, proteinColors),
             groups: colorByValues,
             ids,
             x: xValues,

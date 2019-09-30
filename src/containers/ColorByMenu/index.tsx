@@ -21,9 +21,11 @@ import {
 import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
+import ColorLegendRow from "../../components/ColorLegend";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
     AGGLOMERATIVE_KEY,
+    CATEGORICAL_FEATURES,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -48,7 +50,7 @@ import {
     SelectAxisAction,
 } from "../../state/selection/types";
 import {
-    State,
+State,
 } from "../../state/types";
 import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 
@@ -289,6 +291,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                             />
                         </Col>
                 </Row>
+                {/*{includes(CATEGORICAL_FEATURES, colorBy) && (<Row>*/}
+                    {/*<ColorLegendRow />*/}
+                {/*</Row>)}*/}
 
                 <div>
                     <div className={styles.barChartHeader}>

@@ -66,6 +66,25 @@ export const MITOTIC_COLORS: { [index: number]: string } = {
     [MITOTIC_STAGE_LABELS.Interphase]: "#838383",
 };
 
+export const INTERPHASE_AND_MITOSIS_COLORS = {
+    [INTERPHASE_AND_MITOSIS_LABELS.Mitotic]: "#7f48f3",
+    [INTERPHASE_AND_MITOSIS_LABELS.Interphase]: "#838383",
+};
+
+export const COMPLETENESS_COLORS = {
+    [CELL_SEGMENTATION_LABELS.Complete]: "#7f48f3",
+    [CELL_SEGMENTATION_LABELS.Incomplete]: "#fed98e",
+    [CELL_SEGMENTATION_LABELS["No data"]]: "#838383",
+};
+
+export const CATEGORY_TO_COLOR_LOOKUP: {
+    [index: string]: any
+} = {
+    [INTERPHASE_AND_MITOSIS_KEY] : INTERPHASE_AND_MITOSIS_COLORS,
+    [CELL_SEGMENTATION_KEY] : COMPLETENESS_COLORS,
+    [MITOTIC_STAGE_KEY] : MITOTIC_COLORS,
+};
+
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
 export const SPECTRAL_KEY = "Spectral";
