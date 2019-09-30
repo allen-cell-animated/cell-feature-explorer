@@ -17,8 +17,26 @@ export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FO
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const MITOTIC_STAGE_KEY = "Interphase and Mitotic Stages (stage)";
+const INTERPHASE_AND_MITOSIS_KEY = "Interphase and Mitosis (stage)";
+const CELL_SEGMENTATION_KEY = "Cell Segmentation (complete)";
+export const CATEGORICAL_FEATURES = Object.freeze([
+    INTERPHASE_AND_MITOSIS_KEY,
+    CELL_SEGMENTATION_KEY,
+    MITOTIC_STAGE_KEY,
+]);
 
-export enum MITOTIC_STAGE_NAMES {
+export enum INTERPHASE_AND_MITOSIS_LABELS {
+    "Interphase" = 0,
+    "Mitotic" = 1,
+}
+
+export enum CELL_SEGMENTATION_LABELS {
+    "Incomplete" = 0,
+    "Complete" = 1,
+    "No data" = -1,
+}
+
+export enum MITOTIC_STAGE_LABELS {
     "Interphase" = 0,
     "Prophase",
     "Prometaphase",
@@ -26,12 +44,26 @@ export enum MITOTIC_STAGE_NAMES {
     "Anaphase",
 }
 
+export type CATEGORY_ENUM = INTERPHASE_AND_MITOSIS_LABELS | CELL_SEGMENTATION_LABELS | MITOTIC_STAGE_LABELS;
+
+export const CATEGORY_TO_ENUM_LOOKUP: {
+    [index: string]: any
+} = {
+    [INTERPHASE_AND_MITOSIS_KEY] : INTERPHASE_AND_MITOSIS_LABELS,
+    [CELL_SEGMENTATION_KEY] : CELL_SEGMENTATION_LABELS,
+    [MITOTIC_STAGE_KEY] : MITOTIC_STAGE_LABELS,
+};
+
+export function getLabels(name: string): { [index: number]: number } {
+    return CATEGORY_TO_ENUM_LOOKUP[name];
+}
+
 export const MITOTIC_COLORS: { [index: number]: string } = {
-    [MITOTIC_STAGE_NAMES.Anaphase]: "#c51b8a",
-    [MITOTIC_STAGE_NAMES.Metaphase]: "#43a2ca",
-    [MITOTIC_STAGE_NAMES.Prometaphase]: "#66c2a4",
-    [MITOTIC_STAGE_NAMES.Prophase]: "#fed98e",
-    [MITOTIC_STAGE_NAMES.Interphase]: "#838383",
+    [MITOTIC_STAGE_LABELS.Anaphase]: "#c51b8a",
+    [MITOTIC_STAGE_LABELS.Metaphase]: "#43a2ca",
+    [MITOTIC_STAGE_LABELS.Prometaphase]: "#66c2a4",
+    [MITOTIC_STAGE_LABELS.Prophase]: "#fed98e",
+    [MITOTIC_STAGE_LABELS.Interphase]: "#838383",
 };
 
 export const AGGLOMERATIVE_KEY = "Agglomerative";
