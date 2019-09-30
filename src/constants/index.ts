@@ -33,18 +33,17 @@ export enum INTERPHASE_AND_MITOSIS_LABELS {
 export enum CELL_SEGMENTATION_LABELS {
     "Incomplete" = 0,
     "Complete" = 1,
-    "No data" = -1,
+    "Not determined" = -1,
 }
 
 export enum MITOTIC_STAGE_LABELS {
     "Interphase" = 0,
-    "Prophase",
-    "Prometaphase",
-    "Metaphase",
-    "Anaphase",
+    "Prophase" = 1,
+    "Prometaphase" = 2,
+    "Metaphase" = 3,
+    "Anaphase" = 4,
+    "Not determined" = NaN,
 }
-
-export type CATEGORY_ENUM = INTERPHASE_AND_MITOSIS_LABELS | CELL_SEGMENTATION_LABELS | MITOTIC_STAGE_LABELS;
 
 export const CATEGORY_TO_ENUM_LOOKUP: {
     [index: string]: any
@@ -54,27 +53,30 @@ export const CATEGORY_TO_ENUM_LOOKUP: {
     [MITOTIC_STAGE_KEY] : MITOTIC_STAGE_LABELS,
 };
 
-export function getLabels(name: string): { [index: number]: number } {
-    return CATEGORY_TO_ENUM_LOOKUP[name];
+export function getLabels(name: string): { [index: string]: number } {
+    return CATEGORY_TO_ENUM_LOOKUP[name] || {};
 }
+
+const NO_DATA_COLOR = "#838383";
 
 export const MITOTIC_COLORS: { [index: number]: string } = {
     [MITOTIC_STAGE_LABELS.Anaphase]: "#7f48f3",
     [MITOTIC_STAGE_LABELS.Metaphase]: "#66c2a4",
     [MITOTIC_STAGE_LABELS.Prometaphase]: "#fed98e",
     [MITOTIC_STAGE_LABELS.Prophase]: "#c51b8a",
-    [MITOTIC_STAGE_LABELS.Interphase]: "#838383",
+    [MITOTIC_STAGE_LABELS.Interphase]: "#e9ebee",
+    [NaN]: NO_DATA_COLOR,
 };
 
 export const INTERPHASE_AND_MITOSIS_COLORS = {
     [INTERPHASE_AND_MITOSIS_LABELS.Mitotic]: "#7f48f3",
-    [INTERPHASE_AND_MITOSIS_LABELS.Interphase]: "#838383",
+    [INTERPHASE_AND_MITOSIS_LABELS.Interphase]: "#e9ebee",
 };
 
 export const COMPLETENESS_COLORS = {
     [CELL_SEGMENTATION_LABELS.Complete]: "#7f48f3",
     [CELL_SEGMENTATION_LABELS.Incomplete]: "#fed98e",
-    "-1" : "#838383", // couldn't do a lookup with a space in the name.
+    "-1" : NO_DATA_COLOR, // couldn't do a lookup with a space in the name.
 };
 
 export const CATEGORY_TO_COLOR_LOOKUP: {
