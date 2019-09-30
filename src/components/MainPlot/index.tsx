@@ -93,13 +93,12 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
             });
         }
-        if (xAxisType !== prevProps.xAxisType || yAxisType !== prevProps.yAxisType) {
+        if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
             this.setState(
                 {
                     layout: {
                         ...this.state.layout,
                         annotations: this.makeAnnotations(),
-
                         xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion ),
                         xaxis2: histogramAxis,
                         yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType, yTickConversion ),
