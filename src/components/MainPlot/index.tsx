@@ -11,6 +11,7 @@ import Plot from "react-plotly.js";
 import {
     GENERAL_PLOT_SETTINGS,
 } from "../../constants";
+import { TickConversion } from "../../state/selection/types";
 import {
     Annotation,
 } from "../../state/types";
@@ -21,6 +22,10 @@ interface MainPlotProps {
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPlotHovered: (hovered: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
+    xAxisType: string;
+    yAxisType: string;
+    xTickConversion: TickConversion;
+    yTickConversion: TickConversion;
 }
 
 interface MainPlotState {
@@ -30,23 +35,23 @@ interface MainPlotState {
 
 type PlotlyAnnotation =  Partial<Annotations>;
 
+const histogramAxis = {
+    color: GENERAL_PLOT_SETTINGS.textColor,
+    domain: [0.86, 1],
+    hoverformat: "f",
+    linecolor: GENERAL_PLOT_SETTINGS.textColor,
+    showgrid: false,
+    tickcolor: GENERAL_PLOT_SETTINGS.textColor,
+    zeroline: true,
+};
+
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
-    public static makeAxis(domain: number[], hoverformat: string, zeroline: boolean) {
-        return {
-            color: GENERAL_PLOT_SETTINGS.textColor,
-            domain,
-            hoverformat,
-            linecolor: GENERAL_PLOT_SETTINGS.textColor,
-            showgrid: false,
-            tickcolor: GENERAL_PLOT_SETTINGS.textColor,
-            zeroline,
-        };
-    }
 
     constructor(props: MainPlotProps) {
         super(props);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
+
         this.state = {
             layout: {
                 annotations: this.makeAnnotations(),
@@ -55,28 +60,51 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: {
-                    b: 20,
-                    r: 20,
+                    b: 50,
+                    l: 150,
+                    r: 50,
                     t: 10,
                 },
                 paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                xaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                xaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
-                yaxis: MainPlot.makeAxis([0, 0.85], ".1f", false),
-                yaxis2: MainPlot.makeAxis([0.86, 1], "f", true),
+                xaxis: this.makeAxis([0, 0.85], ".1f", false, props.xAxisType, props.xTickConversion ),
+                xaxis2: histogramAxis,
+                yaxis: this.makeAxis([0, 0.85], ".1f", false,  props.yAxisType, props.yTickConversion ),
+                yaxis2: histogramAxis,
             },
             showFullAnnotation: true,
         };
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        if (!isEqual(prevProps.annotations, this.props.annotations) ||
+        const {
+            annotations,
+            xAxisType,
+            yAxisType,
+            xTickConversion,
+            yTickConversion,
+        } = this.props;
+        if (!isEqual(annotations, prevProps.annotations) ||
             prevState.showFullAnnotation !== this.state.showFullAnnotation) {
-            this.setState({layout: {
-                ...this.state.layout,
-                annotations: this.makeAnnotations(),
-            }});
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    annotations: this.makeAnnotations(),
+                },
+            });
+        }
+        if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
+            this.setState(
+                {
+                    layout: {
+                        ...this.state.layout,
+                        annotations: this.makeAnnotations(),
+                        xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion ),
+                        xaxis2: histogramAxis,
+                        yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType, yTickConversion ),
+                        yaxis2:  histogramAxis,
+                    },
+            });
         }
     }
 
@@ -84,11 +112,26 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.setState({ showFullAnnotation: false });
     }
 
+    public makeAxis(domain: number[], hoverformat: string, zeroline: boolean, type: string, tickConversion: any) {
+        return {
+            color: GENERAL_PLOT_SETTINGS.textColor,
+            domain,
+            hoverformat,
+            linecolor: GENERAL_PLOT_SETTINGS.textColor,
+            showgrid: false,
+            tickcolor: GENERAL_PLOT_SETTINGS.textColor,
+            tickmode: type,
+            ticktext: tickConversion.tickText,
+            tickvals: tickConversion.tickValues,
+            zeroline,
+        };
+    }
+
     public makeAnnotations(): PlotlyAnnotation[] {
         const { annotations } = this.props;
         const getText = (point: Annotation, show: boolean) => {
             if (show) {
-                return `x <br>Cell ${point.cellID} *<i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
+                return `Cell ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
             }
             if (point.hovered ) {
                 return `Cell ${point.cellID}`;
