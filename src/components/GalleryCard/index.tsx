@@ -10,7 +10,7 @@ import {
 import React from "react";
 
 import {
-    MITOTIC_STAGE_LABELS,
+    MITOTIC_STAGE_NAMES,
     THUMBNAIL_BASE_URL,
 } from "../../constants";
 import {
@@ -92,7 +92,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
     let mitoticStage;
 
     if (props.mitoticStage !== undefined) {
-        mitoticStage = MITOTIC_STAGE_LABELS[props.mitoticStage] as keyof typeof MITOTIC_STAGE_LABELS;
+        mitoticStage = MITOTIC_STAGE_NAMES[props.mitoticStage] as keyof typeof MITOTIC_STAGE_NAMES;
     }
 
     return (

@@ -18,15 +18,11 @@ import {
     connect,
 } from "react-redux";
 
-import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
-import ColorLegendRow from "../../components/ColorLegend";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
     AGGLOMERATIVE_KEY,
-    CATEGORICAL_FEATURES,
-    CATEGORY_TO_ENUM_LOOKUP,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -46,15 +42,14 @@ import {
     ChangeDownloadConfigAction,
     ChangeSelectionAction,
     ClusteringTypeChoices,
-    ColorForPlot,
     DeselectGroupOfPointsAction,
     DownloadConfig,
     SelectAxisAction,
 } from "../../state/selection/types";
 import {
-State,
+    State,
 } from "../../state/types";
-import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
+import AxisDropDown from "../AxisDropDown";
 
 import {
     createUrlFromListOfIds,
@@ -86,9 +81,6 @@ interface ColorByMenuProps {
     selectionSetsPanelData: PanelData[];
     showClusters: boolean;
     someProteinsOff: boolean;
-    colorByMenuOptions: string[];
-    colorForPlot: ColorForPlot[];
-    categoryCounts: number[];
     // dispatch props
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
@@ -276,11 +268,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             proteinPanelData,
             downloadUrls,
             downloadConfig,
-            colorBy,
-            colorByMenuOptions,
-            handleChangeAxis,
-            colorForPlot,
-            categoryCounts,
         } = this.props;
         return (
             <React.Fragment>
@@ -291,28 +278,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         <Col span={18}>
                             <AxisDropDown
                                 axisId={COLOR_BY_SELECTOR}
-                                value={colorBy}
-                                options={colorByMenuOptions}
-                                handleChangeAxis={handleChangeAxis}
                             />
                         </Col>
                 </Row>
-                {includes(CATEGORICAL_FEATURES, colorBy) && (
-                    <Row className={styles.colorByRow}>
-                        <Col span={6}/>
-                        <Col span={18}>
-                            {colorForPlot.map((ele, index) => {
-                                return (<ColorLegendRow
-                                    color={ele.color}
-                                    name={CATEGORY_TO_ENUM_LOOKUP[colorBy][ele.name]}
-                                    key={ele.name}
-                                    total={categoryCounts[index]}
-                                />);
-                            })
-                            }
-                        </Col>
-                    </Row>
-                )}
 
                 <div>
                     <div className={styles.barChartHeader}>
@@ -377,13 +345,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
 
 function mapStateToProps(state: State) {
     return {
-        categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
         clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
-        colorByMenuOptions: getColorByDisplayOptions(state),
-        colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),

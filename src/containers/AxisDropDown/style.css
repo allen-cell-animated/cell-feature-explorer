@@ -10,7 +10,7 @@
 .plot-by-on-y {
     position: absolute;
     bottom: 50%;
-    left: -20px;
+    left: 0;
     -ms-transform: rotate(-90deg); /* IE 9 */
     -webkit-transform: rotate(-90deg); /* Safari */
     transform: rotate(-90deg);
