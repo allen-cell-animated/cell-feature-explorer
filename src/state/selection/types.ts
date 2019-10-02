@@ -108,13 +108,3 @@ export interface SelectAlbumAction {
     payload: number;
     type: string;
 }
-
-export interface TickConversion {
-    tickText: string[];
-    tickValues: number[];
-}
-
-export interface ColorForPlot {
-    color: string;
-    name: string;
-}
