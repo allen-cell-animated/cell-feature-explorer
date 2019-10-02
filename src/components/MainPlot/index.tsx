@@ -70,9 +70,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        if (!isEqual(prevProps.annotations, this.props.annotations) ||
-            prevState.showFullAnnotation !== this.state.showFullAnnotation) {
+    public componentDidUpdate(prevProps: MainPlotProps) {
+        if (!isEqual(prevProps.annotations, this.props.annotations)) {
             this.setState({layout: {
                 ...this.state.layout,
                 annotations: this.makeAnnotations(),
@@ -81,14 +80,14 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public clickedAnnotation() {
-        this.setState({ showFullAnnotation: false });
+        this.setState({showFullAnnotation: false});
     }
 
     public makeAnnotations(): PlotlyAnnotation[] {
         const { annotations } = this.props;
         const getText = (point: Annotation, show: boolean) => {
             if (show) {
-                return `x <br>Cell ${point.cellID} *<i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
+                return `Cell ${point.cellID}<br><i>click thumbnail in gallery to load in 3D</i>`;
             }
             if (point.hovered ) {
                 return `Cell ${point.cellID}`;
@@ -101,7 +100,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             const show = lastOne && this.state.showFullAnnotation;
             const hasText = !!show || !!point.hovered;
             return {
-                align: "left",
                 arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
                 arrowhead: 6,
                 ax: 0,
