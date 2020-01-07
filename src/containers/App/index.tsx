@@ -1,5 +1,5 @@
-import AllenCellHeader from "allencell-nav-bar";
-import "allencell-nav-bar/style/style.css";
+import AllenCellHeader from "@aics/allencell-nav-bar";
+import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
