@@ -4,12 +4,14 @@ import {
     sortBy,
 } from "lodash";
 import { createSelector } from "reselect";
+import { $enum } from "ts-enum-util";
 
 import {
-    CLUSTERS_PLOT_NAME, DISCRETE_MEASURES,
+    DISCRETE_MEASURES,
+    CATEGORICAL_FEATURES,
+    CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
-    MITOTIC_COLORS,
-    MITOTIC_STAGE_KEY,
+    getLabels,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
@@ -29,13 +31,15 @@ import {
     getClustersOn,
     getColorBySelection,
     getColorByValues,
-    getFilteredFileInfo,
+    getColorsForPlot,
     getIds,
-    getProteinColors,
+    getPlotByOnX,
+    getPlotByOnY,
     getSelectedGroupsData,
     getXValues,
     getYValues,
 } from "../../state/selection/selectors";
+import { TickConversion } from "../../state/selection/types";
 import {
     ContinuousPlotData,
     GroupedPlotData,
@@ -45,50 +49,27 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
     return plotData.groupBy === true;
 }
 
-const getColors = (colorBy: string, proteinNames: string[], proteinColors: string[]) => {
-    if (colorBy === PROTEIN_NAME_KEY) {
-        return map(proteinNames, (name: string, index) => {
-            return {
-                color: proteinColors[index],
-                name,
-            };
-        });
-    } else if (colorBy === MITOTIC_STAGE_KEY) {
-        return map(MITOTIC_COLORS, (value, key) => {
-            return {
-                color: value,
-                name: key,
-            };
-        });
-    }
-    return null;
-};
-
 export const getMainPlotData = createSelector(
     [
         getXValues,
         getYValues,
         getIds,
-        getFilteredFileInfo,
         getColorByValues,
         getColorBySelection,
-        getProteinColors,
-        getProteinNames,
+        getColorsForPlot,
     ],
     (
         xValues,
         yValues,
         ids,
-        filteredFileInfo,
         colorByValues,
         colorBy,
-        proteinColors,
-        proteinNames
+        colorsForPlot
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || colorBy === MITOTIC_STAGE_KEY,
-            groupSettings: getColors(colorBy, proteinNames, proteinColors),
+            groupBy: colorBy === PROTEIN_NAME_KEY || includes(CATEGORICAL_FEATURES, colorBy),
+            groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
             x: xValues,
@@ -285,7 +266,7 @@ export const getHeatMapData = createSelector(
     const featurePlots = map(featuresInOrder, (featureName) => {
         const x = Array(proteinLabels.length).fill(featureName);
         const y = map(measuredData, (cell) => Number(cell[featureName]));
-        return makeHeatMap({x, y, ids: cellIds}, !includes(DISCRETE_MEASURES, featureName));
+        return makeHeatMap({x, y, ids: cellIds}, !includes(DISCRETE_MEASURES, featureName), proteinEnum);
     });
     const xLabel = Array(proteinLabels.length).fill("labeled protein");
 
@@ -300,4 +281,54 @@ export const getHeatMapData = createSelector(
     ];
 
     return data;
+    });
+
+export const getXDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    return featureNames;
+});
+
+export const getYDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    return featureNames;
+});
+
+export const getColorByDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+    if (!includes(featureNames, PROTEIN_NAME_KEY)) {
+        return [PROTEIN_NAME_KEY, ...featureNames];
+    }
+    return featureNames;
+});
+
+const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) => {
+    return {
+        tickText:  $enum(categoryEnum).getKeys() as string[],
+        tickValues:  $enum(categoryEnum).getValues() as number[],
+    };
+};
+
+const makeNumberAxis = (): TickConversion => {
+    // return placeholder values for consistent data structure, plotly will auto compute the real values.
+    return {
+        tickText: [""],
+        tickValues: [0],
+    };
+};
+
+export const getXTickConversion = createSelector([getPlotByOnX, getXValues], (plotByOnX, xValues): TickConversion => {
+    if (includes(CATEGORICAL_FEATURES, plotByOnX)) {
+        const categoryEnum = getLabels(plotByOnX);
+        if (categoryEnum) {
+            return makeNumberToTextConversion(categoryEnum);
+        }
+    }
+    return makeNumberAxis();
+});
+
+export const getYTickConversion = createSelector([getPlotByOnY, getYValues], (plotByOnY, yValues): TickConversion => {
+    if (includes(CATEGORICAL_FEATURES, plotByOnY)) {
+        const categoryEnum = getLabels(plotByOnY);
+        if (categoryEnum) {
+            return makeNumberToTextConversion(categoryEnum);
+        }
+    }
+    return makeNumberAxis();
 });

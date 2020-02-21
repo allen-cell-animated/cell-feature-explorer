@@ -61,21 +61,23 @@
     "webpack-dev-server": "^2.9.3"
   },
   "dependencies": {
+    "@aics/allencell-nav-bar": "^1.0.2",
     "@aics/browsing-context-messaging": "~1.1",
-    "ac-3d-viewer": "^0.2.7",
+    "ac-3d-viewer": "^0.3.4",
     "antd": "^3.20.7",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
     "core-js": "^2.5.5",
     "history": "^4.7.2",
     "lodash": "^4.17.10",
-    "plotly.js": "^1.39.2",
+    "plotly.js": "^1.49.5",
     "pram": "^2.0.0-alpha.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-plotly.js": "^2.2.0",
+    "react-plotly.js": "^2.3.0",
     "react-redux": "^5.0.7",
     "redux-logic": "^0.15.0",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "ts-enum-util": "^4.0.1"
   }
 }

@@ -54,6 +54,7 @@ export interface Thumbnail {
     src: string;
     cellID: number;
     empty?: boolean;
+    fullFieldDownloadHref: string;
 }
 
 export interface SelectedGroupDatum {
