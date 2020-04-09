@@ -149,12 +149,3 @@
           display: none;
       }
 }
-
-:global(.ant-modal-mask) {
-    background-color: rgba(0, 0, 0, 0.85);
-    z-index: 4000;
-}
-
-:global(.ant-modal-wrap) {
-    z-index: 4000;
-}

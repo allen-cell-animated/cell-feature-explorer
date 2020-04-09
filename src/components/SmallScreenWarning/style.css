@@ -1,0 +1,20 @@
+:global(.ant-modal-header) {
+    border-radius: 0;
+    background-color: #d8d8d8;
+    text-align: center;
+}
+
+:global(.ant-modal-header) :global(.ant-modal-title) {
+    color: #0a0a0a;
+}
+.button-container {
+    text-align: center;
+    margin: auto;
+}
+.ok-button {
+    border-color: #2d224d;
+    background-color: #2d224d;
+    color: #d8d8d8;
+    display: inline-block;
+    width: 30%;
+}
