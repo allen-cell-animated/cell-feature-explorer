@@ -1,6 +1,7 @@
 import {
     Icon,
     Layout,
+    Modal,
 } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
@@ -39,6 +40,9 @@ class App extends React.Component<AppProps, {}> {
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
         openKeys: [App.panelKeys[0]],
+        height: 0,
+        width: 0,
+        panelDismissed: false,
     };
 
     constructor(props: AppProps) {
@@ -47,12 +51,33 @@ class App extends React.Component<AppProps, {}> {
         this.onPanelClicked = this.onPanelClicked.bind(this);
     }
 
+    componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
+    }
+
+    public updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
+
     public onSelectionToolUsed() {
         this.setState({openKeys: uniq([...this.state.openKeys, App.panelKeys[1]])});
     }
 
     public onPanelClicked(value: string[]) {
         this.setState({openKeys: value});
+    }
+
+    public renderModal = () => {
+    <Modal
+        title="Basic Modal"
+        visible={this.state.width < 768 && !this.state.panelDismissed}
+        // onOk={this.handleOk}
+        // onCancel={this.handleCancel}
+    >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+    </Modal>
     }
 
     public render() {
@@ -75,6 +100,7 @@ class App extends React.Component<AppProps, {}> {
                 <Layout
                     className={styles.container}
                 >
+                    {this.renderModal()}
                     <BackToPlot />
 
                     <Sider
