@@ -8,7 +8,7 @@
     "url": "ssh://git@stash.corp.alleninstitute.org:7999/aics/cell-feature-explorer.git"
   },
   "scripts": {
-    "dev": "webpack-dev-server --hot --public --config webpack.dev.js",
+    "dev": "webpack-dev-server --hot --public --config ./webpack/webpack.config.js  --env.env development",
     "build": "webpack --config ./webpack/webpack.config.js  --env.env production",
     "start": "npm run build && node ./server.js -p 9020",
     "predeploy": "npm run build",
