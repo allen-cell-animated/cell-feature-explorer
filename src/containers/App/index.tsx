@@ -22,6 +22,7 @@ import {
 } from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
+import SmallScreenWarning from "../../components/SmallScreenWarning";
 
 const {
     Content,
@@ -79,21 +80,6 @@ class App extends React.Component<AppProps, {}> {
         this.setState({ showWarning: false })
     }
 
-    public renderModal = () => {
-        console.log('visible', this.state.showWarning && !this.state.panelDismissed);
-        return (<Modal
-            centered
-            title="Small Screen Warning"
-            visible={this.state.showWarning && !this.state.panelDismissed}
-            onOk={this.handleOk}
-            style={{zIndex: 3001}}
-        >
-            <p>Many features of this web tool are hidden while using it on a small screen.</p>
-            <p>To access all features, including a tool to plot measurements for over 30,000 cells, please visit this web page on a larger screen.
-</p>
-        </Modal>)
-    }
-
     public render() {
         const {
             galleryCollapsed,
@@ -114,7 +100,10 @@ class App extends React.Component<AppProps, {}> {
             <Layout
                 className={styles.container}
             >
-                {this.renderModal()}
+                <SmallScreenWarning 
+                    handleOk={this.handleOk}
+                    visible={this.state.showWarning && !this.state.panelDismissed}
+                />
                 <BackToPlot />
                 <AllenCellHeader
                     show={true}
