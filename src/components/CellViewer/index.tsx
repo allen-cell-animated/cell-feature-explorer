@@ -16,9 +16,11 @@ interface CellViewerProps {
     cellId: string;
     cellLineName: string;
     fovId: string;
+    fovDownloadHref: string;
+    cellDownloadHref: string;
 }
 
-const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId }) => {
+const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId, fovDownloadHref, cellDownloadHref}) => {
     if (!cellId || !cellLineName) {
         return null;
     }
@@ -49,7 +51,9 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId })
                 defaultVolumesOn={[0, 1, 2]}
                 defaultSurfacesOn={[]}
                 channelNameClean={standardizeNames}
-                appHeight="75vh"
+                appHeight="90vh"
+                fovDownloadHref={fovDownloadHref}
+                cellDownloadHref={cellDownloadHref}
             />
 
         </div>

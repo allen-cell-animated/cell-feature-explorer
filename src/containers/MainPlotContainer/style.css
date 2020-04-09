@@ -10,9 +10,13 @@
     margin-bottom: 2em;
 }
 :global(.modebar) {
-    bottom: 2em!important;
+    bottom: 0!important;
     top: initial!important;
     right: 18%!important;
+}
+
+:global(.modebar-container) {
+    position: initial!important;
 }
 
 :global(.modebar-btn.active){
