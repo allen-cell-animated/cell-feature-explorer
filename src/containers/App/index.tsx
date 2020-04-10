@@ -49,7 +49,7 @@ class App extends React.Component<AppProps, {}> {
         defaultActiveKey: [App.panelKeys[0]],
         dontShowPanelAgain: false,
         openKeys: [App.panelKeys[0]],
-        showSmallScreenWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
+        showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
     };
 
     public componentDidMount = () => {
@@ -57,7 +57,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
-        const shouldShow = window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowPanelAgain;
+        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowPanelAgain;
         this.setState({
             showSmallScreenWarning: shouldShow,
         });
