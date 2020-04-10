@@ -49,8 +49,7 @@ class App extends React.Component<AppProps, {}> {
         defaultActiveKey: [App.panelKeys[0]],
         dontShowPanelAgain: false,
         openKeys: [App.panelKeys[0]],
-        panelDismissed: false,
-        isSmallScreen: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
+        showSmallScreenWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
     };
 
     public componentDidMount = () => {
@@ -58,10 +57,8 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
-        console.log('has been dismissed', this.state.panelDismissed, 'new window is too small', window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT)
         this.setState({
-            panelDismissed: false,
-            isSmallScreen: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
+            showSmallScreenWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowPanelAgain,
         });
     }
 
@@ -74,8 +71,9 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public handleOk = () => {
+
         this.setState({
-            panelDismissed: true,
+            showSmallScreenWarning: false,
         });
     }
 
@@ -106,7 +104,7 @@ class App extends React.Component<AppProps, {}> {
                 <SmallScreenWarning
                     handleOk={this.handleOk}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={this.state.isSmallScreen && !this.state.panelDismissed}
+                    visible={this.state.showSmallScreenWarning}
                 />
                 <BackToPlot />
                 <AllenCellHeader
