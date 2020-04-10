@@ -21,4 +21,5 @@
 
 .checkbox-container :global(.ant-checkbox-wrapper) {
     color: #0a0a0a;
+    margin-bottom: 20px;
 }
