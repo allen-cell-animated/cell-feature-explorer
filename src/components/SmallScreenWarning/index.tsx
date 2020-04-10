@@ -5,19 +5,20 @@ import React from "react";
 const styles = require("./style.css");
 
 interface SmallScreenWarningProps {
-    handleOk: () => void;
+    handleClose: () => void;
     onDismissCheckboxChecked: (value: boolean) => void;
     visible: boolean;
 }
 
-const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handleOk, onDismissCheckboxChecked }) => {
+const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handleClose, onDismissCheckboxChecked }) => {
     const onCheckboxChange = ({ target }: CheckboxChangeEvent) => onDismissCheckboxChecked(target.checked);
     return (
         <Modal
             centered={true}
             title="Small Screen Warning"
             visible={visible}
-            onOk={handleOk}
+            onOk={handleClose}
+            onCancel={handleClose}
             zIndex={4000}
             footer={null}
             maskStyle={{
@@ -37,7 +38,7 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handl
                 <Checkbox onChange={onCheckboxChange}>Don't show this message again.</Checkbox>
             </div>
             <div className={styles.buttonContainer}>
-                <Button className={styles.okButton} onClick={handleOk}>OK</Button>
+                <Button className={styles.okButton} onClick={handleClose}>OK</Button>
             </div>
         </Modal>
     );

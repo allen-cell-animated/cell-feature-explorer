@@ -70,7 +70,7 @@ class App extends React.Component<AppProps, {}> {
         this.setState({ openKeys: value });
     }
 
-    public handleOk = () => {
+    public handleClose = () => {
 
         this.setState({
             showSmallScreenWarning: false,
@@ -102,7 +102,7 @@ class App extends React.Component<AppProps, {}> {
                 className={styles.container}
             >
                 <SmallScreenWarning
-                    handleOk={this.handleOk}
+                    handleClose={this.handleClose}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                     visible={this.state.showSmallScreenWarning}
                 />
