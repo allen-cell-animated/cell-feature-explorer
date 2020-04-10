@@ -3,7 +3,6 @@ import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
-    Modal,
 } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
@@ -11,6 +10,7 @@ import { ActionCreator, connect } from "react-redux";
 
 import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
+import SmallScreenWarning from "../../components/SmallScreenWarning";
 import ColorByMenu from "../../containers/ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
@@ -22,7 +22,6 @@ import {
 } from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-import SmallScreenWarning from "../../components/SmallScreenWarning";
 
 const {
     Content,
@@ -48,41 +47,40 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
-        showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
+        dontShowPanelAgain: false,
         openKeys: [App.panelKeys[0]],
         panelDismissed: false,
+        showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT,
     };
 
-    constructor(props: AppProps) {
-        super(props);
-        this.onSelectionToolUsed = this.onSelectionToolUsed.bind(this);
-        this.onPanelClicked = this.onPanelClicked.bind(this);
-    }
-
-    public componentDidMount() {
-
-        window.addEventListener('resize', this.updateDimensions);
+    public componentDidMount = () => {
+        window.addEventListener("resize", this.updateDimensions);
     }
 
     public updateDimensions = () => {
-        this.setState({ showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.panelDismissed});
-    };
+        this.setState({
+            panelDismissed: false,
+            showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowPanelAgain,
+        });
+    }
 
-    public onSelectionToolUsed() {
+    public onSelectionToolUsed = () => {
         this.setState({ openKeys: uniq([...this.state.openKeys, App.panelKeys[1]]) });
     }
 
-    public onPanelClicked(value: string[]) {
+    public onPanelClicked = (value: string[]) => {
         this.setState({ openKeys: value });
     }
 
     public handleOk = () => {
-
-        this.setState({ showWarning: false })
+        this.setState({
+            panelDismissed: true,
+            showWarning: false,
+        });
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
-        this.setState({ panelDismissed: value })
+        this.setState({ dontShowPanelAgain: value });
     }
 
     public render() {
@@ -105,10 +103,10 @@ class App extends React.Component<AppProps, {}> {
             <Layout
                 className={styles.container}
             >
-                <SmallScreenWarning 
+                <SmallScreenWarning
                     handleOk={this.handleOk}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={this.state.showWarning}
+                    visible={this.state.showWarning && !this.state.panelDismissed}
                 />
                 <BackToPlot />
                 <AllenCellHeader
