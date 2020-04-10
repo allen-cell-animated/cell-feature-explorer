@@ -6,8 +6,10 @@ String PROMOTE_ARTIFACT = "PROMOTE_ARTIFACT"
 
 String STAGING_DEPLOYMENT = "staging"  // matches value from jenkinstools.deploy.DeployEnv enum
 String PRODUCTION_DEPLOYMENT = "production"  // matches value from jenkinstools.deploy.DeployEnv enum
-Map DEPLOYMENT_TARGET_TO_S3_BUCKET = [(STAGING_DEPLOYMENT): "staging.cfe.allencell.org", (PRODUCTION_DEPLOYMENT): "production.cfe.allencell.org"]
+Map DEPLOYMENT_TARGET_TO_S3_BUCKET = [(STAGING_DEPLOYMENT): "staging.atpase.allencell.org", (PRODUCTION_DEPLOYMENT): "production.atpase.allencell.org"]
 Map DEPLOYMENT_TARGET_TO_MAVEN_REPO = [(STAGING_DEPLOYMENT): "maven-snapshot-local", (PRODUCTION_DEPLOYMENT): "maven-release-local"]
+
+Map TARGET_CLOUDFRONT = [(STAGING_DEPLOYMENT): "E1ZBYMGAQ7SL67", (PRODUCTION_DEPLOYMENT): "E26AVJHC82AXS6"]
 
 String[] IGNORE_AUTHORS = ["jenkins", "Jenkins User", "Jenkins Builder"]
 
@@ -36,6 +38,23 @@ pipeline {
         PYTHON = "${VENV_BIN}/python3"
     }
     stages {
+
+        stage ("fail if invalid job parameters") {
+            when {
+                expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
+                anyOf {
+                    // Promote jobs need a git tag; GIT_TAG_SENTINEL is the defaultValue that isn't valid
+                    expression { return params.DEPLOYMENT_TYPE == PROMOTE_ARTIFACT && params.GIT_TAG == GIT_TAG_SENTINEL }
+
+                    // Deploy jobs need a git tag; GIT_TAG_SENTINEL is the defaultValue that isn't valid
+                    expression { return params.DEPLOYMENT_TYPE == DEPLOY_ARTIFACT && params.GIT_TAG == GIT_TAG_SENTINEL }
+                }
+            }
+            steps {
+                error("Invalid job parameters for ${params.DEPLOYMENT_TYPE} job: Must select a valid git tag.")
+            }
+        }
+
         stage ("lint, typeCheck, and test") {
             when {
                 expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
@@ -58,7 +77,7 @@ pipeline {
                 DEPLOYMENT_ENV = "staging"
             }
             steps {
-                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+                sh "./gradlew -i snapshotPublish"
             }
         }
 
@@ -73,7 +92,7 @@ pipeline {
             }
             steps {
                 sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s prepare"
-                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+                sh "./gradlew -i snapshotPublish"
                 sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s tag"
             }
         }
@@ -87,6 +106,27 @@ pipeline {
             }
         }
 
+        stage("automated deploy") {
+            when {
+                expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
+                branch "master"
+                equals expected: BUILD_ARTIFACT, actual: params.JOB_TYPE
+            }
+            steps {
+                script {
+                    DEPLOYMENT_TYPE = STAGING_DEPLOYMENT
+                    CLOUDFRONT_ID = TARGET_CLOUDFRONT[DEPLOYMENT_TYPE]
+                    ARTIFACTORY_REPO = DEPLOYMENT_TARGET_TO_MAVEN_REPO[DEPLOYMENT_TYPE]
+                    S3_BUCKET = DEPLOYMENT_TARGET_TO_S3_BUCKET[DEPLOYMENT_TYPE]
+                    // HACK - switch back to detached commit to get the tag
+                    GIT_TAG = sh(script: 'git checkout - && git describe --tags --exact-match', returnStdout: true).trim()
+                }
+                // Automatically deploy to staging env on changes to master branch
+                sh "${PYTHON} ${VENV_BIN}/deploy_artifact -d --branch=${env.BRANCH_NAME} --deploy-env=${DEPLOYMENT_TYPE} maven-tgz S3 --artifactory-repo=${ARTIFACTORY_REPO} --bucket=${S3_BUCKET} ${GIT_TAG}"
+                invalidateCache(CLOUDFRONT_ID)
+            }
+        }
+
         stage ("deploy") {
             when {
                 equals expected: DEPLOY_ARTIFACT, actual: params.JOB_TYPE
@@ -95,8 +135,10 @@ pipeline {
                 script {
                     ARTIFACTORY_REPO = DEPLOYMENT_TARGET_TO_MAVEN_REPO[params.DEPLOYMENT_TYPE]
                     S3_BUCKET = DEPLOYMENT_TARGET_TO_S3_BUCKET[params.DEPLOYMENT_TYPE]
+                    CLOUDFRONT_ID = TARGET_CLOUDFRONT[DEPLOYMENT_TYPE]
                 }
                 sh "${PYTHON} ${VENV_BIN}/deploy_artifact -d --branch=${env.BRANCH_NAME} --deploy-env=${params.DEPLOYMENT_TYPE} maven-tgz S3 --artifactory-repo=${ARTIFACTORY_REPO} --bucket=${S3_BUCKET} ${params.GIT_TAG}"
+                invalidateCache(CLOUDFRONT_ID)
             }
         }
     }
@@ -107,3 +149,10 @@ pipeline {
     }
 }
 
+def invalidateCache(String CLOUDFRONT_ID) {
+    sh(script: "aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths \"/*\"")
+}
+
+def gitAuthor() {
+    sh(returnStdout: true, script: 'git log -1 --format=%an').trim()
+}
