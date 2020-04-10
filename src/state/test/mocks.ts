@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { zipWith } from "lodash";
 
 import {

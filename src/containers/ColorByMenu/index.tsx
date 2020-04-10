@@ -52,7 +52,7 @@ import {
     SelectAxisAction,
 } from "../../state/selection/types";
 import {
-State,
+State,  
 } from "../../state/types";
 import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 
