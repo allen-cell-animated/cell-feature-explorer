@@ -65,7 +65,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
-        this.setState({ showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT });
+        this.setState({ showWarning: window.innerWidth < SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.panelDismissed});
     };
 
     public onSelectionToolUsed() {
@@ -77,7 +77,12 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public handleOk = () => {
+
         this.setState({ showWarning: false })
+    }
+
+    public onDismissCheckboxChecked = (value: boolean) => {
+        this.setState({ panelDismissed: value })
     }
 
     public render() {
@@ -102,7 +107,8 @@ class App extends React.Component<AppProps, {}> {
             >
                 <SmallScreenWarning 
                     handleOk={this.handleOk}
-                    visible={this.state.showWarning && !this.state.panelDismissed}
+                    onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                    visible={this.state.showWarning}
                 />
                 <BackToPlot />
                 <AllenCellHeader

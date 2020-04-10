@@ -18,3 +18,7 @@
     display: inline-block;
     width: 30%;
 }
+
+.checkbox-container :global(.ant-checkbox-wrapper) {
+    color: #0a0a0a;
+}

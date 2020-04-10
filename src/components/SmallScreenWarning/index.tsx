@@ -1,15 +1,17 @@
 import React from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Checkbox } from 'antd';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 const styles = require('./style.css')
 
 interface SmallScreenWarningProps {
     handleOk: () => void;
+    onDismissCheckboxChecked: (value: boolean) => void;
     visible: boolean;
 }
 
-const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handleOk }) => {
-
+const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handleOk, onDismissCheckboxChecked }) => {
+    const onCheckboxChange = ({ target }: CheckboxChangeEvent) => onDismissCheckboxChecked(target.checked)
     return (
         <Modal
             centered
@@ -28,8 +30,10 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handl
         >
             <p>Many features of this web tool are hidden while using it on a small screen.</p>
             <p>To access all features, including a tool to plot measurements for over 30,000 cells, please visit this web page on a larger screen.</p>
+            <div className={styles.checkboxContainer}>
+                <Checkbox onChange={onCheckboxChange}>Don't show this message again.</Checkbox>
+            </div>
             <div className={styles.buttonContainer}>
-
                 <Button className={styles.okButton} onClick={handleOk}>OK</Button>
             </div>
         </Modal>
