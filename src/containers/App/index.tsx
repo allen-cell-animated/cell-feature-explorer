@@ -47,7 +47,7 @@ class App extends React.Component<AppProps, {}> {
 
     public state = {
         defaultActiveKey: [App.panelKeys[0]],
-        dontShowPanelAgain: false,
+        dontShowSmallScreenWarningAgain: false,
         openKeys: [App.panelKeys[0]],
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
     };
@@ -57,7 +57,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
-        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowPanelAgain;
+        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowSmallScreenWarningAgain;
         this.setState({
             showSmallScreenWarning: shouldShow,
         });
@@ -79,7 +79,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
-        this.setState({ dontShowPanelAgain: value });
+        this.setState({ dontShowSmallScreenWarningAgain: value });
     }
 
     public render() {
