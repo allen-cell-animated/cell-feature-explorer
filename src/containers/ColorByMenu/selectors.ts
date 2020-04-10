@@ -52,7 +52,7 @@ const getColors = createSelector(
                 .map((ele: NumberOrString, index: number) =>
                     includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
             proteinNames
-                .map((ele: NumberOrString,) =>
+                .map((ele: NumberOrString) =>
                     includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR);
     });
 
