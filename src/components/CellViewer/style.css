@@ -1,9 +1,16 @@
 .cell-viewer{
     flex: 1;
-    height: 45vw;
     width: 100%;
 }
 
 .cell-viewer :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
-    transform: translateY(-100%);
+    transform: translateY(-250%);
+}
+
+.cell-viewer :global(.control-panel-holder) {
+    overflow: visible;
+}
+
+.cell-viewer :global(.ant-layout-sider-children) {
+    overflow: scroll;
 }

@@ -221,11 +221,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public selectCell(cellId: number): SelectCellIn3DAction {
         const { handleOpenIn3D } = this.props;
-        window.setTimeout(window.scroll({
-            behavior: "smooth",
-            left: 0,
-            top: 2500,
-        }), 3000);
+        window.setTimeout(this.scrollGallery, 3000);
         this.closeGallery();
         return handleOpenIn3D(cellId);
     }
@@ -275,7 +271,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 </Col>
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
-                        <h2><Icon type="picture"/>  Gallery
+                        <h2>Gallery
                         </h2>
                         <Icon
                             type="close"
@@ -309,7 +305,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
-                    <h2><Icon type="picture"/>  Gallery
+                    <h2>Gallery
                     </h2>
                 </div>
                 <List
@@ -363,6 +359,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         );
     }
 
+    private scrollGallery() {
+        window.scroll({
+            behavior: "smooth",
+            left: 0,
+            top: 2500,
+        });
+    }
+
     private renderGalleryCard(item: Thumbnail) {
         const {
             handleDeselectPoint,
@@ -377,6 +381,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     src={item.src}
                     selected={selectedCell === item.cellID}
                     downloadHref={item.downloadHref}
+                    downloadFullField={item.fullFieldDownloadHref}
                     cellID={item.cellID}
                     handleDeselectPoint={handleDeselectPoint}
                     handleOpenIn3D={this.selectCell}
