@@ -9,7 +9,7 @@ String PRODUCTION_DEPLOYMENT = "production"  // matches value from jenkinstools.
 Map DEPLOYMENT_TARGET_TO_S3_BUCKET = [(STAGING_DEPLOYMENT): "staging.cfe.allencell.org", (PRODUCTION_DEPLOYMENT): "production.cfe.allencell.org"]
 Map DEPLOYMENT_TARGET_TO_MAVEN_REPO = [(STAGING_DEPLOYMENT): "maven-snapshot-local", (PRODUCTION_DEPLOYMENT): "maven-release-local"]
 
-Map TARGET_CLOUDFRONT = [(STAGING_DEPLOYMENT): "E1ZBYMGAQ7SL67", (PRODUCTION_DEPLOYMENT): "E26AVJHC82AXS6"]
+Map TARGET_CLOUDFRONT = [(STAGING_DEPLOYMENT): "E1ZBYMGAQ7SL67", (PRODUCTION_DEPLOYMENT): "E3S5ZMP0OVZ8R1"]
 
 String[] IGNORE_AUTHORS = ["jenkins", "Jenkins User", "Jenkins Builder"]
 
