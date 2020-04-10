@@ -58,7 +58,7 @@ pipeline {
                 DEPLOYMENT_ENV = "staging"
             }
             steps {
-                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+                sh "./gradlew -i snapshotPublish"
             }
         }
 
@@ -73,7 +73,7 @@ pipeline {
             }
             steps {
                 sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s prepare"
-                sh "./gradlew -i snapshotPublishTarGzAndDockerImage"
+                sh "./gradlew -i snapshotPublish"
                 sh "${PYTHON} ${VENV_BIN}/manage_version -t gradle -s tag"
             }
         }
