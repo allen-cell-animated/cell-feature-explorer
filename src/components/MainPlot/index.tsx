@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { isEqual } from "lodash";
 import {
     Annotations,

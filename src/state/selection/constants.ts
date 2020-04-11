@@ -11,7 +11,6 @@ import { makeConstant } from "../util";
 
 import {
     ClusteringNumberChoices,
-    ClusteringTypeChoices,
 } from "./types";
 
 export const CHANGE_AXIS = makeConstant("selection", "deselect-file");

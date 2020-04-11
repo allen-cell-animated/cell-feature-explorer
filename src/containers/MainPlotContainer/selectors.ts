@@ -116,7 +116,7 @@ function colorSettings(
             transforms: [ {
                 groups: plotData.groups,
                 nameformat: `%{group}`,
-                styles: map(plotData.groupSettings, (ele, index: number) => {
+                styles: map(plotData.groupSettings, (ele) => {
                     return {
                         target: ele.name,
                         value: {
@@ -254,7 +254,7 @@ const makeNumberAxis = (): TickConversion => {
     };
 };
 
-export const getXTickConversion = createSelector([getPlotByOnX, getXValues], (plotByOnX, xValues): TickConversion => {
+export const getXTickConversion = createSelector([getPlotByOnX], (plotByOnX): TickConversion => {
     if (includes(CATEGORICAL_FEATURES, plotByOnX)) {
         const categoryEnum = getLabels(plotByOnX);
         if (categoryEnum) {
@@ -264,7 +264,7 @@ export const getXTickConversion = createSelector([getPlotByOnX, getXValues], (pl
     return makeNumberAxis();
 });
 
-export const getYTickConversion = createSelector([getPlotByOnY, getYValues], (plotByOnY, yValues): TickConversion => {
+export const getYTickConversion = createSelector([getPlotByOnY], (plotByOnY): TickConversion => {
     if (includes(CATEGORICAL_FEATURES, plotByOnY)) {
         const categoryEnum = getLabels(plotByOnY);
         if (categoryEnum) {
