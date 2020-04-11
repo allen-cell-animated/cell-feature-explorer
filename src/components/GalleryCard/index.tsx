@@ -73,7 +73,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             </Button>
         ),
         (
-            <Dropdown overlay={menu} trigger={["click"]}>
+            <Dropdown key={`${props.cellID}-download`} overlay={menu} trigger={["click"]}>
                 <Button icon="download" />
             </Dropdown>
         ),

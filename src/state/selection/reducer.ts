@@ -137,7 +137,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
     },
     [DESELECT_ALL_POINTS]: {
         accepts: (action: AnyAction): action is ResetSelectionAction => action.type === DESELECT_ALL_POINTS,
-        perform: (state: SelectionStateBranch, action: ResetSelectionAction) => ({
+        perform: (state: SelectionStateBranch) => ({
             ...state,
             selectedPoints: [...initialState.selectedPoints],
         }),
