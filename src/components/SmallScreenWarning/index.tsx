@@ -35,7 +35,7 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handl
                 please visit this web page on a larger screen.
             </p>
             <div className={styles.checkboxContainer}>
-                <Checkbox onChange={onCheckboxChange}>Don't show this message again.</Checkbox>
+                <Checkbox onChange={onCheckboxChange}>Don&apos;t show this message again.</Checkbox>
             </div>
             <div className={styles.buttonContainer}>
                 <Button className={styles.okButton} onClick={handleClose}>OK</Button>

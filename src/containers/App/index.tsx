@@ -57,7 +57,8 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
-        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT && !this.state.dontShowSmallScreenWarningAgain;
+        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
+        !this.state.dontShowSmallScreenWarningAgain;
         this.setState({
             showSmallScreenWarning: shouldShow,
         });
