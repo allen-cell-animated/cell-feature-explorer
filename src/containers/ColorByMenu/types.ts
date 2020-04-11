@@ -1,5 +1,3 @@
-import { NumberOrString } from "../../state/types";
-
 export interface PanelData {
     checked?: boolean;
     color: string;

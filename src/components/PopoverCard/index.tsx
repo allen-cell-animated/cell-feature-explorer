@@ -1,14 +1,9 @@
 import {
     Card,
-    Icon,
 } from "antd";
 import React from "react";
 
 import { THUMBNAIL_BASE_URL } from "../../constants";
-import {
-    ChangeSelectionAction,
-    DeselectPointAction,
-} from "../../state/selection/types";
 
 const { Meta } = Card;
 const styles = require("./style.css");
