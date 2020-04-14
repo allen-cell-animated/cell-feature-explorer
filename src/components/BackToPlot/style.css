@@ -6,7 +6,7 @@
     height: 60px;
     width: 60px;
     transition: all 0.2s;
-    z-index: 2000;
+    z-index: 1000;
 }
 
 .back-top-inner {

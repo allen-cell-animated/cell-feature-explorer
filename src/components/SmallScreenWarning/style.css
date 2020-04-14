@@ -27,3 +27,7 @@
 .checkbox-container :global(.ant-checkbox-inner) {
     background-color: transparent;
 }
+
+:global(.ant-modal-wrap) {
+    z-index: 4000;
+}
