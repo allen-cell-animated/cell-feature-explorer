@@ -1,6 +1,5 @@
 # Cell Feature Explorer
 
-
 ---
 
 ## Description
@@ -18,9 +17,6 @@ src/<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[state/](src/state/README.md)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[styles/](src/styles/README.md)<br/>
 ___
-
-
-
 
 ## Documentation
 
