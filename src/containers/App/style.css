@@ -68,7 +68,7 @@
     height: 100vh;
     position: fixed;
     right: 0;
-    z-index: 3000;
+    z-index: 999;
     padding-bottom: 0;
 }
 
@@ -79,7 +79,6 @@
 .sider :global(.ant-layout-sider-zero-width-trigger.ant-layout-sider-zero-width-trigger-right) {
     display: none;
 }
-
 
 /* element is appended to the top level of the dom, so had to be adjusted globally. Tested and seems ok*/
 :global(.ant-dropdown) {
@@ -120,9 +119,6 @@
       position: absolute;
       left: 3.5px;
       top: 50%;
-      /*line-height: 100vh;*/
-
-
   }
 }
 

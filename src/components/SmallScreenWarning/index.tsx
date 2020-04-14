@@ -19,7 +19,6 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handl
             visible={visible}
             onOk={handleClose}
             onCancel={handleClose}
-            zIndex={4000}
             footer={null}
             maskStyle={{
                 background: "#000000d9",
