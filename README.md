@@ -18,9 +18,6 @@ src/<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[styles/](src/styles/README.md)<br/>
 ___
 
-
-
-
 ## Documentation
 
 If you have more extensive technical documentation (whether generated or not), ensure they are published to the following address:
