@@ -38,6 +38,29 @@ pipeline {
         PYTHON = "${VENV_BIN}/python3"
     }
     stages {
+        stage ("initialize") {
+            steps {
+                // without credentialsId, the git parameters plugin fails to communicate with the repo
+                git url: "${env.GIT_URL}", branch: "${env.BRANCH_NAME}", credentialsId:"aicsgithub-ssh-key"
+            }
+        }
+
+        stage ("fail if invalid job parameters") {
+            when {
+                expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
+                anyOf {
+                    // Promote jobs need a git tag; GIT_TAG_SENTINEL is the defaultValue that isn't valid
+                    expression { return params.DEPLOYMENT_TYPE == PROMOTE_ARTIFACT && params.GIT_TAG == GIT_TAG_SENTINEL }
+
+                    // Deploy jobs need a git tag; GIT_TAG_SENTINEL is the defaultValue that isn't valid
+                    expression { return params.DEPLOYMENT_TYPE == DEPLOY_ARTIFACT && params.GIT_TAG == GIT_TAG_SENTINEL }
+                }
+            }
+            steps {
+                error("Invalid job parameters for ${params.DEPLOYMENT_TYPE} job: Must select a valid git tag.")
+            }
+        }
+
         stage ("lint, typeCheck, and test") {
             when {
                 expression { !IGNORE_AUTHORS.contains(gitAuthor()) }
