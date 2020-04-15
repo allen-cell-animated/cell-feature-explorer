@@ -64,8 +64,8 @@ class App extends React.Component<AppProps, {}> {
         const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
         !this.state.dontShowSmallScreenWarningAgain;
         this.setState({
-            width: window.innerWidth,
             showSmallScreenWarning: shouldShow,
+            width: window.innerWidth,
         });
     }
 
