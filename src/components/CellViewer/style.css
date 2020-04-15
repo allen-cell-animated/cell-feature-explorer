@@ -14,3 +14,7 @@
 .cell-viewer :global(.ant-layout-sider-children) {
     overflow: scroll;
 }
+
+.cell-viewer :global(.ant-layout-sider-zero-width-trigger) {
+    z-index: 999!important;
+}

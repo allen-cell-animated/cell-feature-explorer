@@ -1,7 +1,7 @@
 @import "../../styles/colors.css";
 
 :global(.ant-affix) {
-    z-index: 99999;
+    z-index: 100;
 }
 
 :global(.ant-layout-header) {
@@ -68,7 +68,7 @@
     height: 100vh;
     position: fixed;
     right: 0;
-    z-index: 999;
+    z-index: 10;
     padding-bottom: 0;
 }
 
