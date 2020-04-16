@@ -49,6 +49,7 @@ class App extends React.Component<AppProps, {}> {
         dontShowSmallScreenWarningAgain: false,
         openKeys: [App.panelKeys[0]],
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
+        width: window.innerWidth,
     };
 
     public componentDidMount = () => {
@@ -56,10 +57,15 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public updateDimensions = () => {
+        if (window.innerWidth === this.state.width) {
+            // listener is triggered on scroll in some mobile devices
+            return;
+        }
         const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
         !this.state.dontShowSmallScreenWarningAgain;
         this.setState({
             showSmallScreenWarning: shouldShow,
+            width: window.innerWidth,
         });
     }
 
