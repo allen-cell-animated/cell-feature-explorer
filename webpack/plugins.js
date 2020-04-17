@@ -37,6 +37,10 @@ const BASE_PLUGINS = [
             {
                 from: path.resolve(__dirname, '../src/data', 'albums.json'),
                 to: 'data'
+            },
+            {
+                from: path.resolve(__dirname, '../src/images'),
+                to: 'images'
             }
         ]
     ),
