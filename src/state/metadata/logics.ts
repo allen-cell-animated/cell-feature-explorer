@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { AxiosResponse } from "axios";
 import {
     isEmpty,
     keys,
