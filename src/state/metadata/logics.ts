@@ -6,6 +6,7 @@ import {
     shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
+import { QueryDocumentSnapshot, QuerySnapshot } from "@firebase/firestore-types";
 
 import {
     CELL_ID_KEY,
@@ -19,7 +20,7 @@ import { changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../s
 import { CLUSTERING_MAP } from "../selection/constants";
 import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
 import { ChangeClusterNumberAction } from "../selection/types";
-import { ReduxLogicDeps } from "../types";
+import { ReduxLogicDeps, Album } from "../types";
 import { batchActions } from "../util";
 
 import { receiveCellLineData, receiveMetadata, requestFeatureData } from "./actions";
@@ -38,9 +39,9 @@ const requestCellLineData = createLogic({
         return firestoreRef
             .collection("cell-line-def")
             .get()
-            .then((snapshot: any) => {
+            .then((snapshot: QuerySnapshot) => {
                 const dataset: CellLineDef = {};
-                snapshot.forEach((doc: any) => {
+                snapshot.forEach((doc: QueryDocumentSnapshot) => {
                     const datum = doc.data();
                     dataset[datum[CELL_LINE_DEF_NAME_KEY]] = {
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
@@ -65,9 +66,9 @@ const requestFeatureDataLogic = createLogic({
         return firestoreRef
             .collection("cell-feature-analysis")
             .get()
-            .then((snapshot: any) => {
-                const dataset: any = [];
-                snapshot.forEach((doc: any) => {
+            .then((snapshot: QuerySnapshot) => {
+                const dataset: MetadataStateBranch[] = [];
+                snapshot.forEach((doc: QueryDocumentSnapshot) => {
                     dataset.push(doc.data());
                 });
                 return dataset;
@@ -139,10 +140,10 @@ const requestAlbumData = createLogic({
         return firestoreRef
             .collection("albums")
             .get()
-            .then((snapshot: any) => {
-                const dataset: any = [];
-                snapshot.forEach((doc: any) => {
-                    dataset.push(doc.data());
+            .then((snapshot: QuerySnapshot) => {
+                const dataset: Album[] = [];
+                snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                    dataset.push(doc.data() as Album);
                 });
                 return dataset;
             })
