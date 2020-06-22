@@ -1,7 +1,7 @@
 import "@firebase/analytics";
-import { firebase } from "@firebase/app";
-import "@firebase/firestore";
-// import { FirebaseFirestore } from "firebase/firestore-types";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { FirebaseFirestore } from "@firebase/firestore-types";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD691xhXsWl-8QU_9htjZnMUd7siWVCTAE",
@@ -17,7 +17,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-const firestore = firebase.firestore();
+const firestore: FirebaseFirestore = firebase.firestore();
 
 export {
     firebase,
