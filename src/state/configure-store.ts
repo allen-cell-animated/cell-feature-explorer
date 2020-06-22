@@ -16,7 +16,7 @@ import {
     selection,
     State,
 } from "./";
-import firestore from './configure-firebase';
+import firestore from "./configure-firebase";
 
 const reducers = {
     metadata: metadata.reducer,
@@ -30,8 +30,8 @@ const logics = [
 
 const reduxLogicDependencies = {
     baseApiUrl: BASE_API_URL,
-    httpClient: axios,
     firestoreRef: firestore.collection("cfe-datasets").doc("v1"),
+    httpClient: axios,
 };
 
 export default function createReduxStore(preloadedState?: Partial<State>) {
