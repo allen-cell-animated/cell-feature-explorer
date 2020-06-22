@@ -3,7 +3,6 @@ import {
     isEmpty,
     keys,
     map,
-    random,
     shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
@@ -95,7 +94,7 @@ const requestFeatureDataLogic = createLogic({
                     })
                 );
             })
-            .then((metaData: MetaData[]): MetaData[] => {
+            .then((metaData: MetaData[]): MetaData => {
                 // set the clustering options based on the dataset
                 const changeClusterNumberActions = map(
                     metaData[0].clusters,
@@ -106,27 +105,20 @@ const requestFeatureDataLogic = createLogic({
                 );
 
                 dispatch(batchActions([...changeClusterNumberActions, receiveMetadata(metaData)]));
-                return metaData;
+                return metaData[0];
             })
             .then((metaDatum) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
                 const actions = [];
-                const randomIndexes = [];
-                for (let i = 0; i < 10; i++) {
-                    randomIndexes.push(random(0, metaDatum.length));
-                }
+
                 if (isEmpty(getClickedScatterPoints(state))) {
-                    randomIndexes.forEach((index) => {
-                        actions.push(selectPoint(Number(metaDatum[index].file_info[CELL_ID_KEY])));
-                    });
+                    actions.push(selectPoint(Number(metaDatum.file_info[CELL_ID_KEY])));
                 }
 
                 if (!getSelected3DCell(state)) {
-                    actions.push(
-                        selectCellFor3DViewer(metaDatum[randomIndexes[0]].file_info[CELL_ID_KEY])
-                    );
+                    actions.push(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));	                
                 }
 
                 if (!isEmpty(actions)) {
