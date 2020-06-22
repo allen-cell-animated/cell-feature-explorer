@@ -1,10 +1,10 @@
 import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
-import { DocumentReference } from "@firebase/firestore-types";
 import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
+import ImageDataSet from "./image-dataset";
 
 export type NumberOrString = number | string;
 
@@ -21,9 +21,8 @@ export interface BatchedAction {
 
 export interface ReduxLogicDeps {
     action: AnyAction;
-    baseApiUrl: string;
     httpClient: AxiosInstance;
-    firestoreRef: DocumentReference;
+    imageDataSet: ImageDataSet;
     getState: () => State;
     ctx?: any;
 }

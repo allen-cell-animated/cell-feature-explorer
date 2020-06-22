@@ -15,6 +15,9 @@ const ProductionServers = require('./server-urls-production.json');
 const StagingServers = require('./server-urls-staging.json');
 
 const BASE_PLUGINS = [
+    new webpack.DefinePlugin({
+        'process.env.USE_GITHUB_FOR_DATASET': JSON.stringify(process.env.USE_GITHUB_FOR_DATASET) || false,
+    }),
     new ForkTsCheckerWebpackPlugin({
         tsconfig: path.resolve(__dirname, '../', 'tsconfig.json'),
         workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE,

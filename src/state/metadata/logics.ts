@@ -6,13 +6,10 @@ import {
     shuffle,
 } from "lodash";
 import { createLogic } from "redux-logic";
-import { QueryDocumentSnapshot, QuerySnapshot } from "@firebase/firestore-types";
 
 import {
     CELL_ID_KEY,
-    CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
@@ -20,7 +17,7 @@ import { changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../s
 import { CLUSTERING_MAP } from "../selection/constants";
 import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
 import { ChangeClusterNumberAction } from "../selection/types";
-import { ReduxLogicDeps, Album } from "../types";
+import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
 import { receiveCellLineData, receiveMetadata, requestFeatureData } from "./actions";
@@ -30,29 +27,17 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, MetaData, MetadataStateBranch } from "./types";
+import { MetaData, MetadataStateBranch } from "./types";
 
 const requestCellLineData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { firestoreRef } = deps;
+        const { imageDataSet } = deps;
 
-        return firestoreRef
-            .collection("cell-line-def")
-            .get()
-            .then((snapshot: QuerySnapshot) => {
-                const dataset: CellLineDef = {};
-                snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    const datum = doc.data();
-                    dataset[datum[CELL_LINE_DEF_NAME_KEY]] = {
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                        [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                    };
-                });
-                return dataset;
-            })
-            .then((data) => dispatch(receiveCellLineData(data)))
+        return imageDataSet
+            .getCellLineData()
+            .then((data: MetadataStateBranch) => dispatch(receiveCellLineData(data)))
             .then(() => dispatch(requestFeatureData()))
-            .catch((reason) => {
+            .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             })
             .then(() => done());
@@ -62,18 +47,10 @@ const requestCellLineData = createLogic({
 
 const requestFeatureDataLogic = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { getState, firestoreRef } = deps;
-        return firestoreRef
-            .collection("cell-feature-analysis")
-            .get()
-            .then((snapshot: QuerySnapshot) => {
-                const dataset: MetadataStateBranch[] = [];
-                snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    dataset.push(doc.data());
-                });
-                return dataset;
-            })
-            .then((data) => {
+        const { getState, imageDataSet } = deps;
+        return imageDataSet
+            .getFeatureData()
+            .then((data: MetadataStateBranch[]) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
                 // shuffle to keep the plot from being organized in z
                 return shuffle(
@@ -108,7 +85,7 @@ const requestFeatureDataLogic = createLogic({
                 dispatch(batchActions([...changeClusterNumberActions, receiveMetadata(metaData)]));
                 return metaData[0];
             })
-            .then((metaDatum) => {
+            .then((metaDatum: MetadataStateBranch) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
@@ -126,7 +103,7 @@ const requestFeatureDataLogic = createLogic({
                     dispatch(batchActions(actions));
                 }
             })
-            .catch((reason) => {
+            .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             })
             .then(() => done());
@@ -136,18 +113,10 @@ const requestFeatureDataLogic = createLogic({
 
 const requestAlbumData = createLogic({
     process(deps: ReduxLogicDeps) {
-        const { firestoreRef } = deps;
-        return firestoreRef
-            .collection("albums")
-            .get()
-            .then((snapshot: QuerySnapshot) => {
-                const dataset: Album[] = [];
-                snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    dataset.push(doc.data() as Album);
-                });
-                return dataset;
-            })
-            .catch((reason) => {
+        const { imageDataSet } = deps;
+        return imageDataSet
+            .getAlbumData()
+            .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             });
     },

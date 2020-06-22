@@ -16,7 +16,8 @@ import {
     selection,
     State,
 } from "./";
-import firestore from "./configure-firebase";
+import firestore from "./image-dataset/firebase/configure-firebase";
+import ImageDataSet from "./image-dataset";
 
 const reducers = {
     metadata: metadata.reducer,
@@ -32,6 +33,7 @@ const reduxLogicDependencies = {
     baseApiUrl: BASE_API_URL,
     firestoreRef: firestore.collection("cfe-datasets").doc("v1"),
     httpClient: axios,
+    imageDataSet: new ImageDataSet(),
 };
 
 export default function createReduxStore(preloadedState?: Partial<State>) {
