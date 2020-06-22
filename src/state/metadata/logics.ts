@@ -48,8 +48,7 @@ const requestCellLineData = createLogic({
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
                         [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
                     };
-                }
-                    );
+                });
                 return dataset;
             })
             .then((data) => dispatch(receiveCellLineData(data)))
@@ -64,10 +63,17 @@ const requestCellLineData = createLogic({
 
 const requestFeatureDataLogic = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { baseApiUrl, getState, httpClient } = deps;
-        return httpClient
-            .get(`${baseApiUrl}/cell-feature-analysis.json`)
-            .then((metadata: AxiosResponse) => metadata.data)
+        const { getState, firestoreRef } = deps;
+        return firestoreRef
+            .collection("cell-feature-analysis")
+            .get()
+            .then((snapshot: any) => {
+                const dataset: any = [];
+                snapshot.forEach((doc: any) => {
+                    dataset.push(doc.data());
+                });
+                return dataset;
+            })
             .then((data) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
                 // shuffle to keep the plot from being organized in z
@@ -138,10 +144,17 @@ const requestFeatureDataLogic = createLogic({
 
 const requestAlbumData = createLogic({
     process(deps: ReduxLogicDeps) {
-        const { baseApiUrl, httpClient } = deps;
-        return httpClient
-            .get(`${baseApiUrl}/albums.json`)
-            .then((metadata: AxiosResponse) => metadata.data)
+        const { firestoreRef } = deps;
+        return firestoreRef
+            .collection("albums")
+            .get()
+            .then((snapshot: any) => {
+                const dataset: any = [];
+                snapshot.forEach((doc: any) => {
+                    dataset.push(doc.data());
+                });
+                return dataset;
+            })
             .catch((reason) => {
                 console.log(reason); // tslint:disable-line:no-console
             });
