@@ -4,7 +4,8 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
-import ImageDataSet from "./image-dataset";
+import FirebaseRequest from "./image-dataset/firebase";
+import JsonRequest from "./image-dataset/json-dataset";
 
 export type NumberOrString = number | string;
 
@@ -22,7 +23,7 @@ export interface BatchedAction {
 export interface ReduxLogicDeps {
     action: AnyAction;
     httpClient: AxiosInstance;
-    imageDataSet: ImageDataSet;
+    imageDataSet: FirebaseRequest | JsonRequest;
     getState: () => State;
     ctx?: any;
 }
