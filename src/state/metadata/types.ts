@@ -5,7 +5,7 @@ import {
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     PROTEIN_NAME_KEY,
-} from "../../constants/index";
+} from "../../constants";
 import { Album } from "../types";
 
 export interface MetadataStateBranch {

@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
+import { DocumentReference } from "@firebase/firestore-types";
 import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
@@ -22,6 +23,7 @@ export interface ReduxLogicDeps {
     action: AnyAction;
     baseApiUrl: string;
     httpClient: AxiosInstance;
+    firestoreRef: DocumentReference;
     getState: () => State;
     ctx?: any;
 }
@@ -104,7 +106,7 @@ export interface SelectedGroups {
 }
 
 export interface Album {
-    album_id: number;
+    album_id: number | string;
     cell_ids: number[];
     title: string;
 }

@@ -4,10 +4,10 @@ import {
     isEmpty,
     keys,
     map,
+    random,
     reduce,
     shuffle,
     difference,
-    random,
 } from "lodash";
 import { createLogic } from "redux-logic";
 
@@ -35,18 +35,17 @@ import {
 } from "./constants";
 import { CellLineDef, MetaData, MetadataStateBranch } from "./types";
 
-
 const requestCellLineData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { firestoreRef, action } = deps;
+        const { firestoreRef } = deps;
 
         return firestoreRef
             .collection("cell-line-def")
             .get()
             .then((snapshot: any) => {
-                const dataset = {};
+                const dataset: {[key: string]: any} = {};
                 snapshot.forEach((doc: any) => (dataset[doc.id] = doc.data()));
-                console.log(dataset)
+                console.log(dataset);
                 return dataset;
             })
             .then((data) => {
