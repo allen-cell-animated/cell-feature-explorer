@@ -17,7 +17,6 @@ const StagingServers = require('./server-urls-staging.json');
 const BASE_PLUGINS = [
     new ForkTsCheckerWebpackPlugin({
         tsconfig: path.resolve(__dirname, '../', 'tsconfig.json'),
-        tslint: path.resolve(__dirname, '../', 'tslint.json'),
         workers: ForkTsCheckerWebpackPlugin.TWO_CPUS_FREE,
     }),
     new CleanWebpackPlugin(['dist'], {
