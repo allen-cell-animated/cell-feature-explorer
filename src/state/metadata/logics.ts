@@ -5,9 +5,7 @@ import {
     keys,
     map,
     random,
-    reduce,
     shuffle,
-    difference,
 } from "lodash";
 import { createLogic } from "redux-logic";
 
@@ -43,23 +41,16 @@ const requestCellLineData = createLogic({
             .collection("cell-line-def")
             .get()
             .then((snapshot: any) => {
-                const dataset: {[key: string]: any} = {};
-                snapshot.forEach((doc: any) => (dataset[doc.id] = doc.data()));
-                console.log(dataset);
+                const dataset: CellLineDef = {};
+                snapshot.forEach((doc: any) => {
+                    const datum = doc.data();
+                    dataset[datum[CELL_LINE_DEF_NAME_KEY]] = {
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
+                        [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                    };
+                }
+                    );
                 return dataset;
-            })
-            .then((data) => {
-                return reduce(
-                    data,
-                    (accumulator: CellLineDef, datum: MetadataStateBranch) => {
-                        accumulator[datum[CELL_LINE_DEF_NAME_KEY]] = {
-                            [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                            [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                        };
-                        return accumulator;
-                    },
-                    {}
-                );
             })
             .then((data) => dispatch(receiveCellLineData(data)))
             .then(() => dispatch(requestFeatureData()))
