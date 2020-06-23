@@ -8,9 +8,9 @@ import {
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { CELL_LINE_DEF_FILENAME, CELL_FEATURE_ANALYSIS_FILENAME, ALBUMS_FILENAME } from "../constants";
+import { ImageDataset } from "../types";
 
-
-class JsonRequest {
+class JsonRequest implements ImageDataset {
     baseUrl: string;
     private labkeyCellDefName = "CellLineId/Name";
     private labkeyStructureKey = "StructureId/Name";

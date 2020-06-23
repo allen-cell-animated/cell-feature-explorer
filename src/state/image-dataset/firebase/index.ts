@@ -10,8 +10,9 @@ import {
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import { CELL_LINE_DEF_FILENAME, CELL_FEATURE_ANALYSIS_FILENAME, ALBUMS_FILENAME } from "../constants";
+import { ImageDataset } from "../types";
 
-class FirebaseRequest {
+class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     constructor() {
         this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
