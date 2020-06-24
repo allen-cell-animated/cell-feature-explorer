@@ -4,6 +4,7 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
+import { ImageDataset} from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
@@ -20,8 +21,8 @@ export interface BatchedAction {
 
 export interface ReduxLogicDeps {
     action: AnyAction;
-    baseApiUrl: string;
     httpClient: AxiosInstance;
+    imageDataSet: ImageDataset;
     getState: () => State;
     ctx?: any;
 }
@@ -104,7 +105,7 @@ export interface SelectedGroups {
 }
 
 export interface Album {
-    album_id: number;
+    album_id: number | string;
     cell_ids: number[];
     title: string;
 }
