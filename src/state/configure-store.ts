@@ -1,50 +1,41 @@
-import axios from "axios";
-import { merge } from "lodash";
-import {
-    applyMiddleware,
-    combineReducers,
-    createStore,
-} from "redux";
-import { createLogicMiddleware } from "redux-logic";
+import axios from 'axios';
+import {merge} from 'lodash';
+import {applyMiddleware, combineReducers, createStore,} from 'redux';
+import {createLogicMiddleware} from 'redux-logic';
 
-import { BASE_API_URL } from "../constants";
+import {BASE_API_URL} from '../constants';
 
-import {
-    enableBatching,
-    initialState,
-    metadata,
-    selection,
-    State,
-} from "./";
-import ImageDataSet from "./image-dataset";
+import {enableBatching, initialState, metadata, selection, State,} from './';
+import RequestClassToUse from './image-dataset';
 
 const reducers = {
-    metadata: metadata.reducer,
-    selection: selection.reducer,
+  metadata: metadata.reducer,
+  selection: selection.reducer,
 };
 
 const logics = [
-    ...metadata.logics,
-    ...selection.logics,
+  ...metadata.logics,
+  ...selection.logics,
 ];
 
 const reduxLogicDependencies = {
-    baseApiUrl: BASE_API_URL,
-    httpClient: axios,
-    imageDataSet: new ImageDataSet(),
+  baseApiUrl: BASE_API_URL,
+  httpClient: axios,
+  imageDataSet: RequestClassToUse()
 };
 
 export default function createReduxStore(preloadedState?: Partial<State>) {
-    const logicMiddleware = createLogicMiddleware(logics);
-    logicMiddleware.addDeps(reduxLogicDependencies);
+  const logicMiddleware = createLogicMiddleware(logics);
+  logicMiddleware.addDeps(reduxLogicDependencies);
 
-    const middleware = applyMiddleware(logicMiddleware);
-    const rootReducer = enableBatching<State>(combineReducers(reducers), initialState);
+  const middleware = applyMiddleware(logicMiddleware);
+  const rootReducer =
+      enableBatching<State>(combineReducers(reducers), initialState);
 
-    if (preloadedState) {
-        const mergedState = merge({}, initialState, preloadedState);
-        return createStore(rootReducer, mergedState, middleware);
-    }
+  if (preloadedState) {
+    const mergedState = merge({}, initialState, preloadedState);
+    return createStore(rootReducer, mergedState, middleware);
+  }
 
-    return createStore(rootReducer, middleware);
+  return createStore(rootReducer, middleware);
 }
