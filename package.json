@@ -54,7 +54,7 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.8",
     "prettier": "^2.0.4",
-    "protobufjs": "^6.9.0",
+    "protobufjs": "^6.10.0-beta.0",
     "sinon": "^4.0.1",
     "style-loader": "^0.19.1",
     "ts-import-plugin": "^1.5.4",
