@@ -98,7 +98,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.renderPopover = this.renderPopover.bind(this);
     }
 
-    public componentWillMount() {
+    public componentDidMount() {
         this.props.requestCellLineData();
     }
 
