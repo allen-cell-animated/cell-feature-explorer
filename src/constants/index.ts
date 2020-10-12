@@ -141,8 +141,8 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: .5,
-    xAxisInitial: "Nuclear Volume (fL)",
-    yAxisInitial: "Cellular Volume (fL)",
+    xAxisInitial: "Random0",
+    yAxisInitial: "Random1",
 };
 
 export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x"];
