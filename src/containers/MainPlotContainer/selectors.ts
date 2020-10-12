@@ -74,13 +74,13 @@ export const composePlotlyData = createSelector([
         getApplyColorToSelections,
         getClustersOn,
         getSelectedGroupsData,
-        getClusteringResult,
+        // getClusteringResult,
     ], (
         mainPlotDataValues,
         applyColorToSelections,
         showClusters,
         selectedGroups,
-        clusteringResultData
+        // clusteringResultData
 ): any => {
     const mainPlotData = {
         ...mainPlotDataValues,
@@ -95,11 +95,12 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
-    const clusteringPlotData = showClusters ? {
-        ...clusteringResultData,
-        groupBy: false,
-        plotName: CLUSTERS_PLOT_NAME,
-    } : null;
+    const clusteringPlotData = null;
+    // showClusters ? {
+    //     ...clusteringResultData,
+    //     groupBy: false,
+    //     plotName: CLUSTERS_PLOT_NAME,
+    // } : null;
     return {
         clusteringPlotData,
         mainPlotData,
