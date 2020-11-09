@@ -16,9 +16,9 @@ export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
 export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
-export const MITOTIC_STAGE_KEY = "Interphase and Mitotic Stages (stage)";
-const INTERPHASE_AND_MITOSIS_KEY = "Interphase and Mitosis (stage)";
-const CELL_SEGMENTATION_KEY = "Cell Segmentation (complete)";
+export const MITOTIC_STAGE_KEY = "Interphase & mitotic stages [stage]";
+const INTERPHASE_AND_MITOSIS_KEY = "Interphase or mitosis [stage]";
+const CELL_SEGMENTATION_KEY = "Anaphase segmentation complete [unitless]";
 export const CATEGORICAL_FEATURES = Object.freeze([
     INTERPHASE_AND_MITOSIS_KEY,
     CELL_SEGMENTATION_KEY,
