@@ -172,7 +172,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         if (colorByProtein) {
             return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
         }
-        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear Volume (fL)");
+        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear volume (\u00b5m\u00b3)");
     }
 
     public onActivePanelChange(value: string | string[]) {
