@@ -21,7 +21,7 @@ class JsonRequest implements ImageDataset {
     }
     private getJson = (docName: string) => {
         return axios.get(`${this.baseUrl}/${docName}.json`)
-            .then((metadata: AxiosResponse) => JSON.parse(metadata.data))
+            .then((metadata: AxiosResponse) => metadata.data)
 
     }
 
