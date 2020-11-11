@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "webpack-dev-server --hot --public --config ./webpack/webpack.config.js  --env.env development",
     "build": "webpack --config ./webpack/webpack.config.js  --env.env production",
-    "start": "npm run build && node ./server.js -p 9020"
+    "start": "webpack-dev-server --config ./webpack/webpack.config.js --env.env dev"
   },
   "author": "",
   "license": "ISC",
@@ -70,6 +70,7 @@
   "dependencies": {
     "@aics/allencell-nav-bar": "^1.0.2",
     "@aics/browsing-context-messaging": "~1.1",
+    "@ant-design/icons": "^4.2.2",
     "ac-3d-viewer": "^0.3.4",
     "antd": "^3.20.7",
     "axios": "^0.18.0",
