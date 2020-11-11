@@ -1,5 +1,4 @@
 import React from "react";
-import { Upload } from "antd";
 
 import { Loading } from "../Icons";
 
