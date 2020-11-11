@@ -52,8 +52,8 @@ const requestFeatureDataLogic = createLogic({
             .getFeatureData()
             .then((data: MetadataStateBranch[]) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
-                // shuffle to keep the plot from being organized in z
                 dispatch(setIsLoading(false))
+                // shuffle to keep the plot from being organized in z
                 return shuffle(
                     map(data, (datum: MetadataStateBranch) => {
                         return {
