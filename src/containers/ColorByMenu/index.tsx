@@ -31,6 +31,7 @@ import {
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     KMEANS_KEY,
+    NUCLEAR_VOLUME_FEATURE_NAME,
     PROTEIN_NAME_KEY,
     SPECTRAL_KEY,
 } from "../../constants";
@@ -172,7 +173,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         if (colorByProtein) {
             return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
         }
-        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear volume (\u00b5m\u00b3)");
+        handleChangeAxis(COLOR_BY_SELECTOR, NUCLEAR_VOLUME_FEATURE_NAME);
     }
 
     public onActivePanelChange(value: string | string[]) {
