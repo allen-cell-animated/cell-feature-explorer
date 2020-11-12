@@ -14,7 +14,7 @@
     "lint": "eslint src/**/*.{ts,tsx}",
     "typeCheck": "tsc -p tsconfig.json --noEmit",
     "test": "BABEL_ENV=commonjs TS_NODE_FILES=true TS_NODE_PROJECT=tsconfig.commonjs.json NODE_ENV=production mocha --opts mocha.opts src/**/*.test.ts",
-    "ci": "npm run test && npm run typeCheck && npm run lint"
+    "all-checks": "npm run test && npm run typeCheck && npm run lint"
   },
   "author": "",
   "license": "ISC",
