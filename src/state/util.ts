@@ -57,6 +57,7 @@ export function enableBatching<S>(reducer: Reducer<S>, initialState: S): Reducer
 }
 
 export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string | number): FileInfo | undefined {
+    return;
     return find(fileInfoArray, (datum: FileInfo) => Number(datum[CELL_ID_KEY]) === Number(cellId));
 }
 

@@ -36,6 +36,11 @@ export interface MetaData {
     clusters: any;
 }
 
+export interface ReceiveMeasuredFeaturesAction {
+    payload: MetadataStateBranch[];
+    type: string;
+}
+
 export interface ReceiveAction {
     payload: MetaData[];
     type: string;

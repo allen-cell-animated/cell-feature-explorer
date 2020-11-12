@@ -99,7 +99,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public componentDidMount() {
-        this.props.requestCellLineData();
+        this.props.requestCellFileInfoData();
     }
 
     // TODO: retype once plotly has id and fullData types
@@ -284,7 +284,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
-    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
+    requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };

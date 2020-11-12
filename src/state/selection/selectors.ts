@@ -28,7 +28,7 @@ import {
     getClusterData,
     getFileInfo,
     getFullCellLineDefs,
-    getFullMetaDataArray,
+    getMeasuredFeatureValues,
     getMeasuredData,
     getProteinLabels,
     getProteinNames,
@@ -52,7 +52,8 @@ import {
 
 import { CLUSTERING_MAP } from "./constants";
 import {
-    ClusteringDatum, ColorForPlot,
+    ClusteringDatum, 
+    ColorForPlot,
     DownloadConfig,
 } from "./types";
 
@@ -80,36 +81,38 @@ export const getGalleryCollapsed = (state: State) => state.selection.galleryColl
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
-export const getFilteredData = createSelector([getFiltersToExclude, getFullMetaDataArray],
+export const getFilteredData = createSelector([getFiltersToExclude, getFileInfo],
     (filtersToExclude, fullMetaDataArray) => {
     if (!filtersToExclude.length) {
         return fullMetaDataArray;
     }
     return filter(fullMetaDataArray,
-        (metaDatum) => !includes(filtersToExclude, metaDatum.file_info[PROTEIN_NAME_KEY]
+        (metaDatum) => !includes(filtersToExclude, metaDatum[PROTEIN_NAME_KEY]
         ));
 });
 
-export const getFilteredMeasuredData = createSelector([getFilteredData],
+export const getFilteredMeasuredData = createSelector([getFilteredData, getMeasuredFeatureValues],
     (fullMetaData): MeasuredFeatures[] => {
-    return map(fullMetaData, "measured_features");
+    return fullMetaData;
 });
 
-export const getFilteredFileInfo = createSelector([getFilteredData], (fullMetaData): FileInfo[] => {
-    return map(fullMetaData, "file_info");
+export const getFilteredFileInfo = createSelector([getFileInfo], (fileInfo): FileInfo[] => {
+    return fileInfo;
 });
 
-export const getXValues = createSelector([getFilteredMeasuredData, getPlotByOnX],
-    (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => (
-        map(measuredData, (metaDatum: MeasuredFeatures) => (metaDatum[plotByOnX]))
-    )
-);
+export const getXValues = createSelector(
+           [getMeasuredFeatureValues, getPlotByOnX],
+           (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => {
+                console.log('measured data', measuredData)
+               return measuredData[plotByOnX]
+           }
+       );
 
-export const getYValues = createSelector([getFilteredMeasuredData, getPlotByOnY],
-    (measuredData: MeasuredFeatures[], plotByOnY: string): number[] => (
-        measuredData.map((metaDatum: MeasuredFeatures) => (metaDatum[plotByOnY]))
-    )
-);
+export const getYValues = createSelector(
+           [getFilteredMeasuredData, getPlotByOnY],
+           (measuredData: MeasuredFeatures[], plotByOnY: string): number[] =>
+               measuredData[plotByOnY]
+       );
 
 export const getIds = createSelector([getFilteredFileInfo],
     (fileInfoArray: FileInfo[]) => {
@@ -289,7 +292,7 @@ export const getSelected3DCellLabeledStructure = createSelector([getFullCellLine
 // SELECTED GROUPS SELECTORS
 export const getSelectedGroupsData = createSelector(
     [
-        getFullMetaDataArray,
+        getMeasuredFeatureValues,
         getSelectedGroups,
         getPlotByOnX,
         getPlotByOnY,

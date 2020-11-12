@@ -20,26 +20,25 @@ import {
 } from "./types";
 
 // BASIC SELECTORS
-export const getFullMetaDataArray = (state: State) => state.metadata.featureData;
+export const getMeasuredFeatureValues = (state: State) => state.metadata.featureData;
 export const getFullCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 export const getAllAlbumData = (state: State) => state.metadata.albums;
+export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
+export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 
-export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
-    return map(fullMetaData, "file_info");
+export const getMeasuredData = createSelector([getMeasuredFeatureValues], (fullMetaData): MeasuredFeatures[] => {
+    return fullMetaData;
 });
 
-export const getMeasuredData = createSelector([getFullMetaDataArray], (fullMetaData): MeasuredFeatures[] => {
-    return map(fullMetaData, "measured_features");
-});
-
-export const getClusterData = createSelector([getFullMetaDataArray], (fullMetaData): ClusteringDatum[] => {
+export const getClusterData = createSelector([getMeasuredFeatureValues], (fullMetaData): ClusteringDatum[] => {
     return map(fullMetaData, "clusters");
 });
 
-export const getFeatureNames = createSelector([getMeasuredData], (measuredFeatures: MetadataStateBranch): string[] => (
-    keys(measuredFeatures[0])
-    )
-);
+export const getFeatureNames = createSelector(
+           [getFeatureNamesAndData],
+           (measuredFeatures: MetadataStateBranch): string[] =>
+               map(measuredFeatures, "key")
+       );
 
 export const getProteinLabels = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
     return map(fullMetaData, PROTEIN_NAME_KEY);
