@@ -2,10 +2,12 @@ import {
     DocumentReference,
     QueryDocumentSnapshot,
     QuerySnapshot,
-    DocumentData,
+    DocumentSnapshot,
 } from "@firebase/firestore-types";
+import { reduce } from "lodash";
 
 import {
+    CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
@@ -109,6 +111,19 @@ class FirebaseRequest implements ImageDataset {
             });
             return dataset;
         });
+    }
+
+    public getFileInfo = () => {
+        return this.getCollection("cell-file-info")
+    };
+
+    public getMeasuredFeatureNames = async () => {
+        const snapshot = await this.getCollection("measured-features-names");
+        const dataset: MetadataStateBranch[] = [];
+        snapshot.forEach((doc: QueryDocumentSnapshot) => {
+            dataset.push(doc.data() as MetadataStateBranch);
+        });
+        return dataset;
     };
 
     public getAlbumData = () => {

@@ -12,7 +12,8 @@ import {
 } from "../../constants";
 import {
     getAllAlbumData,
-    getFullMetaDataArray,
+    getFileInfo,
+    getMeasuredFeatureValues,
 } from "../../state/metadata/selectors";
 import { MetaData } from "../../state/metadata/types";
 import {
@@ -57,15 +58,15 @@ export const getIdsToShow = createSelector(
     ));
 
 export const getThumbnails = createSelector([
-        getFullMetaDataArray,
+        getFileInfo,
         getIdsToShow,
     ],
     (metaDataArray: MetaData[], idsToShow: number[]): Thumbnail[] => {
         const init: Thumbnail[] = [];
         return reduce(idsToShow, (acc: Thumbnail[], cellID: number) => {
-            const fullCellData = find(metaDataArray, (datum) => (datum.file_info[CELL_ID_KEY] === cellID));
+            const fullCellData = find(metaDataArray, (datum) => (datum[CELL_ID_KEY] === cellID));
             if (fullCellData) {
-                const cellData = fullCellData.file_info;
+                const cellData = fullCellData;
                 const src = convertFileInfoToImgSrc(cellData);
                 const fovId = cellData[FOV_ID_KEY];
                 const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));

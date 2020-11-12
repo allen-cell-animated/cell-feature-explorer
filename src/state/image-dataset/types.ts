@@ -11,6 +11,7 @@ export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<DatasetMetaData[]>;
     getCellLineData(): Promise<CellLineDef>;
-    getFeatureData(): Promise<MetadataStateBranch[]>;
+    getFeatureData(xDataKey?: string, yDataKey?: string, colorByKey?: string): Promise<MetadataStateBranch[]>;
     getAlbumData(): Promise<Album[]>;
+    getMeasuredFeatureNames?(): Promise<MetadataStateBranch[]>;
 }
