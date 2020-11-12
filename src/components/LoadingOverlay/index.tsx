@@ -7,14 +7,14 @@ const styles = require("./style.css");
 interface ViewerOverlayTargetProps {
     isLoading: boolean;
 }
-const ViewerOverlayTarget = ({
+const LoadingOverlay = ({
     isLoading,
 }: ViewerOverlayTargetProps): JSX.Element | null => {
  
     const loadingOverlay = (
         <div className={styles.container}>
             <p className="loading-icon">{Loading}</p>
-            <p className="loading-text">Loading measured features for all cells</p>
+            <p className="loading-text">Loading data...</p>
         </div>
     );
  
@@ -25,4 +25,4 @@ const ViewerOverlayTarget = ({
     }
 };
 
-export default ViewerOverlayTarget;
+export default LoadingOverlay;
