@@ -117,4 +117,5 @@ export interface TickConversion {
 export interface ColorForPlot {
     color: string;
     name: string;
+    label: string;
 }

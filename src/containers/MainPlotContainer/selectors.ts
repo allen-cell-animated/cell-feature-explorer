@@ -3,15 +3,13 @@ import { createSelector } from "reselect";
 import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES,
-    CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
     getLabels,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
+import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
 import { MeasuredFeatureDef } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
@@ -44,6 +42,7 @@ export const getMainPlotData = createSelector(
         getColorByValues,
         getColorBySelection,
         getColorsForPlot,
+        getCategoricalFeatureKeys
     ],
     (
         xValues,
@@ -51,15 +50,15 @@ export const getMainPlotData = createSelector(
         ids,
         colorByValues,
         colorBy,
-        colorsForPlot
+        colorsForPlot,
+        categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
-        console.log("colorByValues", colorByValues);
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || includes(CATEGORICAL_FEATURES, colorBy),
+            groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
-            ids: map(ids, ele => ele.toString()),
+            ids: map(ids, (ele) => ele.toString()),
             x: xValues,
             y: yValues,
         };
@@ -251,8 +250,8 @@ const makeNumberAxis = (): TickConversion => {
     };
 };
 
-export const getXTickConversion = createSelector([getPlotByOnX], (plotByOnX): TickConversion => {
-    if (includes(CATEGORICAL_FEATURES, plotByOnX)) {
+export const getXTickConversion = createSelector([getPlotByOnX, getCategoricalFeatureKeys], (plotByOnX, categoricalFeatures): TickConversion => {
+    if (includes(categoricalFeatures, plotByOnX)) {
         const categoryEnum = getLabels(plotByOnX);
         if (categoryEnum) {
             return makeNumberToTextConversion(categoryEnum);
@@ -261,12 +260,15 @@ export const getXTickConversion = createSelector([getPlotByOnX], (plotByOnX): Ti
     return makeNumberAxis();
 });
 
-export const getYTickConversion = createSelector([getPlotByOnY], (plotByOnY): TickConversion => {
-    if (includes(CATEGORICAL_FEATURES, plotByOnY)) {
-        const categoryEnum = getLabels(plotByOnY);
-        if (categoryEnum) {
-            return makeNumberToTextConversion(categoryEnum);
-        }
-    }
-    return makeNumberAxis();
-});
+export const getYTickConversion = createSelector(
+           [getPlotByOnY, getCategoricalFeatureKeys],
+           (plotByOnY, categoricalFeatures): TickConversion => {
+               if (includes(categoricalFeatures, plotByOnY)) {
+                   const categoryEnum = getLabels(plotByOnY);
+                   if (categoryEnum) {
+                       return makeNumberToTextConversion(categoryEnum);
+                   }
+               }
+               return makeNumberAxis();
+           }
+       );

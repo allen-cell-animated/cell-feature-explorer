@@ -6,7 +6,6 @@ import {
     isEmpty,
     keys,
     map,
-    mapKeys,
     mapValues,
     reduce,
     values,
@@ -15,12 +14,9 @@ import { createSelector } from "reselect";
 import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES,
-    CATEGORY_TO_COLOR_LOOKUP,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
-    CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS, getLabels,
     PROTEIN_NAME_KEY,
@@ -31,6 +27,8 @@ import {
     getProteinLabelsPerCell,
     getProteinNames,
     getMeasuredFeaturesKeys,
+    getCategoricalFeatureKeys,
+    getMeasuredFeaturesDefs,
 } from "../metadata/selectors";
 import {
     FileInfo,
@@ -97,7 +95,6 @@ export const getFilteredCellData = createSelector(
                }
                const dataToReturn = mapValues(measuredFeaturesByKey, () => []);
                dataToReturn.fileInfo = [];
-               console.log(dataToReturn);
                for (let i = 1; i++; i < fileInfo.length) {
                    const datum = fileInfo[i];
                    if (includes(filtersToExclude, datum[PROTEIN_NAME_KEY])) {
@@ -134,23 +131,28 @@ export const getIds = createSelector([getFilteredCellData], (measuredData: Measu
            return measuredData.cellIds;
        });
 
-export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors],
-    (colorBy: string, proteinNames: string[], proteinColors: string[]): ColorForPlot[] | null => {
+export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors, getMeasuredFeaturesDefs,  getCategoricalFeatureKeys],
+    (colorBy: string, proteinNames: string[], proteinColors: string[], measuredFeaturesDefs, categoricalFeatureKeys): ColorForPlot[] | null => {
         if (colorBy === PROTEIN_NAME_KEY) {
             return map(proteinNames, (name: string, index) => {
                 return {
                     color: proteinColors[index],
                     name,
+                    label: name,
                 };
             });
-        } else if (includes(CATEGORICAL_FEATURES, colorBy)) {
-            const colors = CATEGORY_TO_COLOR_LOOKUP[colorBy];
-            return map(colors, (value, key) => {
-                return {
-                    color: value,
-                    name: key,
-                };
-            });
+        } else if (includes(categoricalFeatureKeys, colorBy)) {
+            const feature = find(measuredFeaturesDefs, {key: colorBy});
+            if (feature) {
+                const { options } = feature;
+                return map(options, (value, key) => {
+                    return {
+                        color: value.color,
+                        name: key,
+                        label: value.name,
+                    };
+                });
+            }
         }
         return null;
     }
@@ -209,9 +211,7 @@ export const getOpacity = createSelector(
 
 export const getColorByValues = createSelector([getFilteredCellData, getColorBySelection],
     (metaData: MetadataStateBranch, colorBy: string): (string[] | number[]) => {
-        console.log("GET COLORBY DATA", colorBy);
-        console.log(metaData);
-        return metaData[colorBy];
+        return metaData[colorBy] || [];
     }
     
 );

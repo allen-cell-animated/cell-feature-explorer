@@ -1,9 +1,4 @@
-import {
-    map,
-    reduce,
-    uniq,
-    values,
-} from "lodash";
+import { map, filter } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -13,7 +8,6 @@ import { State } from "../types";
 
 import {
     CellLineDef,
-    FileInfo,
     MetadataStateBranch,
 } from "./types";
 
@@ -26,6 +20,10 @@ export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 
 export const getMeasuredFeaturesKeys = createSelector([getMeasuredFeaturesDefs], (measuredFeatureDefs): string[] => {
     return map(measuredFeatureDefs,  "key");
+});
+
+export const getCategoricalFeatureKeys = createSelector([getMeasuredFeaturesDefs], (measuredFeatureDefs): string[] => {
+    return map(filter(measuredFeatureDefs,  "discrete"), "key");
 });
 
 export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {

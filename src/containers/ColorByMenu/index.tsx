@@ -25,8 +25,6 @@ import ColorLegendRow from "../../components/ColorLegend";
 import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
     AGGLOMERATIVE_KEY,
-    CATEGORICAL_FEATURES,
-    CATEGORY_TO_ENUM_LOOKUP,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -268,35 +266,33 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             handleChangeAxis,
             colorForPlot,
             categoryCounts,
+            categoricalFeatures,
         } = this.props;
         return (
             <React.Fragment>
                 <Row className={styles.colorByRow}>
-                        <Col span={6}>
-                            Color by:
-                        </Col>
-                        <Col span={18}>
-                            <AxisDropDown
-                                axisId={COLOR_BY_SELECTOR}
-                                value={colorBy}
-                                options={colorByMenuOptions}
-                                handleChangeAxis={handleChangeAxis}
-                            />
-                        </Col>
+                    <Col span={6}>Color by:</Col>
+                    <Col span={18}>
+                        <AxisDropDown
+                            axisId={COLOR_BY_SELECTOR}
+                            value={colorBy}
+                            options={colorByMenuOptions}
+                            handleChangeAxis={handleChangeAxis}
+                        />
+                    </Col>
                 </Row>
-                {includes(CATEGORICAL_FEATURES, colorBy) && (
+                {includes(categoricalFeatures, colorBy) && (
                     <Row className={styles.colorByRow}>
-                        <Col span={6}/>
+                        <Col span={6} />
                         <Col span={18}>
                             {colorForPlot.map((ele, index) => {
                                 return (<ColorLegendRow
-                                    color={ele.color}
-                                    name={CATEGORY_TO_ENUM_LOOKUP[colorBy][ele.name]}
-                                    key={ele.name}
-                                    total={categoryCounts[index]}
-                                />);
-                            })
-                            }
+                                        color={ele.color}
+                                        name={ele.label}
+                                        key={ele.name}
+                                        total={categoryCounts[index]}
+                                    />);
+                            })}
                         </Col>
                     </Row>
                 )}
@@ -369,6 +365,7 @@ function mapStateToProps(state: State) {
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
+        categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
