@@ -1,21 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {
-    isEmpty,
-    keys,
-    map,
-    shuffle,
-} from "lodash";
+import { isEmpty, find } from "lodash";
 import { createLogic } from "redux-logic";
 
 import {
-    CELL_ID_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_NAME_KEY,
-    PROTEIN_NAME_KEY,
+    X_AXIS_ID,
 } from "../../constants";
 import { DatasetMetaData } from "../../constants/datasets";
-import { changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
-import { CLUSTERING_MAP } from "../selection/constants";
+import { changeAxis, changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
+import { CLUSTERING_MAP, INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
 import { getClickedScatterPoints, getColorBySelection, getPlotByOnX, getPlotByOnY, getSelected3DCell } from "../selection/selectors";
 import { ChangeClusterNumberAction } from "../selection/types";
 import { ReduxLogicDeps } from "../types";
@@ -68,6 +60,25 @@ const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
+        const state = getState();
+        let measuredFeatureNames;
+        let xAxisDefaultValue;
+        let yAxisDefaultValue;
+        const actions = [];
+        if (imageDataSet.getMeasuredFeatureNames) {
+            measuredFeatureNames = await imageDataSet.getMeasuredFeatureNames();
+            console.log(measuredFeatureNames);
+            xAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_X});
+            yAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_Y})
+            actions.push(changeAxis(X_AXIS_ID, xAxisDefaultValue.key));
+            actions.push(changeAxis(X_AXIS_ID, yAxisDefaultValue.key));
+
+            actions.push(receiveMeasuredFeatureNames(measuredFeatureNames));
+            
+        }   
+        const plotByX = xAxisDefaultValue ? xAxisDefaultValue.key : getPlotByOnX(state);
+        const plotByY = yAxisDefaultValue ? yAxisDefaultValue.key : getPlotByOnY(state);
+        const colorBy = getColorBySelection(state);
         return imageDataSet
             .getFeatureData(plotByX, plotByY, colorBy)
             .then((data: MetadataStateBranch[]) => {
@@ -76,43 +87,7 @@ const requestFeatureDataLogic = createLogic({
                 console.log(data)
                 actions.push(receiveMetadata(data));
                 dispatch(batchActions(actions))
-                // shuffle to keep the plot from being organized in z
-                // return shuffle(
-                //     map(data, (datum: MetadataStateBranch) => {
-                //         return {
-                //             clusters: datum.clusters,
-                //             file_info: {
-                //                 ...datum.file_info,
-                //                 // TODO: The following field is unnecessary but convenient.
-                //                 // To optimize, remove this and use selectors to get protein name via
-                //                 // cell line name and state.metadata.cellLineDefs
-                //                 [PROTEIN_NAME_KEY]:
-                //                     cellLineDefs[datum.file_info[CELL_LINE_NAME_KEY]][
-                //                         CELL_LINE_DEF_PROTEIN_KEY
-                //                     ],
-                //             },
-                //             measured_features: datum.measured_features,
-                //         };
-                //     })
-                // );
             })
-            // .then(
-            //     (metaData: MetaData[]): MetaData => {
-            //         // set the clustering options based on the dataset
-            //         const changeClusterNumberActions = map(
-            //             metaData[0].clusters,
-            //             (value, clusteringName: string): ChangeClusterNumberAction => {
-            //                 const initVal = keys(value)[Math.floor(keys(value).length / 2)];
-            //                 return changeClusteringNumber(CLUSTERING_MAP(clusteringName), initVal);
-            //             }
-            //         );
-
-            //         dispatch(
-            //             batchActions([...changeClusterNumberActions, receiveMetadata(metaData)])
-            //         );
-            //         return metaData[0];
-            //     }
-            // )
             .then((metaDatum: MetadataStateBranch) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)

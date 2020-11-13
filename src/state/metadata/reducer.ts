@@ -26,11 +26,12 @@ export const initialState = {
     albums: [],
     cellFileInfo: [],
     cellLineDefs: {},
-    featureData: [],
     isLoading: true,
     loadingText: "",
     datasets: [],
     measuredFeatureNames: [],
+    featureData: {},
+    measuredFeaturesDefs: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -94,7 +95,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === RECEIVE_MEASURED_FEATURE_NAMES,
         perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
             ...state,
-            measuredFeatureNames: action.payload,
+            measuredFeaturesDefs: action.payload,
         }),
     },
 };

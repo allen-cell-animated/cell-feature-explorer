@@ -27,7 +27,12 @@ export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
 export const getDatasets = (state: State) => state.metadata.datasets;
 export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
+export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
+
+export const getMeasuredFeaturesKeys = createSelector([getMeasuredFeaturesDefs], (measuredFeatureDefs): string[] => {
+    return map(measuredFeatureDefs,  "key");
+});
 
 export const getMeasuredData = createSelector([getMeasuredFeatureValues], (fullMetaData): MeasuredFeatures[] => {
     return fullMetaData;
@@ -36,12 +41,6 @@ export const getMeasuredData = createSelector([getMeasuredFeatureValues], (fullM
 export const getClusterData = createSelector([getMeasuredFeatureValues], (fullMetaData): ClusteringDatum[] => {
     return map(fullMetaData, "clusters");
 });
-
-export const getFeatureNames = createSelector(
-           [getFeatureNamesAndData],
-           (measuredFeatures: MetadataStateBranch): string[] =>
-               map(measuredFeatures, "key")
-       );
 
 export const getProteinLabels = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
     return map(fullMetaData, PROTEIN_NAME_KEY);

@@ -6,6 +6,7 @@ import {
     isEmpty,
     keys,
     map,
+    mapKeys,
     mapValues,
     reduce,
     values,
@@ -27,11 +28,11 @@ import {
 import {
     getClusterData,
     getFileInfo,
-    getFullCellLineDefs,
     getMeasuredFeatureValues,
     getMeasuredData,
     getProteinLabels,
     getProteinNames,
+    getMeasuredFeaturesKeys,
 } from "../metadata/selectors";
 import {
     FileInfo,
@@ -82,50 +83,57 @@ export const getSelectedDataset = (state: State) => state.selection.dataset;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
-export const getFilteredData = createSelector([getFiltersToExclude, getFileInfo],
-    (filtersToExclude, fullMetaDataArray) => {
-    if (!filtersToExclude.length) {
-        return fullMetaDataArray;
-    }
-    return filter(fullMetaDataArray,
-        (metaDatum) => !includes(filtersToExclude, metaDatum[PROTEIN_NAME_KEY]
-        ));
-});
+export const getFilteredCellData = createSelector(
+           [getMeasuredFeaturesKeys, getFiltersToExclude, getFileInfo, getMeasuredFeatureValues],
+           (measuredFeatureKeys, filtersToExclude, fileInfo, measuredFeaturesByKey) => {
+               console.log(filtersToExclude)
+               if (!filtersToExclude.length) {
+                   return {
+                       ...measuredFeaturesByKey,
+                       fileInfo,
+                   };
+               }
+               const dataToReturn = mapValues(measuredFeaturesByKey, () => []);
+               dataToReturn.fileInfo = [];
+               console.log(dataToReturn);
+               for (let i = 1; i++; i < fileInfo.length) {
+                   const datum = fileInfo[i];
+                   if (includes(filtersToExclude, datum[PROTEIN_NAME_KEY])) {
+                       dataToReturn.fileInfo.push(datum);
+                       measuredFeatureKeys.forEach(key => {
+                           if (measuredFeaturesByKey[key]) {
+                               dataToReturn[key].push(measuredFeaturesByKey[key][i]);
+                           }
+                       });
+                   }
+               }
+           }
+       );
 
-export const getFilteredMeasuredData = createSelector([getFilteredData, getMeasuredFeatureValues],
-    (fullMetaData): MeasuredFeatures[] => {
-    return fullMetaData;
-});
-
-export const getFilteredFileInfo = createSelector([getFileInfo], (fileInfo): FileInfo[] => {
-    return fileInfo;
-});
 
 export const getXValues = createSelector(
-           [getMeasuredFeatureValues, getPlotByOnX],
+           [getFilteredCellData, getPlotByOnX],
            (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => {
-                console.log('measured data', measuredData)
-               return measuredData[plotByOnX]
+               console.log("measured data", measuredData);
+               return measuredData[plotByOnX];
            }
        );
 
 export const getYValues = createSelector(
-           [getFilteredMeasuredData, getPlotByOnY],
+           [getFilteredCellData, getPlotByOnY],
            (measuredData: MeasuredFeatures[], plotByOnY: string): number[] =>
                measuredData[plotByOnY]
        );
 
-export const getIds = createSelector([getFilteredFileInfo],
-    (fileInfoArray: FileInfo[]) => {
-        return map(fileInfoArray, (fileInfo) => fileInfo[CELL_ID_KEY].toString());
-    }
-);
+export const getIds = createSelector([getFilteredCellData], (measuredData: MeasuredFeatures[]) => {
+           return measuredData.cellIds;
+       });
 
-export const getPossibleColorByData = createSelector([getFilteredData], (metaData): MetadataStateBranch[] => (
-    map(metaData, (ele) => (
+export const getPossibleColorByData = createSelector([getFilteredCellData], (metaData): MetadataStateBranch[] => (
+    map(metaData.fileInfo, (ele) => (
             {
                 ...ele.measured_features,
-                [PROTEIN_NAME_KEY]: ele.file_info[PROTEIN_NAME_KEY],
+                [PROTEIN_NAME_KEY]: ele[PROTEIN_NAME_KEY],
             }
         )
     ))
@@ -284,9 +292,9 @@ export const getSelected3DCellLabeledProtein = createSelector([getSelected3DCell
     }
 );
 
-export const getSelected3DCellLabeledStructure = createSelector([getFullCellLineDefs, getSelected3DCellCellLine],
-    (cellLineDefs, cellLineId): string => {
-        return cellLineDefs[cellLineId] ? cellLineDefs[cellLineId][CELL_LINE_DEF_STRUCTURE_KEY] : "";
+export const getSelected3DCellLabeledStructure = createSelector([getFileInfo, getSelected3DCellCellLine],
+    (cellFileInfo, cellLineId): string => {
+        return cellFileInfo[cellLineId] ? cellFileInfo[cellLineId][CELL_LINE_DEF_STRUCTURE_KEY] : "";
     }
 );
 
@@ -311,7 +319,7 @@ export const getSelectedGroupsData = createSelector(
             // for each point index, get x, y, and color for the point.
             return map(value, (cellId) => {
                 // ids are converted to strings for plotly, so converting both to numbers to be sure
-                const fullDatum = find(metaData, (ele) => Number(ele.file_info[CELL_ID_KEY]) === Number(cellId));
+                const fullDatum = find(metaData, (ele) => Number(ele[CELL_ID_KEY]) === Number(cellId));
                 return {
                     groupColor: selectedGroupColorMapping[key],
                     x: fullDatum.measured_features[plotByOnX],
@@ -353,7 +361,7 @@ export const getClusteringRange = createSelector([getClusterData, getClusteringA
     }
 );
 
-export const getFilteredClusteringData = createSelector([getFilteredData], (fullMetaData): ClusteringDatum[] => {
+export const getFilteredClusteringData = createSelector([getFilteredCellData], (fullMetaData): ClusteringDatum[] => {
     return map(fullMetaData, "clusters");
 });
 
@@ -364,29 +372,3 @@ export const getClusteringSetting = createSelector(
     return clusteringType === CLUSTER_DISTANCE_KEY ? distance : numberOfClusters;
 });
 
-export const getClusteringResult = createSelector(
-    [
-        getFilteredClusteringData,
-        getClusteringAlgorithm,
-        getClusteringSetting,
-        getXValues,
-        getYValues,
-        getFilteredOpacity,
-    ],
-    (
-            clusteringData,
-            clusteringAlgorithm,
-            clusterSetting,
-            xValues,
-            yValues,
-            opacity
-    ): ContinuousPlotData => {
-            return {
-                color: map(clusteringData, (ele) => ele[clusteringAlgorithm][clusterSetting]),
-                opacity,
-                x: xValues,
-                y: yValues,
-            };
-
-    }
-);
