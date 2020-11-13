@@ -4,6 +4,7 @@ import { Album } from "../types";
 import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
+    RECEIVE_CELL_FILE_INFO,
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
@@ -50,12 +51,12 @@ export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction
 export function receiveFileInfoData(payload: CellLineDef): ReceiveCellLineAction {
     return {
         payload,
-        type: RECEIVE_CELL_LINE_DATA,
+        type: RECEIVE_CELL_FILE_INFO,
     };
 }
 
 
-export function receiveMetadata(payload: MetaData[]): ReceiveAction {
+export function receiveMetadata(payload:MetadataStateBranch): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,

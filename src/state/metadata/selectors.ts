@@ -1,5 +1,4 @@
 import {
-    keys,
     map,
     reduce,
     uniq,
@@ -10,18 +9,17 @@ import { createSelector } from "reselect";
 import {
     PROTEIN_NAME_KEY,
 } from "../../constants";
-import { ClusteringDatum } from "../selection/types";
 import { State } from "../types";
 
 import {
+    CellLineDef,
     FileInfo,
-    MeasuredFeatures,
     MetadataStateBranch,
 } from "./types";
 
 // BASIC SELECTORS
 export const getMeasuredFeatureValues = (state: State) => state.metadata.featureData;
-export const getFullCellLineDefs = (state: State) => state.metadata.cellLineDefs;
+export const getCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
@@ -34,20 +32,12 @@ export const getMeasuredFeaturesKeys = createSelector([getMeasuredFeaturesDefs],
     return map(measuredFeatureDefs,  "key");
 });
 
-export const getMeasuredData = createSelector([getMeasuredFeatureValues], (fullMetaData): MeasuredFeatures[] => {
-    return fullMetaData;
-});
-
-export const getClusterData = createSelector([getMeasuredFeatureValues], (fullMetaData): ClusteringDatum[] => {
-    return map(fullMetaData, "clusters");
-});
-
-export const getProteinLabels = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
+export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
     return map(fullMetaData, PROTEIN_NAME_KEY);
 });
 
-export const getProteinNames = createSelector([getFileInfo], (fileInfo: MetadataStateBranch): string[] => {
-        return uniq(map((fileInfo),  PROTEIN_NAME_KEY)).sort((a, b) => {
+export const getProteinNames = createSelector([getCellLineDefs], (cellLineDef: CellLineDef[]): string[] => {
+        return map(cellLineDef, PROTEIN_NAME_KEY).sort((a, b) => {
             if (b > a) {
                 return -1;
             } else if (a > b) {
@@ -57,22 +47,3 @@ export const getProteinNames = createSelector([getFileInfo], (fileInfo: Metadata
         });
     }
 );
-
-export const getProteinTotals = createSelector([getFileInfo, getProteinNames],
-    (featureData: MetadataStateBranch, proteinNames: string[]): number[] => {
-    const totals =  reduce(featureData, (acc: {[key: number]: number}, cur) => {
-        const index = proteinNames.indexOf(cur[PROTEIN_NAME_KEY]);
-        if (acc[index]) {
-            acc[index] ++;
-        } else {
-            acc[index] = 1;
-        }
-        return acc;
-    }, {});
-    return values(totals);
-    }
-);
-
-export const getClusterNames = createSelector([getClusterData], (clusterData): string[] => (
-    keys(clusterData[0])
-));

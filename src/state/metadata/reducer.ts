@@ -60,7 +60,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
     },
     [RECEIVE_CELL_FILE_INFO]: {
         accepts: (action: AnyAction): action is ReceiveCellLineAction =>
-            action.type === RECEIVE_CELL_LINE_DATA,
+            action.type === RECEIVE_CELL_FILE_INFO,
         perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
             ...state,
             cellFileInfo: action.payload,

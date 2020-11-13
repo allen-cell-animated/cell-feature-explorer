@@ -111,19 +111,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.onSelectionSetDownloadButtonClicked = this.onSelectionSetDownloadButtonClicked.bind(this);
     }
 
-    public componentDidUpdate() {
-        // const {
-        //     clusteringAlgorithm,
-        //     handleChangeClusteringNumber,
-        //     clusteringSetting,
-        //     clusteringOptions,
-        // } = this.props;
-        // if (!clusteringSetting) {
-        //     handleChangeClusteringNumber(
-        //         CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
-        // }
-    }
-
     public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName, filtersToExclude } = this.props;
         const newFilterList = includes(filtersToExclude, target.value) ?
@@ -366,9 +353,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
 function mapStateToProps(state: State) {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
-        // clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
-        // clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
-        // clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
+        clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),

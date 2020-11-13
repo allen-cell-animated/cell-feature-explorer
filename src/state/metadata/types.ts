@@ -17,6 +17,7 @@ export interface CellLineDef {
     [key: string]: {
         [CELL_LINE_DEF_STRUCTURE_KEY]: string;
         [CELL_LINE_DEF_PROTEIN_KEY]: string;
+        cellCount: number;
     };
 }
 
@@ -32,6 +33,14 @@ export interface MeasuredFeatureDef {
     displayName: string;
     key: string;
     unit?: string;
+}
+
+export interface MeasuredFeatureArrays {
+    [key: string]: number[];
+}
+
+export interface CellDataArrays {
+    [key: string]: number[] | FileInfo[];
 }
 
 export interface MeasuredFeatures {
@@ -50,7 +59,7 @@ export interface ReceiveMeasuredFeaturesAction {
 }
 
 export interface ReceiveAction {
-    payload: MetaData[];
+    payload: MetadataStateBranch;
     type: string;
 }
 

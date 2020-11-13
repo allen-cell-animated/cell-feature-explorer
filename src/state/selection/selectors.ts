@@ -26,16 +26,15 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants";
 import {
-    getClusterData,
     getFileInfo,
     getMeasuredFeatureValues,
-    getMeasuredData,
-    getProteinLabels,
+    getProteinLabelsPerCell,
     getProteinNames,
     getMeasuredFeaturesKeys,
 } from "../metadata/selectors";
 import {
     FileInfo,
+    MeasuredFeatureArrays,
     MeasuredFeatures,
     MetadataStateBranch,
 } from "../metadata/types";
@@ -51,9 +50,7 @@ import {
     getFileInfoDatumFromCellId,
 } from "../util";
 
-import { CLUSTERING_MAP } from "./constants";
 import {
-    ClusteringDatum, 
     ColorForPlot,
     DownloadConfig,
 } from "./types";
@@ -84,13 +81,19 @@ export const getSelectedDataset = (state: State) => state.selection.dataset;
 
 // MAIN PLOT SELECTORS
 export const getFilteredCellData = createSelector(
-           [getMeasuredFeaturesKeys, getFiltersToExclude, getFileInfo, getMeasuredFeatureValues],
+           [
+               getMeasuredFeaturesKeys, 
+               getFiltersToExclude, 
+               getFileInfo, 
+               getMeasuredFeatureValues
+            ],
            (measuredFeatureKeys, filtersToExclude, fileInfo, measuredFeaturesByKey) => {
                console.log(filtersToExclude)
                if (!filtersToExclude.length) {
                    return {
                        ...measuredFeaturesByKey,
                        fileInfo,
+                       [PROTEIN_NAME_KEY]: map(fileInfo, PROTEIN_NAME_KEY),
                    };
                }
                const dataToReturn = mapValues(measuredFeaturesByKey, () => []);
@@ -100,6 +103,7 @@ export const getFilteredCellData = createSelector(
                    const datum = fileInfo[i];
                    if (includes(filtersToExclude, datum[PROTEIN_NAME_KEY])) {
                        dataToReturn.fileInfo.push(datum);
+                       dataToReturn[PROTEIN_NAME_KEY].push(datum[PROTEIN_NAME_KEY]);
                        measuredFeatureKeys.forEach(key => {
                            if (measuredFeaturesByKey[key]) {
                                dataToReturn[key].push(measuredFeaturesByKey[key][i]);
@@ -113,31 +117,23 @@ export const getFilteredCellData = createSelector(
 
 export const getXValues = createSelector(
            [getFilteredCellData, getPlotByOnX],
-           (measuredData: MeasuredFeatures[], plotByOnX: string): number[] => {
-               console.log("measured data", measuredData);
-               return measuredData[plotByOnX];
+           (measuredData: MeasuredFeatureArrays, plotByOnX: string): number[] => {
+               if (measuredData[plotByOnX]) {
+                   return measuredData[plotByOnX];
+               }
+               return [];
            }
        );
 
 export const getYValues = createSelector(
            [getFilteredCellData, getPlotByOnY],
-           (measuredData: MeasuredFeatures[], plotByOnY: string): number[] =>
+           (measuredData: MeasuredFeatureArrays, plotByOnY: string): number[] =>
                measuredData[plotByOnY]
        );
 
-export const getIds = createSelector([getFilteredCellData], (measuredData: MeasuredFeatures[]) => {
+export const getIds = createSelector([getFilteredCellData], (measuredData: MeasuredFeatureArrays) => {
            return measuredData.cellIds;
        });
-
-export const getPossibleColorByData = createSelector([getFilteredCellData], (metaData): MetadataStateBranch[] => (
-    map(metaData.fileInfo, (ele) => (
-            {
-                ...ele.measured_features,
-                [PROTEIN_NAME_KEY]: ele[PROTEIN_NAME_KEY],
-            }
-        )
-    ))
-);
 
 export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors],
     (colorBy: string, proteinNames: string[], proteinColors: string[]): ColorForPlot[] | null => {
@@ -161,7 +157,7 @@ export const getColorsForPlot = createSelector([getColorBySelection, getProteinN
     }
 );
 
-export const getCategoryCounts = createSelector([getMeasuredData, getColorBySelection],
+export const getCategoryCounts = createSelector([getMeasuredFeatureValues, getColorBySelection],
     (measuredData: MetadataStateBranch, colorBy: string): number[] => {
         const categoryEnum = getLabels(colorBy);
         if (!isEmpty(categoryEnum)) {
@@ -185,7 +181,7 @@ export const getFilteredOpacity = createSelector(
     [
         getColorBySelection,
         getFiltersToExclude,
-        getProteinLabels,
+        getProteinLabelsPerCell,
     ],
     (colorBySelection, filtersToExclude, proteinLabels): number[] => {
         return map(proteinLabels, (proteinName) => (
@@ -198,7 +194,7 @@ export const getOpacity = createSelector(
         getColorBySelection,
         getFiltersToExclude,
         getProteinNames,
-        getProteinLabels,
+        getProteinLabelsPerCell,
     ],
     (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels): number[] => {
         let arrayToMap;
@@ -212,10 +208,13 @@ export const getOpacity = createSelector(
         ));
     });
 
-export const getColorByValues = createSelector([getPossibleColorByData, getColorBySelection],
-    (metaData: MetadataStateBranch[], colorBy: string): (string[] | number[]) => (
-        map(metaData, colorBy)
-    )
+export const getColorByValues = createSelector([getFilteredCellData, getColorBySelection],
+    (metaData: MetadataStateBranch, colorBy: string): (string[] | number[]) => {
+        console.log("GET COLORBY DATA", colorBy);
+        console.log(metaData);
+        return metaData[colorBy];
+    }
+    
 );
 
 export const getHoveredPointData = createSelector([getHoveredPointId, getFileInfo],
@@ -233,7 +232,7 @@ const getSelectedScatterPointsWithAvailableMetadata = createSelector([
 
 export const getAnnotations = createSelector(
     [
-        getMeasuredData,
+        getMeasuredFeatureValues,
         getFileInfo,
         getSelectedScatterPointsWithAvailableMetadata,
         getPlotByOnX,
@@ -248,12 +247,16 @@ export const getAnnotations = createSelector(
         yaxis,
         currentHoveredCellId
     ): Annotation[] => {
+        if (isEmpty(measuredData)) {
+            return []
+        }
         return clickedScatterPointIDs.map((cellID) => {
             const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
             const fovID = fileInfo[pointIndex][FOV_ID_KEY];
             const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
-            const x = measuredData[pointIndex][xaxis];
-            const y = measuredData[pointIndex][yaxis];
+            console.log(measuredData, xaxis, yaxis)
+            const x = measuredData[xaxis][pointIndex];
+            const y = measuredData[yaxis][pointIndex];
             return {
                 cellID,
                 cellLine,
@@ -351,24 +354,4 @@ export const getSelectedSetTotals = createSelector([getSelectedGroups], (selecte
     }
 );
 
-// CLUSTERING SELECTORS
-export const getClusteringRange = createSelector([getClusterData, getClusteringAlgorithm],
-    (clusterData, clusteringAlgorithm): string[] => {
-        if (clusterData[0]) {
-            return keys(clusterData[0][clusteringAlgorithm]);
-        }
-        return [];
-    }
-);
-
-export const getFilteredClusteringData = createSelector([getFilteredCellData], (fullMetaData): ClusteringDatum[] => {
-    return map(fullMetaData, "clusters");
-});
-
-export const getClusteringSetting = createSelector(
-    [getClusteringAlgorithm, getClusteringDistance, getNumberOfClusters],
-    (clusteringAlgorithm, distance, numberOfClusters): string => {
-    const clusteringType = CLUSTERING_MAP(clusteringAlgorithm);
-    return clusteringType === CLUSTER_DISTANCE_KEY ? distance : numberOfClusters;
-});
 

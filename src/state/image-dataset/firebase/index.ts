@@ -4,16 +4,17 @@ import {
     QuerySnapshot,
     DocumentSnapshot,
 } from "@firebase/firestore-types";
-import { reduce } from "lodash";
+import { map, reduce } from "lodash";
 
 import {
     CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
+    PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
-import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
+import { CellLineDef, FileInfo, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
@@ -90,13 +91,17 @@ class FirebaseRequest implements ImageDataset {
 
     public getCellLineData = () => {
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {
-            const dataset: CellLineDef = {};
+            const dataset: CellLineDef[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 const datum = doc.data();
-                dataset[datum[CELL_LINE_DEF_NAME_KEY]] = {
-                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                    [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                };
+                if (datum.cellCount > 0) {
+                    dataset.push({
+                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
+                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                        cellCount: datum.cellCount,
+                    });
+                }
             });
             return dataset;
         });
@@ -115,6 +120,11 @@ class FirebaseRequest implements ImageDataset {
 
     public getFileInfo = () => {
         return this.getCollection("cell-file-info")
+            .then((snapshot) => {
+                const dataset: FileInfo[] = []
+                snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
+                return dataset;
+            });
     };
 
     public getMeasuredFeatureNames = async () => {
