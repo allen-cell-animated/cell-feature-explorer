@@ -19,7 +19,6 @@ import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
-    CATEGORICAL_FEATURES,
     CELL_ID_KEY,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
@@ -57,6 +56,7 @@ const styles = require("./style.css");
 
 interface PropsFromState {
     annotations: Annotation[];
+    categoricalFeatures: string[];
     clickedPoints: number[];
     filtersToExclude: string[];
     galleryCollapsed: boolean;
@@ -194,12 +194,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             handleChangeAxis,
             yTickConversion,
             xTickConversion,
+            categoricalFeatures,
         } = this.props;
 
         if (plotDataArray.length === 0) {
             return null;
         }
-        console.log(plotDataArray)
 
         const popover = this.renderPopover();
 
@@ -250,12 +250,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
                         onPlotHovered={this.onPlotHovered}
-                        xAxisType={
-                            includes(CATEGORICAL_FEATURES, xDropDownValue) ? "array" : "auto"
-                        }
-                        yAxisType={
-                            includes(CATEGORICAL_FEATURES, yDropDownValue) ? "array" : "auto"
-                        }
+                        xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
+                        yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
                     />
@@ -269,6 +265,7 @@ function mapStateToProps(state: State): PropsFromState {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
+        categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
