@@ -22,7 +22,7 @@ export const initialState = {
     cellFileInfo: [],
     cellLineDefs: {},
     featureData: {},
-    measuredFeatureNames: [],
+    measuredFeaturesDefs: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -62,7 +62,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === RECEIVE_MEASURED_FEATURE_NAMES,
         perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
             ...state,
-            measuredFeatureNames: action.payload,
+            measuredFeaturesDefs: action.payload,
         }),
     },
 };

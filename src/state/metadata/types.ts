@@ -26,6 +26,13 @@ export interface FileInfo {
     [PROTEIN_NAME_KEY]: string;
 }
 
+export interface MeasuredFeatureDef {
+    discrete: boolean;
+    displayName: string;
+    key: string;
+    unit?: string;
+}
+
 export interface MeasuredFeatures {
     [key: string]: number;
 }

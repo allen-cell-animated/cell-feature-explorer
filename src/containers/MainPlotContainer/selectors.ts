@@ -1,7 +1,4 @@
-import {
-    includes,
-    map,
-} from "lodash";
+import { includes, map, find } from "lodash";
 import { createSelector } from "reselect";
 import { $enum } from "ts-enum-util";
 
@@ -14,11 +11,11 @@ import {
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getFeatureNames } from "../../state/metadata/selectors";
+import { getFeatureNames, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
-    getClusteringResult,
     getClustersOn,
     getColorBySelection,
     getColorByValues,
@@ -74,13 +71,11 @@ export const composePlotlyData = createSelector([
         getApplyColorToSelections,
         getClustersOn,
         getSelectedGroupsData,
-        getClusteringResult,
     ], (
         mainPlotDataValues,
         applyColorToSelections,
         showClusters,
         selectedGroups,
-        clusteringResultData
 ): any => {
     const mainPlotData = {
         ...mainPlotDataValues,
@@ -95,13 +90,9 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
-    const clusteringPlotData = showClusters ? {
-        ...clusteringResultData,
-        groupBy: false,
-        plotName: CLUSTERS_PLOT_NAME,
-    } : null;
+
     return {
-        clusteringPlotData,
+        clusteringPlotData: null,
         mainPlotData,
         selectedGroupPlotData,
     };
@@ -224,19 +215,27 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
     return data;
 });
 
-export const getXDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+export const getXDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureNames): string[] => {
     return featureNames;
 });
 
-export const getYDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
+export const getYDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureNames): string[] => {
     return featureNames;
 });
 
-export const getColorByDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
-    if (!includes(featureNames, PROTEIN_NAME_KEY)) {
-        return [PROTEIN_NAME_KEY, ...featureNames];
+export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureDefs): MeasuredFeatureDef[] => {
+    if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+        return [
+            {
+                key: PROTEIN_NAME_KEY,
+                displayName: "Protein",
+                discrete: true,
+                unit: null,
+            },
+            ...featureDefs,
+        ];
     }
-    return featureNames;
+    return featureDefs;
 });
 
 const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) => {
