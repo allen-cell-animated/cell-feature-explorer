@@ -123,19 +123,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.onSelectionSetDownloadButtonClicked = this.onSelectionSetDownloadButtonClicked.bind(this);
     }
 
-    public componentDidUpdate() {
-        const {
-            clusteringAlgorithm,
-            handleChangeClusteringNumber,
-            clusteringSetting,
-            clusteringOptions,
-        } = this.props;
-        if (!clusteringSetting) {
-            handleChangeClusteringNumber(
-                CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
-        }
-    }
-
     public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName, filtersToExclude } = this.props;
         const newFilterList = includes(filtersToExclude, target.value) ?
@@ -364,12 +351,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                     >
                         {this.renderSelectionPanel()}
                     </Panel>
-                    <Panel
+                    {/* <Panel
                         key={panelKeys[2]}
                         header="Data group by clustering"
                     >
                         {this.renderClusteringPanel()}
-                    </Panel>
+                    </Panel> */}
                 </Collapse>
         );
     }
@@ -379,8 +366,6 @@ function mapStateToProps(state: State) {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
-        clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
-        clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),

@@ -71,7 +71,7 @@ export const getThumbnails = createSelector([
                 const fovId = cellData[FOV_ID_KEY];
                 const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
                 const fullFieldDownloadHref = formatDownloadOfSingleImage(convertFullFieldIdToDownloadId((fovId)));
-                const mitoticKey: number = fullCellData.measured_features[MITOTIC_STAGE_KEY];
+                const mitoticKey: number = fullCellData[MITOTIC_STAGE_KEY];
                 acc.push({
                     cellID: Number(cellID),
                     downloadHref,

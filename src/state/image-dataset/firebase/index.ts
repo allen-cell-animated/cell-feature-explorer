@@ -4,15 +4,16 @@ import {
     QuerySnapshot,
     DocumentSnapshot,
 } from "@firebase/firestore-types";
-import { reduce } from "lodash";
+import { map, reduce } from "lodash";
 
 import {
     CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
+    PROTEIN_NAME_KEY,
 } from "../../../constants";
-import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
+import { CellLineDef, FileInfo, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
@@ -35,13 +36,17 @@ class FirebaseRequest implements ImageDataset {
 
     public getCellLineData = () => {
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {
-            const dataset: CellLineDef = {};
+            const dataset: CellLineDef[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 const datum = doc.data();
-                dataset[datum[CELL_LINE_DEF_NAME_KEY]] = {
-                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                    [CELL_LINE_DEF_PROTEIN_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                };
+                if (datum.cellCount > 0) {
+                    dataset.push({
+                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
+                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                        cellCount: datum.cellCount,
+                    });
+                }
             });
             return dataset;
         });
@@ -49,43 +54,35 @@ class FirebaseRequest implements ImageDataset {
 
     public getFileInfo = () => {
         return this.getCollection("cell-file-info")
+            .then((snapshot) => {
+                const dataset: FileInfo[] = []
+                snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
+                return dataset;
+            });
     };
 
-    public getFeatureData = (xDataKey: string, yDataKey: string, colorBy: string) => {
-        console.log(xDataKey, yDataKey, colorBy);
-        const dataset = {
-            cellIds: [],
-            [xDataKey]: [],
-            [yDataKey]: [],
-        };
-
-        return Promise.all([
-            this.collectionRef
-                .collection(xDataKey)
-                .get()
-                .then((snapshot: QuerySnapshot) => {
-                    snapshot.forEach((doc) => {
-                        dataset[xDataKey].push(doc.data().value);
-                        dataset.cellIds.push(doc.data()[CELL_ID_KEY]);
-                    });
-                    console.log(dataset.cellIds.length, dataset[xDataKey].length);
-                }),
-            this.collectionRef
-                .collection(yDataKey)
-                .get()
-                .then((snapshot: QuerySnapshot) => {
-                    let index = 0;
-                    snapshot.forEach((doc) => {
-                        dataset[yDataKey].push(doc.data().value);
-                        if (doc.data()[CELL_ID_KEY] !== dataset.cellIds[index]) {
-                            console.log(doc.data()[CELL_ID_KEY], dataset.cellIds[index]);
+    public getFeatureData = () => {
+        return this.getCollection("measured-features").then(
+            (snapshot: QuerySnapshot) => {
+                const dataset: MetadataStateBranch = {
+                    cellIds: []
+                };
+                snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                    dataset.cellIds.push(doc.id);
+                    const data = doc.data();
+                    map(data, (value, key) => {
+                        if (!dataset[key]) {
+                            dataset[key] = []
                         }
-                        index++;
-                    });
-                    console.log(dataset.cellIds.length, dataset[yDataKey].length);
-                }),
-        ]).then(() => dataset);
+                        dataset[key].push(value)
+                    })
+                    
+                });
+                return dataset;
+            }
+        );
     };
+
 
     public getMeasuredFeatureNames = async () => {
         const snapshot = await this.getCollection("measured-features-names");

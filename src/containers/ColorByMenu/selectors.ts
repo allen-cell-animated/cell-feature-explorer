@@ -9,6 +9,7 @@ import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
+    CELL_LINE_DEF_PROTEIN_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -17,9 +18,9 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import {
+    getCellLineDefs,
     getFileInfo,
     getProteinNames,
-    getProteinTotals,
 } from "../../state/metadata/selectors";
 import { FileInfo } from "../../state/metadata/types";
 import {
@@ -57,15 +58,15 @@ const getColors = createSelector(
     });
 
 export const getInteractivePanelData = createSelector(
-    [getProteinNames, getFiltersToExclude, getProteinTotals, getColors],
-    (proteinNames, filtersToExclude, proteinTotals, proteinColors): PanelData[] => {
-        return map(proteinTotals, (total, index) => {
+    [getCellLineDefs, getFiltersToExclude, getColors],
+    (cellLines, filtersToExclude, proteinColors): PanelData[] => {
+        return map(cellLines, (cellLine, index) => {
             return {
-                checked: !includes(filtersToExclude, proteinNames[index]),
+                checked: !includes(filtersToExclude, cellLine[PROTEIN_NAME_KEY]),
                 color: proteinColors[index],
-                id: proteinNames[index],
-                name: proteinNames[index],
-                total,
+                id: cellLine[PROTEIN_NAME_KEY],
+                name: cellLine[PROTEIN_NAME_KEY],
+                total: cellLine.cellCount,
             };
         });
     });

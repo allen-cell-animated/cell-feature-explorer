@@ -17,7 +17,7 @@ interface BarChartProps {
     handleCloseSelectionSet?: (id: number | string) => void;
 }
 
-const BarChart: React.SFC<BarChartProps> = (props) => {
+const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
     const {
         closeable,
         downloadUrls,

@@ -99,6 +99,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public componentDidMount() {
+        this.props.requestCellLineData();
         this.props.requestCellFileInfoData();
     }
 
@@ -202,6 +203,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         if (plotDataArray.length === 0) {
             return null;
         }
+        console.log(plotDataArray)
 
         const popover = this.renderPopover();
 
@@ -285,6 +287,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
+    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };

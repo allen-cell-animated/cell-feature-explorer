@@ -11,12 +11,11 @@ import {
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getFeatureNames, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
+import { getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
 import { MeasuredFeatureDef } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
-    getClustersOn,
     getColorBySelection,
     getColorByValues,
     getColorsForPlot,
@@ -54,12 +53,13 @@ export const getMainPlotData = createSelector(
         colorBy,
         colorsForPlot
     ): GroupedPlotData | ContinuousPlotData => {
+        console.log("colorByValues", colorByValues);
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
             groupBy: colorBy === PROTEIN_NAME_KEY || includes(CATEGORICAL_FEATURES, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
-            ids,
+            ids: map(ids, ele => ele.toString()),
             x: xValues,
             y: yValues,
         };
@@ -69,12 +69,10 @@ export const getMainPlotData = createSelector(
 export const composePlotlyData = createSelector([
         getMainPlotData,
         getApplyColorToSelections,
-        getClustersOn,
         getSelectedGroupsData,
     ], (
         mainPlotDataValues,
         applyColorToSelections,
-        showClusters,
         selectedGroups,
 ): any => {
     const mainPlotData = {

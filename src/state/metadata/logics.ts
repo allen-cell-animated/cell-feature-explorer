@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { isEmpty, find } from "lodash";
 import { createLogic } from "redux-logic";
-
+import { AnyAction } from "redux";
 import {
     X_AXIS_ID,
 } from "../../constants";
-import { changeAxis, changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
-import { CLUSTERING_MAP, INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
-import { getClickedScatterPoints, getColorBySelection, getPlotByOnX, getPlotByOnY, getSelected3DCell } from "../selection/selectors";
-import { ChangeClusterNumberAction } from "../selection/types";
+import { changeAxis, selectCellFor3DViewer, selectPoint } from "../selection/actions";
+import { INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
+import { getClickedScatterPoints, getPlotByOnX, getPlotByOnY, getSelected3DCell } from "../selection/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -20,7 +19,22 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { MetaData, MetadataStateBranch } from "./types";
+import { MetadataStateBranch } from "./types";
+
+const requestCellLineDefs = createLogic({
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+        const { imageDataSet } = deps;
+
+        return imageDataSet
+            .getCellLineData()
+            .then((data: MetadataStateBranch) => dispatch(receiveCellLineData(data)))
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            })
+            .then(() => done());
+    },
+    type: REQUEST_CELL_LINE_DATA,
+});
 
 const requestCellFileInfoData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -28,7 +42,9 @@ const requestCellFileInfoData = createLogic({
 
         return imageDataSet
             .getFileInfo()
-            .then((data: MetadataStateBranch) => dispatch(receiveFileInfoData(data)))
+            .then((data: MetadataStateBranch) => {
+                console.log('file info', data)
+              dispatch(receiveFileInfoData(data))})
             .then(() => dispatch(requestFeatureData()))
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -45,10 +61,9 @@ const requestFeatureDataLogic = createLogic({
         let measuredFeatureNames;
         let xAxisDefaultValue;
         let yAxisDefaultValue;
-        const actions = [];
+        const actions: AnyAction[] = [];
         if (imageDataSet.getMeasuredFeatureNames) {
             measuredFeatureNames = await imageDataSet.getMeasuredFeatureNames();
-            console.log(measuredFeatureNames);
             xAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_X});
             yAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_Y})
             actions.push(changeAxis(X_AXIS_ID, xAxisDefaultValue.key));
@@ -57,16 +72,12 @@ const requestFeatureDataLogic = createLogic({
             actions.push(receiveMeasuredFeatureNames(measuredFeatureNames));
             
         }   
-        const plotByX = xAxisDefaultValue ? xAxisDefaultValue.key : getPlotByOnX(state);
-        const plotByY = yAxisDefaultValue ? yAxisDefaultValue.key : getPlotByOnY(state);
-        const colorBy = getColorBySelection(state);
+
         return imageDataSet
-            .getFeatureData(plotByX, plotByY, colorBy)
-            .then((data: MetadataStateBranch[]) => {
-                const cellLineDefs = getState().metadata.cellLineDefs;
-                console.log(data)
+            .getFeatureData()
+            .then((data: MetadataStateBranch) => {
                 actions.push(receiveMetadata(data));
-                dispatch(batchActions(actions))
+                dispatch(batchActions(actions));
             })
             .then((metaDatum: MetadataStateBranch) => {
                 // select first cell on both plot and load in 3D to make it clear what the user can do
@@ -110,6 +121,7 @@ const requestAlbumData = createLogic({
 });
 
 export default [
+    requestCellLineDefs,
     requestAlbumData,
     requestCellFileInfoData,
     requestFeatureDataLogic,
