@@ -7,17 +7,20 @@ import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_METADATA,
+    SET_IS_LOADING,
 } from "./constants";
 import {
     MetadataStateBranch,
     ReceiveAction, ReceiveAlbumDataAction,
     ReceiveCellLineAction,
+    SetLoadingAction,
 } from "./types";
 
 export const initialState = {
     albums: [],
     cellLineDefs: {},
     featureData: [],
+    isLoading: true,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -29,17 +32,26 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_CELL_LINE_DATA]: {
-        accepts: (action: AnyAction): action is ReceiveCellLineAction => action.type === RECEIVE_CELL_LINE_DATA,
+        accepts: (action: AnyAction): action is ReceiveCellLineAction =>
+            action.type === RECEIVE_CELL_LINE_DATA,
         perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
             ...state,
             cellLineDefs: action.payload,
         }),
     },
     [RECEIVE_ALBUM_DATA]: {
-        accepts: (action: AnyAction): action is ReceiveAlbumDataAction => action.type === RECEIVE_ALBUM_DATA,
+        accepts: (action: AnyAction): action is ReceiveAlbumDataAction =>
+            action.type === RECEIVE_ALBUM_DATA,
         perform: (state: MetadataStateBranch, action: ReceiveAlbumDataAction) => ({
             ...state,
             albums: action.payload,
+        }),
+    },
+    [SET_IS_LOADING]: {
+        accepts: (action: AnyAction): action is SetLoadingAction => action.type === SET_IS_LOADING,
+        perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
+            ...state,
+            isLoading: action.payload,
         }),
     },
 };

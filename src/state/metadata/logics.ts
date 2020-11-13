@@ -20,7 +20,7 @@ import { ChangeClusterNumberAction } from "../selection/types";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveMetadata, requestFeatureData } from "./actions";
+import { receiveCellLineData, receiveMetadata, requestFeatureData, setIsLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
@@ -52,6 +52,7 @@ const requestFeatureDataLogic = createLogic({
             .getFeatureData()
             .then((data: MetadataStateBranch[]) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
+                dispatch(setIsLoading(false))
                 // shuffle to keep the plot from being organized in z
                 return shuffle(
                     map(data, (datum: MetadataStateBranch) => {

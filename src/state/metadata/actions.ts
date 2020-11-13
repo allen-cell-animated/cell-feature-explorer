@@ -7,6 +7,7 @@ import {
     REQUEST_ALBUM_DATA,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
+    SET_IS_LOADING,
 } from "./constants";
 import {
     CellLineDef,
@@ -15,6 +16,7 @@ import {
     ReceiveAlbumDataAction,
     ReceiveCellLineAction,
     RequestAction,
+    SetLoadingAction,
 } from "./types";
 
 export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
@@ -54,4 +56,11 @@ export function receiveAlbumData(payload: Album[]): ReceiveAlbumDataAction {
         payload,
         type: RECEIVE_ALBUM_DATA,
     };
+}
+
+export function setIsLoading(payload: boolean): SetLoadingAction {
+    return {
+        payload,
+        type: SET_IS_LOADING
+    }
 }
