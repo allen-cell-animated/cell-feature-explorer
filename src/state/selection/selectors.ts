@@ -291,7 +291,7 @@ export const getSelected3DCellFileInfo = createSelector([getSelected3DCell, getF
 
 export const getSelected3DCellFOV = createSelector([getSelected3DCellFileInfo],
     (fileInfo: FileInfo | undefined): string => {
-        return fileInfo ? fileInfo[FOV_ID_KEY] : "";
+        return fileInfo ? fileInfo[FOV_ID_KEY].toString() : "";
     }
 );
 

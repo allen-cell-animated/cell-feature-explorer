@@ -43,16 +43,7 @@ export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaDa
 export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures) => {
     return measuredFeatures[MITOTIC_STAGE_KEY];
 })
-export const getProteinNames = createSelector([getCellLineDefs], (cellLineDef: CellLineDef[]): string[] => {
-    const proteinNames: string[] = map(cellLineDef, PROTEIN_NAME_KEY);
-
-        return proteinNames.sort((a, b) => {
-            if (b > a) {
-                return -1;
-            } else if (a > b) {
-                return 1;
-            }
-            return 0;
-        });
+export const getProteinNames = createSelector([getSortedCellLineDefs], (cellLineDef: CellLineDef[]): string[] => {
+    return  map(cellLineDef, PROTEIN_NAME_KEY);
     }
 );
