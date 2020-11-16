@@ -2,6 +2,8 @@ export const APP_ID = "cell-feature-explorer";
 export const API_VERSION = "v1";
 export const X_AXIS_ID = "plotByOnX";
 export const Y_AXIS_ID = "plotByOnY";
+export const ARRAY_OF_CELL_IDS_KEY = "cellIds";
+export const ARRAY_OF_FILE_INFO_KEY = "fileInfo";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
 export const CLUSTERS_PLOT_NAME = "clusters-plot-name";
@@ -32,9 +34,9 @@ export const FILE_INFO_KEYS = Object.freeze([
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
-export const MITOTIC_STAGE_KEY = "Interphase & mitotic stages (stage)";
-const INTERPHASE_AND_MITOSIS_KEY = "Interphase or mitosis (stage)";
-const CELL_SEGMENTATION_KEY = "Anaphase segmentation complete (unitless)";
+export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages";
+const INTERPHASE_AND_MITOSIS_KEY = "Interphase and Mitosis (stage)";
+const CELL_SEGMENTATION_KEY = "Cell Segmentation (complete)";
 export const CATEGORICAL_FEATURES = Object.freeze([
     INTERPHASE_AND_MITOSIS_KEY,
     CELL_SEGMENTATION_KEY,

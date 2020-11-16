@@ -4,8 +4,7 @@ import { uniq } from "lodash";
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
 import {
-    getFeatureNames,
-    getProteinNames, getProteinTotals,
+    getProteinNames,
 } from "../selectors";
 
 describe("Metadata branch selectors", () => {

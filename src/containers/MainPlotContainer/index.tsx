@@ -26,7 +26,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { FileInfo, RequestAction } from "../../state/metadata/types";
+import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     ChangeHoveredPointAction,
@@ -65,8 +65,8 @@ interface PropsFromState {
     plotDataArray: any;
     xDropDownValue: string;
     yDropDownValue: string;
-    yDropDownOptions: string[];
-    xDropDownOptions: string[];
+    yDropDownOptions: MeasuredFeatureDef[];
+    xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
 }
@@ -80,9 +80,11 @@ interface DispatchProps {
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
+    requestCellFileInfoData: ActionCreator<RequestAction>;
 }
 
 interface OwnProps {
+    // props from <App />
     handleSelectionToolUsed: () => void;
 }
 

@@ -9,7 +9,6 @@ import { createSelector } from "reselect";
 
 import {
     CELL_ID_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -18,11 +17,11 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import {
-    getCellLineDefs,
     getFileInfo,
     getProteinNames,
+    getSortedCellLineDefs,
 } from "../../state/metadata/selectors";
-import { FileInfo } from "../../state/metadata/types";
+import { CellLineDef, FileInfo } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -58,15 +57,16 @@ const getColors = createSelector(
     });
 
 export const getInteractivePanelData = createSelector(
-    [getCellLineDefs, getFiltersToExclude, getColors],
-    (cellLines, filtersToExclude, proteinColors): PanelData[] => {
-        return map(cellLines, (cellLine, index) => {
+    [getSortedCellLineDefs, getFiltersToExclude, getColors],
+    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+        return map(cellLines, (cellLine: CellLineDef, index: number) => {
+            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
             return {
-                checked: !includes(filtersToExclude, cellLine[PROTEIN_NAME_KEY]),
+                checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],
-                id: cellLine[PROTEIN_NAME_KEY],
-                name: cellLine[PROTEIN_NAME_KEY],
-                total: cellLine.cellCount,
+                id: proteinName,
+                name: proteinName,
+                total: cellLine.cellCount, 
             };
         });
     });

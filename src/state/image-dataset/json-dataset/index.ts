@@ -1,10 +1,13 @@
 import axios, { AxiosResponse } from "axios";
-import { reduce } from "lodash";
+import { map, reduce } from "lodash";
 
 import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
+    BASE_API_URL,
+    PROTEIN_NAME_KEY,
+    CELL_LINE_DEF_NAME_KEY,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import {
@@ -84,7 +87,6 @@ class JsonRequest implements ImageDataset {
                     };
                     return accumulator;
                 },
-                {}
             );
         });
     };

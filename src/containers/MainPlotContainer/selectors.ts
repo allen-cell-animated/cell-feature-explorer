@@ -211,13 +211,19 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
     return data;
 });
 
-export const getXDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureNames): string[] => {
-    return featureNames;
-});
+export const getXDisplayOptions = createSelector(
+           [getMeasuredFeaturesDefs],
+           (featureNames): MeasuredFeatureDef[] => {
+               return featureNames;
+           }
+       );
 
-export const getYDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureNames): string[] => {
-    return featureNames;
-});
+export const getYDisplayOptions = createSelector(
+           [getMeasuredFeaturesDefs],
+           (featureNames): MeasuredFeatureDef[] => {
+               return featureNames;
+           }
+       );
 
 export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureDefs): MeasuredFeatureDef[] => {
     if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {

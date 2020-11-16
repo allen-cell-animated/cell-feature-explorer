@@ -32,6 +32,7 @@ export const initialState = {
     measuredFeatureNames: [],
     featureData: {},
     measuredFeaturesDefs: [],
+    clusterData: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {

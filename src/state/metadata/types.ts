@@ -1,5 +1,6 @@
 import {
     CELL_ID_KEY,
+    CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -13,12 +14,13 @@ export interface MetadataStateBranch {
     [key: string]: any;
 }
 
+// FROM THE DATABASE TYPINGS
+
 export interface CellLineDef {
-    [key: string]: {
-        [CELL_LINE_DEF_STRUCTURE_KEY]: string;
-        [CELL_LINE_DEF_PROTEIN_KEY]: string;
-        cellCount: number;
-    };
+    [CELL_LINE_DEF_NAME_KEY]: string;
+    [CELL_LINE_DEF_STRUCTURE_KEY]: string;
+    [PROTEIN_NAME_KEY]: string;
+    cellCount: number;
 }
 
 export interface FileInfo {
@@ -35,23 +37,16 @@ export interface MeasuredFeatureDef {
     unit?: string;
 }
 
-export interface MeasuredFeatureArrays {
-    [key: string]: number[];
-}
-
-export interface CellDataArrays {
-    [key: string]: number[] | FileInfo[];
+// DATA HELD IN STATE TYPINGS
+export interface MappingOfCellDataArrays {
+    [key: string]: number[]| FileInfo[] | string[];
 }
 
 export interface MeasuredFeatures {
     [key: string]: number;
 }
 
-export interface MetaData {
-    file_info: FileInfo;
-    measured_features: MeasuredFeatures;
-    clusters: any;
-}
+// ACTIONS
 
 export interface ReceiveMeasuredFeaturesAction {
     payload: MetadataStateBranch[];
@@ -68,7 +63,12 @@ export interface ReceiveAvailableDatasetsAction {
     type: string;
 }
 export interface ReceiveCellLineAction {
-    payload: CellLineDef;
+    payload: CellLineDef[];
+    type: string;
+}
+
+export interface ReceiveCellFileInfoAction {
+    payload: FileInfo[];
     type: string;
 }
 
