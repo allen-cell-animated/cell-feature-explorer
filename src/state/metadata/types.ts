@@ -75,3 +75,8 @@ export interface ReceiveAlbumDataAction {
 export interface RequestAction {
     type: string;
 }
+
+export interface SetLoadingAction {
+    payload: boolean;
+    type: string;
+}

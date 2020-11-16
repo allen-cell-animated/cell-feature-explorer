@@ -12,7 +12,7 @@ import { getClickedScatterPoints, getSelected3DCell } from "../selection/selecto
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, requestFeatureData } from "./actions";
+import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, requestFeatureData, setIsLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
@@ -44,6 +44,7 @@ const requestCellFileInfoData = createLogic({
             const data: FileInfo[] = [];
             return Promise.resolve(data);
         }
+
         return imageDataSet
             .getFileInfo()
             .then((data: FileInfo[]) => dispatch(receiveFileInfoData(data)))
@@ -99,10 +100,11 @@ const requestFeatureDataLogic = createLogic({
                 if (!getSelected3DCell(state)) {
                     actions.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
-
+                actions.push(setIsLoading(false));
                 if (!isEmpty(actions)) {
                     dispatch(batchActions(actions));
                 }
+    
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console

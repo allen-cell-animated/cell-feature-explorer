@@ -1,0 +1,16 @@
+.container{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 300;
+    background-color: rgba(47, 42, 62,84%);
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container .loading-icon, .container.loading-text {
+    text-align: center;
+}
+

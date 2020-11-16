@@ -19,6 +19,7 @@ export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getClusterData = (state: State) => state.metadata.clusterData;
+export const getIsLoading = (state: State) => state.metadata.isLoading;
 
 export const getSortedCellLineDefs = createSelector([getCellLineDefs], (cellLineDefs: CellLineDef[]): CellLineDef[] =>
     sortBy(cellLineDefs, [PROTEIN_NAME_KEY])

@@ -9,21 +9,24 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
+    SET_IS_LOADING,
 } from "./constants";
 import {
     MetadataStateBranch,
     ReceiveAction, ReceiveAlbumDataAction,
     ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
+    SetLoadingAction,
 } from "./types";
 
 export const initialState = {
     albums: [],
     cellFileInfo: [],
     cellLineDefs: {},
-    featureData: {},
     measuredFeaturesDefs: [],
     clusterData: [],
+    featureData: [],
+    isLoading: true,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -64,6 +67,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
             ...state,
             measuredFeaturesDefs: action.payload,
+        }),
+    },
+    [SET_IS_LOADING]: {
+        accepts: (action: AnyAction): action is SetLoadingAction => action.type === SET_IS_LOADING,
+        perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
+            ...state,
+            isLoading: action.payload,
         }),
     },
 };

@@ -7,12 +7,15 @@ import {
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
+import classNames from "classnames";
 
 import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
+import LoadingOverlay from "../../components/LoadingOverlay";
 import ColorByMenu from "../../containers/ColorByMenu";
 import selectionStateBranch from "../../state/selection";
+import metadataStateBranch from "../../state/metadata";
 import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 import {
@@ -33,6 +36,7 @@ const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface AppProps {
+    isLoading: boolean;
     galleryCollapsed: boolean;
     selected3DCell: string;
     selected3DCellFOV: string;
@@ -90,6 +94,7 @@ class App extends React.Component<AppProps, {}> {
 
     public render() {
         const {
+            isLoading,
             galleryCollapsed,
             selected3DCell,
             selected3DCellFOV,
@@ -103,20 +108,17 @@ class App extends React.Component<AppProps, {}> {
             openKeys,
             defaultActiveKey,
         } = this.state;
+        const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-
-            <Layout
-                className={styles.container}
-            >
+            <Layout className={layoutClassnames}>
                 <SmallScreenWarning
                     handleClose={this.handleClose}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                     visible={this.state.showSmallScreenWarning}
                 />
+                <LoadingOverlay isLoading={isLoading} />
                 <BackToPlot />
-                <AllenCellHeader
-                    show={true}
-                />
+                <AllenCellHeader show={true} />
                 <Layout>
                     <Affix>
                         <Sider
@@ -135,21 +137,14 @@ class App extends React.Component<AppProps, {}> {
                             />
                         </Sider>
                     </Affix>
-                    <Layout
-                        className={galleryCollapsed ? styles.noBlur : styles.blur}
-                    >
-                        <Header
-                            className={styles.headerMain}
-                        >
+                    <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
+                        <Header className={styles.headerMain}>
                             <h1> Cell Feature Explorer</h1>
                         </Header>
-                        <Header
-                            className={styles.headerSection}
-                        >
+                        <Header className={styles.headerSection}>
                             <h2>Plot</h2>
                         </Header>
-                        <Layout
-                        >
+                        <Layout>
                             <Sider
                                 className={styles.colorMenu}
                                 width={450}
@@ -163,10 +158,8 @@ class App extends React.Component<AppProps, {}> {
                                     onPanelClicked={this.onPanelClicked}
                                 />
                             </Sider>
-                            <Content
-                                className={styles.content}
-                            >
-                                <div className={styles.plotView} >
+                            <Content className={styles.content}>
+                                <div className={styles.plotView}>
                                     <MainPlotContainer
                                         handleSelectionToolUsed={this.onSelectionToolUsed}
                                     />
@@ -175,13 +168,12 @@ class App extends React.Component<AppProps, {}> {
                             <Sider />
                         </Layout>
                         <div className={styles.cellViewerContainer}>
-                            <Header
-                                className={styles.headerSection}
-                            >
+                            <Header className={styles.headerSection}>
                                 <h2 className={styles.header}>3D Viewer</h2>
                                 {selected3DCell && selected3DCellStructureName && (
                                     <h4 className={styles.selectedInfo}>
-                                        <span className={styles.label}>Viewing cell:</span> {selected3DCell},
+                                        <span className={styles.label}>Viewing cell:</span>{" "}
+                                        {selected3DCell},
                                         <span className={styles.label}> Protein (structure): </span>
                                         {selected3DCellProteinName} ({selected3DCellStructureName})
                                     </h4>
@@ -191,10 +183,12 @@ class App extends React.Component<AppProps, {}> {
                                 cellId={selected3DCell}
                                 fovId={selected3DCellFOV}
                                 cellLineName={selected3DCellCellLine}
-                                fovDownloadHref={
-                                    formatDownloadOfSingleImage(convertFullFieldIdToDownloadId(selected3DCellFOV))}
-                                cellDownloadHref={
-                                    formatDownloadOfSingleImage(convertSingleImageIdToDownloadId(selected3DCell))}
+                                fovDownloadHref={formatDownloadOfSingleImage(
+                                    convertFullFieldIdToDownloadId(selected3DCellFOV)
+                                )}
+                                cellDownloadHref={formatDownloadOfSingleImage(
+                                    convertSingleImageIdToDownloadId(selected3DCell)
+                                )}
                             />
                         </div>
                     </Layout>
@@ -207,6 +201,7 @@ class App extends React.Component<AppProps, {}> {
 
 function mapStateToProps(state: State) {
     return {
+        isLoading: metadataStateBranch.selectors.getIsLoading(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
         selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
