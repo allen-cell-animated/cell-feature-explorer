@@ -1,10 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import { reduce } from "lodash";
+import { map } from "lodash";
 
 import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     BASE_API_URL,
+    PROTEIN_NAME_KEY,
+    CELL_LINE_DEF_NAME_KEY,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { CELL_LINE_DEF_FILENAME, CELL_FEATURE_ANALYSIS_FILENAME, ALBUMS_FILENAME } from "../constants";
@@ -28,13 +30,12 @@ class JsonRequest implements ImageDataset {
     public getCellLineData = () => {
         return this.getJson(CELL_LINE_DEF_FILENAME)
             .then((data) => {
-                return reduce(data, (accumulator: CellLineDef, datum: MetadataStateBranch) => {
-                    accumulator[datum[this.labkeyCellDefName]] = {
+                return map(data, (datum: MetadataStateBranch) => ({
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[this.labkeyStructureKey],
-                        [CELL_LINE_DEF_PROTEIN_KEY]: datum[this.labkeyProteinKey],
-                    };
-                    return accumulator;
-                }, {});
+                        [CELL_LINE_DEF_NAME_KEY]: datum[this.labkeyCellDefName],
+                        [PROTEIN_NAME_KEY]: datum[this.labkeyProteinKey],
+                        cellCount: 0,
+                    }))
             })
     }
 

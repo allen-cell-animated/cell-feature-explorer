@@ -1,21 +1,19 @@
-import {
-    find,
-    reduce,
-} from "lodash";
+import { find, reduce, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
 import {
+    ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
     FOV_ID_KEY,
-    MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 import {
     getAllAlbumData,
     getFileInfo,
     getMeasuredFeatureValues,
+    getMitoticKeyPerCell,
 } from "../../state/metadata/selectors";
-import { MetaData } from "../../state/metadata/types";
+import { FileInfo } from "../../state/metadata/types";
 import {
     getClickedScatterPoints,
     getSelectedAlbum,
@@ -59,19 +57,25 @@ export const getIdsToShow = createSelector(
 
 export const getThumbnails = createSelector([
         getFileInfo,
+        getMeasuredFeatureValues,
+        getMitoticKeyPerCell,
         getIdsToShow,
     ],
-    (metaDataArray: MetaData[], idsToShow: number[]): Thumbnail[] => {
+    (fileInfoArray: FileInfo[], measuredFeatures, mitoticKeysArray, idsToShow: number[]): Thumbnail[] => {
         const init: Thumbnail[] = [];
+        if (isEmpty(measuredFeatures)) {
+            return []
+        }
         return reduce(idsToShow, (acc: Thumbnail[], cellID: number) => {
-            const fullCellData = find(metaDataArray, (datum) => (datum[CELL_ID_KEY] === cellID));
-            if (fullCellData) {
-                const cellData = fullCellData;
+            const fileInfoForCell = find(fileInfoArray, (datum) => datum[CELL_ID_KEY] === cellID);
+            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID.toString());
+            const mitoticKey = mitoticKeysArray[cellIndex];
+            if (fileInfoForCell) {
+                const cellData = fileInfoForCell;
                 const src = convertFileInfoToImgSrc(cellData);
                 const fovId = cellData[FOV_ID_KEY];
                 const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
                 const fullFieldDownloadHref = formatDownloadOfSingleImage(convertFullFieldIdToDownloadId((fovId)));
-                const mitoticKey: number = fullCellData[MITOTIC_STAGE_KEY];
                 acc.push({
                     cellID: Number(cellID),
                     downloadHref,

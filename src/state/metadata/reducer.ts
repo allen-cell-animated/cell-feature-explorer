@@ -23,6 +23,7 @@ export const initialState = {
     cellLineDefs: {},
     featureData: {},
     measuredFeaturesDefs: [],
+    clusterData: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {

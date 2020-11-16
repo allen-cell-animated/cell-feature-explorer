@@ -13,23 +13,24 @@ import {
 } from "./constants";
 import {
     CellLineDef,
-    MetaData,
+    FileInfo,
     MetadataStateBranch,
     ReceiveAction,
     ReceiveAlbumDataAction,
+    ReceiveCellFileInfoAction,
     ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
     RequestAction,
 } from "./types";
 
-export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
+export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
     return {
         payload,
         type: RECEIVE_CELL_LINE_DATA,
     };
 }
 
-export function receiveFileInfoData(payload: CellLineDef): ReceiveCellLineAction {
+export function receiveFileInfoData(payload: FileInfo[]): ReceiveCellFileInfoAction {
     return {
         payload,
         type: RECEIVE_CELL_FILE_INFO,

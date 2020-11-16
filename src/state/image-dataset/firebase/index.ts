@@ -2,22 +2,20 @@ import {
     DocumentReference,
     QueryDocumentSnapshot,
     QuerySnapshot,
-    DocumentSnapshot,
 } from "@firebase/firestore-types";
-import { map, reduce } from "lodash";
+import { map } from "lodash";
 
 import {
-    CELL_ID_KEY,
+    ARRAY_OF_CELL_IDS_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../../constants";
-import { CellLineDef, FileInfo, MetadataStateBranch } from "../../metadata/types";
+import { CellLineDef, FileInfo, MeasuredFeatureDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
-    CELL_FEATURE_ANALYSIS_FILENAME,
     CELL_LINE_DEF_FILENAME,
 } from "../constants";
 import { ImageDataset } from "../types";
@@ -65,10 +63,10 @@ class FirebaseRequest implements ImageDataset {
         return this.getCollection("measured-features").then(
             (snapshot: QuerySnapshot) => {
                 const dataset: MetadataStateBranch = {
-                    cellIds: []
+                    [ARRAY_OF_CELL_IDS_KEY]: []
                 };
                 snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    dataset.cellIds.push(doc.id);
+                    dataset[ARRAY_OF_CELL_IDS_KEY].push(doc.id);
                     const data = doc.data();
                     map(data, (value, key) => {
                         if (!dataset[key]) {
@@ -86,9 +84,9 @@ class FirebaseRequest implements ImageDataset {
 
     public getMeasuredFeatureNames = async () => {
         const snapshot = await this.getCollection("measured-features-names");
-        const dataset: MetadataStateBranch[] = [];
+        const dataset: MeasuredFeatureDef[] = [];
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
-            dataset.push(doc.data() as MetadataStateBranch);
+            dataset.push(doc.data() as MeasuredFeatureDef);
         });
         return dataset;
     };

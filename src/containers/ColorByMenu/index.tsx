@@ -33,6 +33,7 @@ import {
     SPECTRAL_KEY,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     CLUSTERING_LABEL,
@@ -70,7 +71,7 @@ const initIndex = 2;
 
 const { Panel } = Collapse;
 
-interface ColorByMenuProps {
+interface PropsFromState {
     // selector props
     clusteringAlgorithm: ClusteringTypeChoices;
     clusteringOptions: string[];
@@ -84,10 +85,13 @@ interface ColorByMenuProps {
     selectionSetsPanelData: PanelData[];
     showClusters: boolean;
     someProteinsOff: boolean;
-    colorByMenuOptions: string[];
+    colorByMenuOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
-    // dispatch props
+    categoricalFeatures: string[];
+}
+
+interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
@@ -96,12 +100,17 @@ interface ColorByMenuProps {
     handleClusteringToggle: ActionCreator<BoolToggleAction>;
     handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
-    // props from <App />
+}
+
+interface PropsFromApp {
+   // props from <App />
     panelKeys: string[];
     openKeys: string[];
     defaultActiveKey: string[];
     onPanelClicked: (value: string[]) => void;
 }
+
+type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 
 class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     // submenu keys of first level
@@ -358,10 +367,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     }
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State): PropsFromState {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
         clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
+        clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
+        clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
@@ -377,7 +388,7 @@ function mapStateToProps(state: State) {
     };
 }
 
-const dispatchToPropsMap = {
+const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
@@ -387,5 +398,7 @@ const dispatchToPropsMap = {
     handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
     handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
 };
-
-export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);
+export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
+    mapStateToProps,
+    dispatchToPropsMap
+)(ColorByMenu);
