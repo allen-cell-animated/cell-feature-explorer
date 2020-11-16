@@ -25,7 +25,7 @@ describe("Selection selectors", () => {
                     ...newMockState,
                     selection: {
                         ...newMockState.selection,
-                        plotByOnX: "feature1",
+                        plotByOnX: "apical-proximity",
                     },
                 };
                 const result: number[] = getXValues(state);
@@ -33,12 +33,15 @@ describe("Selection selectors", () => {
                     ...state,
                     selection: {
                         ...newMockState.selection,
-                        plotByOnX: "feature2",
+                        plotByOnX: "cell-segmentation",
                     },
                 };
+                const feature1Values = [-0.25868651080317, -0.1];
+                const feature2Values = [1, 0];
+
                 const newResult: number[] = getXValues(newState);
-                // expect(result).to.deep.equal(feature1Values);
-                // expect(newResult).to.deep.equal(feature2Values);
+                expect(result).to.deep.equal(feature1Values);
+                expect(newResult).to.deep.equal(feature2Values);
                 expect(result.length).to.equal(newResult.length);
         });
     });
@@ -49,7 +52,7 @@ describe("Selection selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnY: "feature1",
+                    plotByOnY: "apical-proximity",
                 },
             };
             const result: number[] = getYValues(state);
@@ -57,7 +60,7 @@ describe("Selection selectors", () => {
                 ...state,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnY: "feature2",
+                    plotByOnY: "cell-segmentation",
                 },
             };
             const newResult: number[] = getYValues(newState);
@@ -121,8 +124,8 @@ describe("Selection selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnX: "feature1",
-                    plotByOnY: "feature2",
+                    plotByOnX: "apical-proximity",
+                    plotByOnY: "apical-proximity",
                     selectedPoints: [1, 2],
                 },
             };

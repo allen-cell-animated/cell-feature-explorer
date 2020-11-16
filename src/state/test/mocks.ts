@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { CELL_LINE_DEF_NAME_KEY, CELL_LINE_DEF_PROTEIN_KEY, CELL_LINE_DEF_STRUCTURE_KEY, PROTEIN_NAME_KEY, CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY } from "../../constants";
+import { CELL_LINE_DEF_NAME_KEY, CELL_LINE_DEF_PROTEIN_KEY, CELL_LINE_DEF_STRUCTURE_KEY, PROTEIN_NAME_KEY, CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY, ARRAY_OF_CELL_IDS_KEY, MITOTIC_STAGE_KEY } from "../../constants";
 import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
@@ -19,7 +19,14 @@ import {
     ];
     const fileInfo = [
         {
-            [CELL_ID_KEY]: 100003,
+            [CELL_ID_KEY]: 1,
+            [CELL_LINE_NAME_KEY]: "AICS-57",
+            [FOV_ID_KEY]: 12762,
+            [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+            [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        },
+        {
+            [CELL_ID_KEY]: 2,
             [CELL_LINE_NAME_KEY]: "AICS-57",
             [FOV_ID_KEY]: 12762,
             [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
@@ -46,13 +53,13 @@ import {
             unit: "µm²",
         },
     ];
-    const featureData = [
-        {
-            "apical-proximity": -0.25868651080317,
-            "cell-segmentation": 1,
-            "cellular-surface-area": 702.3191,
-        },
-    ];
+    const featureData = {
+        [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
+        "apical-proximity": [-0.25868651080317, -0.1],
+        "cell-segmentation": [1, 0],
+        "cellular-surface-area": [702.3191, 702.3191],
+        [MITOTIC_STAGE_KEY]: [2, 1],
+    };
 
 export const mockState = {
            metadata: {
