@@ -42,7 +42,7 @@ export interface Annotation {
     cellLine: string;
     cellID: number;
     hovered: boolean;
-    fovID: string;
+    fovID: number;
     pointIndex: number;
     x: number;
     y: number;
