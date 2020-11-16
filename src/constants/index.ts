@@ -146,7 +146,7 @@ export const GENERAL_PLOT_SETTINGS = {
     yAxisInitial: "Cell volume (\u00b5m\u00b3)",
 };
 
-export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x"];
+export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];
 export const OBS_MEMBRANE_NAMES = ["CMDRP"];
 export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
 export const OBS_DNA_NAMES = ["H3342_3", "H3342"];
