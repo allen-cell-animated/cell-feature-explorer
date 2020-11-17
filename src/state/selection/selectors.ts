@@ -14,6 +14,7 @@ import { createSelector } from "reselect";
 import { $enum } from "ts-enum-util";
 
 import {
+    ARRAY_OF_CELL_IDS_KEY,
     ARRAY_OF_FILE_INFO_KEY,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
@@ -141,7 +142,7 @@ export const getYValues = createSelector(
        );
 
 export const getIds = createSelector([getFilteredCellData], (measuredData: MappingOfCellDataArrays) => {
-           return measuredData[CELL_ID_KEY] || [];
+           return measuredData[ARRAY_OF_CELL_IDS_KEY] || [];
        });
 
 export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors, getMeasuredFeaturesDefs,  getCategoricalFeatureKeys],
@@ -255,8 +256,8 @@ export const getAnnotations = createSelector(
         measuredData: MeasuredFeatures[],
         fileInfo: FileInfo[],
         clickedScatterPointIDs: number[],
-        xaxis,
-        yaxis,
+        xAxis,
+        yAxis,
         currentHoveredCellId
     ): Annotation[] => {
         if (isEmpty(measuredData)) {
@@ -266,8 +267,8 @@ export const getAnnotations = createSelector(
             const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
             const fovID = fileInfo[pointIndex][FOV_ID_KEY];
             const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
-            const x = measuredData[xaxis][pointIndex];
-            const y = measuredData[yaxis][pointIndex];
+            const x = measuredData[xAxis][pointIndex];
+            const y = measuredData[yAxis][pointIndex];
             return {
                 cellID,
                 cellLine,
@@ -329,27 +330,25 @@ export const getSelectedGroupsData = createSelector(
         selectedGroupColorMapping
 
     ): ContinuousPlotData => {
-        const dataArray = mapValues(selectedGroups, (value, key) => {
+        const colorArray: string[] = [];
+        const xValues: number[] = [];
+        const yValues: number[] = [];
+         
+        mapValues(selectedGroups, (value, key) => {
             // for each point index, get x, y, and color for the point.
-            return map(value, (cellId) => {
+            value.forEach((cellId: string) => {
                 // ids are converted to strings for plotly, so converting both to numbers to be sure
-                const fullDatum = find(metaData, (ele) => Number(ele[CELL_ID_KEY]) === Number(cellId));
-                return {
-                    groupColor: selectedGroupColorMapping[key],
-                    x: fullDatum.measured_features[plotByOnX],
-                    y: fullDatum.measured_features[plotByOnY],
-                };
+                const index = metaData[ARRAY_OF_CELL_IDS_KEY].indexOf(cellId);
+                colorArray.push(selectedGroupColorMapping[key]);
+                xValues.push(metaData[plotByOnX][index]);
+                yValues.push(metaData[plotByOnY][index]);
             });
         });
-        // flatten into array
-        const flattened = reduce(dataArray, (accum: SelectedGroupDatum[], value) =>
-                [...accum, ...value],
-            []
-        );
+    
         return {
-            color: map(flattened, "groupColor"),
-            x: map( flattened, "x"),
-            y: map( flattened, "y"),
+            color: colorArray,
+            x: xValues,
+            y: yValues,
         };
     }
 );
