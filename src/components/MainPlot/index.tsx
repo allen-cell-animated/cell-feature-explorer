@@ -62,8 +62,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: {
                     b: 50,
-                    l: 150,
-                    r: 50,
+                    l: 50,
+                    r: 10,
                     t: 10,
                 },
                 paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
