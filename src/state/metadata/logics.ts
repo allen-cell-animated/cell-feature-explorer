@@ -13,7 +13,7 @@ import { getClickedScatterPoints, getSelected3DCell } from "../selection/selecto
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, requestFeatureData, setIsLoading } from "./actions";
+import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, setIsLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
