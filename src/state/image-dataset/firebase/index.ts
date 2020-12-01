@@ -126,6 +126,27 @@ class FirebaseRequest implements ImageDataset {
             });
     };
 
+    public getFeatureData = () => {
+        return this.getCollection("measured-features-values").then((snapshot: QuerySnapshot) => {
+            const dataset: MetadataStateBranch = {
+                [ARRAY_OF_CELL_IDS_KEY]: [],
+            };
+
+            snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                dataset[ARRAY_OF_CELL_IDS_KEY].push(doc.id);
+                const data = doc.data();
+                map(data, (value, key) => {
+                    if (!dataset[key]) {
+                        dataset[key] = [];
+                    }
+                    dataset[key].push(value);
+                });
+            });
+            return dataset;
+        });
+    };
+
+
     public getMeasuredFeatureNames = async () => {
         const snapshot = await this.getCollection("measured-features-names");
         const dataset: MeasuredFeatureDef[] = [];
