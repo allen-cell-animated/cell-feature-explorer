@@ -42,7 +42,7 @@ import {
     Annotation,
     State,
 } from "../../state/types";
-import { convertFileInfoToImgSrc } from "../../state/util";
+import { batchActions, convertFileInfoToImgSrc } from "../../state/util";
 
 import {
     getScatterPlotDataArray,
