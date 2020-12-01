@@ -89,6 +89,9 @@
 :global(.ant-dropdown) {
     z-index: 500000;
 }
+:global(.ant-select-dropdown) {
+    width: initial!important;
+}
 
 :global(.ant-collapse),
 :global(.ant-collapse-header),
