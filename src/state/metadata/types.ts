@@ -28,6 +28,10 @@ export interface FileInfo {
     [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: number;
     [PROTEIN_NAME_KEY]: string;
+    fovThumbnailPath?: string;
+    fovVolumeviewerPath?: string;
+    thumbnailPath?: string;
+    volumeviewerPath?: string;
 }
 
 export interface MeasuredFeatureDef {
