@@ -67,6 +67,9 @@ export const getThumbnails = createSelector([
             return []
         }
         return reduce(idsToShow, (acc: Thumbnail[], cellID: number) => {
+            if (!cellID || isNaN(cellID)) {
+                return acc;
+            }
             const fileInfoForCell = find(fileInfoArray, (datum) => datum[CELL_ID_KEY] === cellID);
             const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID.toString());
             const mitoticKey = mitoticKeysArray[cellIndex];

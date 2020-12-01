@@ -101,6 +101,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public componentDidMount() {
+        this.props.requestFeatureData();
         this.props.requestCellLineData();
         this.props.requestCellFileInfoData();
     }
