@@ -44,7 +44,6 @@ import {
     Annotation,
     ContinuousPlotData,
     NumberOrString,
-    SelectedGroupDatum,
     SelectedGroups,
     State,
 } from "../types";
@@ -54,7 +53,6 @@ import {
 import { CLUSTERING_MAP } from "./constants";
 
 import {
-    CellDataArrays,
     ColorForPlot,
     DownloadConfig,
 } from "./types";
