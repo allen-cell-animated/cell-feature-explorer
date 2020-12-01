@@ -73,6 +73,9 @@ export function convertSingleImageIdToDownloadId(id: number | string): string {
 }
 
 export function convertFileInfoToImgSrc(datum: FileInfo): string {
+    if (datum.thumbnailPath) {
+        return `/${datum.thumbnailPath}`;
+    }
     return `/${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
 }
 
