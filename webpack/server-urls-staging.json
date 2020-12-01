@@ -1,6 +1,6 @@
 {
     "CELL_VIEWER_URL": "'/website-3d-cell-viewer/imageviewer/'",
-    "BASE_API_URL": "'http://dev-aics-dtp-001.corp.alleninstute.org/cellviewer-1-4-0/'",
-    "THUMBNAIL_BASE_URL": "'http://dev-aics-dtp-001.corp.alleninstute.org/cellviewer-1-4-0/Cell-Viewer_Thumbnails'",
+    "BASE_API_URL": "'http://dev-aics-dtp-001.corp.alleninstute.org/cellviewer-2-0-0/'",
+    "THUMBNAIL_BASE_URL": "'http://dev-aics-dtp-001.corp.alleninstute.org/cellviewer-2-0-0/Cell-Viewer_Thumbnails'",
     "DOWNLOAD_URL_PREFIX": "'https://files.allencell.org/api/2.0/file/download?collection=cellviewer-1-4'"
 }
