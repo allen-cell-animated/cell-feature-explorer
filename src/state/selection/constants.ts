@@ -34,8 +34,8 @@ export const CHANGE_SELECTED_ALBUM = makeConstant("selection", "change-selected-
 export const TOGGLE_GALLERY_OPEN_CLOSE = makeConstant("selection", "toggle-gallery");
 export const CHANGE_DATASET = makeConstant("selection", "change-dataset");
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
-export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume";
-export const INITIAL_PLOT_BY_ON_Y = "Cellular Volume";
+export const INITIAL_PLOT_BY_ON_X = "DNA volume";
+export const INITIAL_PLOT_BY_ON_Y = "Cell volume";
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 export const SET_DATASET = makeConstant("selection", "set-dataset");
 
