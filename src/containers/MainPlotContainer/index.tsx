@@ -101,9 +101,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public componentDidMount() {
-        batchActions([this.props.requestFeatureData(),
-        this.props.requestCellLineData(),
-        this.props.requestCellFileInfoData()])
+        batchActions([
+            this.props.requestFeatureData(),
+            this.props.requestCellLineData(),
+            this.props.requestCellFileInfoData()])
     }
 
     // TODO: retype once plotly has id and fullData types
