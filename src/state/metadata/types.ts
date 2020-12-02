@@ -1,4 +1,5 @@
 import {
+    CELL_COUNT_KEY,
     CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
@@ -23,7 +24,7 @@ export interface CellLineDef {
     [CELL_LINE_DEF_NAME_KEY]: string;
     [CELL_LINE_DEF_STRUCTURE_KEY]: string;
     [PROTEIN_NAME_KEY]: string;
-    cellCount: number;
+    [CELL_COUNT_KEY]: number;
 }
 
 export interface FileInfo {
@@ -37,11 +38,19 @@ export interface FileInfo {
     [VOLUME_VIEWER_PATH]?: string;
 }
 
+export interface MeasuredFeaturesOption {
+    color: string;
+    name: string;
+}
+
+export type MeasuredFeaturesOptions = { [key: string]: MeasuredFeaturesOption };
+
 export interface MeasuredFeatureDef {
     discrete: boolean;
     displayName: string;
     key: string;
     unit?: string;
+    options: MeasuredFeaturesOptions;
 }
 
 // DATA HELD IN STATE TYPINGS

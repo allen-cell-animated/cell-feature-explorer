@@ -7,6 +7,7 @@ import {
     BASE_API_URL,
     PROTEIN_NAME_KEY,
     CELL_LINE_DEF_NAME_KEY,
+    CELL_COUNT_KEY,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import { CELL_LINE_DEF_NAME_KEY, CELL_LINE_DEF_PROTEIN_KEY, CELL_LINE_DEF_STRUCTURE_KEY, PROTEIN_NAME_KEY, CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY, ARRAY_OF_CELL_IDS_KEY, MITOTIC_STAGE_KEY } from "../../constants";
+import { CELL_LINE_DEF_NAME_KEY, CELL_LINE_DEF_PROTEIN_KEY, CELL_LINE_DEF_STRUCTURE_KEY, PROTEIN_NAME_KEY, CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY, ARRAY_OF_CELL_IDS_KEY, MITOTIC_STAGE_KEY, CELL_COUNT_KEY } from "../../constants";
 import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
@@ -14,7 +14,7 @@ import {
             [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
             [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
             [PROTEIN_NAME_KEY]: "Nucleophosmin",
-            cellCount: 3470,
+            [CELL_COUNT_KEY]: 3470,
         },
     ];
     const fileInfo = [
