@@ -1,16 +1,14 @@
 import { includes, map, find } from "lodash";
 import { createSelector } from "reselect";
-import { $enum } from "ts-enum-util";
 
 import {
     GENERAL_PLOT_SETTINGS,
-    getLabels,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
 import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
-import { MeasuredFeatureDef } from "../../state/metadata/types";
+import { MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
@@ -241,10 +239,10 @@ export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs]
     return featureDefs;
 });
 
-const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) => {
+const makeNumberToTextConversion = (options: MeasuredFeaturesOptions) => {
     return {
-        tickText:  $enum(categoryEnum).getKeys() as string[],
-        tickValues:  $enum(categoryEnum).getValues() as number[],
+        tickText:  map(options, "name"),
+        tickValues:  map(options, (_, key) => Number(key)),
     };
 };
 
@@ -256,25 +254,24 @@ const makeNumberAxis = (): TickConversion => {
     };
 };
 
-export const getXTickConversion = createSelector([getPlotByOnX, getCategoricalFeatureKeys], (plotByOnX, categoricalFeatures): TickConversion => {
-    if (includes(categoricalFeatures, plotByOnX)) {
-        const categoryEnum = getLabels(plotByOnX);
-        if (categoryEnum) {
-            return makeNumberToTextConversion(categoryEnum);
+export const getXTickConversion = createSelector(
+    [getPlotByOnX, getMeasuredFeaturesDefs],
+    (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
+        const feature = find(measuredFeaturesDefs, { key: plotByOnX });
+        if (feature && feature.discrete) {
+            return makeNumberToTextConversion(feature.options);
         }
+        return makeNumberAxis();
     }
-    return makeNumberAxis();
-});
+);
 
 export const getYTickConversion = createSelector(
-           [getPlotByOnY, getCategoricalFeatureKeys],
-           (plotByOnY, categoricalFeatures): TickConversion => {
-               if (includes(categoricalFeatures, plotByOnY)) {
-                   const categoryEnum = getLabels(plotByOnY);
-                   if (categoryEnum) {
-                       return makeNumberToTextConversion(categoryEnum);
-                   }
-               }
-               return makeNumberAxis();
-           }
-       );
+    [getPlotByOnY, getMeasuredFeaturesDefs],
+    (plotByOnY, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
+        const feature = find(measuredFeaturesDefs, { key: plotByOnY });
+        if (feature && feature.discrete) {
+            return makeNumberToTextConversion(feature.options);
+        }
+        return makeNumberAxis();
+    }
+);

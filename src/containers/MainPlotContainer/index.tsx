@@ -1,4 +1,4 @@
-import { Popover, Progress } from "antd";
+import { Popover, Progress, Row } from "antd";
 import {
     filter,
     includes,
@@ -233,14 +233,21 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     className={styles.container}
                     onMouseLeave={this.onPlotUnhovered}
                 >
-                    <Progress
-                        strokeColor={{
-                            from: "#108ee9",
-                            to: "#87d068",
-                        }}
-                        percent={plotLoadingProgress}
-                        status={plotLoadingProgress < 90 ? "active" : "success"}
-                    />
+                    {plotLoadingProgress < 100 && (
+                        <Row>
+                            <div>Plot loading...</div>
+                            <Progress
+                                strokeColor={{
+                                    from: "#654d98",
+                                    to: "#f5f0ff",
+                                }}
+                                strokeLinecap="square"
+                                percent={plotLoadingProgress}
+                                status={"active"}
+                                trailColor="#6e6e6e" // will work with antd4
+                            />
+                        </Row>
+                    )}
                     <AxisDropDown
                         axisId={X_AXIS_ID}
                         value={xDropDownValue}

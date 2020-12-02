@@ -6,6 +6,7 @@ import {
     BASE_API_URL,
     PROTEIN_NAME_KEY,
     CELL_LINE_DEF_NAME_KEY,
+    CELL_COUNT_KEY,
 } from "../../../constants";
 import { MetadataStateBranch } from "../../metadata/types";
 import { CELL_LINE_DEF_FILENAME, CELL_FEATURE_ANALYSIS_FILENAME, ALBUMS_FILENAME } from "../constants";
@@ -30,11 +31,11 @@ class JsonRequest implements ImageDataset {
         return this.getJson(CELL_LINE_DEF_FILENAME)
             .then((data) => {
                 return map(data, (datum: MetadataStateBranch) => ({
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[this.labkeyStructureKey],
-                        [CELL_LINE_DEF_NAME_KEY]: datum[this.labkeyCellDefName],
-                        [PROTEIN_NAME_KEY]: datum[this.labkeyProteinKey],
-                        cellCount: 0,
-                    }))
+                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[this.labkeyStructureKey],
+                    [CELL_LINE_DEF_NAME_KEY]: datum[this.labkeyCellDefName],
+                    [PROTEIN_NAME_KEY]: datum[this.labkeyProteinKey],
+                    [CELL_COUNT_KEY]: 0,
+                }));
             })
     }
 
