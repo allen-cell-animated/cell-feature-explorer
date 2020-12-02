@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import { QueryDocumentSnapshot } from "@firebase/firestore-types";
 import { isEmpty, find } from "lodash";
 import { createLogic } from "redux-logic";
 import { AnyAction } from "redux";
@@ -13,7 +14,7 @@ import { getClickedScatterPoints, getSelected3DCell } from "../selection/selecto
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, setIsLoading } from "./actions";
+import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, receivePageOfMeasuredFeaturesValues, setIsLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
@@ -22,6 +23,7 @@ import {
     REQUEST_FEATURE_DATA,
 } from "./constants";
 import { CellLineDef, FileInfo, MetadataStateBranch } from "./types";
+import { PageReturn } from "../image-dataset/types";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -48,7 +50,9 @@ const requestCellFileInfoData = createLogic({
 
         return imageDataSet
             .getFileInfo()
-            .then((data: FileInfo[]) => dispatch(receiveFileInfoData(data)))
+            .then((data: FileInfo[]) => {
+                console.log(data)
+                dispatch(receiveFileInfoData(data))})
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             })
@@ -78,15 +82,36 @@ const requestFeatureDataLogic = createLogic({
             actions.push(receiveMeasuredFeatureNames(measuredFeatureNames));
             actions.push(setIsLoading(false));
 
-        } 
+        }
+        
         return imageDataSet
             .getFeatureData()
-            .then((data: MetadataStateBranch) => {
-                actions.push(receiveMetadata(data));
+            .then(async (returned: PageReturn) => {
+                if (returned.dataset) {
+                    actions.push(receivePageOfMeasuredFeaturesValues(returned.dataset));
+                }
                 dispatch(batchActions(actions));
-                return data;
+
+                const processOnePage = async (lastVisible: QueryDocumentSnapshot) => {
+                    if (imageDataSet.getPageOfFeatureData) {
+                        const nextData = await imageDataSet.getPageOfFeatureData(lastVisible);
+                        if (!nextData) {
+                            return;
+                        }
+                        if (nextData.dataset) {
+                            dispatch(receivePageOfMeasuredFeaturesValues(nextData.dataset));
+                        }
+                        if (nextData.next) {
+                            await processOnePage(nextData.next);
+                        }
+                    }
+                };
+                if (returned.next) {
+                    await processOnePage(returned.next);
+                }
+                return returned.dataset;
             })
-            .then((metaDatum: MetadataStateBranch | void) => {
+            .then((metaDatum: MetadataStateBranch | null) => {
                 if (!metaDatum) {
                     return done();
                 }
@@ -105,7 +130,6 @@ const requestFeatureDataLogic = createLogic({
                 if (!isEmpty(secondBatch)) {
                     dispatch(batchActions(secondBatch));
                 }
-    
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console

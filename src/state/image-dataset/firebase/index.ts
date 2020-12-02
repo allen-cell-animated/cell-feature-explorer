@@ -1,8 +1,4 @@
-import {
-    DocumentReference,
-    QueryDocumentSnapshot,
-    QuerySnapshot,
-} from "@firebase/firestore-types";
+import { DocumentReference, QueryDocumentSnapshot, QuerySnapshot } from "@firebase/firestore-types";
 import { map } from "lodash";
 
 import {
@@ -12,12 +8,14 @@ import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../../constants";
-import { CellLineDef, FileInfo, MeasuredFeatureDef, MetadataStateBranch } from "../../metadata/types";
-import { Album } from "../../types";
 import {
-    ALBUMS_FILENAME,
-    CELL_LINE_DEF_FILENAME,
-} from "../constants";
+    CellLineDef,
+    FileInfo,
+    MeasuredFeatureDef,
+    MetadataStateBranch,
+} from "../../metadata/types";
+import { Album } from "../../types";
+import { ALBUMS_FILENAME, CELL_LINE_DEF_FILENAME } from "../constants";
 import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
@@ -25,14 +23,24 @@ import { firestore } from "./configure-firebase";
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     constructor() {
-        this.collectionRef = firestore.collection("cfe-datasets").doc("v1_1");
+        this.collectionRef = firestore.collection("cfe-datasets").doc("v2");
     }
 
-    private getCollection = (collection: string) => {
+    private getCollection = (collection: string, limit?: number) => {
+        if (limit) {
+            return this.collectionRef.collection(collection).limit(limit).get();
+        }
         return this.collectionRef.collection(collection).get();
     };
 
+    private getPage = (collection: string, limit: number, startAfter: QueryDocumentSnapshot) => {
+        if (limit) {
+        }
+        return this.collectionRef.collection(collection).startAfter(startAfter).limit(limit).get();
+    };
+
     public getCellLineData = () => {
+        console.log("getting cell line data");
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {
             const dataset: CellLineDef[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
@@ -51,20 +59,19 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFileInfo = () => {
-        return this.getCollection("cell-file-info")
-            .then((snapshot) => {
-                const dataset: FileInfo[] = []
-                snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
-                return dataset;
-            });
+        return this.getCollection("cell-file-info").then((snapshot) => {
+            const dataset: FileInfo[] = [];
+            snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
+            return dataset;
+        });
     };
 
-    public getFeatureData = () => {
-        return this.getCollection("measured-features-values").then((snapshot: QuerySnapshot) => {
+    public getPageOfFeatureData = async (lastVisible: QueryDocumentSnapshot) => {
+        const snapshot = await this.getPage("measured-features-values", 10000, lastVisible);
+        if (!snapshot.empty) {
             const dataset: MetadataStateBranch = {
                 [ARRAY_OF_CELL_IDS_KEY]: [],
             };
-
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 dataset[ARRAY_OF_CELL_IDS_KEY].push(doc.id);
                 const data = doc.data();
@@ -75,10 +82,43 @@ class FirebaseRequest implements ImageDataset {
                     dataset[key].push(value);
                 });
             });
-            return dataset;
-        });
+            return {
+                dataset,
+                next: snapshot.docs[snapshot.docs.length - 1],
+            };
+        } else {
+            return {dataset: null}
+        }
     };
 
+    public getFeatureData = () => {
+
+        return this.getCollection("measured-features-values", 10000).then(
+            (snapshot: QuerySnapshot) => {
+                if (!snapshot.empty) {
+                    const dataset: MetadataStateBranch = {
+                        [ARRAY_OF_CELL_IDS_KEY]: [],
+                    };
+                    snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                        dataset[ARRAY_OF_CELL_IDS_KEY].push(doc.id);
+                        const data = doc.data();
+                        map(data, (value, key) => {
+                            if (!dataset[key]) {
+                                dataset[key] = [];
+                            }
+                            dataset[key].push(value);
+                        });
+                    });
+                    return {
+                        dataset,
+                        next: snapshot.docs[snapshot.docs.length - 1],
+                    };
+                } else {
+                    return {dataset: null}
+                }
+            }
+        );
+    };
 
     public getMeasuredFeatureNames = async () => {
         const snapshot = await this.getCollection("measured-features-names");

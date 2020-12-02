@@ -1,4 +1,4 @@
-import { map, filter, sortBy } from "lodash";
+import { map, filter, sortBy, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -37,7 +37,10 @@ export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaDa
     return map(fullMetaData, PROTEIN_NAME_KEY);
 });
 
-export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures) => {
+export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures): number[] => {
+    if (isEmpty(measuredFeatures)) {
+        return [];
+    }
     return measuredFeatures[MITOTIC_STAGE_KEY];
 })
 export const getProteinNames = createSelector([getSortedCellLineDefs], (cellLineDef: CellLineDef[]): string[] => {

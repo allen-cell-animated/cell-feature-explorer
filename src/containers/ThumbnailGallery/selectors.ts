@@ -72,7 +72,7 @@ export const getThumbnails = createSelector([
             }
             const fileInfoForCell = find(fileInfoArray, (datum) => datum[CELL_ID_KEY] === cellID);
             const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID.toString());
-            const mitoticKey = mitoticKeysArray[cellIndex];
+            const mitoticKey = mitoticKeysArray[cellIndex] as number;
             if (fileInfoForCell) {
                 const cellData = fileInfoForCell;
                 const src = convertFileInfoToImgSrc(cellData);

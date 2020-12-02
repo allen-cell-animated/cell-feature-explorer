@@ -39,8 +39,9 @@ class JsonRequest implements ImageDataset {
             })
     }
 
-    public getFeatureData = () => {
-        return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME)
+    public getFeatureData = async () => {
+        const dataset = await  this.getJson(CELL_FEATURE_ANALYSIS_FILENAME)
+        return {dataset}
     }
 
     public getAlbumData = () => {

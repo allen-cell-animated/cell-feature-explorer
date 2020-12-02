@@ -263,8 +263,10 @@ export const getAnnotations = createSelector(
         }
         return clickedScatterPointIDs.map((cellID) => {
             const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
-            const fovID = fileInfo[pointIndex][FOV_ID_KEY];
-            const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
+            const data = fileInfo[pointIndex];
+            const fovID = data[FOV_ID_KEY];
+            const cellLine = data[CELL_LINE_NAME_KEY];
+            const thumbnailPath = data.thumbnailPath;
             const x = measuredData[xAxis][pointIndex];
             const y = measuredData[yAxis][pointIndex];
             return {
@@ -275,6 +277,7 @@ export const getAnnotations = createSelector(
                 pointIndex,
                 x,
                 y,
+                thumbnailPath,
             };
         });
     }

@@ -1,3 +1,4 @@
+import { map, mapValues } from "lodash";
 import { AnyAction } from "redux";
 
 import { TypeToDescriptionMap } from "../types";
@@ -9,6 +10,7 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
+    RECEIVE_PAGE_OF_MEASURED_FEATURES,
     SET_IS_LOADING,
 } from "./constants";
 import {
@@ -25,7 +27,7 @@ export const initialState = {
     cellLineDefs: {},
     measuredFeaturesDefs: [],
     clusterData: [],
-    featureData: [],
+    featureData: {},
     isLoading: true,
 };
 
@@ -36,6 +38,19 @@ const actionToConfigMap: TypeToDescriptionMap = {
             ...state,
             featureData: action.payload,
         }),
+    },
+    [RECEIVE_PAGE_OF_MEASURED_FEATURES]: {
+        accepts: (action: AnyAction): action is ReceiveAction =>
+            action.type === RECEIVE_PAGE_OF_MEASURED_FEATURES,
+        perform: (state: MetadataStateBranch, action: ReceiveAction) => {
+            console.log()
+            return {
+            ...state,
+            featureData: mapValues(action.payload, (value, key) => {
+
+                return [...state.featureData[key] || [], ...value]
+            }),
+        }},
     },
     [RECEIVE_CELL_LINE_DATA]: {
         accepts: (action: AnyAction): action is ReceiveCellLineAction =>

@@ -10,3 +10,4 @@ export const RECEIVE_MEASURED_FEATURE_NAMES = makeConstant("metadata", "receive-
 export const REQUEST_CELL_FILE_INFO = makeConstant("metadata", "request-cell-file-info");
 export const RECEIVE_CELL_FILE_INFO = makeConstant("metadata", "receive-cell-file-info");
 export const SET_IS_LOADING = makeConstant("metadata", "set-is-loading");
+export const RECEIVE_PAGE_OF_MEASURED_FEATURES = makeConstant("metadata", "RECEIVE_PAGE_OF_MEASURED_FEATURES");

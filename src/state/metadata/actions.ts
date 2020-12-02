@@ -6,6 +6,7 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
+    RECEIVE_PAGE_OF_MEASURED_FEATURES,
     REQUEST_ALBUM_DATA,
     REQUEST_CELL_FILE_INFO,
     REQUEST_CELL_LINE_DATA,
@@ -44,6 +45,13 @@ export function receiveMetadata(payload:MetadataStateBranch): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,
+    };
+}
+
+export function receivePageOfMeasuredFeaturesValues(payload: MetadataStateBranch): ReceiveAction {
+    return {
+        payload,
+        type: RECEIVE_PAGE_OF_MEASURED_FEATURES,
     };
 }
 
