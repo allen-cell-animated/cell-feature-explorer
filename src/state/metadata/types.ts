@@ -4,7 +4,11 @@ import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
+    FOV_THUMBNAIL_PATH,
+    FOV_VOLUME_VIEWER_PATH,
     PROTEIN_NAME_KEY,
+    THUMBNAIL_PATH,
+    VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
@@ -27,10 +31,10 @@ export interface FileInfo {
     [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: number;
     [PROTEIN_NAME_KEY]: string;
-    fovThumbnailPath?: string;
-    fovVolumeviewerPath?: string;
-    thumbnailPath?: string;
-    volumeviewerPath?: string;
+    [FOV_THUMBNAIL_PATH]?: string;
+    [FOV_VOLUME_VIEWER_PATH]?: string;
+    [THUMBNAIL_PATH]?: string;
+    [VOLUME_VIEWER_PATH]?: string;
 }
 
 export interface MeasuredFeatureDef {
