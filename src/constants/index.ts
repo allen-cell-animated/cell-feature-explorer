@@ -19,6 +19,7 @@ export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
 export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
 export const THUMBNAIL_PATH = "thumbnailPath";
 export const VOLUME_VIEWER_PATH = "volumeviewerPath";
+export const CELL_COUNT_KEY = "cellCount";
 export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";

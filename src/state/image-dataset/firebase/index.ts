@@ -3,6 +3,7 @@ import { map } from "lodash";
 
 import {
     ARRAY_OF_CELL_IDS_KEY,
+    CELL_COUNT_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
@@ -54,12 +55,12 @@ class FirebaseRequest implements ImageDataset {
             const dataset: CellLineDef[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 const datum = doc.data();
-                if (datum.cellCount > 0) {
+                if (datum[CELL_COUNT_KEY] > 0) {
                     dataset.push({
                         [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
                         [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                        cellCount: datum.cellCount,
+                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY],
                     });
                 }
             });
