@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { map, reduce, uniq } from "lodash";
 
 import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
@@ -20,7 +19,16 @@ describe("ColorByMenu selectors", () => {
         it("returns an set of props for each protein in state", () => {
 
             const result: PanelData[] = getInteractivePanelData(newMockState);
-
+            const data = [
+                {
+                    checked: true,
+                    color: "#bbcd22",
+                    id: "Nucleophosmin",
+                    name: "Nucleophosmin",
+                    total: 3470,
+                },
+            ];
+            expect(result).to.deep.equal(data);
         });
     });
 
@@ -60,25 +68,15 @@ describe("ColorByMenu selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    downloadConfig : {
-                        // key: proteinNames[0],
+                    downloadConfig: {
+                        key: "Nucleophosmin",
                         type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
                     },
                 },
             };
 
-            const init: number[] = [];
-            // const expectedIndexes = reduce(proteinNames,
-            //     (acc, cur, index) => {
-            //     if (cur === proteinNames[0]) {
-            //         acc.push(index);
-            //     }
-            //     return acc;
-            //         }, init);
-            // const expectedIds: string[] = map(expectedIndexes, (index: number) => `C${cellIDs[index].split("_")[2]}`);
-
             const result: string[] = getListOfCellIdsByDownloadConfig(state);
-            expect(result).to.deep.equal([]);
+            expect(result).to.deep.equal(["C1", "C2"]);
 
         });
     });
