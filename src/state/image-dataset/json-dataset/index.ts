@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from "axios";
 import { map, reduce } from "lodash";
 
 import {
-    CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
     BASE_API_URL,
