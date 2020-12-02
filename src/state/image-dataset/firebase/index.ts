@@ -40,7 +40,6 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getCellLineData = () => {
-        console.log("getting cell line data");
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {
             const dataset: CellLineDef[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
