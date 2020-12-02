@@ -2,10 +2,12 @@ import { map, filter, sortBy } from "lodash";
 import { createSelector } from "reselect";
 
 import {
+    ARRAY_OF_CELL_IDS_KEY,
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 import { State } from "../types";
+import { TOTAL_CELLS } from "./reducer";
 
 import {
     CellLineDef,
@@ -23,6 +25,13 @@ export const getFeatureNamesAndData = (state: State) => state.metadata.measuredF
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getClusterData = (state: State) => state.metadata.clusterData;
+
+export const getPlotLoadingProgress = createSelector([getMeasuredFeatureValues], (measuredFeatures) => {
+    if (isEmpty(measuredFeatures)) {
+        return 0;
+    }
+    return measuredFeatures[ARRAY_OF_CELL_IDS_KEY].length/TOTAL_CELLS * 100;
+})
 
 export const getSortedCellLineDefs = createSelector([getCellLineDefs], (cellLineDefs: CellLineDef[]): CellLineDef[] =>
     sortBy(cellLineDefs, [PROTEIN_NAME_KEY])
