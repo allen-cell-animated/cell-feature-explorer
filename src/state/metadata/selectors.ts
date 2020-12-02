@@ -1,4 +1,4 @@
-import { map, filter, sortBy } from "lodash";
+import { map, filter, sortBy, isEmpty, toInteger } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -30,7 +30,7 @@ export const getPlotLoadingProgress = createSelector([getMeasuredFeatureValues],
     if (isEmpty(measuredFeatures)) {
         return 0;
     }
-    return measuredFeatures[ARRAY_OF_CELL_IDS_KEY].length/TOTAL_CELLS * 100;
+    return toInteger(measuredFeatures[ARRAY_OF_CELL_IDS_KEY].length/TOTAL_CELLS * 100);
 })
 
 export const getSortedCellLineDefs = createSelector([getCellLineDefs], (cellLineDefs: CellLineDef[]): CellLineDef[] =>

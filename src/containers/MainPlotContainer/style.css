@@ -15,6 +15,10 @@
     bottom: 2px;
 }
 
+.container :global(.ant-progress-inner) {
+    /* can detele with antd v4 */
+    background-color: #6e6e6e; 
+}
 :global(.modebar) {
     bottom: 0!important;
     top: initial!important;
