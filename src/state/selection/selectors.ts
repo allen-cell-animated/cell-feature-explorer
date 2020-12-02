@@ -11,7 +11,6 @@ import {
     values,
 } from "lodash";
 import { createSelector } from "reselect";
-import { $enum } from "ts-enum-util";
 
 import {
     ARRAY_OF_CELL_IDS_KEY,
@@ -21,7 +20,7 @@ import {
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
-    GENERAL_PLOT_SETTINGS, getLabels,
+    GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
     THUMBNAIL_PATH,
 } from "../../constants";
@@ -38,6 +37,7 @@ import {
 import {
     FileInfo,
     MappingOfCellDataArrays,
+    MeasuredFeatureDef,
     MeasuredFeatures,
     MetadataStateBranch,
 } from "../metadata/types";
@@ -172,20 +172,29 @@ export const getColorsForPlot = createSelector([getColorBySelection, getProteinN
     }
 );
 
-export const getCategoryCounts = createSelector([getMeasuredFeatureValues, getColorBySelection],
-    (measuredData: MetadataStateBranch, colorBy: string): number[] => {
-        const categoryEnum = getLabels(colorBy);
-        if (!isEmpty(categoryEnum)) {
-            const categoryValues = $enum(categoryEnum).getValues();
-            const totals =  reduce(measuredData, (acc: {[key: number]: number}, cur) => {
-                const index = categoryValues.indexOf(cur[colorBy]);
-                if (acc[index]) {
-                    acc[index] ++;
-                } else {
-                    acc[index] = 1;
-                }
-                return acc;
-            }, {});
+export const getCategoryCounts = createSelector(
+    [getMeasuredFeatureValues, getColorBySelection, getMeasuredFeaturesDefs],
+    (
+        measuredData: MetadataStateBranch,
+        colorBy: string,
+        measuredFeatureDefs: MeasuredFeatureDef[]
+    ): number[] => {
+        const feature = find(measuredFeatureDefs, { key: colorBy });
+        if (feature && feature.discrete) {
+            const categoryValues = map(feature.options, (_, key) => Number(key));
+            const totals = reduce(
+                measuredData[colorBy],
+                (acc: { [key: number]: number }, cur) => {
+                    const index = categoryValues.indexOf(Number(cur));
+                    if (acc[index]) {
+                        acc[index]++;
+                    } else {
+                        acc[index] = 1;
+                    }
+                    return acc;
+                },
+                {}
+            );
             return values(totals);
         }
         return [];
