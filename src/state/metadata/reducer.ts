@@ -30,6 +30,7 @@ export const initialState = {
     featureData: {},
     isLoading: true,
 };
+export const TOTAL_CELLS = 216061; //TODO put this in the dataset manifest
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_METADATA]: {
@@ -43,14 +44,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is ReceiveAction =>
             action.type === RECEIVE_PAGE_OF_MEASURED_FEATURES,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => {
-            console.log()
             return {
-            ...state,
-            featureData: mapValues(action.payload, (value, key) => {
-
-                return [...state.featureData[key] || [], ...value]
-            }),
-        }},
+                ...state,
+                featureData: mapValues(action.payload, (value, key) => {
+                    return [...(state.featureData[key] || []), ...value];
+                }),
+            };
+        },
     },
     [RECEIVE_CELL_LINE_DATA]: {
         accepts: (action: AnyAction): action is ReceiveCellLineAction =>

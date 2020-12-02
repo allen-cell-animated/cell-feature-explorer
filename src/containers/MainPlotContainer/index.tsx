@@ -1,4 +1,4 @@
-import { Popover } from "antd";
+import { Popover, Progress } from "antd";
 import {
     filter,
     includes,
@@ -25,6 +25,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
+import { getPlotLoadingProgress } from "../../state/metadata/selectors";
 import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
@@ -62,6 +63,7 @@ interface PropsFromState {
     hoveredPointData: FileInfo | undefined;
     mousePosition: MousePosition;
     plotDataArray: any;
+    plotLoadingProgress: number;
     xDropDownValue: string;
     yDropDownValue: string;
     yDropDownOptions: MeasuredFeatureDef[];
@@ -104,7 +106,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         batchActions([
             this.props.requestFeatureData(),
             this.props.requestCellLineData(),
-            this.props.requestCellFileInfoData()])
+            this.props.requestCellFileInfoData()
+        ])
     }
 
     // TODO: retype once plotly has id and fullData types
@@ -203,8 +206,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             yTickConversion,
             xTickConversion,
             categoricalFeatures,
+            plotLoadingProgress,
         } = this.props;
-
         if (plotDataArray.length === 0) {
             return null;
         }
@@ -230,6 +233,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     className={styles.container}
                     onMouseLeave={this.onPlotUnhovered}
                 >
+                    <Progress
+                        strokeColor={{
+                            from: "#108ee9",
+                            to: "#87d068",
+                        }}
+                        percent={plotLoadingProgress}
+                        status={plotLoadingProgress < 90 ? "active" : "success"}
+                    />
                     <AxisDropDown
                         axisId={X_AXIS_ID}
                         value={xDropDownValue}
@@ -270,6 +281,7 @@ function mapStateToProps(state: State): PropsFromState {
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
+        plotLoadingProgress: getPlotLoadingProgress(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
         xTickConversion: getXTickConversion(state),

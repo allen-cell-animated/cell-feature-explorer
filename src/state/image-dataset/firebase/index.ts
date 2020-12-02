@@ -26,6 +26,10 @@ class FirebaseRequest implements ImageDataset {
         this.collectionRef = firestore.collection("cfe-datasets").doc("v2");
     }
 
+    private getDoc = (collection: string, docId: string) => {
+        return this.collectionRef.collection(collection).doc(docId).get();
+    };
+
     private getCollection = (collection: string, limit?: number) => {
         if (limit) {
             return this.collectionRef.collection(collection).limit(limit).get();
@@ -65,6 +69,16 @@ class FirebaseRequest implements ImageDataset {
         });
     };
 
+    public getFileInfoByCellId = (cellId: string) => {
+        return this.getDoc("cell-file-info", cellId).then((doc) => doc.data());
+    };
+
+    public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
+        Promise.all(cellIds.map((id) => {
+            return this.getDoc("cell-file-info", id).then((doc) => doc.data());
+        }))
+    };
+
     public getPageOfFeatureData = async (lastVisible: QueryDocumentSnapshot) => {
         const snapshot = await this.getPage("measured-features-values", 10000, lastVisible);
         if (!snapshot.empty) {
@@ -86,12 +100,11 @@ class FirebaseRequest implements ImageDataset {
                 next: snapshot.docs[snapshot.docs.length - 1],
             };
         } else {
-            return {dataset: null}
+            return { dataset: null };
         }
     };
 
     public getFeatureData = () => {
-
         return this.getCollection("measured-features-values", 10000).then(
             (snapshot: QuerySnapshot) => {
                 if (!snapshot.empty) {
@@ -113,7 +126,7 @@ class FirebaseRequest implements ImageDataset {
                         next: snapshot.docs[snapshot.docs.length - 1],
                     };
                 } else {
-                    return {dataset: null}
+                    return { dataset: null };
                 }
             }
         );
