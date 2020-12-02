@@ -1,4 +1,5 @@
 import { URLSearchParamMap } from "../../util/UrlState";
+import { FileInfo } from "../metadata/types";
 
 import {
     CHANGE_AXIS,
@@ -20,6 +21,8 @@ import {
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
+    RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
+    REQUEST_CELL_FILE_INFO_BY_CELL_ID,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -32,6 +35,7 @@ import {
     DownloadConfig,
     LassoOrBoxSelectAction,
     MousePosition,
+    RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
@@ -170,5 +174,20 @@ export function toggleGallery(payload: boolean): BoolToggleAction {
     return {
         payload,
         type: TOGGLE_GALLERY_OPEN_CLOSE,
+    };
+}
+
+
+export function receiveFileInfoDataForCell(payload: FileInfo) {
+    return {
+        payload,
+        type: RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
+    };
+}
+
+export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByCellIDAction {
+    return {
+        payload,
+        type: REQUEST_CELL_FILE_INFO_BY_CELL_ID,
     };
 }

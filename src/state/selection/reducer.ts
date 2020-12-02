@@ -2,10 +2,11 @@ import {
     filter,
     pickBy,
     uniq,
+    uniqBy,
 } from "lodash";
 import { AnyAction } from "redux";
 
-import { KMEANS_KEY } from "../../constants";
+import { CELL_ID_KEY, KMEANS_KEY } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
@@ -32,6 +33,8 @@ import {
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
+    RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
+    RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -43,6 +46,7 @@ import {
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     LassoOrBoxSelectAction,
+    ReceiveCellFileInfoAction,
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
@@ -64,6 +68,7 @@ export const initialState = {
     filterExclude: [],
     galleryCollapsed: true,
     hoveredCardId: -1,
+    hoveredCellData: null,
     hoveredPointId: -1,
     mousePosition: {
         pageX: 0,
@@ -123,14 +128,15 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is DeselectPointAction => action.type === DESELECT_POINT,
         perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
-            selectedPoints : filter(state.selectedPoints, (e) => e !== action.payload),
+            selectedPoints : filter(state.selectedPoints, (e) => e[CELL_ID_KEY] !== action.payload),
         }),
     },
-    [SELECT_POINT]: {
-        accepts: (action: AnyAction): action is SelectPointAction => action.type === SELECT_POINT,
+    [RECEIVE_FILE_INFO_FOR_SELECTED_CELL]: {
+        accepts: (action: AnyAction): action is SelectPointAction => action.type === RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
         perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
             ...state,
-            selectedPoints : uniq([...state.selectedPoints, action.payload]),
+            selectedPoints : uniqBy([...state.selectedPoints, action.payload], CELL_ID_KEY),
+
         }),
     },
     [DESELECT_ALL_POINTS]: {
@@ -197,6 +203,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
             hoveredPointId: action.payload,
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_HOVERED_CELL]: {
+        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction => action.type === RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
+        perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
+            ...state,
+            hoveredCellData: action.payload,
         }),
     },
     [CHANGE_HOVERED_GALLERY_CARD]: {

@@ -61,7 +61,7 @@ import {
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
 export const getPlotByOnY = (state: State) => state.selection.plotByOnY;
-export const getClickedScatterPoints = (state: State) => state.selection.selectedPoints;
+export const getClickedCellsFileInfo = (state: State) => state.selection.selectedPoints;
 export const getSelectedGroups = (state: State) => state.selection.selectedGroups;
 export const getColorBySelection = (state: State) => state.selection.colorBy;
 export const getProteinColors = (state: State) => state.selection.proteinColors;
@@ -79,33 +79,29 @@ export const getHoveredPointId = (state: State) => state.selection.hoveredPointI
 export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
+export const getHoveredCellFileInfo = (state: State) => state.selection.hoveredCellData;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
 export const getFilteredCellData = createSelector(
-           [getMeasuredFeaturesKeys, getFiltersToExclude, getFileInfo, getMeasuredFeatureValues],
+           [getMeasuredFeaturesKeys, getFiltersToExclude, getMeasuredFeatureValues],
            (
                measuredFeatureKeys,
                filtersToExclude,
-               fileInfo,
                measuredFeaturesByKey
            ): MappingOfCellDataArrays => {
                if (!filtersToExclude.length) {
                    return {
                        ...measuredFeaturesByKey,
-                       [ARRAY_OF_FILE_INFO_KEY]: fileInfo,
-                       [PROTEIN_NAME_KEY]: map(fileInfo, PROTEIN_NAME_KEY),
                    };
                }
-               const fileInfoArray: FileInfo[] = [];
                const proteinNameArray: string[] = [];
                const dataToReturn: MappingOfCellDataArrays = {};
 
-               for (let i = 1; i++; i < fileInfo.length) {
-                   const datum: FileInfo = fileInfo[i];
-                   if (includes(filtersToExclude, datum[PROTEIN_NAME_KEY])) {
-                       fileInfoArray.push(datum);
-                       proteinNameArray.push(datum[PROTEIN_NAME_KEY]);
+               for (let i = 1; i++; i < measuredFeaturesByKey[PROTEIN_NAME_KEY].length) {
+                   const protein = measuredFeaturesByKey[PROTEIN_NAME_KEY][i];
+                   if (includes(filtersToExclude, protein)) {
+                       proteinNameArray.push(protein);
                        measuredFeatureKeys.forEach((key) => {
                            if (!dataToReturn[key]) {
                                dataToReturn[key] = [];
@@ -117,7 +113,6 @@ export const getFilteredCellData = createSelector(
                }
                return {
                    ...dataToReturn,
-                   [ARRAY_OF_FILE_INFO_KEY]: fileInfoArray,
                    [PROTEIN_NAME_KEY]: proteinNameArray,
                };
            }
@@ -229,10 +224,15 @@ export const getColorByValues = createSelector([getFilteredCellData, getColorByS
     
 );
 
-export const getHoveredPointData = createSelector([getHoveredPointId, getFileInfo],
-    (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
-    return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
-});
+export const getHoveredPointData = createSelector(
+           [getHoveredCellFileInfo],
+           (hoveredPointFileInfo: FileInfo): FileInfo | undefined => {
+               return hoveredPointFileInfo;
+           }
+       );
+export const getClickedScatterPoints = createSelector([getClickedCellsFileInfo], (cells: FileInfo[]) =>
+           map(cells, CELL_ID_KEY)
+       );
 
 const getSelectedScatterPointsWithAvailableMetadata = createSelector([
     getFileInfo,
@@ -245,16 +245,14 @@ const getSelectedScatterPointsWithAvailableMetadata = createSelector([
 export const getAnnotations = createSelector(
     [
         getMeasuredFeatureValues,
-        getFileInfo,
-        getSelectedScatterPointsWithAvailableMetadata,
+        getClickedCellsFileInfo,
         getPlotByOnX,
         getPlotByOnY,
         getHoveredCardId,
     ],
     (
         measuredData: MeasuredFeatures[],
-        fileInfo: FileInfo[],
-        clickedScatterPointIDs: number[],
+        clickedCellsFileInfo: FileInfo[],
         xAxis,
         yAxis,
         currentHoveredCellId
@@ -262,14 +260,16 @@ export const getAnnotations = createSelector(
         if (isEmpty(measuredData)) {
             return []
         }
-        return clickedScatterPointIDs.map((cellID) => {
-            const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
-            const data = fileInfo[pointIndex];
+        return clickedCellsFileInfo.map((data) => {
+            const cellIds = measuredData[ARRAY_OF_CELL_IDS_KEY];
+            const cellID = data[CELL_ID_KEY];
+            const pointIndex = findIndex(cellIds, (id) => Number(id) === Number(cellID));
             const fovID = data[FOV_ID_KEY];
             const cellLine = data[CELL_LINE_NAME_KEY];
             const thumbnailPath = data[THUMBNAIL_PATH];
             const x = measuredData[xAxis][pointIndex];
             const y = measuredData[yAxis][pointIndex];
+    
             return {
                 cellID,
                 cellLine,

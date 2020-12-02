@@ -13,6 +13,7 @@ import {
 import { AnyAction } from "redux";
 
 import {
+    CELL_ID_KEY,
     COLOR_BY_SELECTOR,
     X_AXIS_ID,
     Y_AXIS_ID,
@@ -152,7 +153,7 @@ export default class UrlState {
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
         galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
         selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
-        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as number[]), String) }),
+        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value), (ele) => String(ele[CELL_ID_KEY]) || ele )}),
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
     };

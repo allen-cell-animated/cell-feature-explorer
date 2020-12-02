@@ -126,3 +126,13 @@ export interface ColorForPlot {
     name: string;
     label: string;
 }
+
+export interface RequestFileInfoByCellIDAction {
+    payload: string;
+    type: string;
+}
+
+export interface ReceiveCellFileInfoAction {
+    payload: FileInfo;
+    type: string;
+}
