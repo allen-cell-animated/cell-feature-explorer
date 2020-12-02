@@ -14,7 +14,7 @@ import { getClickedScatterPoints, getSelected3DCell } from "../selection/selecto
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receiveMetadata, receivePageOfMeasuredFeaturesValues, setIsLoading } from "./actions";
+import { receiveCellLineData, receiveFileInfoData, receiveMeasuredFeatureNames, receivePageOfMeasuredFeaturesValues, setIsLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
@@ -51,7 +51,6 @@ const requestCellFileInfoData = createLogic({
         return imageDataSet
             .getFileInfo()
             .then((data: FileInfo[]) => {
-                console.log(data)
                 dispatch(receiveFileInfoData(data))})
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
