@@ -23,6 +23,7 @@ import {
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS, getLabels,
     PROTEIN_NAME_KEY,
+    THUMBNAIL_PATH,
 } from "../../constants";
 import {
     getFileInfo,
@@ -266,7 +267,7 @@ export const getAnnotations = createSelector(
             const data = fileInfo[pointIndex];
             const fovID = data[FOV_ID_KEY];
             const cellLine = data[CELL_LINE_NAME_KEY];
-            const thumbnailPath = data.thumbnailPath;
+            const thumbnailPath = data[THUMBNAIL_PATH];
             const x = measuredData[xAxis][pointIndex];
             const y = measuredData[yAxis][pointIndex];
             return {
