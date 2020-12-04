@@ -1,6 +1,6 @@
 {
     "CELL_VIEWER_URL": "'https://meganrm.github.io/website-3d-cell-viewer/'",
-    "BASE_API_URL": "'https://rev1.cfe.allencell.org/data/'",
+    "BASE_API_URL": "'https://rev1.cfe.allencell.org/data'",
     "THUMBNAIL_BASE_URL": "'https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails'",
     "DOWNLOAD_URL_PREFIX":"'https://files.allencell.org/api/2.0/file/download?collection=cellviewer-2-0'"
 }
