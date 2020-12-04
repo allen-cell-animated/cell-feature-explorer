@@ -25,7 +25,7 @@ interface GalleryCardProps {
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
-const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const MinGalleryCard: React.FunctionComponent<GalleryCardProps> = (props) => {
 
     const openCellin3D = () => {
         props.handleOpenIn3D(props.cellID);
