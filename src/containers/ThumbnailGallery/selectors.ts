@@ -23,9 +23,9 @@ import {
     Thumbnail,
 } from "../../state/types";
 import {
-    convertFileInfoToAICSId,
     convertFileInfoToImgSrc,
     convertFullFieldIdToDownloadId,
+    convertSingleImageIdToDownloadId,
     formatDownloadOfSingleImage,
 } from "../../state/util";
 
@@ -72,7 +72,7 @@ export const getThumbnails = createSelector([
                 const cellData = fileInfoForCell;
                 const src = convertFileInfoToImgSrc(cellData);
                 const fovId = cellData[FOV_ID_KEY];
-                const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
+                const downloadHref = formatDownloadOfSingleImage(convertSingleImageIdToDownloadId(cellID));
                 const fullFieldDownloadHref = formatDownloadOfSingleImage(convertFullFieldIdToDownloadId((fovId)));
                 return {
                     cellID,

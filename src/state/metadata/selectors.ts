@@ -46,6 +46,10 @@ export const getProteinLabelsPerCell = createSelector([getMeasuredFeatureValues]
     return fullMetaData[PROTEIN_NAME_KEY];
 });
 
+export const getArrayOfCellIds = createSelector([getMeasuredFeatureValues], (fullMetaData: MetadataStateBranch): string[] => {
+    return fullMetaData[ARRAY_OF_CELL_IDS_KEY];
+});
+
 export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures): number[] => {
     if (isEmpty(measuredFeatures)) {
         return [];

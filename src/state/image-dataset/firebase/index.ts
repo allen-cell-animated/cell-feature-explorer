@@ -122,7 +122,7 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        return this.getCollection(CELL_FEATURES_COLLECTION, 500).then(
+        return this.getCollection(CELL_FEATURES_COLLECTION, 1000).then(
             (snapshot: QuerySnapshot) => {
                 if (!snapshot.empty) {
                     const dataset: MetadataStateBranch = {
