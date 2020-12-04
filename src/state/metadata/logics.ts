@@ -10,7 +10,7 @@ import {
 } from "../../constants";
 import { changeAxis, selectArrayOfPoints, selectCellFor3DViewer, selectPoint } from "../selection/actions";
 import { INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
-import { getSelected3DCell, getSelectedCellsFromUrl } from "../selection/selectors";
+import { getPlotByOnX, getPlotByOnY, getSelected3DCell, getSelectedCellsFromUrl } from "../selection/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -69,12 +69,13 @@ const requestFeatureDataLogic = createLogic({
         const actions: AnyAction[] = [];
         if (imageDataSet.getMeasuredFeatureNames) {
             measuredFeatureNames = await imageDataSet.getMeasuredFeatureNames();
+            const state = getState();
             xAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_X});
             yAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_Y});
-            if (xAxisDefaultValue) {
+            if (xAxisDefaultValue && !getPlotByOnX(state)) {
                 actions.push(changeAxis(X_AXIS_ID, xAxisDefaultValue.key));
             }
-            if (yAxisDefaultValue) {
+            if (yAxisDefaultValue && !getPlotByOnY(state)) {
                 actions.push(changeAxis(Y_AXIS_ID, yAxisDefaultValue.key));
             }
 
