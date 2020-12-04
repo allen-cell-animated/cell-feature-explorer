@@ -41,7 +41,6 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
             value,
             options,
         } = this.props;
-
         return (
             <div className={styles[axisId]}>
                 <Select
@@ -49,12 +48,10 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
                     value={value}
                 >
                     {options.map((option) => {
+                        const label = option.unit ?  `${option.displayName} (${option.unit})`: option.displayName
                         return (
-                            <Option
-                                value={option.key}
-                                key={option.key}
-                            >
-                                {option.displayName} ({option.unit})
+                            <Option value={option.key} key={option.key}>
+                                {label}
                             </Option>
                         );
                     })}
