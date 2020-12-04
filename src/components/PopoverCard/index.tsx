@@ -14,19 +14,20 @@ export interface PopoverCardProps {
     src?: string;
 }
 
-const PopoverCard: React.SFC<PopoverCardProps> = (props) => {
-
+const PopoverCard: React.FunctionComponent<PopoverCardProps> = (props: PopoverCardProps) => {
     return (
         <Card
             className={styles.container}
-            cover={props.src &&
-            (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
+            cover={
+                props.src && (
+                    <img
+                        alt="thumbnail of microscopy image"
+                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                    />
+                )
             }
         >
-            <Meta
-                description={props.description}
-                title={props.title}
-            />
+            <Meta description={props.description} title={props.title} />
         </Card>
     );
 };
