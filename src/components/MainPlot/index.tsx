@@ -17,14 +17,16 @@ import {
     Annotation,
 } from "../../state/types";
 
+export type AxisType = "array" | "auto";
+
 interface MainPlotProps {
     annotations: Annotation[];
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPlotHovered: (hovered: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
-    xAxisType: string;
-    yAxisType: string;
+    xAxisType: AxisType;
+    yAxisType: AxisType;
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
 }
@@ -94,11 +96,21 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
             });
         }
+        console.log(xTickConversion, yAxisType)
+        
         if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
+            const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.left;
+            const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.bottom;
+
             this.setState(
                 {
                     layout: {
                         ...this.state.layout,
+                        margin: {
+                            ...this.state.layout.margin,
+                            l: marginLeft,
+                            b: marginBottom
+                        },
                         annotations: this.makeAnnotations(),
                         xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion ),
                         xaxis2: histogramAxis,
