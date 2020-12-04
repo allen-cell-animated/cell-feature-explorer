@@ -2,7 +2,7 @@ import { createLogic } from "redux-logic";
 
 import { UrlState } from "../../util";
 import { clearHoverPointData, receiveFileInfoDataForCell } from "./actions";
-import { CLEAR_FILE_INFO_FOR_HOVERED_CELL, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_POINT } from "./constants";
+import { CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_POINT } from "./constants";
 import { FileInfo } from "../metadata/types";
 import {
     ReduxLogicDeps,
@@ -13,8 +13,6 @@ import { batchActions } from "../util";
 import { SYNC_STATE_WITH_URL } from "./constants";
 import { getHoveredPointData, getHoveredPointId } from "./selectors";
 import { isEmpty } from "lodash";
-import { database } from "firebase";
-import { receiveFileInfoData } from "../metadata/actions";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -82,5 +80,35 @@ const requestCellFileInfoForSelectedPoint = createLogic({
     type: SELECT_POINT,
 });
 
+const selectAlbum = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const { action, imageDataSet, getState } = deps;
+        if (!imageDataSet.getFileInfoByArrayOfCellIds) {
+            return Promise.resolve({});
+        }
+        const hoveredPoint = getHoveredPointData(getState());
+        if (!isEmpty(hoveredPoint)) {
+            return hoveredPoint;
+        }
+        return imageDataSet
+            .getFileInfoByArrayOfCellIds(action.payload)
+            .then((data: FileInfo[]) => {
+                return data;
+            })
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    },
+    type: CHANGE_SELECTED_ALBUM,
+});
 
-export default [syncStateWithUrl, requestCellFileInfoForHoveredPoint, requestCellFileInfoForSelectedPoint];
+
+export default [
+    syncStateWithUrl,
+    requestCellFileInfoForHoveredPoint,
+    requestCellFileInfoForSelectedPoint,
+    selectAlbum,
+];

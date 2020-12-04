@@ -15,4 +15,5 @@ export interface ImageDataset {
     getFileInfo?(): Promise<FileInfo[]>;
     getPageOfFeatureData?(lastVisible: QueryDocumentSnapshot): Promise<PageReturn>;
     getFileInfoByCellId?(id: string): Promise<FileInfo>;
+    getFileInfoByArrayOfCellIds?(id: string[]): Promise<FileInfo[]>;
 }

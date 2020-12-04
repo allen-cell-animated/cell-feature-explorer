@@ -37,6 +37,7 @@ export const REQUEST_CELL_FILE_INFO_BY_CELL_ID = makeSelectionConstant("REQUEST_
 export const RECEIVE_FILE_INFO_FOR_HOVERED_CELL = makeSelectionConstant("RECEIVE_CELL_FILE_INFO_FOR_CELL");
 export const RECEIVE_FILE_INFO_FOR_SELECTED_CELL = makeSelectionConstant("RECEIVE_SELECTED_FILE_INFO");
 export const CLEAR_FILE_INFO_FOR_HOVERED_CELL = makeSelectionConstant("CLEAR_FILE_INFO_FOR_HOVERED_CELL");
+export const RECEIVE_FILE_INFO_FOR_ALBUM_CELLS = makeSelectionConstant("RECEIVE_FILE_INFO_FOR_ALBUM_CELLS");
 
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "DNA volume";

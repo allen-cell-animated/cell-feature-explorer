@@ -16,6 +16,7 @@ import { FileInfo, MetadataStateBranch } from "../../state/metadata/types";
 import {
     getClickedCellsFileInfo,
     getSelectedAlbum,
+    getSelectedAlbumFileInfo,
 } from "../../state/selection/selectors";
 import {
     Album,
@@ -47,9 +48,9 @@ export const getSelectedAlbumName = createSelector([getSelectedAlbumData],
 });
 
 export const getFileInfoToShow = createSelector(
-           [getSelectedAlbumData, getClickedCellsFileInfo],
-           (selectedAlbumData: Album | undefined, clickedScatterPointIDs: FileInfo[]): FileInfo[] =>
-               selectedAlbumData ? selectedAlbumData.cell_ids : clickedScatterPointIDs
+           [getSelectedAlbumData, getClickedCellsFileInfo, getSelectedAlbumFileInfo],
+           (selectedAlbumData: Album | undefined, clickedScatterPointIDs: FileInfo[], albumFileInfo: FileInfo[]): FileInfo[] =>
+               selectedAlbumData ? albumFileInfo : clickedScatterPointIDs
        );
 
 export const getThumbnails = createSelector([

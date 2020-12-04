@@ -1,5 +1,4 @@
 import {
-    filter,
     find,
     findIndex,
     includes,
@@ -14,7 +13,6 @@ import { createSelector } from "reselect";
 
 import {
     ARRAY_OF_CELL_IDS_KEY,
-    ARRAY_OF_FILE_INFO_KEY,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -25,7 +23,6 @@ import {
     THUMBNAIL_PATH,
 } from "../../constants";
 import {
-    getFileInfo,
     getMeasuredFeatureValues,
     getProteinLabelsPerCell,
     getProteinNames,
@@ -38,7 +35,6 @@ import {
     FileInfo,
     MappingOfCellDataArrays,
     MeasuredFeatureDef,
-    MeasuredFeatures,
     MetadataStateBranch,
 } from "../metadata/types";
 import {
@@ -80,6 +76,7 @@ export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
 export const getHoveredCellFileInfo = (state: State) => state.selection.hoveredCellData;
+export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS

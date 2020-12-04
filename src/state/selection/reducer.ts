@@ -1,7 +1,6 @@
 import {
     filter,
     pickBy,
-    uniq,
     uniqBy,
 } from "lodash";
 import { AnyAction } from "redux";
@@ -35,6 +34,7 @@ import {
     RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
     CLEAR_FILE_INFO_FOR_HOVERED_CELL,
+    RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -83,6 +83,7 @@ export const initialState = {
     selectedGroups: {},
     selectedPoints: [],
     showClusters: false,
+    selectedAlbumFileInfo: []
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -210,6 +211,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
             hoveredCellData: action.payload,
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_ALBUM_CELLS]: {
+        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction => action.type === RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+        perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
+            ...state,
+            selectedAlbumFileInfo: action.payload,
         }),
     },
     [CLEAR_FILE_INFO_FOR_HOVERED_CELL]: {
