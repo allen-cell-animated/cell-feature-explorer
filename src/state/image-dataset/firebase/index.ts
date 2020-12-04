@@ -89,8 +89,7 @@ class FirebaseRequest implements ImageDataset {
         return Promise.all(cellIds.map((id) => {
             return this.getDoc(CELL_FILE_INFO_COLLECTION, id).then((doc) => {
                 if (doc.exists) {
-
-                    doc.data() as FileInfo;
+                    return doc.data() as FileInfo;
                 }
                 return {} as FileInfo
             });
