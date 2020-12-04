@@ -1,8 +1,8 @@
 import { createLogic } from "redux-logic";
 
 import { UrlState } from "../../util";
-import { receiveFileInfoDataForCell } from "./actions";
-import { RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_POINT } from "./constants";
+import { clearHoverPointData, receiveFileInfoDataForCell } from "./actions";
+import { CLEAR_FILE_INFO_FOR_HOVERED_CELL, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_POINT } from "./constants";
 import { FileInfo } from "../metadata/types";
 import {
     ReduxLogicDeps,
@@ -11,6 +11,10 @@ import {
 import { batchActions } from "../util";
 
 import { SYNC_STATE_WITH_URL } from "./constants";
+import { getHoveredPointData, getHoveredPointId } from "./selectors";
+import { isEmpty } from "lodash";
+import { database } from "firebase";
+import { receiveFileInfoData } from "../metadata/actions";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -22,17 +26,27 @@ const syncStateWithUrl = createLogic({
 });
 
 
-const requestCellFileInfoByCellId = createLogic({
+const requestCellFileInfoForHoveredPoint = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { action, imageDataSet } = deps;
+        const { action, imageDataSet, getState } = deps;
         if (!imageDataSet.getFileInfoByCellId) {
             return Promise.resolve({});
         }
-
         return imageDataSet
-            .getFileInfoByCellId(action.payload)
-            .then((data: FileInfo) => {
-                dispatch(receiveFileInfoDataForCell(data));
+        .getFileInfoByCellId(action.payload)
+        .then((data: FileInfo) => {
+                const hoveredCellId = getHoveredPointId(getState());
+
+                if (hoveredCellId === -1) {
+                    // if plot got unhovered before request returned clear out hovered data
+                    return dispatch(clearHoverPointData())
+                } else if (hoveredCellId !== data.CellId) {
+                    // if new cell got hovered before request returned dont save this data
+                    return Promise.resolve()
+                } else {
+
+                    dispatch(receiveFileInfoDataForCell(data));
+                }
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -45,15 +59,17 @@ const requestCellFileInfoByCellId = createLogic({
 const requestCellFileInfoForSelectedPoint = createLogic({
     
     process(deps: ReduxLogicDeps) {
-        const { action, imageDataSet } = deps;
+        const { action, imageDataSet, getState } = deps;
         if (!imageDataSet.getFileInfoByCellId) {
             return Promise.resolve({});
         }
-
+        const hoveredPoint = getHoveredPointData(getState());
+        if (!isEmpty(hoveredPoint)) {
+            return hoveredPoint;
+        }
         return imageDataSet
             .getFileInfoByCellId(action.payload.toString())
             .then((data: FileInfo) => {
-                console.log('got data for selected point', data)
                 return data;
             })
             .catch((reason: string) => {
@@ -67,4 +83,4 @@ const requestCellFileInfoForSelectedPoint = createLogic({
 });
 
 
-export default [syncStateWithUrl, requestCellFileInfoByCellId, requestCellFileInfoForSelectedPoint];
+export default [syncStateWithUrl, requestCellFileInfoForHoveredPoint, requestCellFileInfoForSelectedPoint];

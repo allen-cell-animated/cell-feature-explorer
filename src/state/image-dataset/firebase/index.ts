@@ -77,7 +77,12 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFileInfoByCellId = (cellId: string) => {
-        return this.getDoc(CELL_FILE_INFO_COLLECTION, cellId).then((doc) => doc.data());
+        return this.getDoc(CELL_FILE_INFO_COLLECTION, cellId).then((doc) => {
+            if (doc.exists) {
+                return doc.data() as FileInfo;
+            }
+            return {} as FileInfo;
+        });
     };
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
@@ -112,7 +117,7 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        return this.getCollection(CELL_FEATURES_COLLECTION, 10000).then(
+        return this.getCollection(CELL_FEATURES_COLLECTION, 500).then(
             (snapshot: QuerySnapshot) => {
                 if (!snapshot.empty) {
                     const dataset: MetadataStateBranch = {

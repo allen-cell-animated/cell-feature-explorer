@@ -31,6 +31,7 @@ export interface FileInfo {
     [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: number;
     [PROTEIN_NAME_KEY]: string;
+    [CELL_LINE_DEF_STRUCTURE_KEY]: string;
     [FOV_THUMBNAIL_PATH]?: string;
     [FOV_VOLUME_VIEWER_PATH]?: string;
     [THUMBNAIL_PATH]?: string;
@@ -54,7 +55,7 @@ export interface MeasuredFeatureDef {
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfCellDataArrays {
-    [key: string]: number[]| FileInfo[] | string[];
+    [key: string]: number[]| string[];
 }
 
 export interface MeasuredFeatures {

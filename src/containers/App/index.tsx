@@ -168,9 +168,10 @@ class App extends React.Component<AppProps, {}> {
                             <Sider />
                         </Layout>
                         <div className={styles.cellViewerContainer}>
-                            <Header className={styles.headerSection}>
+                            <Header className={styles.headerSection}
+                            >
                                 <h2 className={styles.header}>3D Viewer</h2>
-                                {selected3DCell && selected3DCellStructureName && (
+                                {!!selected3DCell && (
                                     <h4 className={styles.selectedInfo}>
                                         <span className={styles.label}>Viewing cell:</span>{" "}
                                         {selected3DCell},

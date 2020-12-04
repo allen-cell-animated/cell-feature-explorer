@@ -34,6 +34,8 @@ import {
     DeselectPointAction,
     LassoOrBoxSelectAction,
     MousePosition,
+    RequestFileInfoByCellIDAction,
+    ResetSelectionAction,
     SelectAxisAction,
     SelectPointAction,
     TickConversion,
@@ -82,6 +84,8 @@ interface DispatchProps {
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     requestCellFileInfoData: ActionCreator<RequestAction>;
+    requestCellFileInfoByCellId: ActionCreator<RequestFileInfoByCellIDAction>;
+    clearHoverPointData: ActionCreator<ResetSelectionAction>;
 }
 
 interface OwnProps {
@@ -106,7 +110,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         batchActions([
             this.props.requestFeatureData(),
             this.props.requestCellLineData(),
-            this.props.requestCellFileInfoData()
         ])
     }
 
@@ -136,17 +139,26 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             filtersToExclude,
             updateMousePosition,
             changeHoverCellId,
+            requestCellFileInfoByCellId,
+            clearHoverPointData,
         } = this.props;
         updateMousePosition({
             pageX: event.pageX,
             pageY: event.pageY,
         });
+        if (!points) {
+            clearHoverPointData();
+            changeHoverCellId(-1);
+
+        }
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
                     changeHoverCellId(Number(point.id));
+                    requestCellFileInfoByCellId(point.id);
                 } else {
                     changeHoverCellId(-1);
+                    clearHoverPointData();
                 }
             }
         });
@@ -155,10 +167,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     public onPlotUnhovered({relatedTarget}: any) {
         const {
             changeHoverCellId,
+            clearHoverPointData
         } = this.props;
         // prevents click events from triggering the popover to close
-        if (relatedTarget.className) {
+        if (!relatedTarget.window) {
             changeHoverCellId(-1);
+            clearHoverPointData();
         }
     }
 
@@ -172,7 +186,17 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
-        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
+
+        let payload = []
+
+        // filtering by plot is only to make sure they didn't select the histogram
+        // which will only be the number of bins, so usually less than 50, doing 500 to be safe
+        if (points.length < 500) {
+            payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
+        } else {
+            payload = map(points, "id");
+           
+        }
         handleLassoOrBoxSelect(key, payload);
         handleSelectionToolUsed();
     }
@@ -182,6 +206,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             hoveredPointData,
             galleryCollapsed,
         } = this.props;
+  
         return (hoveredPointData && galleryCollapsed &&
             (
                 <PopoverCard
@@ -306,6 +331,8 @@ const dispatchToPropsMap: DispatchProps = {
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
+    requestCellFileInfoByCellId: selectionStateBranch.actions.requestCellFileInfoByCellId,
+    clearHoverPointData: selectionStateBranch.actions.clearHoverPointData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };

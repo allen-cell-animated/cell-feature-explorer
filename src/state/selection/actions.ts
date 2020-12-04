@@ -23,6 +23,7 @@ import {
     TOGGLE_GALLERY_OPEN_CLOSE,
     RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
     REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    CLEAR_FILE_INFO_FOR_HOVERED_CELL,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -189,5 +190,11 @@ export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByC
     return {
         payload,
         type: REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    };
+}
+
+export function clearHoverPointData(): ResetSelectionAction {
+    return {
+        type: CLEAR_FILE_INFO_FOR_HOVERED_CELL,
     };
 }

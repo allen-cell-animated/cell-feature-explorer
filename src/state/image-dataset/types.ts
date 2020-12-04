@@ -5,7 +5,7 @@ import { Album } from "../types";
 
 export interface PageReturn {
     dataset: MetadataStateBranch | null;
-    next?: any;
+    next?: QueryDocumentSnapshot;
 }
 export interface ImageDataset {
     getCellLineData(): Promise<CellLineDef[]>;
@@ -14,4 +14,5 @@ export interface ImageDataset {
     getMeasuredFeatureNames?(): Promise<MeasuredFeatureDef[]>;
     getFileInfo?(): Promise<FileInfo[]>;
     getPageOfFeatureData?(lastVisible: QueryDocumentSnapshot): Promise<PageReturn>;
+    getFileInfoByCellId?(id: string): Promise<FileInfo>;
 }

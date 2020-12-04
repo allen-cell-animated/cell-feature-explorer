@@ -26,7 +26,6 @@ import {
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
     SELECT_GROUP_VIA_PLOT,
-    SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -35,6 +34,7 @@ import {
     TOGGLE_GALLERY_OPEN_CLOSE,
     RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+    CLEAR_FILE_INFO_FOR_HOVERED_CELL,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -210,6 +210,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
             hoveredCellData: action.payload,
+        }),
+    },
+    [CLEAR_FILE_INFO_FOR_HOVERED_CELL]: {
+        accepts: (action: AnyAction): action is ResetSelectionAction => action.type === CLEAR_FILE_INFO_FOR_HOVERED_CELL,
+        perform: (state: SelectionStateBranch) => ({
+            ...state,
+            hoveredCellData: initialState.hoveredCellData,
         }),
     },
     [CHANGE_HOVERED_GALLERY_CARD]: {

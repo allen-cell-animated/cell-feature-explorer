@@ -88,6 +88,17 @@ const requestFeatureDataLogic = createLogic({
             .then(async (returned: PageReturn) => {
                 if (returned.dataset) {
                     actions.push(receivePageOfMeasuredFeaturesValues(returned.dataset));
+                    const state = getState();
+                    // select first cell on both plot and load in 3D to make it clear what the user can do
+                    // BUT only if those selections have not been previously made (e.g., passed through URL params)
+                    const firstCell = returned.dataset[ARRAY_OF_CELL_IDS_KEY][0];
+                    if (isEmpty(getClickedScatterPoints(state))) {
+                        dispatch(selectPoint(firstCell));
+                    }
+                    if (!getSelected3DCell(state)) {
+                        actions.push(selectCellFor3DViewer(firstCell));
+                    }
+
                 }
                 dispatch(batchActions(actions));
 
@@ -108,28 +119,9 @@ const requestFeatureDataLogic = createLogic({
                 if (returned.next) {
                     await processOnePage(returned.next);
                 }
-                return returned.dataset;
+                return done();
             })
-            .then((metaDatum: MetadataStateBranch | null) => {
-                if (!metaDatum) {
-                    return done();
-                }
-                const secondBatch = [];
-                // select first cell on both plot and load in 3D to make it clear what the user can do
-                // BUT only if those selections have not been previously made (e.g., passed through URL params)
-                const state = getState();
 
-                if (isEmpty(getClickedScatterPoints(state))) {
-                    secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0]]));
-                }
-
-                if (!getSelected3DCell(state)) {
-                    secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]));
-                }
-                if (!isEmpty(secondBatch)) {
-                    dispatch(batchActions(secondBatch));
-                }
-            })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             })

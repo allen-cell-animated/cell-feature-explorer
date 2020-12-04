@@ -42,8 +42,8 @@ export const getCategoricalFeatureKeys = createSelector([getMeasuredFeaturesDefs
     return map(filter(measuredFeatureDefs,  "discrete"), "key");
 });
 
-export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
-    return map(fullMetaData, PROTEIN_NAME_KEY);
+export const getProteinLabelsPerCell = createSelector([getMeasuredFeatureValues], (fullMetaData: MetadataStateBranch): string[] => {
+    return fullMetaData[PROTEIN_NAME_KEY];
 });
 
 export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures): number[] => {
