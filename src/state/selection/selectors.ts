@@ -95,25 +95,27 @@ export const getFilteredCellData = createSelector(
                        ...measuredFeaturesByKey,
                    };
                }
-               const proteinNameArray: string[] = [];
+               const filteredProteinNameArray: string[] = [];
                const dataToReturn: MappingOfCellDataArrays = {};
-
-               for (let i = 1; i++; i < measuredFeaturesByKey[PROTEIN_NAME_KEY].length) {
-                   const protein = measuredFeaturesByKey[PROTEIN_NAME_KEY][i];
-                   if (includes(filtersToExclude, protein)) {
-                       proteinNameArray.push(protein);
+               const totalProteinArray = measuredFeaturesByKey[PROTEIN_NAME_KEY];
+               for (let i = 0; i < totalProteinArray.length; i++) {
+                   const protein = totalProteinArray[i];
+                   if (!includes(filtersToExclude, protein)) {
+                       filteredProteinNameArray.push(protein);
                        measuredFeatureKeys.forEach((key) => {
                            if (!dataToReturn[key]) {
                                dataToReturn[key] = [];
                            }
-                           const array = [...dataToReturn[key], measuredFeaturesByKey[key][i]];
-                           dataToReturn[key] = array;
+                           // I don't know how to fix this issue, "number is not assignable to type never"
+                           const value = measuredFeaturesByKey[key][i] as never; 
+                           
+                           dataToReturn[key].push(value);
                        });
                    }
                }
                return {
                    ...dataToReturn,
-                   [PROTEIN_NAME_KEY]: proteinNameArray,
+                   [PROTEIN_NAME_KEY]: filteredProteinNameArray,
                };
            }
        );
@@ -243,13 +245,6 @@ export const getClickedScatterPoints = createSelector([getClickedCellsFileInfo],
            map(cells, CELL_ID_KEY)
        );
 
-const getSelectedScatterPointsWithAvailableMetadata = createSelector([
-    getFileInfo,
-    getClickedScatterPoints,
-], (fileInfo: FileInfo[], clickedScatterPointIDs: number[]): number[] => {
-    const setOfAvailableCellIds = new Set(map(fileInfo, CELL_ID_KEY));
-    return filter(clickedScatterPointIDs, (id) => setOfAvailableCellIds.has(id));
-});
 
 export const getAnnotations = createSelector(
     [
@@ -260,7 +255,7 @@ export const getAnnotations = createSelector(
         getHoveredCardId,
     ],
     (
-        measuredData: MeasuredFeatures[],
+        measuredData: MappingOfCellDataArrays,
         clickedCellsFileInfo: FileInfo[],
         xAxis,
         yAxis,
@@ -270,14 +265,14 @@ export const getAnnotations = createSelector(
             return []
         }
         return clickedCellsFileInfo.map((data) => {
-            const cellIds = measuredData[ARRAY_OF_CELL_IDS_KEY];
+            const cellIds = measuredData[ARRAY_OF_CELL_IDS_KEY] as string[]; // ids are stored as strings for plotly
             const cellID = data[CELL_ID_KEY];
             const pointIndex = findIndex(cellIds, (id) => Number(id) === Number(cellID));
             const fovID = data[FOV_ID_KEY];
             const cellLine = data[CELL_LINE_NAME_KEY];
             const thumbnailPath = data[THUMBNAIL_PATH];
-            const x = measuredData[xAxis][pointIndex];
-            const y = measuredData[yAxis][pointIndex];
+            const x = measuredData[xAxis][pointIndex] as number; // axis values will always be numbers
+            const y = measuredData[yAxis][pointIndex] as number; // axis values will always be numbers
     
             return {
                 cellID,
@@ -294,7 +289,7 @@ export const getAnnotations = createSelector(
 );
 
 // 3D VIEWER SELECTORS
-export const getSelected3DCellFileInfo = createSelector([getSelected3DCell, getFileInfo],
+export const getSelected3DCellFileInfo = createSelector([getSelected3DCell, getClickedCellsFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo | undefined => {
         return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId);
     }
@@ -318,11 +313,12 @@ export const getSelected3DCellLabeledProtein = createSelector([getSelected3DCell
     }
 );
 
-export const getSelected3DCellLabeledStructure = createSelector([getFileInfo, getSelected3DCellCellLine],
-    (cellFileInfo, cellLineId): string => {
-        return cellFileInfo[cellLineId] ? cellFileInfo[cellLineId][CELL_LINE_DEF_STRUCTURE_KEY] : "";
-    }
-);
+export const getSelected3DCellLabeledStructure = createSelector(
+           [getSelected3DCellFileInfo],
+           (fileInfo: FileInfo | undefined): string => {
+               return fileInfo ? fileInfo[CELL_LINE_DEF_STRUCTURE_KEY] : "";
+           }
+       );
 
 // SELECTED GROUPS SELECTORS
 export const getSelectedGroupsData = createSelector(
