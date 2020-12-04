@@ -61,6 +61,7 @@ const requestCellFileInfoData = createLogic({
 });
 
 const requestFeatureDataLogic = createLogic({
+    warnTimeout: 0,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
         let measuredFeatureNames;
