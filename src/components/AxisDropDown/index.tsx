@@ -54,7 +54,7 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
                                 value={option.key}
                                 key={option.key}
                             >
-                                {option.displayName}
+                                {option.displayName} ({option.unit})
                             </Option>
                         );
                     })}
