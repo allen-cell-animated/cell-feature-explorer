@@ -59,12 +59,15 @@ export const getThumbnails = createSelector([
         getFileInfoToShow,
     ],
     (measuredFeatures: MetadataStateBranch, mitoticKeysArray: number[], fileInfoOfSelectedCells: FileInfo[]): Thumbnail[] => {
-        if (isEmpty(measuredFeatures)) {
+        if (isEmpty(measuredFeatures) || isEmpty(fileInfoOfSelectedCells)) {
             return []
         }
         return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
             const cellID = fileInfoForCell[CELL_ID_KEY];
-            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID.toString());
+
+            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(
+                cellID.toString()
+            );
             const mitoticKey = mitoticKeysArray[cellIndex] as number;
                 const cellData = fileInfoForCell;
                 const src = convertFileInfoToImgSrc(cellData);

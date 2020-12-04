@@ -18,6 +18,7 @@ import {
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../constants";
+import { FileInfo } from "../state/metadata/types";
 import {
     changeAxis,
     selectAlbum,
@@ -37,7 +38,7 @@ export enum URLSearchParam {
     galleryCollapsed = "galleryCollapsed",
 }
 
-type StateValue = string | number | number[] | boolean;
+type StateValue = any; // narrow type in the function mapping below; union typing was too complicated
 type URLSearchParamValue = string | string[];
 
 export interface URLSearchParamMap {
@@ -96,6 +97,7 @@ export default class UrlState {
                 UrlState.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
                 UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
             ) {
+
                 return {
                     ...accum,
                     ...this.stateToUrlParamMap[selectionStateKey](selectionStateValue),
@@ -135,7 +137,7 @@ export default class UrlState {
 
             // add this cell to the list of selected points if it does not already exist
             if (!includes(castArray(params[URLSearchParam.selectedPoint]), cellId)) {
-                Object.assign(base, { selectedPoints: [Number(cellId)] });
+                Object.assign(base, { initSelectedPoints: [String(cellId)] });
             }
 
             return base;
@@ -145,17 +147,19 @@ export default class UrlState {
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
         [URLSearchParam.selectedAlbum]: (album) => ({ selectedAlbum: Number(album) }),
-        [URLSearchParam.selectedPoint]: (selection) => ({ selectedPoints: map(castArray(selection), Number) }),
+        [URLSearchParam.selectedPoint]: (selection) => ({ initSelectedPoints: map(castArray(selection), String) }),
     };
 
     private static stateToUrlParamMap: StateToUrlSearchParamMap = {
-        cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
-        [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
-        galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
-        selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
-        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value), (ele) => String(ele[CELL_ID_KEY]) || ele )}),
-        [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
-        [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
+        cellSelectedFor3D: (value: number) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
+        [COLOR_BY_SELECTOR]: (value: string) => ({ [URLSearchParam.colorBy]: String(value) }),
+        galleryCollapsed: (value: boolean) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
+        selectedAlbum: (value: number) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
+        selectedPoints: (value: FileInfo[]) => {
+            const arrayOfIds = map(value, (ele: FileInfo) => String(ele[CELL_ID_KEY]));
+            return { [URLSearchParam.selectedPoint]: arrayOfIds };},
+        [X_AXIS_ID]: (value: string) => ({ [URLSearchParam.plotByOnX]: String(value) }),
+        [Y_AXIS_ID]: (value: string) => ({ [URLSearchParam.plotByOnY]: String(value) }),
     };
 
     private static valueIsMeaningfulToSerialize(selection: any): boolean {

@@ -2,7 +2,7 @@ import { createLogic } from "redux-logic";
 
 import { UrlState } from "../../util";
 import { clearHoverPointData, receiveFileInfoDataForCell } from "./actions";
-import { CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_POINT } from "./constants";
+import { CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, REQUEST_CELL_FILE_INFO_BY_CELL_ID, SELECT_ARRAY_OF_POINTS, SELECT_POINT } from "./constants";
 import { FileInfo } from "../metadata/types";
 import {
     ReduxLogicDeps,
@@ -80,6 +80,27 @@ const requestCellFileInfoForSelectedPoint = createLogic({
     type: SELECT_POINT,
 });
 
+const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const { action, imageDataSet } = deps;
+        if (!imageDataSet.getFileInfoByArrayOfCellIds) {
+            return Promise.resolve({});
+        }
+        return imageDataSet
+            .getFileInfoByArrayOfCellIds(action.payload)
+            .then((data: FileInfo[]) => {
+                return data;
+            })
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+    },
+    type: SELECT_ARRAY_OF_POINTS,
+});
+
 const selectAlbum = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet, getState } = deps;
@@ -111,4 +132,5 @@ export default [
     requestCellFileInfoForHoveredPoint,
     requestCellFileInfoForSelectedPoint,
     selectAlbum,
+    requestCellFileInfoForSelectedArrayOfPoints,
 ];

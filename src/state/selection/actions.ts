@@ -24,6 +24,7 @@ import {
     RECEIVE_FILE_INFO_FOR_HOVERED_CELL,
     REQUEST_CELL_FILE_INFO_BY_CELL_ID,
     CLEAR_FILE_INFO_FOR_HOVERED_CELL,
+    SELECT_ARRAY_OF_POINTS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -39,6 +40,7 @@ import {
     RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectPointAction,
 } from "./types";
@@ -77,6 +79,13 @@ export function selectPoint(payload: number): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
+    };
+}
+
+export function selectArrayOfPoints(payload: string[]): SelectArrayOfPointsAction {
+    return {
+        payload,
+        type: SELECT_ARRAY_OF_POINTS,
     };
 }
 

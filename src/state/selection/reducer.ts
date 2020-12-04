@@ -35,6 +35,7 @@ import {
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
     CLEAR_FILE_INFO_FOR_HOVERED_CELL,
     RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -49,6 +50,7 @@ import {
     ReceiveCellFileInfoAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectCellIn3DAction,
     SelectionStateBranch,
@@ -70,6 +72,7 @@ export const initialState = {
     hoveredCardId: -1,
     hoveredCellData: null,
     hoveredPointId: -1,
+    initSelectedPoints: [],
     mousePosition: {
         pageX: 0,
         pageY: 0,
@@ -83,7 +86,7 @@ export const initialState = {
     selectedGroups: {},
     selectedPoints: [],
     showClusters: false,
-    selectedAlbumFileInfo: []
+    selectedAlbumFileInfo: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -138,6 +141,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
             ...state,
             selectedPoints : uniqBy([...state.selectedPoints, action.payload], CELL_ID_KEY),
 
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS]: {
+        accepts: (action: AnyAction): action is SelectArrayOfPointsAction => action.type === RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+        perform: (state: SelectionStateBranch, action: SelectArrayOfPointsAction) => ({
+            ...state,
+            selectedPoints : uniqBy([...state.selectedPoints, ...action.payload], CELL_ID_KEY),
         }),
     },
     [DESELECT_ALL_POINTS]: {

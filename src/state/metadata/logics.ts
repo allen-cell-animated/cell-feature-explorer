@@ -8,9 +8,9 @@ import {
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../../constants";
-import { changeAxis, selectCellFor3DViewer, selectPoint } from "../selection/actions";
+import { changeAxis, selectArrayOfPoints, selectCellFor3DViewer, selectPoint } from "../selection/actions";
 import { INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
-import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
+import { getSelected3DCell, getSelectedCellsFromUrl } from "../selection/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -22,7 +22,7 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, FileInfo, MetadataStateBranch } from "./types";
+import { CellLineDef, FileInfo } from "./types";
 import { PageReturn } from "../image-dataset/types";
 
 const requestCellLineDefs = createLogic({
@@ -92,12 +92,14 @@ const requestFeatureDataLogic = createLogic({
                     // select first cell on both plot and load in 3D to make it clear what the user can do
                     // BUT only if those selections have not been previously made (e.g., passed through URL params)
                     const firstCell = returned.dataset[ARRAY_OF_CELL_IDS_KEY][0];
-                    if (isEmpty(getClickedScatterPoints(state))) {
+                    if (isEmpty(getSelectedCellsFromUrl(state))) {
                         dispatch(selectPoint(firstCell));
+                    } else {
+                        dispatch(selectArrayOfPoints(getSelectedCellsFromUrl(state)));
                     }
                     if (!getSelected3DCell(state)) {
                         actions.push(selectCellFor3DViewer(firstCell));
-                    }
+                    } 
 
                 }
                 dispatch(batchActions(actions));
@@ -119,8 +121,8 @@ const requestFeatureDataLogic = createLogic({
                 if (returned.next) {
                     await processOnePage(returned.next);
                 }
-                return done();
             })
+            .then(done)
 
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console

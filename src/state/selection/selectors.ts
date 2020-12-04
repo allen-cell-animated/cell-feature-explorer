@@ -77,6 +77,7 @@ export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
 export const getHoveredCellFileInfo = (state: State) => state.selection.hoveredCellData;
 export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
+export const getSelectedCellsFromUrl = (state: State) => state.selection.initSelectedPoints;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS

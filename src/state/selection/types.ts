@@ -133,3 +133,13 @@ export interface ReceiveCellFileInfoAction {
     payload: FileInfo;
     type: string;
 }
+
+export interface ReceiveArrayOfPointsAction {
+    payload: FileInfo[];
+    type: string;
+}
+
+export interface SelectArrayOfPointsAction {
+    payload: string[],
+    type: string
+}
