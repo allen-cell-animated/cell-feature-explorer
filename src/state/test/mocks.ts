@@ -28,7 +28,7 @@ import {
             [CELL_COUNT_KEY]: 3470,
         },
     ];
-    const fileInfo = [
+export const selectedCellFileInfo = [
         {
             [CELL_ID_KEY]: 1,
             [CELL_LINE_NAME_KEY]: "AICS-57",
@@ -70,12 +70,12 @@ import {
         "cell-segmentation": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
         [MITOTIC_STAGE_KEY]: [2, 1],
+        [PROTEIN_NAME_KEY]: ["Nucleophosmin", "Nucleophosmin"],
     };
 
 export const mockState = {
            metadata: {
                cellLineDefs: cellLineDefs,
-               cellFileInfo: fileInfo,
                featureData: featureData,
                measuredFeaturesDefs: measuredFeaturesDefs,
            },
@@ -91,6 +91,6 @@ export const mockState = {
                proteinColors: INITIAL_COLORS,
                selectedGroupColors: INITIAL_COLORS,
                selectedGroups: {},
-               selectedPoints: [],
+               selectedPoints: selectedCellFileInfo,
            },
        };

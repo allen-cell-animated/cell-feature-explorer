@@ -20,7 +20,6 @@ describe("Thumbnail selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    selectedPoints: [1, 2],
                 },
             };
 

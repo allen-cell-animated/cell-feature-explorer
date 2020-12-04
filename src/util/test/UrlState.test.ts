@@ -15,23 +15,26 @@ import {
     INITIAL_PLOT_BY_ON_X,
     INITIAL_PLOT_BY_ON_Y
 } from "../../state/selection/constants";
+import { selectedCellFileInfo } from "../../state/test/mocks";
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
     describe("toAppState", () => {
         it("maps URL search params directly to the shape of the selection state branch", () => {
-            expect(UrlState.toAppState({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
-            })).to.deep.equal({
-               cellSelectedFor3D: 2,
-               [COLOR_BY_SELECTOR]: "feature_z",
-               selectedPoints: [1, 2, 3, 4, 5],
-               [X_AXIS_ID]: "feature_x",
-               [Y_AXIS_ID]: "feature_y",
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.plotByOnX]: "feature_x",
+                    [URLSearchParam.plotByOnY]: "feature_y",
+                    [URLSearchParam.colorBy]: "feature_z",
+                    [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+                })
+            ).to.deep.equal({
+                cellSelectedFor3D: 2,
+                [COLOR_BY_SELECTOR]: "feature_z",
+                initSelectedPoints: ["1", "2", "3", "4", "5"],
+                [X_AXIS_ID]: "feature_x",
+                [Y_AXIS_ID]: "feature_y",
             });
         });
 
@@ -41,7 +44,7 @@ describe("UrlState utility class", () => {
                 [URLSearchParam.selectedPoint]: ["1"],
             })).to.deep.equal({
                 cellSelectedFor3D: 2,
-                selectedPoints: [2, 1],
+                initSelectedPoints: ["2", "1"],
             });
         });
 
@@ -51,7 +54,7 @@ describe("UrlState utility class", () => {
                 [URLSearchParam.selectedPoint]: ["2"],
             })).to.deep.equal({
                 cellSelectedFor3D: 2,
-                selectedPoints: [2],
+                initSelectedPoints: ["2"],
             });
         });
     });
@@ -82,7 +85,7 @@ describe("UrlState utility class", () => {
             }))
                 .to.be.an("array")
                 .of.length(2)
-                .and.to.have.deep.members([selectPoint(2), selectCellFor3DViewer(2)]);
+                .and.to.have.deep.members([selectCellFor3DViewer(2), selectPoint(2)]);
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
@@ -130,7 +133,7 @@ describe("UrlState utility class", () => {
                 colorBy: INITIAL_COLOR_BY,
                 plotByOnX: INITIAL_PLOT_BY_ON_X,
                 plotByOnY: INITIAL_PLOT_BY_ON_Y,
-                selectedPoints: [1, 3, 5],
+                selectedPoints: selectedCellFileInfo,
             };
 
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
@@ -138,7 +141,7 @@ describe("UrlState utility class", () => {
                 [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
                 [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
                 [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
-                [URLSearchParam.selectedPoint]: ["1", "3", "5"],
+                [URLSearchParam.selectedPoint]: ["1", "2"],
             });
         });
 
