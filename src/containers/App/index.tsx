@@ -112,6 +112,7 @@ class App extends React.Component<AppProps, {}> {
         const showLoadingOverlay = isLoading || plotLoadingProgress < 10;
         const layoutClassnames = classNames([styles.container, {[styles.isLoading]: showLoadingOverlay}])
         return (
+            <div className={classNames([styles.wrapper, {[styles.isLoading]: showLoadingOverlay}])}>
             <Layout className={layoutClassnames}>
                 <SmallScreenWarning
                     handleClose={this.handleClose}
@@ -197,6 +198,7 @@ class App extends React.Component<AppProps, {}> {
                     </Layout>
                 </Layout>
             </Layout>
+            </div>
         );
     }
 
