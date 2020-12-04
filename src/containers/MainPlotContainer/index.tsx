@@ -263,7 +263,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                             <div>Plot loading...</div>
                             <Progress
                                 strokeColor={{
-                                    from: "#654d98",
+                                    from: "#a4a2a4",
                                     to: "#f5f0ff",
                                 }}
                                 strokeLinecap="square"

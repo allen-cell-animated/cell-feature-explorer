@@ -44,6 +44,7 @@ interface AppProps {
     selected3DCellStructureName: string;
     selected3DCellProteinName: string;
     toggleGallery: ActionCreator<BoolToggleAction>;
+    plotLoadingProgress: number;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -102,8 +103,8 @@ class App extends React.Component<AppProps, {}> {
             selected3DCellProteinName,
             selected3DCellStructureName,
             toggleGallery,
+            plotLoadingProgress,
         } = this.props;
-
         const {
             openKeys,
             defaultActiveKey,
@@ -116,7 +117,7 @@ class App extends React.Component<AppProps, {}> {
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                     visible={this.state.showSmallScreenWarning}
                 />
-                <LoadingOverlay isLoading={isLoading} />
+                <LoadingOverlay isLoading={isLoading || plotLoadingProgress < 10} />
                 <BackToPlot />
                 <AllenCellHeader show={true} />
                 <Layout>
@@ -168,8 +169,7 @@ class App extends React.Component<AppProps, {}> {
                             <Sider />
                         </Layout>
                         <div className={styles.cellViewerContainer}>
-                            <Header className={styles.headerSection}
-                            >
+                            <Header className={styles.headerSection}>
                                 <h2 className={styles.header}>3D Viewer</h2>
                                 {!!selected3DCell && (
                                     <h4 className={styles.selectedInfo}>
@@ -203,6 +203,7 @@ class App extends React.Component<AppProps, {}> {
 function mapStateToProps(state: State) {
     return {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
+        plotLoadingProgress: metadataStateBranch.selectors.getPlotLoadingProgress(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
         selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
