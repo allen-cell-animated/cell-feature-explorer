@@ -167,7 +167,8 @@ class App extends React.Component<AppProps, {}> {
                                     />
                                 </div>
                             </Content>
-                            <Sider />
+                            {/* spacer for the gallery overlay */}
+                            <Sider width={120} /> 
                         </Layout>
                         <div className={styles.cellViewerContainer}>
                             <Header className={styles.headerSection}>

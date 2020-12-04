@@ -62,12 +62,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 height: GENERAL_PLOT_SETTINGS.plotHeight,
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
-                margin: {
-                    b: 50,
-                    l: 50,
-                    r: 10,
-                    t: 10,
-                },
+                margin: GENERAL_PLOT_SETTINGS.margin,
                 paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 xaxis: this.makeAxis([0, 0.85], ".1f", false, props.xAxisType, props.xTickConversion ),
@@ -96,7 +91,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
             });
         }
-        console.log(xTickConversion, yAxisType)
         
         if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
             const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.left;

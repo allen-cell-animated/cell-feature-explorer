@@ -16,6 +16,7 @@
 
 .content {
     flex: 2;
+    overflow-x: visible!important;
 }
 
 .blur {

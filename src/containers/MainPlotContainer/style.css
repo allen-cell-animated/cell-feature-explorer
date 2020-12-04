@@ -13,6 +13,11 @@
     background-color: #6e6e6e; 
 }
 
+:global(.modebar) {
+    top: 20px!important;
+    right: 20px!important;
+}
+
 :global(.modebar-container) {
     position: initial!important;
 }

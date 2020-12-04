@@ -78,8 +78,8 @@ export const GENERAL_PLOT_SETTINGS = {
     },
     margin: {
         bottom: 50,
-        left: 25,
-        right: 50,
+        left: 50,
+        right: 40,
         top: 10,
     },
     moveDropdownCutoffWidth: 370,
