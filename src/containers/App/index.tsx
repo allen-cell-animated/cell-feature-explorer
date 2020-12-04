@@ -109,7 +109,8 @@ class App extends React.Component<AppProps, {}> {
             openKeys,
             defaultActiveKey,
         } = this.state;
-        const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
+        const showLoadingOverlay = isLoading || plotLoadingProgress < 10;
+        const layoutClassnames = classNames([styles.container, {[styles.isLoading]: showLoadingOverlay}])
         return (
             <Layout className={layoutClassnames}>
                 <SmallScreenWarning
@@ -117,7 +118,7 @@ class App extends React.Component<AppProps, {}> {
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                     visible={this.state.showSmallScreenWarning}
                 />
-                <LoadingOverlay isLoading={isLoading || plotLoadingProgress < 10} />
+                <LoadingOverlay isLoading={showLoadingOverlay} />
                 <BackToPlot />
                 <AllenCellHeader show={true} />
                 <Layout>

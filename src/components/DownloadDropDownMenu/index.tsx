@@ -122,21 +122,30 @@ export default class DownloadDropDownMenu extends React.Component<DownloadDropDo
             downloadConfig,
         } = this.props;
         const alreadyDownloaded = this.state.alreadyDownloaded[downloadConfig.key];
-        const menu = (
-            <Menu
-                className={styles.menu}
-                onClick={this.handleMenuClick}
-            >
-                {downloadUrls.map((url, index) =>
-                    (<Menu.Item key={index} onClick={this.saveDownloadUrl}>
-                        {includes(alreadyDownloaded, index.toString()) ?
-                            <Icon type="check" /> :  <Icon type="download" />}
-                        <a href={url}> data chunk {index + 1} </a>
-                    </Menu.Item>)
-                )}
-
-            </Menu>
-        );
+        let menu;
+        if (!downloadUrls.length) {
+            menu = (
+                <Menu className={styles.menu}>
+                    <Menu.Item>Wait for more of the plot data to load</Menu.Item>
+                </Menu>
+            );
+        } else {
+            menu = (
+               <Menu
+                   className={styles.menu}
+                   onClick={this.handleMenuClick}
+               >
+                   {downloadUrls.map((url, index) =>
+                       (<Menu.Item key={index} onClick={this.saveDownloadUrl}>
+                           {includes(alreadyDownloaded, index.toString()) ?
+                               <Icon type="check" /> :  <Icon type="download" />}
+                           <a href={url}> data chunk {index + 1} </a>
+                       </Menu.Item>)
+                   )}
+   
+               </Menu>
+           );
+        }
         return (
             <div
                 className={styles.container}
