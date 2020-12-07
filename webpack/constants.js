@@ -4,7 +4,7 @@ const devServer = {
 };
 
 const Env = {
-    DEVELOPMENT: 'dev',
+    DEVELOPMENT: 'development',
     PRODUCTION: 'production',
     STAGE: 'staging'
 };
