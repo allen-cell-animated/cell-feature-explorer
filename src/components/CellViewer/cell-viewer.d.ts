@@ -1,1 +1,1 @@
-declare module "ac-3d-viewer";
+declare module "@aics/web-3d-viewer";
