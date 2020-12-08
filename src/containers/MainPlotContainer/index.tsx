@@ -237,7 +237,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                             target="_blank"
                             rel="noreferrer"
                         >
-                            <InfoCircleOutlined /> Open axis options glossary
+                            <InfoCircleOutlined /> Open axis glossary
                         </a>
                     </div>
                     <AxisDropDown

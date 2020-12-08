@@ -110,8 +110,7 @@ class App extends React.Component<AppProps, {}> {
         } = this.state;
         const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-
-            <div className={classNames([styles.wrapper, {[styles.isLoading]: isLoading}])}>
+            <div className={classNames([styles.wrapper, { [styles.isLoading]: isLoading }])}>
                 <Layout className={layoutClassnames}>
                     <SmallScreenWarning
                         handleClose={this.handleClose}
@@ -167,7 +166,8 @@ class App extends React.Component<AppProps, {}> {
                                         />
                                     </div>
                                 </Content>
-                                <Sider />
+                                {/* spacer for the gallery overlay */}
+                                <Sider width={120} />
                             </Layout>
                             <div className={styles.cellViewerContainer}>
                                 <Header className={styles.headerSection}>
@@ -176,8 +176,12 @@ class App extends React.Component<AppProps, {}> {
                                         <h4 className={styles.selectedInfo}>
                                             <span className={styles.label}>Viewing cell:</span>{" "}
                                             {selected3DCell},
-                                            <span className={styles.label}> Protein (structure): </span>
-                                            {selected3DCellProteinName} ({selected3DCellStructureName})
+                                            <span className={styles.label}>
+                                                {" "}
+                                                Protein (structure):{" "}
+                                            </span>
+                                            {selected3DCellProteinName} (
+                                            {selected3DCellStructureName})
                                         </h4>
                                     )}
                                 </Header>
