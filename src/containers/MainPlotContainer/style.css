@@ -8,6 +8,13 @@
     flex: 1;
     margin-bottom: 2em;
 }
+
+.glossary-link {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+}
+
 :global(.modebar) {
     bottom: 0!important;
     top: initial!important;

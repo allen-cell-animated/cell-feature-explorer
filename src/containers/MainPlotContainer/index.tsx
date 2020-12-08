@@ -1,4 +1,5 @@
 import { Popover } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons"
 import {
     filter,
     includes,
@@ -211,30 +212,34 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     placement="right"
                     content={popover}
                     visible={!!popover}
-                    {... {
+                    {...{
                         // props not in ant.d component, but do exist
                         // needed to style this component since it's out of the DOM structure
                         id: "thumbnail-popover",
-
                     }}
                 >
-                    <MouseFollower
-                        pageX={mousePosition.pageX}
-                        pageY={mousePosition.pageY}
-                    />
+                    <MouseFollower pageX={mousePosition.pageX} pageY={mousePosition.pageY} />
                 </Popover>
                 <div
                     id="main-plot"
                     className={styles.container}
                     onMouseLeave={this.onPlotUnhovered}
                 >
-
                     <AxisDropDown
                         axisId={X_AXIS_ID}
                         value={xDropDownValue}
                         options={xDropDownOptions}
                         handleChangeAxis={handleChangeAxis}
                     />
+                    <div className={styles.glossaryLink}>
+                        <a
+                            href="https://www.allencell.org/glossary-of-cell-features-v2.html"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <InfoCircleOutlined /> Open axis options glossary
+                        </a>
+                    </div>
                     <AxisDropDown
                         axisId={Y_AXIS_ID}
                         value={yDropDownValue}
@@ -248,14 +253,17 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
                         onPlotHovered={this.onPlotHovered}
-                        xAxisType={includes(CATEGORICAL_FEATURES, xDropDownValue) ? "array" : "auto"}
-                        yAxisType={includes(CATEGORICAL_FEATURES, yDropDownValue) ? "array" : "auto"}
+                        xAxisType={
+                            includes(CATEGORICAL_FEATURES, xDropDownValue) ? "array" : "auto"
+                        }
+                        yAxisType={
+                            includes(CATEGORICAL_FEATURES, yDropDownValue) ? "array" : "auto"
+                        }
                         yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
                     />
                 </div>
             </React.Fragment>
-
         );
     }
 }
