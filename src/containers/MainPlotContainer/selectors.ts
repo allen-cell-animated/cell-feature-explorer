@@ -7,7 +7,6 @@ import { $enum } from "ts-enum-util";
 
 import {
     CATEGORICAL_FEATURES,
-    CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
     getLabels,
     PROTEIN_NAME_KEY,
@@ -18,7 +17,6 @@ import { getFeatureNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
-    getClusteringResult,
     getClustersOn,
     getColorBySelection,
     getColorByValues,
