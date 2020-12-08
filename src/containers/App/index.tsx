@@ -111,35 +111,36 @@ class App extends React.Component<AppProps, {}> {
         } = this.state;
         const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-            <Layout className={layoutClassnames}>
-                <SmallScreenWarning
-                    handleClose={this.handleClose}
-                    onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={this.state.showSmallScreenWarning}
-                />
-                <LoadingOverlay isLoading={isLoading} />
-                <BackToPlot />
-                <AllenCellHeader show={true} />
-                <Layout>
-                    <Affix>
-                        <Sider
-                            width="100%"
-                            collapsible={true}
-                            collapsed={galleryCollapsed}
-                            onCollapse={toggleGallery}
-                            defaultCollapsed={true}
-                            collapsedWidth={100}
-                            className={styles.sider}
-                            reverseArrow={true}
-                        >
-                            <ThumbnailGallery
+            <div className={classNames([styles.wrapper, {[styles.isLoading]: isLoading}])}>
+                <Layout className={layoutClassnames}>
+                    <SmallScreenWarning
+                        handleClose={this.handleClose}
+                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                        visible={this.state.showSmallScreenWarning}
+                    />
+                    <LoadingOverlay isLoading={isLoading} />
+                    <BackToPlot />
+                    <AllenCellHeader show={true} />
+                    <Layout>
+                        <Affix>
+                            <Sider
+                                width="100%"
+                                collapsible={true}
                                 collapsed={galleryCollapsed}
-                                toggleGallery={toggleGallery}
-                            />
-                        </Sider>
-                    </Affix>
-                    <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                        <Header className={styles.headerMain}>
+                                onCollapse={toggleGallery}
+                                defaultCollapsed={true}
+                                collapsedWidth={100}
+                                className={styles.sider}
+                                reverseArrow={true}
+                            >
+                                <ThumbnailGallery
+                                    collapsed={galleryCollapsed}
+                                    toggleGallery={toggleGallery}
+                                />
+                            </Sider>
+                        </Affix>
+                        <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
+                      <Header className={styles.headerMain}>
                             <h1>Cell Feature Explorer</h1>
                             <Button
                                 className={styles.alert}
@@ -150,59 +151,60 @@ class App extends React.Component<AppProps, {}> {
                                 View the hiPSC Single-Cell Dataset here
                             </Button>
                         </Header>
-                        <Header className={styles.headerSection}>
-                            <h2>Plot</h2>
-                        </Header>
-                        <Layout>
-                            <Sider
-                                className={styles.colorMenu}
-                                width={450}
-                                collapsible={false}
-                                collapsedWidth={250}
-                            >
-                                <ColorByMenu
-                                    panelKeys={App.panelKeys}
-                                    openKeys={openKeys}
-                                    defaultActiveKey={defaultActiveKey}
-                                    onPanelClicked={this.onPanelClicked}
-                                />
-                            </Sider>
-                            <Content className={styles.content}>
-                                <div className={styles.plotView}>
-                                    <MainPlotContainer
-                                        handleSelectionToolUsed={this.onSelectionToolUsed}
-                                    />
-                                </div>
-                            </Content>
-                            <Sider />
-                        </Layout>
-                        <div className={styles.cellViewerContainer}>
                             <Header className={styles.headerSection}>
-                                <h2 className={styles.header}>3D Viewer</h2>
-                                {selected3DCell && selected3DCellStructureName && (
-                                    <h4 className={styles.selectedInfo}>
-                                        <span className={styles.label}>Viewing cell:</span>{" "}
-                                        {selected3DCell},
-                                        <span className={styles.label}> Protein (structure): </span>
-                                        {selected3DCellProteinName} ({selected3DCellStructureName})
-                                    </h4>
-                                )}
+                                <h2>Plot</h2>
                             </Header>
-                            <CellViewer
-                                cellId={selected3DCell}
-                                fovId={selected3DCellFOV}
-                                cellLineName={selected3DCellCellLine}
-                                fovDownloadHref={formatDownloadOfSingleImage(
-                                    convertFullFieldIdToDownloadId(selected3DCellFOV)
-                                )}
-                                cellDownloadHref={formatDownloadOfSingleImage(
-                                    convertSingleImageIdToDownloadId(selected3DCell)
-                                )}
-                            />
-                        </div>
+                            <Layout>
+                                <Sider
+                                    className={styles.colorMenu}
+                                    width={450}
+                                    collapsible={false}
+                                    collapsedWidth={250}
+                                >
+                                    <ColorByMenu
+                                        panelKeys={App.panelKeys}
+                                        openKeys={openKeys}
+                                        defaultActiveKey={defaultActiveKey}
+                                        onPanelClicked={this.onPanelClicked}
+                                    />
+                                </Sider>
+                                <Content className={styles.content}>
+                                    <div className={styles.plotView}>
+                                        <MainPlotContainer
+                                            handleSelectionToolUsed={this.onSelectionToolUsed}
+                                        />
+                                    </div>
+                                </Content>
+                                <Sider />
+                            </Layout>
+                            <div className={styles.cellViewerContainer}>
+                                <Header className={styles.headerSection}>
+                                    <h2 className={styles.header}>3D Viewer</h2>
+                                    {selected3DCell && selected3DCellStructureName && (
+                                        <h4 className={styles.selectedInfo}>
+                                            <span className={styles.label}>Viewing cell:</span>{" "}
+                                            {selected3DCell},
+                                            <span className={styles.label}> Protein (structure): </span>
+                                            {selected3DCellProteinName} ({selected3DCellStructureName})
+                                        </h4>
+                                    )}
+                                </Header>
+                                <CellViewer
+                                    cellId={selected3DCell}
+                                    fovId={selected3DCellFOV}
+                                    cellLineName={selected3DCellCellLine}
+                                    fovDownloadHref={formatDownloadOfSingleImage(
+                                        convertFullFieldIdToDownloadId(selected3DCellFOV)
+                                    )}
+                                    cellDownloadHref={formatDownloadOfSingleImage(
+                                        convertSingleImageIdToDownloadId(selected3DCell)
+                                    )}
+                                />
+                            </div>
+                        </Layout>
                     </Layout>
                 </Layout>
-            </Layout>
+            </div>
         );
     }
 
