@@ -6,6 +6,7 @@
     --highlight-green: #b2d030;
     --text-gray: #a0a0a0;
     --header-gray: #4b4b4b;
+    --panel-body-background-gray: #313131;
     --light-gray: #aeacae;
     --border-gray: var(--dimgray);
 }

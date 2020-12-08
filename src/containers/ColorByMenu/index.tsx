@@ -2,7 +2,6 @@ import {
     Checkbox,
     Col,
     Collapse,
-    Radio,
     Row,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -10,7 +9,6 @@ import { RadioChangeEvent } from "antd/es/radio";
 import {
     filter,
     includes,
-    indexOf,
 } from "lodash";
 import React from "react";
 import {
@@ -22,31 +20,22 @@ import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
-import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
-    AGGLOMERATIVE_KEY,
     CATEGORICAL_FEATURES,
     CATEGORY_TO_ENUM_LOOKUP,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    KMEANS_KEY,
     NUCLEAR_VOLUME_FEATURE_NAME,
     PROTEIN_NAME_KEY,
-    SPECTRAL_KEY,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
-import {
-    CLUSTERING_LABEL,
-    CLUSTERING_MAP,
-} from "../../state/selection/constants";
+
 import {
     BoolToggleAction,
-    ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
     ChangeSelectionAction,
-    ClusteringTypeChoices,
     ColorForPlot,
     DeselectGroupOfPointsAction,
     DownloadConfig,
@@ -67,9 +56,7 @@ import { PanelData } from "./types";
 
 const styles = require("./style.css");
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const initIndex = 2;
+// const initIndex = 2;
 
 const { Panel } = Collapse;
 

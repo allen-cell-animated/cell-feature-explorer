@@ -9,8 +9,14 @@
     justify-content: space-between;
 }
 
+.wrapper.is-loading {
+    overflow: hidden;
+    height: 100vh;
+}
+
 .content {
     flex: 2;
+    overflow-x: visible !important;
 }
 
 .blur {
@@ -83,6 +89,10 @@
 /* element is appended to the top level of the dom, so had to be adjusted globally. Tested and seems ok*/
 :global(.ant-dropdown) {
     z-index: 500000;
+}
+
+:global(.ant-select-dropdown) {
+    width: initial !important;
 }
 
 :global(.ant-collapse),

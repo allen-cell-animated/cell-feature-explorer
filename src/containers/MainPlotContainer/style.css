@@ -1,7 +1,6 @@
 @import "../../styles/colors.css";
 
 .container {
-    all: initial;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -9,6 +8,13 @@
     flex: 1;
     margin-bottom: 2em;
 }
+
+.glossary-link {
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
+}
+
 :global(.modebar) {
     bottom: 0!important;
     top: initial!important;

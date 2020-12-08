@@ -130,11 +130,11 @@ export const GENERAL_PLOT_SETTINGS = {
         orientation: "h" as "h",
         y: 60,
     },
-    margin: {
-        bottom: 10,
-        left: 25,
-        right: 25,
-        top: 10,
+  margin: {
+        b: 50,
+        l: 60,
+        r: 40,
+        t: 10,
     },
     moveDropdownCutoffWidth: 370,
     plotHeight: 580,
