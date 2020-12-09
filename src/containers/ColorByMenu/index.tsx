@@ -168,12 +168,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         onPanelClicked(value as string[]);
     }
 
-    public changeClusteringAlgorithm({ target }: RadioChangeEvent) {
+    public changeClusteringAlgorithm() {
         // const { handleChangeClusteringAlgorithm } = this.props;
         // handleChangeClusteringAlgorithm(target.value);
     }
 
-    public changeClusteringNumber(value: string) {
+    public changeClusteringNumber() {
         // const { handleChangeClusteringNumber, clusteringAlgorithm } = this.props;
         // handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
     }
