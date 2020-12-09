@@ -3,7 +3,10 @@ import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Slider
 } from "antd";
+// need slider import to include needed styles for the 3d viewer
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
