@@ -146,7 +146,7 @@ class App extends React.Component<AppProps, {}> {
                                 className={styles.alert}
                                 key="alert"
                                 ghost
-                                href="rev1.cfe.allencell.org"
+                                href="https://rev1.cfe.allencell.org/"
                             >
                                 View the hiPSC Single-Cell Dataset here
                             </Button>
