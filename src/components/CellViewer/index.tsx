@@ -1,4 +1,4 @@
-import { ImageViewerApp } from "ac-3d-viewer";
+import { ImageViewerApp } from "@aics/web-3d-viewer";
 import { includes } from "lodash";
 import React from "react";
 

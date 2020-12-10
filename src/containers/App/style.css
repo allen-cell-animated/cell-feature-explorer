@@ -9,13 +9,14 @@
     justify-content: space-between;
 }
 
-.container.is-loading {
+.wrapper.is-loading {
     overflow: hidden;
     height: 100vh;
 }
 
 .content {
     flex: 2;
+    overflow-x: visible !important;
 }
 
 .blur {
@@ -25,6 +26,10 @@
 .header {
     display: inline-block;
     margin-right: 1em;
+}
+
+.alert {
+    margin-right: 120px;
 }
 
 .selected-info {
@@ -37,10 +42,12 @@
 
 .header-main {
     text-align: left;
-    display: block;
     background-color: var(--background-dim-gray);
     padding: 15px 50px;
     height: initial;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header-main h1 {
@@ -149,4 +156,9 @@
     & i {
           display: none;
       }
+}
+
+:global(.ant-btn-background-ghost) {
+    color: var(--text-gray);
+    border-color: var(--text-gray);
 }

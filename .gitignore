@@ -9,3 +9,4 @@ build/
 .project
 .settings/
 .env
+awscli-bundle
