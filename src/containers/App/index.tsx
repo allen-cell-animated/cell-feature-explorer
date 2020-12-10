@@ -3,6 +3,7 @@ import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
+    Button,
 } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
@@ -139,7 +140,15 @@ class App extends React.Component<AppProps, {}> {
                     </Affix>
                     <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
                         <Header className={styles.headerMain}>
-                            <h1> Cell Feature Explorer</h1>
+                            <h1>Cell Feature Explorer</h1>
+                            <Button
+                                className={styles.alert}
+                                key="alert"
+                                ghost
+                                href="rev1.cfe.allencell.org"
+                            >
+                                View the hiPSC Single-Cell Dataset here
+                            </Button>
                         </Header>
                         <Header className={styles.headerSection}>
                             <h2>Plot</h2>

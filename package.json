@@ -74,6 +74,7 @@
   "dependencies": {
     "@aics/allencell-nav-bar": "^1.0.2",
     "@aics/browsing-context-messaging": "~1.1",
+    "@aics/web-3d-viewer": "^1.0.1",
     "@ant-design/icons": "^4.2.2",
     "ac-3d-viewer": "^0.3.4",
     "antd": "^3.20.7",
@@ -82,7 +83,7 @@
     "core-js": "^2.5.5",
     "firebase": "^7.15.3",
     "history": "^4.7.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "plotly.js": "^1.54.5",
     "pram": "^2.0.0-alpha.0",
     "react": "^16.4.1",
