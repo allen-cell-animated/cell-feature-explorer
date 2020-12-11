@@ -111,7 +111,7 @@ class App extends React.Component<AppProps, {}> {
         } = this.state;
         const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-            <div className={classNames([styles.wrapper, {[styles.isLoading]: isLoading}])}>
+            <div className={classNames([styles.wrapper, { [styles.isLoading]: isLoading }])}>
                 <Layout className={layoutClassnames}>
                     <SmallScreenWarning
                         handleClose={this.handleClose}
@@ -140,17 +140,17 @@ class App extends React.Component<AppProps, {}> {
                             </Sider>
                         </Affix>
                         <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                      <Header className={styles.headerMain}>
-                            <h1>Cell Feature Explorer</h1>
-                            <Button
-                                className={styles.alert}
-                                key="alert"
-                                ghost
-                                href="https://rev1.cfe.allencell.org/"
-                            >
-                                View the hiPSC Single-Cell Dataset here
-                            </Button>
-                        </Header>
+                            <Header className={styles.headerMain}>
+                                <h1>Cell Feature Explorer</h1>
+                                <Button
+                                    className={styles.alert}
+                                    key="alert"
+                                    ghost
+                                    href="https://rev1.cfe.allencell.org/"
+                                >
+                                    Preview the hiPSC Single-Cell Dataset
+                                </Button>
+                            </Header>
                             <Header className={styles.headerSection}>
                                 <h2>Plot</h2>
                             </Header>
@@ -184,8 +184,12 @@ class App extends React.Component<AppProps, {}> {
                                         <h4 className={styles.selectedInfo}>
                                             <span className={styles.label}>Viewing cell:</span>{" "}
                                             {selected3DCell},
-                                            <span className={styles.label}> Protein (structure): </span>
-                                            {selected3DCellProteinName} ({selected3DCellStructureName})
+                                            <span className={styles.label}>
+                                                {" "}
+                                                Protein (structure):{" "}
+                                            </span>
+                                            {selected3DCellProteinName} (
+                                            {selected3DCellStructureName})
                                         </h4>
                                     )}
                                 </Header>
