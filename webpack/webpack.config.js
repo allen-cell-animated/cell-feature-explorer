@@ -3,8 +3,8 @@ const fs  = require('fs');
 
 const lessToJs = require('less-vars-to-js');
 const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, '../src/styles/ant-vars.less'), 'utf8'));
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const tsImportPluginFactory = require('ts-import-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const {
     devServer,
@@ -25,6 +25,9 @@ module.exports = ({ analyze, env } = {}) => ({
     entry: {
         app: './src/index.tsx'
     },
+    optimization: {
+        minimize: env === Env.PRODUCTION
+    },
     module: {
         rules: [
             {
@@ -34,33 +37,8 @@ module.exports = ({ analyze, env } = {}) => ({
                 ],
                 exclude: /node_modules/,
                 use: {
-                    loader: 'ts-loader',
-                    options: {
-                        configFile: path.resolve(__dirname, '../', 'tsconfig.json'),
-                        compilerOptions: {
-                            noEmit: false,
-                        },
-                        getCustomTransformers: () => ({
-                            before: [
-                                tsImportPluginFactory([
-                                    {
-                                        libraryName: 'lodash',
-                                        libraryDirectory: null,
-                                        camel2DashComponentName: false,
-                                        style: false,
-                                    },
-                                    {
-                                        libraryName: 'antd',
-                                        libraryDirectory: "es",
-                                        style: true,
-                                    }
-                                ]),
-                            ]
-                        }),
-                        // give responsibility of type checking to fork-ts-checker-webpack-plugin
-                        // in order to speed up build times
-                        transpileOnly: true,
-                    },
+                    loader: "babel-loader",
+        
                 }
             },
 
@@ -71,9 +49,10 @@ module.exports = ({ analyze, env } = {}) => ({
                 include: [
                     path.resolve(__dirname, '../', 'src')
                 ],
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
                     use: [
+                        {
+                            loader: MiniCssExtractPlugin.loader,
+                        },
                         {
                             loader: 'css-loader',
                             options: {
@@ -94,7 +73,6 @@ module.exports = ({ analyze, env } = {}) => ({
                             }
                         }
                     ]
-                })
             },
 
             // this rule will handle any css imports out of node_modules; it does not apply PostCSS,
@@ -105,15 +83,16 @@ module.exports = ({ analyze, env } = {}) => ({
                 include: [
                     path.resolve(__dirname, '../', 'node_modules')
                 ],
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [{ loader: 'css-loader' }],
-                }),
+                use: [
+                    { loader: MiniCssExtractPlugin.loader },
+                    { loader: 'css-loader' }],
+            
             },
             {
                 test: /\.less$/,
-                use: ExtractTextPlugin.extract({
                     use: [
+                        { loader: MiniCssExtractPlugin.loader },
+
                         {
                             loader: "css-loader",
                             options: {
@@ -131,7 +110,13 @@ module.exports = ({ analyze, env } = {}) => ({
                             }
                         }
                     ]
-                })
+            
+            },
+            {
+                test: /\.(png|jpg|gif|svg)$/i,
+                use: [
+                    "file-loader",
+                ],
             },
         ]
     },
