@@ -1,0 +1,43 @@
+.card {
+    width: 400px;
+    padding: 15px 15px 5px 15px;
+    border: none;
+}
+
+.card :global(.ant-card-body) {
+    padding: 0px;
+}
+
+.animated-thumbnail {
+    display: none;
+}
+
+.thumbnail:hover .animated-thumbnail {
+    display: block;
+}
+
+.thumbnail:hover .static-thumbnail {
+    display: none;
+}
+
+.card-text {
+    font-size: 16px;
+}
+
+.simulated-time {
+    margin-top: 4px;
+    text-align: right;
+    font-size: 16px;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.publication {
+    font-size: 14px;
+}
+
+.journal {
+    font-style: italic;
+}

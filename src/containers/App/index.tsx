@@ -1,36 +1,21 @@
 import AllenCellHeader from "@aics/allencell-nav-bar";
 import "@aics/allencell-nav-bar/style/style.css";
-import {
-    Affix,
-    Layout,
-    Button,
-} from "antd";
+import { Col, Layout, Row } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
-import classNames from "classnames";
 
-import BackToPlot from "../../components/BackToPlot/index";
-import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
-import LoadingOverlay from "../../components/LoadingOverlay";
-import ColorByMenu from "../../containers/ColorByMenu";
+
 import selectionStateBranch from "../../state/selection";
 import metadataStateBranch from "../../state/metadata";
 import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
-import {
-    convertFullFieldIdToDownloadId,
-    convertSingleImageIdToDownloadId,
-    formatDownloadOfSingleImage
-} from "../../state/util";
-import MainPlotContainer from "../MainPlotContainer";
-import ThumbnailGallery from "../ThumbnailGallery";
-
+import datasetsMetaData from "./datasets";
+import DatasetCard from "../../components/DatasetCard";
 const {
     Content,
     Header,
-    Sider,
 } = Layout;
 
 const styles = require("./style.css");
@@ -95,111 +80,38 @@ class App extends React.Component<AppProps, {}> {
 
     public render() {
         const {
-            isLoading,
             galleryCollapsed,
-            selected3DCell,
-            selected3DCellFOV,
-            selected3DCellCellLine,
-            selected3DCellProteinName,
-            selected3DCellStructureName,
-            toggleGallery,
+
         } = this.props;
 
-        const {
-            openKeys,
-            defaultActiveKey,
-        } = this.state;
-        const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-            <Layout className={layoutClassnames}>
+            <Layout className={styles.container}>
                 <SmallScreenWarning
                     handleClose={this.handleClose}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                     visible={this.state.showSmallScreenWarning}
                 />
-                <LoadingOverlay isLoading={isLoading} />
-                <BackToPlot />
                 <AllenCellHeader show={true} />
                 <Layout>
-                    <Affix>
-                        <Sider
-                            width="100%"
-                            collapsible={true}
-                            collapsed={galleryCollapsed}
-                            onCollapse={toggleGallery}
-                            defaultCollapsed={true}
-                            collapsedWidth={100}
-                            className={styles.sider}
-                            reverseArrow={true}
-                        >
-                            <ThumbnailGallery
-                                collapsed={galleryCollapsed}
-                                toggleGallery={toggleGallery}
-                            />
-                        </Sider>
-                    </Affix>
                     <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
                         <Header className={styles.headerMain}>
                             <h1>Cell Feature Explorer</h1>
-                            <Button
-                                className={styles.alert}
-                                key="alert"
-                                ghost
-                                href="rev1.cfe.allencell.org"
-                            >
-                                View the hiPSC Single-Cell Dataset here
-                            </Button>
-                        </Header>
-                        <Header className={styles.headerSection}>
-                            <h2>Plot</h2>
                         </Header>
                         <Layout>
-                            <Sider
-                                className={styles.colorMenu}
-                                width={450}
-                                collapsible={false}
-                                collapsedWidth={250}
-                            >
-                                <ColorByMenu
-                                    panelKeys={App.panelKeys}
-                                    openKeys={openKeys}
-                                    defaultActiveKey={defaultActiveKey}
-                                    onPanelClicked={this.onPanelClicked}
-                                />
-                            </Sider>
                             <Content className={styles.content}>
-                                <div className={styles.plotView}>
-                                    <MainPlotContainer
-                                        handleSelectionToolUsed={this.onSelectionToolUsed}
-                                    />
-                                </div>
+                                <Row type="flex" justify="space-around">
+                                    {datasetsMetaData.map((dataset) => (
+                                        <Col
+                                            key={`${dataset.name}-${dataset.version}`}
+                                        >
+                                            <DatasetCard
+                                                {...dataset}
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
                             </Content>
-                            <Sider />
                         </Layout>
-                        <div className={styles.cellViewerContainer}>
-                            <Header className={styles.headerSection}>
-                                <h2 className={styles.header}>3D Viewer</h2>
-                                {selected3DCell && selected3DCellStructureName && (
-                                    <h4 className={styles.selectedInfo}>
-                                        <span className={styles.label}>Viewing cell:</span>{" "}
-                                        {selected3DCell},
-                                        <span className={styles.label}> Protein (structure): </span>
-                                        {selected3DCellProteinName} ({selected3DCellStructureName})
-                                    </h4>
-                                )}
-                            </Header>
-                            <CellViewer
-                                cellId={selected3DCell}
-                                fovId={selected3DCellFOV}
-                                cellLineName={selected3DCellCellLine}
-                                fovDownloadHref={formatDownloadOfSingleImage(
-                                    convertFullFieldIdToDownloadId(selected3DCellFOV)
-                                )}
-                                cellDownloadHref={formatDownloadOfSingleImage(
-                                    convertSingleImageIdToDownloadId(selected3DCell)
-                                )}
-                            />
-                        </div>
                     </Layout>
                 </Layout>
             </Layout>
