@@ -79,25 +79,29 @@ class App extends React.Component<AppProps, {}> {
         ]);
 
         return (
-            <Layout className={layoutClassnames}>
-                <LoadingOverlay isLoading={showLoadingOverlay} />
+            <div
+                className={classNames([styles.wrapper, { [styles.isLoading]: showLoadingOverlay }])}
+            >
+                <Layout className={layoutClassnames}>
+                    <LoadingOverlay isLoading={showLoadingOverlay} />
 
-                <SmallScreenWarning
-                    handleClose={this.handleClose}
-                    onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={showSmallScreenWarning}
-                />
-                {renderExplorerApp && <BackToPlot />}
+                    <SmallScreenWarning
+                        handleClose={this.handleClose}
+                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                        visible={showSmallScreenWarning}
+                    />
+                    {renderExplorerApp && <BackToPlot />}
 
-                <AllenCellHeader show={true} />
-                <Layout>
-                    {renderExplorerApp ? (
-                        <Cfe />
-                    ) : (
-                        <LandingPage handleSelectDataset={this.handleSelectDataset} />
-                    )}
+                    <AllenCellHeader show={true} />
+                    <Layout>
+                        {renderExplorerApp ? (
+                            <Cfe />
+                        ) : (
+                            <LandingPage handleSelectDataset={this.handleSelectDataset} />
+                        )}
+                    </Layout>
                 </Layout>
-            </Layout>
+            </div>
         );
     }
 

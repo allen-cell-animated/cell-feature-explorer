@@ -9,7 +9,11 @@
     justify-content: space-between;
 }
 
-.container.is-loading {
+:global(.ant-select-dropdown) {
+    width: initial !important;
+}
+
+.wrapper.is-loading {
     overflow: hidden;
     height: 100vh;
 }
@@ -17,6 +21,7 @@
 .content {
     flex: 2;
     padding: 20px 40px;
+    overflow-x: visible !important;
 }
 
 .blur {
