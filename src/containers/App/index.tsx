@@ -1,16 +1,11 @@
 import AllenCellHeader from "@aics/allencell-nav-bar";
 import "@aics/allencell-nav-bar/style/style.css";
 import { Col, Layout, Row } from "antd";
-import { uniq } from "lodash";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
 
 import SmallScreenWarning from "../../components/SmallScreenWarning";
+import Cfe from "../Cfe";
 
-import selectionStateBranch from "../../state/selection";
-import metadataStateBranch from "../../state/metadata";
-import { BoolToggleAction } from "../../state/selection/types";
-import { State } from "../../state/types";
 import datasetsMetaData from "./datasets";
 import DatasetCard from "../../components/DatasetCard";
 const {
@@ -21,29 +16,20 @@ const {
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
-interface AppProps {
-    isLoading: boolean;
-    galleryCollapsed: boolean;
-    selected3DCell: string;
-    selected3DCellFOV: string;
-    selected3DCellCellLine: string;
-    selected3DCellStructureName: string;
-    selected3DCellProteinName: string;
-    toggleGallery: ActionCreator<BoolToggleAction>;
-}
-
-class App extends React.Component<AppProps, {}> {
+class App extends React.Component<{}, {}> {
     private static panelKeys = ["proteinNames", "selections", "clusters"];
     public state = {
-        defaultActiveKey: [App.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
-        openKeys: [App.panelKeys[0]],
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
         width: window.innerWidth,
+        renderExplorerApp: false,
     };
 
     public componentDidMount = () => {
         window.addEventListener("resize", this.updateDimensions);
+        if (location.hash) {
+            this.setState({ renderExplorerApp: true })
+        }
     }
 
     public updateDimensions = () => {
@@ -59,13 +45,6 @@ class App extends React.Component<AppProps, {}> {
         });
     }
 
-    public onSelectionToolUsed = () => {
-        this.setState({ openKeys: uniq([...this.state.openKeys, App.panelKeys[1]]) });
-    }
-
-    public onPanelClicked = (value: string[]) => {
-        this.setState({ openKeys: value });
-    }
 
     public handleClose = () => {
 
@@ -78,12 +57,16 @@ class App extends React.Component<AppProps, {}> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     }
 
+    public handleSelectDataset = (link: string) => {
+        if (link.match("#")) {
+            this.setState({renderExplorerApp: true})
+        }
+    }
+
     public render() {
-        const {
-            galleryCollapsed,
-
-        } = this.props;
-
+        if (this.state.renderExplorerApp) {
+            return <Cfe />;
+        }
         return (
             <Layout className={styles.container}>
                 <SmallScreenWarning
@@ -93,7 +76,7 @@ class App extends React.Component<AppProps, {}> {
                 />
                 <AllenCellHeader show={true} />
                 <Layout>
-                    <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
+                    <Layout>
                         <Header className={styles.headerMain}>
                             <h1>Cell Feature Explorer</h1>
                    
@@ -109,7 +92,7 @@ class App extends React.Component<AppProps, {}> {
 
                                     {datasetsMetaData.map((dataset) => (
                                         <Col key={`${dataset.name}-${dataset.version}`}>
-                                            <DatasetCard {...dataset} />
+                                            <DatasetCard {...dataset} handleSelectDataset={this.handleSelectDataset} />
                                         </Col>
                                     ))}
                                 </Row>
@@ -158,20 +141,4 @@ class App extends React.Component<AppProps, {}> {
 
 }
 
-function mapStateToProps(state: State) {
-    return {
-        isLoading: metadataStateBranch.selectors.getIsLoading(state),
-        galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
-        selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
-        selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
-        selected3DCellFOV: selectionStateBranch.selectors.getSelected3DCellFOV(state),
-        selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(state),
-        selected3DCellStructureName: selectionStateBranch.selectors.getSelected3DCellLabeledStructure(state),
-    };
-}
-
-const dispatchToPropsMap = {
-    toggleGallery: selectionStateBranch.actions.toggleGallery,
-};
-
-export default connect(mapStateToProps, dispatchToPropsMap)(App);
+export default App;

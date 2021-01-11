@@ -5,7 +5,11 @@ const { Meta } = Card;
 
 const styles = require("./style.css");
 
-const DatasetCard: React.FunctionComponent<DatasetMetaData> = ({
+interface DatasetCardProps extends DatasetMetaData {
+    handleSelectDataset: (link: string) => void;
+}
+
+const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     name,
     version,
     image,
@@ -15,7 +19,9 @@ const DatasetCard: React.FunctionComponent<DatasetMetaData> = ({
     totalTaggedStructures,
     isNew,
     inReview,
-}: DatasetMetaData) => {
+    handleSelectDataset,
+    link
+}: DatasetCardProps) => {
     const title = (
     <>
             <div>{name}</div>
@@ -26,28 +32,33 @@ const DatasetCard: React.FunctionComponent<DatasetMetaData> = ({
     </>
     )
     return (
-        <Card
-            style={{ width: 430 }}
-            className={styles.card}
-            hoverable
-            bordered={false}
-            cover={
-                <img
-                    className={styles.staticThumbnail}
-                    alt={`Snapshot of simulation for ${name}`}
-                    src={image}
-                />
-            }
+        <a
+            href={link}
+            onClick={() => handleSelectDataset(link)}
         >
-            <Meta title={title} description={ <div className="content" dangerouslySetInnerHTML={{__html: description}}></div>} />
-            <Descriptions column={1} size="small">
-                <Descriptions.Item label="Number of Cells">{totalCells}</Descriptions.Item>
-                <Descriptions.Item label="Number of FOVs">{totalFOVs}</Descriptions.Item>
-                <Descriptions.Item label="Number of tagged-structures">
-                    {totalTaggedStructures}
-                </Descriptions.Item>
-            </Descriptions>
-        </Card>
+            <Card
+                style={{ width: 430 }}
+                className={styles.card}
+                hoverable
+                bordered={false}
+                cover={
+                    <img
+                        className={styles.staticThumbnail}
+                        alt={`Snapshot of simulation for ${name}`}
+                        src={image}
+                    />
+                }
+            >
+                <Meta title={title} description={ <div className="content" dangerouslySetInnerHTML={{__html: description}}></div>} />
+                <Descriptions column={1} size="small">
+                    <Descriptions.Item label="Number of Cells">{totalCells}</Descriptions.Item>
+                    <Descriptions.Item label="Number of FOVs">{totalFOVs}</Descriptions.Item>
+                    <Descriptions.Item label="Number of tagged-structures">
+                        {totalTaggedStructures}
+                    </Descriptions.Item>
+                </Descriptions>
+            </Card>
+        </a>
     );
 };
 

@@ -3,7 +3,6 @@ import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
-    Button,
 } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
@@ -12,7 +11,6 @@ import classNames from "classnames";
 
 import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
-import SmallScreenWarning from "../../components/SmallScreenWarning";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
@@ -57,36 +55,12 @@ class Cfe extends React.Component<CfeProps, {}> {
         width: window.innerWidth,
     };
 
-    public componentDidMount = () => {
-        window.addEventListener("resize", this.updateDimensions);
-    }
-
-    public updateDimensions = () => {
-        if (window.innerWidth === this.state.width) {
-            // listener is triggered on scroll in some mobile devices
-            return;
-        }
-        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
-        !this.state.dontShowSmallScreenWarningAgain;
-        this.setState({
-            showSmallScreenWarning: shouldShow,
-            width: window.innerWidth,
-        });
-    }
-
     public onSelectionToolUsed = () => {
         this.setState({ openKeys: uniq([...this.state.openKeys, Cfe.panelKeys[1]]) });
     }
 
     public onPanelClicked = (value: string[]) => {
         this.setState({ openKeys: value });
-    }
-
-    public handleClose = () => {
-
-        this.setState({
-            showSmallScreenWarning: false,
-        });
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
@@ -112,11 +86,6 @@ class Cfe extends React.Component<CfeProps, {}> {
         const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
             <Layout className={layoutClassnames}>
-                <SmallScreenWarning
-                    handleClose={this.handleClose}
-                    onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={this.state.showSmallScreenWarning}
-                />
                 <LoadingOverlay isLoading={isLoading} />
                 <BackToPlot />
                 <AllenCellHeader show={true} />
@@ -141,14 +110,6 @@ class Cfe extends React.Component<CfeProps, {}> {
                     <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
                         <Header className={styles.headerMain}>
                             <h1>Cell Feature Explorer</h1>
-                            <Button
-                                className={styles.alert}
-                                key="alert"
-                                ghost
-                                href="rev1.cfe.allencell.org"
-                            >
-                                View the hiPSC Single-Cell Dataset here
-                            </Button>
                         </Header>
                         <Header className={styles.headerSection}>
                             <h2>Plot</h2>

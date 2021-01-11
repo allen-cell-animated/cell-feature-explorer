@@ -10,6 +10,7 @@ export interface DatasetMetaData {
     totalFOVs: number;
     totalTaggedStructures: number;
     image: string;
+    link: string;
 }
 export default [
     {
@@ -23,6 +24,7 @@ export default [
         totalFOVs: 18186,
         totalTaggedStructures: 25,
         image: dataset2Image,
+        link: "https://rev1.cfe.allencell.org/"
     },
     {
         name: "hiPSC Single-Cell Image Dataset",
@@ -30,10 +32,11 @@ export default [
         isNew: false,
         inReview: false,
         description:
-            "This dataset contains individual cells segmented from 3D Field of View (FOV) images taken of 20 fluorescently-labeled structures in human induced pluripotent stem cells (hiPSCs). This dataset was collected from 2017 to 2019 and uses relatively simple 3D segmentation methods.",
+        "This dataset contains individual cells segmented from 3D Field of View (FOV) images taken of 20 fluorescently-labeled structures in human induced pluripotent stem cells (hiPSCs). This dataset was collected from 2017 to 2019 and uses relatively simple 3D segmentation methods.",
         totalCells: 39200,
         totalFOVs: 11023,
         totalTaggedStructures: 20,
         image: dataset14Image,
+        link: "#v2019-4"
     },
 ];
