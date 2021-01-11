@@ -1,0 +1,53 @@
+@import "../../styles/colors.css";
+
+.content {
+    flex: 2;
+    padding: 20px 40px;
+}
+
+.header {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.subtitle {
+    text-align: center;
+    margin: 2em 0;
+}
+.alert {
+    margin-right: 120px;
+}
+
+.selected-info {
+    display: inline-block;
+}
+
+.label {
+    color: var(--text-gray);
+}
+
+.header-main {
+    text-align: left;
+    background-color: var(--background-dim-gray);
+    padding: 15px 50px;
+    height: initial;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-main h1 {
+    margin: 0;
+}
+
+.header-section {
+    text-align: center;
+    display: block;
+    border-top: 0.5px solid var(--dimgray);
+    border-bottom: 0.5px solid var(--dimgray);
+}
+
+.section {
+    margin: 2em auto;
+    max-width: 1200px;
+}
