@@ -9,13 +9,9 @@
     justify-content: space-between;
 }
 
-.container.is-loading {
-    overflow: hidden;
-    height: 100vh;
-}
-
 .content {
     flex: 2;
+    padding: 20px 40px;
 }
 
 .blur {
@@ -27,6 +23,10 @@
     margin-right: 1em;
 }
 
+.subtitle {
+    text-align: center;
+    margin: 2em 0;
+}
 .alert {
     margin-right: 120px;
 }
@@ -60,6 +60,11 @@
     border-bottom: 0.5px solid var(--dimgray);
 }
 
+.section {
+    margin: 2em auto;
+    max-width: 1200px;
+}
+
 :global(.allencell-header) {
     /* disabling absolute positioning */
     position: initial;
@@ -72,89 +77,6 @@
 
 :global(.allencell-header.move-left) {
     padding-right: 150px;
-}
-
-.sider {
-    background-color: #4b4b4bd1;
-    height: 100vh;
-    position: fixed;
-    right: 0;
-    z-index: 10;
-    padding-bottom: 0;
-}
-
-.sider :global(.ant-layout-sider-children) {
-    overflow: scroll;
-}
-
-.sider :global(.ant-layout-sider-zero-width-trigger.ant-layout-sider-zero-width-trigger-right) {
-    display: none;
-}
-
-/* element is appended to the top level of the dom, so had to be adjusted globally. Tested and seems ok*/
-:global(.ant-dropdown) {
-    z-index: 500000;
-}
-
-:global(.ant-collapse),
-:global(.ant-collapse-header),
-:global(.ant-collapse > .ant-collapse-item:last-child),
-:global(.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header)
-{
-    border-radius: 0;
-}
-
-.color-menu {
-    min-height: 80vh;
-}
-
-.color-menu :global(.ant-collapse) {
-    border-top: 0;
-    border-left: 0;
-}
-.color-menu :global(.ant-layout-sider-trigger) {
-    position: inherit;
-}
-.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger){
-    width: 20px !important;
-    height: 100%;
-    position: absolute;
-    left: -20px;
-    top: 0px;
-    background-color:  var(--header-gray);
-    border-left: 0.5px solid var(--border-gray);
-    border-right: none;
-
-& i {
-      display: block;
-      position: absolute;
-      left: 3.5px;
-      top: 50%;
-  }
-}
-
-.sider :global(.ant-layout-sider-children) {
-    padding-left: 10%;
-}
-
-.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-children) {
-    padding-left: 0;
-}
-
-/*expanded */
-.sider :global(.ant-layout-sider-trigger) {
-    width: 10% !important;
-    height: 100%;
-    position: absolute;
-    left: -20px;
-    top: 0px;
-    background-color:#000000a1;
-    border-left: 0.5px solid var(--border-gray);
-    border-right: 0.5px solid var(--border-gray);
-
-    & i {
-          display: none;
-      }
 }
 
 :global(.ant-btn-background-ghost) {

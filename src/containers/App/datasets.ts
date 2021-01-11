@@ -3,7 +3,7 @@ import dataset14Image from "../../images/card-cover-dataset-1-4.png";
 export interface DatasetMetaData {
     name: string;
     version: string;
-    new: boolean;
+    isNew: boolean;
     inReview: boolean;
     description: string;
     totalCells: number;
@@ -15,10 +15,10 @@ export default [
     {
         name: "hiPSC Single-Cell Image Dataset",
         version: "v2020.1",
-        new: true,
+        isNew: true,
         inReview: true,
         description:
-            "Through improved cell and nuclear segmentation methods this dataset contains 5x the number of single-cell images and includes new fluorescently-labeled structures. To learn more about the robust intracellular organization found in this dataset, please see our recent article in bioRxiv.",
+            "Through improved cell and nuclear segmentation methods this dataset contains 5x the number of single-cell images and includes new fluorescently-labeled structures. To learn more about the robust intracellular organization found in this dataset, please see our recent article in <a href='https://www.biorxiv.org/content/10.1101/2020.12.08.415562v1'>bioRxiv.</a>",
         totalCells: 216062,
         totalFOVs: 18186,
         totalTaggedStructures: 25,
@@ -27,8 +27,8 @@ export default [
     {
         name: "hiPSC Single-Cell Image Dataset",
         version: "v2019.4",
-        new: false,
-        inReview: true,
+        isNew: false,
+        inReview: false,
         description:
             "This dataset contains individual cells segmented from 3D Field of View (FOV) images taken of 20 fluorescently-labeled structures in human induced pluripotent stem cells (hiPSCs). This dataset was collected from 2017 to 2019 and uses relatively simple 3D segmentation methods.",
         totalCells: 39200,
