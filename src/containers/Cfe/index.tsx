@@ -1,5 +1,3 @@
-import AllenCellHeader from "@aics/allencell-nav-bar";
-import "@aics/allencell-nav-bar/style/style.css";
 import {
     Affix,
     Layout,
@@ -7,14 +5,10 @@ import {
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
-import classNames from "classnames";
 
-import BackToPlot from "../../components/BackToPlot/index";
 import CellViewer from "../../components/CellViewer/index";
-import LoadingOverlay from "../../components/LoadingOverlay";
 import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
-import metadataStateBranch from "../../state/metadata";
 import { BoolToggleAction } from "../../state/selection/types";
 import { State } from "../../state/types";
 import {
@@ -35,7 +29,6 @@ const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface CfeProps {
-    isLoading: boolean;
     galleryCollapsed: boolean;
     selected3DCell: string;
     selected3DCellFOV: string;
@@ -69,7 +62,6 @@ class Cfe extends React.Component<CfeProps, {}> {
 
     public render() {
         const {
-            isLoading,
             galleryCollapsed,
             selected3DCell,
             selected3DCellFOV,
@@ -83,12 +75,7 @@ class Cfe extends React.Component<CfeProps, {}> {
             openKeys,
             defaultActiveKey,
         } = this.state;
-        const layoutClassnames = classNames([styles.container, {[styles.isLoading]: isLoading}])
         return (
-            <Layout className={layoutClassnames}>
-                <LoadingOverlay isLoading={isLoading} />
-                <BackToPlot />
-                <AllenCellHeader show={true} />
                 <Layout>
                     <Affix>
                         <Sider
@@ -163,7 +150,6 @@ class Cfe extends React.Component<CfeProps, {}> {
                         </div>
                     </Layout>
                 </Layout>
-            </Layout>
         );
     }
 
@@ -171,7 +157,6 @@ class Cfe extends React.Component<CfeProps, {}> {
 
 function mapStateToProps(state: State) {
     return {
-        isLoading: metadataStateBranch.selectors.getIsLoading(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
         selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),

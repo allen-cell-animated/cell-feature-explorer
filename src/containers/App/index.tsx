@@ -1,23 +1,26 @@
 import AllenCellHeader from "@aics/allencell-nav-bar";
 import "@aics/allencell-nav-bar/style/style.css";
-import { Col, Layout, Row } from "antd";
+import { Layout } from "antd";
 import * as React from "react";
+import { connect } from "react-redux";
+import classNames from "classnames";
 
+import BackToPlot from "../../components/BackToPlot/index";
+import metadataStateBranch from "../../state/metadata";
+import LandingPage from "../../components/LandingPage";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
 import Cfe from "../Cfe";
-
-import datasetsMetaData from "./datasets";
-import DatasetCard from "../../components/DatasetCard";
-const {
-    Content,
-    Header,
-} = Layout;
+import LoadingOverlay from "../../components/LoadingOverlay";
+import { State } from "../../state/types";
 
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
-class App extends React.Component<{}, {}> {
-    private static panelKeys = ["proteinNames", "selections", "clusters"];
+interface AppProps {
+    isLoading: boolean;
+}
+
+class App extends React.Component<AppProps, {}> {
     public state = {
         dontShowSmallScreenWarningAgain: false,
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
@@ -47,7 +50,6 @@ class App extends React.Component<{}, {}> {
 
 
     public handleClose = () => {
-
         this.setState({
             showSmallScreenWarning: false,
         });
@@ -58,104 +60,42 @@ class App extends React.Component<{}, {}> {
     }
 
     public handleSelectDataset = (link: string) => {
+        // Temp fix until we have url solution for versions
         if (link.match("#")) {
             this.setState({renderExplorerApp: true})
         }
     }
 
     public render() {
-        if (this.state.renderExplorerApp) {
-            return <Cfe />;
-        }
+        const {
+            isLoading,
+      
+        } = this.props;
+        const { renderExplorerApp, showSmallScreenWarning } = this.state;
+        const showLoadingOverlay =  isLoading && renderExplorerApp
+        const layoutClassnames = classNames([
+            styles.container,
+            { [styles.isLoading]: showLoadingOverlay },
+        ]);
+
         return (
-            <Layout className={styles.container}>
+            <Layout className={layoutClassnames}>
+                <LoadingOverlay isLoading={showLoadingOverlay} />
+
                 <SmallScreenWarning
                     handleClose={this.handleClose}
                     onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                    visible={this.state.showSmallScreenWarning}
+                    visible={showSmallScreenWarning}
                 />
+                {renderExplorerApp && <BackToPlot />}
+
                 <AllenCellHeader show={true} />
                 <Layout>
-                    <Layout>
-                        <Header className={styles.headerMain}>
-                            <h1>Cell Feature Explorer</h1>
-
-                            <div>
-                                View any of over 200,000 3D cell images and plot cells by
-                                intracellular features such as organelle volume.
-                            </div>
-                        </Header>
-                        <Layout>
-                            <Content className={styles.content}>
-                                <h2 className={styles.subtitle}>Load a dataset</h2>
-                                <Row type="flex" justify="space-around" className={styles.section}>
-                                    {datasetsMetaData.map((dataset) => (
-                                        <Col key={`${dataset.name}-${dataset.version}`}>
-                                            <DatasetCard
-                                                {...dataset}
-                                                handleSelectDataset={this.handleSelectDataset}
-                                            />
-                                        </Col>
-                                    ))}
-                                </Row>
-                                <Row>
-                                    <Col className={styles.section}>
-                                        The Cell Feature Explorer is an online tool to access our
-                                        complete database of segmented and processed cells as
-                                        curated datasets. We have annotated each of our cells with
-                                        measured features, such as cellular volume and what stage of
-                                        mitosis it is in. The tool is composed of a plot and a 3D
-                                        viewer. In the plot each cell is graphed by its measured
-                                        features or select principal components described in our
-                                        journal publications. To access older data sets, see our{" "}
-                                        <a
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            href="https://www.allencell.org/data-downloading.html"
-                                        >
-                                            Data Downloading page
-                                        </a>
-                                        .
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col className={styles.section}>
-                                        <h2 className={styles.subtitle}>
-                                            Cell features in our data{" "}
-                                        </h2>
-                                        <p>
-                                            hiPS cells from the{" "}
-                                            <a
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                href="https://www.allencell.org/cell-catalog.html"
-                                            >
-                                                Allen Cell Collection
-                                            </a>{" "}
-                                            grow in epithelial-like monolayer colonies when cultured
-                                            on glass using our methods. We image rectangular fields
-                                            of view (FOV) from these colonies in 3D using spinning
-                                            disk confocal microscopy to collect 4 channels of data
-                                            for each FOV, including one brightfield channel and
-                                            three fluorescent channels for: dyed DNA, dyed cell
-                                            membrane, and one fluorescently labeled protein–
-                                            designed to visualize a particular organelle or
-                                            structure via endogenous tagging. The fluorescent
-                                            channels are segmented to demarcate the structures from
-                                            the background noise and to define the boundaries of
-                                            individual cells. The segmented structures are then
-                                            measured, and the data for these measurements, as well
-                                            as shape modes (from principal component analysis) are
-                                            made available for plotting at the top of the CFE tool
-                                            page. The beautiful cells and the FOVs from which they
-                                            were segmented can be explored in a 3D viewer at the
-                                            bottom of the CFE tool page.
-                                        </p>
-                                    </Col>
-                                </Row>
-                            </Content>
-                        </Layout>
-                    </Layout>
+                    {renderExplorerApp ? (
+                        <Cfe />
+                    ) : (
+                        <LandingPage handleSelectDataset={this.handleSelectDataset} />
+                    )}
                 </Layout>
             </Layout>
         );
@@ -163,4 +103,12 @@ class App extends React.Component<{}, {}> {
 
 }
 
-export default App;
+function mapStateToProps(state: State) {
+    return {
+        isLoading: metadataStateBranch.selectors.getIsLoading(state),
+
+    };
+}
+
+
+export default connect(mapStateToProps, {})(App);

@@ -9,6 +9,11 @@
     justify-content: space-between;
 }
 
+.container.is-loading {
+    overflow: hidden;
+    height: 100vh;
+}
+
 .content {
     flex: 2;
     padding: 20px 40px;
