@@ -3,6 +3,7 @@
 .card {
     padding: 15px 15px 5px 15px;
     background-color: #4b4b4b;
+    margin-bottom: 15px;
 }
 
 .card :global(.ant-card-body) {
