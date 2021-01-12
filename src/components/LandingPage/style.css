@@ -12,6 +12,7 @@
 
 .subtitle {
     text-align: center;
+    font-size: 20px;
     margin: 2em 0;
 }
 .alert {
@@ -33,7 +34,7 @@
     height: initial;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
 }
 
 .header-main h1 {
@@ -49,5 +50,18 @@
 
 .section {
     margin: 2em auto;
-    max-width: 1200px;
+    max-width: 1010px;
+    font-weight: 100;
+}
+
+.caption {
+    font-size: 12px;
+    margin: 2em;
+    text-align: justify;
+}
+
+.light-section {
+    background-color: var(--background-dim-gray);
+    margin: 0 -40px -20px -40px;
+    font-size: 18px;
 }
