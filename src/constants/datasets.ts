@@ -1,5 +1,5 @@
-import dataset2Image from "../../images/card-cover-dataset-2-0.png";
-import dataset14Image from "../../images/card-cover-dataset-1-4.png";
+import dataset2Image from "../images/card-cover-dataset-2-0.png";
+import dataset14Image from "../images/card-cover-dataset-1-4.png";
 export interface DatasetMetaData {
     name: string;
     version: string;
