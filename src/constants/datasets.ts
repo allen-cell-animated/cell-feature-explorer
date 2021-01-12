@@ -28,7 +28,7 @@ export default [
     },
     {
         name: "hiPSC Single-Cell Image Dataset",
-        version: "v2019.4",
+        version: "v2019.1",
         isNew: false,
         inReview: false,
         description:
@@ -37,6 +37,6 @@ export default [
         totalFOVs: 11023,
         totalTaggedStructures: 20,
         image: dataset14Image,
-        link: "#v2019-4",
+        link: "#v2019-1",
     },
 ];
