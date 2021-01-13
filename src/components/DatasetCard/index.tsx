@@ -23,14 +23,19 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     link
 }: DatasetCardProps) => {
     const title = (
-    <>
-            <div>{name}</div>
-            {isNew && (<Tag color="purple">New</Tag>)}
+        <>
+            <div>
+                {isNew && <Tag color="purple">new</Tag>}
+                {name}
+            </div>
             <span className={styles.version}>{version}</span>
-            {inReview && <><Divider type="vertical"/> (in review)</>}
-
-    </>
-    )
+            {inReview && (
+                <>
+                    <Divider type="vertical" /> (in review)
+                </>
+            )}
+        </>
+    );
     return (
         <a
             href={link}
