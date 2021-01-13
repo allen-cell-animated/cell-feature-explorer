@@ -17,7 +17,7 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
 
             <div>
                 View any of over 200,000 3D cell images and plot cells by features such as organelle
-                volume.
+                volume
             </div>
         </Header>
         <Layout>
@@ -34,9 +34,8 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
                         of segmented and processed cells as curated datasets. We have annotated each
                         of our cells with measured features, such as cellular volume and what stage
                         of mitosis it is in. The tool is composed of a plot and a 3D viewer. In the
-                        plot each cell is graphed by its measured features or select principal
-                        components described in our journal publications. To access older data sets,
-                        see our{" "}
+                        plot each cell is graphed by its measured features described in our journal
+                        publications. To access older data sets, see our{" "}
                         <a
                             target="_blank"
                             rel="noreferrer"
@@ -47,8 +46,6 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
                         .
                     </Col>
                 </Row>
-                {/* <Row>
-                </Row> */}
                 <Row className={styles.lightSection}>
                     <Col className={styles.section}>
                         <h2 className={styles.subtitle}>Cell features in our data </h2>
