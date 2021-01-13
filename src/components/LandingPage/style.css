@@ -55,7 +55,7 @@
 }
 
 .caption {
-    font-size: 12px;
+    font-size: 1rem;
     margin: 2em 4.4em;
     text-align: justify;
     color: var(--text-gray);
@@ -64,7 +64,8 @@
 .light-section {
     background-color: var(--background-dim-gray);
     margin: 0 -40px -20px -40px;
-    font-size: 18px;
+    font-size: 1.2rem;
+    line-height: 1.75;
     color: var(--text-gray);
 }
 .light-section p {

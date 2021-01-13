@@ -26,6 +26,11 @@
     text-align: center;
 }
 
+.card :global(.ant-card-meta-description) {
+    color: var(--text-gray);
+    font-size: 1rem;
+}
+
 .card :global(.ant-tag) {
     font-size: 10px;
     vertical-align: top;
