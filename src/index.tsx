@@ -27,6 +27,15 @@ const messenger = new MessageTarget(function updateAppState(messageEvent: Messag
 
 // when the URL changes, notify host page if run within iframe
 pram.onChange(function notifyHostFrameOfURLChange(urlParams) {
+    if (!location.hash && location.search) {
+        // clear out query params on loading page
+        // temp fix until we decide how we're storing/requesting dataset version
+        window.history.replaceState({}, document.title, "/");
+    } else if (!location.hash && !location.search) {
+        // used the back button to get back to the landing page, 
+        // temp fix until we decide how we're storing/requesting dataset version
+        location.reload();     
+    }
     try {
         messenger.postMessage(urlParams);
     } catch (error) {

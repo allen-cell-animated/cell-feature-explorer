@@ -1,0 +1,38 @@
+@import "../../styles/colors.css";
+
+.card {
+    padding: 15px 15px 5px 15px;
+    background-color: #4b4b4b;
+    margin-bottom: 15px;
+}
+
+.card :global(.ant-card-body) {
+    padding: 0px;
+}
+
+.card:hover {
+   box-shadow: 0px 1px 19px 5px rgb(0 0 0 / 47%) !important;
+}
+
+.card :global(.ant-descriptions-item-label) {
+    color: #ffffffc4;
+}
+
+.card :global(.ant-descriptions-item-content) {
+    color: #fff;
+}
+
+.card :global(.ant-card-meta-title) {
+    text-align: center;
+}
+
+.card :global(.ant-tag) {
+    font-size: 10px;
+    vertical-align: top;
+    line-height: initial;
+    padding: 0 2px;
+}
+
+.card :global(.ant-card-meta) {
+    margin-bottom: 1em;
+}

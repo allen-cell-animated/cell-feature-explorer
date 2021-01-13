@@ -1,31 +1,8 @@
 @import "../../styles/colors.css";
 
-:global(.ant-affix) {
-    z-index: 100;
-}
-
-:global(.ant-layout-header) {
-    display: flex;
-    justify-content: space-between;
-}
-
-:global(.ant-select-dropdown) {
-    width: initial !important;
-}
-
-.wrapper.is-loading {
-    overflow: hidden;
-    height: 100vh;
-}
-
 .content {
     flex: 2;
     padding: 20px 40px;
-    overflow-x: visible !important;
-}
-
-.blur {
-    filter: blur(8px);
 }
 
 .header {
@@ -35,7 +12,8 @@
 
 .subtitle {
     text-align: center;
-    margin: 2em 0;
+    font-size: 24px;
+    margin: 1.2em 0;
 }
 .alert {
     margin-right: 120px;
@@ -56,7 +34,7 @@
     height: initial;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
 }
 
 .header-main h1 {
@@ -72,24 +50,29 @@
 
 .section {
     margin: 2em auto;
-    max-width: 1200px;
+    max-width: 1010px;
+    font-weight: 100;
 }
 
-:global(.allencell-header) {
-    /* disabling absolute positioning */
-    position: initial;
-    -webkit-transform: none;
-    -moz-transform: none;
-    -ms-transform: none;
-    -o-transform: none;
-    transform: none;
-}
-
-:global(.allencell-header.move-left) {
-    padding-right: 150px;
-}
-
-:global(.ant-btn-background-ghost) {
+.caption {
+    font-size: 12px;
+    margin: 2em 4.4em;
+    text-align: justify;
     color: var(--text-gray);
-    border-color: var(--text-gray);
+}
+
+.light-section {
+    background-color: var(--background-dim-gray);
+    margin: 0 -40px -20px -40px;
+    font-size: 18px;
+    color: var(--text-gray);
+}
+.light-section p {
+    padding: 0 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .header-main {
+        flex-flow: row wrap;
+    }
 }

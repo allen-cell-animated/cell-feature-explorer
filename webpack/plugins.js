@@ -3,7 +3,7 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
@@ -46,15 +46,8 @@ const BASE_PLUGINS = [
             }
         ]
     ),
-    new ExtractTextPlugin('style.[contenthash].css'),
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks(module) {
-            return module.context && module.context.indexOf('node_modules') !== -1;
-        }
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'runtime'
+    new MiniCssExtractPlugin({
+        filename: 'style.[contenthash].css'
     }),
     new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'index.template.html')
@@ -72,7 +65,6 @@ const PLUGINS_BY_ENV = {
             THUMBNAIL_BASE_URL: ProductionServers.THUMBNAIL_BASE_URL,
             DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
-        new webpack.optimize.UglifyJsPlugin(),
         new webpack.HashedModuleIdsPlugin()
     ],
     [Env.STAGE]: [
