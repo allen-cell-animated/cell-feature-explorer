@@ -64,7 +64,7 @@ and b) copying the contents of the artifact to an S3 website bucket. For both st
 steps are captured in this project's Jenkinsfile and can be executed by setting the proper parameters for the Jenkins build.
 
 #### Staging deployment
-Automatically builds from `master`
+Automatically builds from `master`, can also be manually triggered on Jenkins
 
 #### Production deployment
 Note: The final two steps require the AWS CLI as well as permissions on AWS to copy to the production S3 bucket and to run a Cloudfront invalidation.
