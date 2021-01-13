@@ -60,7 +60,7 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
                             </a>{" "}
                             grow in epithelial-like monolayer colonies when cultured on glass using
                             our methods. We image rectangular fields of view (FOV) from these
-                            colonies in 3D using spinning disk confocal microscopy to collect 4
+                            colonies in 3D, using spinning disk confocal microscopy to collect 4
                             channels of data for each FOV, including one brightfield channel and
                             three fluorescent channels for: dyed DNA, dyed cell membrane, and one
                             fluorescently labeled protein– designed to visualize a particular
