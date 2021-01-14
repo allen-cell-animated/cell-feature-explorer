@@ -22,7 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Copy files to staging bucket
+      - name: Copy files from staging bucket to production
         run: aws s3 sync s3://staging.cfe.allencell.org s3://production.cfe.allencell.org --delete
       - name: Clear cloudfront cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CFE_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
