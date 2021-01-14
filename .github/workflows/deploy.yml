@@ -68,6 +68,3 @@ jobs:
 
       - name: Copy files to staging bucket
         run: aws s3 sync ./dist s3://staging.cfe.allencell.org --delete
-      - name: Clear cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CFE_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
-
