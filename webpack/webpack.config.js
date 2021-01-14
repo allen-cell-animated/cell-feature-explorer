@@ -128,7 +128,17 @@ module.exports = ({
     },
 
     optimization: {
-        minimize: env === Env.PRODUCTION
+        minimize: env === Env.PRODUCTION,
+        runtimeChunk: 'single',
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        filename: 'vendor.[contenthash].js',
+                        test: /[\\/]node_modules[\\/]/,
+                    },
+                }
+            }
     },
     output: {
         path: path.resolve(__dirname, '../', 'dist'),
