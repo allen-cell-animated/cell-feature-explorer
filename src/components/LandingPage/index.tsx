@@ -60,14 +60,20 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
                             </a>{" "}
                             grow in epithelial-like monolayer colonies when cultured on glass using
                             our methods. We image rectangular fields of view (FOV) from these
-                            colonies in 3D, using spinning disk confocal microscopy to collect 4
+                            colonies in 3D, using spinning disk confocal microscopy. We collect four
                             channels of data for each FOV, including one brightfield channel and
-                            three fluorescent channels for: dyed DNA, dyed cell membrane, and one
-                            fluorescently labeled protein– designed to visualize a particular
-                            organelle or cellular structure via endogenous tagging. The fluorescent
-                            channels are segmented to demarcate structures and to define the
-                            boundaries of individual cells. The segmented structures are then
-                            measured, and the data for these measurements, as well as cell and
+                            three fluorescent channels:
+                            <ul>
+                                <li>dyed DNA </li>
+                                <li>dyed cell membrane </li>
+                                <li>one fluorescently labeled protein designed to visualize a
+                                particular organelle or cellular structure via endogenous tagging</li>
+                            </ul>
+                        </p>
+                        <p>
+                            The fluorescent channels are segmented to demarcate structures and to
+                            define the boundaries of individual cells. The segmented structures are
+                            then measured, and the data for these measurements, as well as cell and
                             nuclear shape modes (derived from a principal component analysis; please
                             see our recent article in{" "}
                             <a

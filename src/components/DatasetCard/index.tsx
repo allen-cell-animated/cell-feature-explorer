@@ -58,7 +58,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 <Descriptions column={1} size="small">
                     <Descriptions.Item label="Number of Cells">{(totalCells).toLocaleString("en")}</Descriptions.Item>
                     <Descriptions.Item label="Number of FOVs">{(totalFOVs.toLocaleString("en"))}</Descriptions.Item>
-                    <Descriptions.Item label="Number of tagged-structures">
+                    <Descriptions.Item label="Number of tagged structures">
                         {totalTaggedStructures}
                     </Descriptions.Item>
                 </Descriptions>
