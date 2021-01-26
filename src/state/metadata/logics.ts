@@ -20,7 +20,7 @@ import { ChangeClusterNumberAction } from "../selection/types";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveMetadata, requestFeatureData, setIsLoading } from "./actions";
+import { receiveCellLineData, receiveMetadata, requestFeatureData, setLoadingText, stopLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
@@ -32,7 +32,7 @@ import { MetaData, MetadataStateBranch } from "./types";
 const requestCellLineData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { imageDataSet } = deps;
-
+        dispatch(setLoadingText("Loading cell line data..."));
         return imageDataSet
             .getCellLineData()
             .then((data: MetadataStateBranch) => dispatch(receiveCellLineData(data)))
@@ -48,11 +48,12 @@ const requestCellLineData = createLogic({
 const requestFeatureDataLogic = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
+        dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
         return imageDataSet
             .getFeatureData()
             .then((data: MetadataStateBranch[]) => {
                 const cellLineDefs = getState().metadata.cellLineDefs;
-                dispatch(setIsLoading(false))
+                dispatch(stopLoading())
                 // shuffle to keep the plot from being organized in z
                 return shuffle(
                     map(data, (datum: MetadataStateBranch) => {
@@ -113,10 +114,12 @@ const requestFeatureDataLogic = createLogic({
 });
 
 const requestAlbumData = createLogic({
-    process(deps: ReduxLogicDeps) {
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { imageDataSet } = deps;
+        dispatch(setLoadingText("Loading album data..."));
         return imageDataSet
             .getAlbumData()
+            .then(done)
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             });

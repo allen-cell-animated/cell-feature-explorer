@@ -18,6 +18,7 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface AppProps {
     isLoading: boolean;
+    loadingText: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -67,23 +68,19 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public render() {
-        const {
-            isLoading,
-      
-        } = this.props;
+        const { isLoading, loadingText } = this.props;
         const { renderExplorerApp, showSmallScreenWarning } = this.state;
         const showLoadingOverlay =  isLoading && renderExplorerApp
         const layoutClassnames = classNames([
             styles.container,
             { [styles.isLoading]: showLoadingOverlay },
         ]);
-
         return (
             <div
                 className={classNames([styles.wrapper, { [styles.isLoading]: showLoadingOverlay }])}
             >
                 <Layout className={layoutClassnames}>
-                    <LoadingOverlay isLoading={showLoadingOverlay} />
+                    <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
 
                     <SmallScreenWarning
                         handleClose={this.handleClose}
@@ -110,7 +107,7 @@ class App extends React.Component<AppProps, {}> {
 function mapStateToProps(state: State) {
     return {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
-
+        loadingText: metadataStateBranch.selectors.getLoadingText(state),
     };
 }
 

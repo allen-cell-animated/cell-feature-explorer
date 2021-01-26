@@ -8,6 +8,7 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     SET_IS_LOADING,
+    SET_LOADING_TEXT,
 } from "./constants";
 import {
     CellLineDef,
@@ -58,9 +59,16 @@ export function receiveAlbumData(payload: Album[]): ReceiveAlbumDataAction {
     };
 }
 
-export function setIsLoading(payload: boolean): SetLoadingAction {
+export function stopLoading(): SetLoadingAction {
     return {
-        payload,
+        payload: false,
         type: SET_IS_LOADING
     }
+}
+
+export function setLoadingText(payload: string): SetLoadingAction {
+    return {
+        payload,
+        type: SET_LOADING_TEXT,
+    };
 }
