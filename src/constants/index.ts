@@ -6,14 +6,29 @@ export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
 export const CLUSTERS_PLOT_NAME = "clusters-plot-name";
 export const COLOR_BY_SELECTOR = "colorBy";
-export const CELL_ID_KEY = "CellId";
-export const CELL_LINE_NAME_KEY = "CellLineName";
-export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId_Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
-export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
+
+export const CELL_ID_KEY = "CellId";
+export const FOV_ID_KEY = "FOVId";
+export const CELL_LINE_NAME_KEY = "CellLineName";
+export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
+export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
+export const THUMBNAIL_PATH = "thumbnailPath";
+export const VOLUME_VIEWER_PATH = "volumeviewerPath";
+// this defines the order they appear in the data files
+export const FILE_INFO_KEYS = Object.freeze([
+    CELL_ID_KEY,
+    FOV_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    THUMBNAIL_PATH,
+    VOLUME_VIEWER_PATH,
+    FOV_THUMBNAIL_PATH,
+    FOV_VOLUME_VIEWER_PATH,
+]);
+
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
