@@ -11,7 +11,7 @@
     "displayName": "Cell volume",
     "description": "description of feature",
     "tooltip": "short description of feature",
-    "unit": "\u00b5m",
+    "unit": "\u00b5m\u00b3",
     "key": "feature1",
     "discrete": false
   },
@@ -35,7 +35,7 @@
     "displayName": "DNA volume",
     "description": "description of feature",
     "tooltip": "short description of feature",
-    "unit": "\u00b5m",
+    "unit": "\u00b5m\u00b3",
     "key": "feature4",
     "discrete": false
   },
