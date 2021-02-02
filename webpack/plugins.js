@@ -29,7 +29,11 @@ const BASE_PLUGINS = [
     new CopyWebpackPlugin(
         [
             {
-                from: path.resolve(__dirname, '../src/data', 'cell-feature-analysis.json'),
+                from: path.resolve(__dirname, '../src/data', 'cell_feature_analysis.json'),
+                to: 'data'
+            },
+            {
+                from: path.resolve(__dirname, '../src/data', 'feature_defs.json'),
                 to: 'data'
             },
             {

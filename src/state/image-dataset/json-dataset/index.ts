@@ -50,7 +50,7 @@ class JsonRequest implements ImageDataset {
     public getFeatureData = () => {
         // helper function
         function getFullFeatureName(featureDef: any) {
-            return `${featureDef.name} (${featureDef.unit})`;
+            return `${featureDef.displayName} (${featureDef.unit})`;
         }
         let outerFeatureDefs: any[] = [];
 

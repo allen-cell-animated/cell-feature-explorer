@@ -1,0 +1,124 @@
+[
+  {
+    "displayName": "Cell height",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature0",
+    "discrete": false
+  },
+  {
+    "displayName": "Cell volume",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature1",
+    "discrete": false
+  },
+  {
+    "displayName": "Cell surface area",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature2",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA height",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature3",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA volume",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature4",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA surface area",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature5",
+    "discrete": false
+  },
+  {
+    "displayName": "Intracellular structure volume",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "\u00b5m",
+    "key": "feature6",
+    "discrete": false
+  },
+  {
+    "displayName": "Anaphase segmentation complete",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "unitless",
+    "key": "feature7",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#fed98e",
+        "name": "Incomplete"
+      },
+      "1": {
+        "color": "#7f48f3",
+        "name": "Complete"
+      },
+      "-1": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  },
+  {
+    "displayName": "Interphase or mitosis",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "stage",
+    "key": "feature8",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#fed98e",
+        "name": "Incomplete"
+      },
+      "1": {
+        "color": "#7f48f3",
+        "name": "Complete"
+      },
+      "-1": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  },
+  {
+    "displayName": "Interphase & mitotic stages",
+    "description": "description of feature",
+    "tooltip": "short description of feature",
+    "unit": "stage",
+    "key": "feature9",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#fed98e",
+        "name": "Incomplete"
+      },
+      "1": {
+        "color": "#7f48f3",
+        "name": "Complete"
+      },
+      "-1": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  }
+]
