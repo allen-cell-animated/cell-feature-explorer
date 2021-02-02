@@ -1,14 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import { map, reduce } from "lodash";
+import { reduce } from "lodash";
 
 import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     BASE_API_URL,
-    CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
-    FOV_ID_KEY,
-    PROTEIN_NAME_KEY,
     FILE_INFO_KEYS,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
@@ -66,8 +62,8 @@ class JsonRequest implements ImageDataset {
             })
             .then((featureDataArray) => {
                 // transform data in place to save memory
-                featureDataArray.forEach((el: any, i: number) => {
-                    el.measured_features = {};
+                featureDataArray.forEach((el: any) => {
+                    el["measured_features"] = {};
                     el.features.forEach((f: any, i: number) => {
                         el.measured_features[getFullFeatureName(outerFeatureDefs[i])] = f;
                     });
@@ -75,7 +71,7 @@ class JsonRequest implements ImageDataset {
                     delete el.features;
 
                     // convert file_info array to obj
-                    el.file_info = {
+                    el["file_info"] = {
                         [FILE_INFO_KEYS[0]]: el.file_info[0],
                         [FILE_INFO_KEYS[1]]: el.file_info[1],
                         [FILE_INFO_KEYS[2]]: el.file_info[2],
