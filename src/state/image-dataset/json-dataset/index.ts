@@ -65,7 +65,7 @@ class JsonRequest implements ImageDataset {
                 // transform data in place to save memory
                 featureDataArray.forEach((el: any) => {
                     // number of feature defs must be same as number of features
-                    if (this.featureDefs.length === el.features.length) {
+                    if (this.featureDefs.length !== el.features.length) {
                         throw new Error("Bad number of feature entries in data");
                     }
                     el["measured_features"] = {};
@@ -76,7 +76,7 @@ class JsonRequest implements ImageDataset {
                     delete el.features;
 
                     // number of file info property names must be same as number of file_info entries in data
-                    if (FILE_INFO_KEYS.length === el.file_info.length) {
+                    if (FILE_INFO_KEYS.length !== el.file_info.length) {
                         throw new Error("Bad number of file_info entries in data");
                     }
                     // convert file_info array to obj
