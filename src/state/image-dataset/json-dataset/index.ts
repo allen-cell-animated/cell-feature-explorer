@@ -22,6 +22,8 @@ class JsonRequest implements ImageDataset {
     private labkeyStructureKey = "StructureId/Name";
     private labkeyProteinKey = "ProteinId/DisplayName";
 
+    private featureDefs: any[] = [];
+
     constructor() {
         this.baseUrl = BASE_API_URL;
     }
@@ -52,34 +54,38 @@ class JsonRequest implements ImageDataset {
         function getFullFeatureName(featureDef: any) {
             return `${featureDef.displayName} (${featureDef.unit})`;
         }
-        let outerFeatureDefs: any[] = [];
 
         // make sure we have the feature defs first.
         return this.getJson(FEATURE_DEFS_FILENAME)
             .then((featureDefs) => {
-                outerFeatureDefs = featureDefs;
+                this.featureDefs = featureDefs;
                 return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME);
             })
             .then((featureDataArray) => {
                 // transform data in place to save memory
                 featureDataArray.forEach((el: any) => {
+                    // number of feature defs must be same as number of features
+                    if (this.featureDefs.length === el.features.length) {
+                        throw new Error("Bad number of feature entries in data");
+                    }
                     el["measured_features"] = {};
                     el.features.forEach((f: any, i: number) => {
-                        el.measured_features[getFullFeatureName(outerFeatureDefs[i])] = f;
+                        el.measured_features[getFullFeatureName(this.featureDefs[i])] = f;
                     });
                     // now el.features is totally replaced by el.measured_features
                     delete el.features;
 
+                    // number of file info property names must be same as number of file_info entries in data
+                    if (FILE_INFO_KEYS.length === el.file_info.length) {
+                        throw new Error("Bad number of file_info entries in data");
+                    }
                     // convert file_info array to obj
-                    el["file_info"] = {
-                        [FILE_INFO_KEYS[0]]: el.file_info[0],
-                        [FILE_INFO_KEYS[1]]: el.file_info[1],
-                        [FILE_INFO_KEYS[2]]: el.file_info[2],
-                        [FILE_INFO_KEYS[3]]: el.file_info[3],
-                        [FILE_INFO_KEYS[4]]: el.file_info[4],
-                        [FILE_INFO_KEYS[5]]: el.file_info[5],
-                        [FILE_INFO_KEYS[6]]: el.file_info[6],
-                    };
+                    const fileInfo: Record<string, any> = {};
+                    el.file_info.forEach((f: any, i: number) => {
+                        fileInfo[FILE_INFO_KEYS[i]] = f;
+                    });
+
+                    el["file_info"] = fileInfo;
                 });
                 return featureDataArray;
             })
