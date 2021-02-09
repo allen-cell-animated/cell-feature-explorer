@@ -6,18 +6,19 @@ const styles = require("./style.css");
 
 interface ViewerOverlayTargetProps {
     isLoading: boolean;
+    loadingText?: string;
 }
 const LoadingOverlay = ({
     isLoading,
+    loadingText,
 }: ViewerOverlayTargetProps): JSX.Element | null => {
- 
     const loadingOverlay = (
         <div className={styles.container}>
             <p className="loading-icon">{Loading}</p>
-            <p className="loading-text">Loading data...</p>
+            <p className="loading-text">{loadingText || "Loading data..."}</p>
         </div>
     );
- 
+
     if (isLoading) {
         return loadingOverlay;
     } else {

@@ -1,7 +1,8 @@
 .DS_Store
 .idea/
 node_modules/
-dist/
+dist/*
+!dist/.gitkeep
 npm-debug.log
 .gradle/
 build/
@@ -9,3 +10,4 @@ build/
 .project
 .settings/
 .env
+awscli-bundle

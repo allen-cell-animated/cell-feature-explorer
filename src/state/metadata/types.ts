@@ -56,6 +56,6 @@ export interface RequestAction {
 }
 
 export interface SetLoadingAction {
-    payload: boolean;
+    payload: boolean | string;
     type: string;
 }

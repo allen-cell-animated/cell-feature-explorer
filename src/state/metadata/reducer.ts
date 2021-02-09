@@ -8,6 +8,7 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_METADATA,
     SET_IS_LOADING,
+    SET_LOADING_TEXT,
 } from "./constants";
 import {
     MetadataStateBranch,
@@ -21,6 +22,7 @@ export const initialState = {
     cellLineDefs: {},
     featureData: [],
     isLoading: true,
+    loadingText: "",
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -52,6 +54,15 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
             isLoading: action.payload,
+            loadingText: !action.payload ? initialState.loadingText : state.loadingText,
+        }),
+    },
+    [SET_LOADING_TEXT]: {
+        accepts: (action: AnyAction): action is SetLoadingAction =>
+            action.type === SET_LOADING_TEXT,
+        perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
+            ...state,
+            loadingText: action.payload,
         }),
     },
 };

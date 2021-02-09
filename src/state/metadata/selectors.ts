@@ -24,6 +24,7 @@ export const getFullMetaDataArray = (state: State) => state.metadata.featureData
 export const getFullCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
+export const getLoadingText = (state: State) => state.metadata.loadingText;
 
 export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
     return map(fullMetaData, "file_info");
