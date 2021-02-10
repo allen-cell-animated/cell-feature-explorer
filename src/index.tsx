@@ -19,12 +19,7 @@ import { UrlState } from "./util";
 const pram = new Pram(createHistory());
 const store = createReduxStore({ selection: UrlState.toAppState(pram.getParams())});
 
-// in the case that this application is run within an iframe, setup communication between this app
-// and it host page to capture any URL search params that are intended to modify the state of this app
-const messenger = new MessageTarget(function updateAppState(messageEvent: MessageEvent) {
-    console.log('syncing')
-    store.dispatch(selection.actions.syncStateWithURL(messageEvent.data));
-});
+store.dispatch(selection.actions.syncStateWithURL(pram.getParams()));
 
 // when the URL changes, notify host page if run within iframe
 pram.onChange(function notifyHostFrameOfURLChange(urlParams) {

@@ -89,7 +89,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is ChangeSelectionAction =>
             action.type === CHANGE_DATASET,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => {
-        console.log(action.payload)
             return {
             ...state,
             ...initialState,

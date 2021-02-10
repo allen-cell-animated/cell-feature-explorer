@@ -77,6 +77,7 @@ export const getHoveredPointId = (state: State) => state.selection.hoveredPointI
 export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
+export const getSelectedDataset = (state: State) => state.selection.dataset;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS

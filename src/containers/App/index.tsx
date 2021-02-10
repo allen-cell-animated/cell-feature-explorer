@@ -22,6 +22,7 @@ interface AppProps {
     isLoading: boolean;
     loadingText: string;
     changeDataset: (id: string) => ChangeSelectionAction;
+    selectedDataset: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -64,17 +65,14 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public handleSelectDataset = (id: string) => {
-        console.log(id)
 
-        // Temp fix until we have url solution for versions
-            this.setState({renderExplorerApp: true})
         this.props.changeDataset(id)
     }
 
     public render() {
-        const { isLoading, loadingText } = this.props;
-        const { renderExplorerApp, showSmallScreenWarning } = this.state;
-        const showLoadingOverlay =  isLoading && renderExplorerApp
+        const { isLoading, loadingText, selectedDataset } = this.props;
+        const { showSmallScreenWarning } = this.state;
+        const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
             styles.container,
             { [styles.isLoading]: showLoadingOverlay },
@@ -91,11 +89,11 @@ class App extends React.Component<AppProps, {}> {
                         onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                         visible={showSmallScreenWarning}
                     />
-                    {renderExplorerApp && <BackToPlot />}
+                    {!!selectedDataset && <BackToPlot />}
 
                     <AllenCellHeader show={true} />
                     <Layout>
-                        {renderExplorerApp ? (
+                        {!!selectedDataset ? (
                             <Cfe />
                         ) : (
                             <LandingPage handleSelectDataset={this.handleSelectDataset} />
@@ -112,6 +110,7 @@ function mapStateToProps(state: State) {
     return {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
+        selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
     };
 }
 
