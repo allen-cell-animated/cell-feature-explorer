@@ -6,7 +6,7 @@ const { Meta } = Card;
 const styles = require("./style.css");
 
 interface DatasetCardProps extends DatasetMetaData {
-    handleSelectDataset: (link: string) => void;
+    handleSelectDataset: (id: string) => void;
 }
 
 const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
@@ -20,7 +20,8 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     isNew,
     inReview,
     handleSelectDataset,
-    link
+    link,
+    id,
 }: DatasetCardProps) => {
     const title = (
         <>
@@ -80,11 +81,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             </a>
         );
     } 
-    return (
-        <div onClick={() => handleSelectDataset(version)}>
-            {cardContent}
-        </div>
-    );
+    return <div onClick={() => handleSelectDataset(id)}>{cardContent}</div>;
 };
 
 export default DatasetCard;

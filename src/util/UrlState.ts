@@ -120,7 +120,7 @@ export default class UrlState {
             return selectCellFor3DAction;
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
-        [URLSearchParam.dataset]: (version) => changeDataset(String(version)),
+        [URLSearchParam.dataset]: (id) => changeDataset(String(id)),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => toggleGallery(galleryCollapsed === "true"),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
@@ -145,7 +145,7 @@ export default class UrlState {
             return base;
         },
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
-        [URLSearchParam.dataset]: (version) => ({dataset: String(version)}),
+        [URLSearchParam.dataset]: (id) => ({dataset: String(id)}),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => ({ galleryCollapsed: galleryCollapsed === "true" }),
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
