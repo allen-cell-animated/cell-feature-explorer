@@ -24,6 +24,7 @@ import {
     selectPoint,
     toggleGallery,
 } from "../state/selection/actions";
+import { initialState } from "../state/selection/reducer";
 import { SelectionStateBranch } from "../state/selection/types";
 
 export enum URLSearchParam {
@@ -93,7 +94,8 @@ export default class UrlState {
         return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
             if (
                 UrlState.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
-                UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
+                UrlState.valueIsMeaningfulToSerialize(selectionStateValue) &&
+                UrlState.valueIsNotDefault(selectionStateValue, selectionStateKey)
             ) {
                 return {
                     ...accum,
@@ -171,5 +173,11 @@ export default class UrlState {
         }
 
         return !isNaN(selection) && !isNil(selection);
+    }
+
+    private static valueIsNotDefault(selection: any, key: string): boolean {
+
+        return (initialState as any)[key] !== selection
+        
     }
 }
