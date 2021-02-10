@@ -37,6 +37,6 @@ export default [
         totalFOVs: 11023,
         totalTaggedStructures: 20,
         image: dataset14Image,
-        link: "#v2019-1",
+        // link: "v2019-1",
     },
 ];

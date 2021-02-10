@@ -99,7 +99,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public componentDidMount() {
-        this.props.requestCellLineData();
+        // this.props.requestCellLineData();
     }
 
     // TODO: retype once plotly has id and fullData types

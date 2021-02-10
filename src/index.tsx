@@ -22,27 +22,29 @@ const store = createReduxStore({ selection: UrlState.toAppState(pram.getParams()
 // in the case that this application is run within an iframe, setup communication between this app
 // and it host page to capture any URL search params that are intended to modify the state of this app
 const messenger = new MessageTarget(function updateAppState(messageEvent: MessageEvent) {
+    console.log('syncing')
     store.dispatch(selection.actions.syncStateWithURL(messageEvent.data));
 });
 
 // when the URL changes, notify host page if run within iframe
 pram.onChange(function notifyHostFrameOfURLChange(urlParams) {
-    if (!location.hash && location.search) {
-        // clear out query params on loading page
-        // temp fix until we decide how we're storing/requesting dataset version
-        window.history.replaceState({}, document.title, "/");
-    } else if (!location.hash && !location.search) {
-        // used the back button to get back to the landing page, 
-        // temp fix until we decide how we're storing/requesting dataset version
-        location.reload();     
-    }
-    try {
-        messenger.postMessage(urlParams);
-    } catch (error) {
-        // one common scenario in which this would fail is in dev/staging, in which this application
-        // is not being run inside an iframe.
-        // swallow error
-    }
+    // if (!location.hash && location.search) {
+    //     // clear out query params on loading page
+    //     // temp fix until we decide how we're storing/requesting dataset version
+    //     window.history.replaceState({}, document.title, "/");
+    // } else if (!location.hash && !location.search) {
+    //     // used the back button to get back to the landing page, 
+    //     // temp fix until we decide how we're storing/requesting dataset version
+    //     location.reload();     
+    // }
+    // try {
+    //     messenger.postMessage(urlParams);
+    // } catch (error) {
+    //     console.log(error)
+    //     // one common scenario in which this would fail is in dev/staging, in which this application
+    //     // is not being run inside an iframe.
+    //     // swallow error
+    // }
 });
 
 // keep the URL in sync with the state of this app

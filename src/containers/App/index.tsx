@@ -2,16 +2,18 @@ import AllenCellHeader from "@aics/allencell-nav-bar";
 import "@aics/allencell-nav-bar/style/style.css";
 import { Layout } from "antd";
 import * as React from "react";
-import { connect } from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 import classNames from "classnames";
 
 import BackToPlot from "../../components/BackToPlot/index";
 import metadataStateBranch from "../../state/metadata";
+import selectionStateBranch from "../../state/selection";
 import LandingPage from "../../components/LandingPage";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
 import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
+import { ChangeSelectionAction } from "../../state/selection/types";
 
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
@@ -19,6 +21,7 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 interface AppProps {
     isLoading: boolean;
     loadingText: string;
+    changeDataset: (id: string) => ChangeSelectionAction;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -60,11 +63,12 @@ class App extends React.Component<AppProps, {}> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     }
 
-    public handleSelectDataset = (link: string) => {
+    public handleSelectDataset = (id: string) => {
+        console.log(id)
+
         // Temp fix until we have url solution for versions
-        if (link.match("#")) {
             this.setState({renderExplorerApp: true})
-        }
+        this.props.changeDataset(id)
     }
 
     public render() {
@@ -111,5 +115,8 @@ function mapStateToProps(state: State) {
     };
 }
 
+const dispatchToPropsMap = {
+    changeDataset: selectionStateBranch.actions.changeDataset,
+};
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps, dispatchToPropsMap)(App);
