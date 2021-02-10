@@ -95,9 +95,6 @@ export const CLUSTER_NUMBER_KEY = "numberOfClusters";
 export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
 
 // These lines are typing and exporting variables created by webpack DefinePlugin
-declare const CELL_VIEWER_URL: string;
-const _CELL_VIEWER_URL = CELL_VIEWER_URL;
-export { _CELL_VIEWER_URL as CELL_VIEWER_URL };
 
 declare const BASE_API_URL: string;
 const _BASE_API_URL = BASE_API_URL;
