@@ -26,6 +26,14 @@ class FirebaseRequest implements ImageDataset {
         return this.collectionRef.collection(collection).get();
     };
 
+    public setCollectionRef = (id: string) => {
+        this.collectionRef = firestore.collection("cfe-datasets").doc(id);
+    }
+
+    public getManifest = (id: string) => {
+        return this.getCollection("manifest").then();
+    }
+
     public getCellLineData = () => {
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {
             const dataset: CellLineDef = {};
