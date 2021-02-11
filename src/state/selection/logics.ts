@@ -8,7 +8,7 @@ import {
 } from "../types";
 import { batchActions } from "../util";
 
-import { CHANGE_DATASET, SYNC_STATE_WITH_URL } from "./constants";
+import { CHANGE_DATASET, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -27,10 +27,14 @@ const syncStateWithUrl = createLogic({
 
 const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
-    process(deps: ReduxLogicDeps, dispatch: any) {
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action } = deps;
         dispatch(requestCellLineData());
-        return action.payload;
+        dispatch({
+            type: SET_DATASET,
+            payload: action.payload
+        })
+        done();
     },
 });
 

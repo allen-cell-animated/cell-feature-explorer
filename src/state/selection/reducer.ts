@@ -34,7 +34,7 @@ import {
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
-    CHANGE_DATASET,
+    SET_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -85,15 +85,15 @@ export const initialState = {
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [CHANGE_DATASET]: {
+    [SET_DATASET]: {
         accepts: (action: AnyAction): action is ChangeSelectionAction =>
-            action.type === CHANGE_DATASET,
+            action.type === SET_DATASET,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => {
             return {
-            ...state,
-            ...initialState,
-            dataset: action.payload,
-        }},
+                ...initialState,
+                dataset: action.payload,
+            };
+        },
     },
     [CHANGE_AXIS]: {
         accepts: (action: AnyAction): action is SelectAxisAction => action.type === CHANGE_AXIS,

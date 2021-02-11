@@ -9,6 +9,7 @@ import {
     map,
     mergeWith,
     reduce,
+    isEqual
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -72,6 +73,14 @@ export default class UrlState {
            }
            return accum;
         }, initial);
+    }
+
+    public static paramChanged(key: string, newParams: URLSearchParamMap, currentParams: URLSearchParamMap, ): boolean {
+        return !isEqual(currentParams[key], newParams[key]);
+    }
+
+    public static paramsChanged(newParamsFromState: URLSearchParamMap, currentParams: URLSearchParamMap): boolean {
+        return !isEqual(currentParams, newParamsFromState) 
     }
 
     public static toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
@@ -186,4 +195,5 @@ export default class UrlState {
         return (initialState as any)[key] !== selection
         
     }
+
 }

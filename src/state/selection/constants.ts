@@ -37,6 +37,7 @@ export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "Nuclear Volume (fL)";
 export const INITIAL_PLOT_BY_ON_Y = "Cellular Volume (fL)";
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
+export const SET_DATASET = makeConstant("selection", "set-dataset");
 
 export const INITIAL_COLORS = [
     "#bbcd22",
