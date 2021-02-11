@@ -10,11 +10,8 @@ import {
     selectCellFor3DViewer,
     selectPoint,
 } from "../../state/selection/actions";
-import {
-    INITIAL_COLOR_BY,
-    INITIAL_PLOT_BY_ON_X,
-    INITIAL_PLOT_BY_ON_Y
-} from "../../state/selection/constants";
+
+import { initialState } from "../../state/selection/reducer";
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
@@ -127,17 +124,17 @@ describe("UrlState utility class", () => {
         it("re-maps app state to a key:value object", () => {
             const selections = {
                 cellSelectedFor3D: 10,
-                colorBy: INITIAL_COLOR_BY,
-                plotByOnX: INITIAL_PLOT_BY_ON_X,
-                plotByOnY: INITIAL_PLOT_BY_ON_Y,
+                colorBy: "Protein",
+                plotByOnX: "X value",
+                plotByOnY: "Y value",
                 selectedPoints: [1, 3, 5],
             };
 
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: "10",
-                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
-                [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
-                [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+                [URLSearchParam.colorBy]: "Protein",
+                [URLSearchParam.plotByOnX]: "X value",
+                [URLSearchParam.plotByOnY]: "Y value",
                 [URLSearchParam.selectedPoint]: ["1", "3", "5"],
             });
         });
@@ -145,28 +142,33 @@ describe("UrlState utility class", () => {
         it("omits values that are not meaningful to include in the URL", () => {
             const selections = {
                 cellSelectedFor3D: null,
-                colorBy: INITIAL_COLOR_BY,
-                plotByOnX: INITIAL_PLOT_BY_ON_X,
-                plotByOnY: INITIAL_PLOT_BY_ON_Y,
+                colorBy: "Color by",
+                plotByOnX: "X value",
+                plotByOnY: "Y value",
                 selectedPoints: [],
             };
 
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
-                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
-                [URLSearchParam.plotByOnX]: INITIAL_PLOT_BY_ON_X,
-                [URLSearchParam.plotByOnY]: INITIAL_PLOT_BY_ON_Y,
+                [URLSearchParam.colorBy]: "Color by",
+                [URLSearchParam.plotByOnX]: "X value",
+                [URLSearchParam.plotByOnY]: "Y value",
             });
         });
 
         it("omits values that are not explicitly configured", () => {
             const selections = {
-                colorBy: INITIAL_COLOR_BY,
+                colorBy: "Mitotic state",
                 fakeSelectionKey: "superFake",
             };
 
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
-                [URLSearchParam.colorBy]: INITIAL_COLOR_BY,
+                [URLSearchParam.colorBy]: "Mitotic state",
             });
+        });
+        it("omits values that are set to initial values", () => {
+            const selections =  {...initialState};
+
+            expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({});
         });
     });
 });
