@@ -2,7 +2,7 @@ import AllenCellHeader from "@aics/allencell-nav-bar";
 import "@aics/allencell-nav-bar/style/style.css";
 import { Layout } from "antd";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
 import classNames from "classnames";
 
 import BackToPlot from "../../components/BackToPlot/index";
