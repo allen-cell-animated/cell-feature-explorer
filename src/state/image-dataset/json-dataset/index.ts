@@ -88,9 +88,7 @@ class JsonRequest implements ImageDataset {
                     el["file_info"] = fileInfo;
                 });
                 return featureDataArray;
-            })
-            .catch();
-        //return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME)
+            });
     };
 
     public getAlbumData = () => {
