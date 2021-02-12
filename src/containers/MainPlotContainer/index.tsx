@@ -98,10 +98,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.renderPopover = this.renderPopover.bind(this);
     }
 
-    public componentDidMount() {
-        // this.props.requestCellLineData();
-    }
-
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
         const { points } = clicked;
