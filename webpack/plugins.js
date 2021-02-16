@@ -29,7 +29,11 @@ const BASE_PLUGINS = [
     new CopyWebpackPlugin(
         [
             {
-                from: path.resolve(__dirname, '../src/data', 'cell-feature-analysis.json'),
+                from: path.resolve(__dirname, '../src/data', 'cell_feature_analysis.json'),
+                to: 'data'
+            },
+            {
+                from: path.resolve(__dirname, '../src/data', 'feature_defs.json'),
                 to: 'data'
             },
             {
@@ -79,7 +83,7 @@ const PLUGINS_BY_ENV = {
     ],
     [Env.DEVELOPMENT]: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('dev'),
+            'process.env.NODE_ENV': JSON.stringify('development'),
             CELL_VIEWER_URL: DevServers.CELL_VIEWER_URL,
             BASE_API_URL: DevServers.BASE_API_URL,
             THUMBNAIL_BASE_URL: DevServers.THUMBNAIL_BASE_URL,

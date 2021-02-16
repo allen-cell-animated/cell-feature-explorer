@@ -60,12 +60,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 height: GENERAL_PLOT_SETTINGS.plotHeight,
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
-                margin: {
-                    b: 50,
-                    l: 150,
-                    r: 50,
-                    t: 10,
-                },
+                margin: GENERAL_PLOT_SETTINGS.margin,
                 paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 xaxis: this.makeAxis([0, 0.85], ".1f", false, props.xAxisType, props.xTickConversion ),
@@ -95,16 +90,23 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             });
         }
         if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
-            this.setState(
-                {
-                    layout: {
-                        ...this.state.layout,
-                        annotations: this.makeAnnotations(),
-                        xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion ),
-                        xaxis2: histogramAxis,
-                        yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType, yTickConversion ),
-                        yaxis2:  histogramAxis,
+            const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
+            const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
+
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    margin: {
+                        ...this.state.layout.margin,
+                        l: marginLeft,
+                        b: marginBottom,
                     },
+                    annotations: this.makeAnnotations(),
+                    xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion),
+                    xaxis2: histogramAxis,
+                    yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType, yTickConversion),
+                    yaxis2: histogramAxis,
+                },
             });
         }
     }
