@@ -9,6 +9,7 @@ import {
     map,
     mergeWith,
     reduce,
+    isEqual
 } from "lodash";
 import { AnyAction } from "redux";
 
@@ -19,16 +20,19 @@ import {
 } from "../constants";
 import {
     changeAxis,
+    changeDataset,
     selectAlbum,
     selectCellFor3DViewer,
     selectPoint,
     toggleGallery,
 } from "../state/selection/actions";
+import { initialState } from "../state/selection/reducer";
 import { SelectionStateBranch } from "../state/selection/types";
 
 export enum URLSearchParam {
     cellSelectedFor3D = "cellSelectedFor3D",
     colorBy = "colorBy",
+    dataset = "dataset",
     plotByOnX = "plotByOnX",
     plotByOnY = "plotByOnY",
     selectedPoint = "selectedPoint",
@@ -71,6 +75,14 @@ export default class UrlState {
         }, initial);
     }
 
+    public static paramChanged(key: string, newParams: URLSearchParamMap, currentParams: URLSearchParamMap, ): boolean {
+        return !isEqual(currentParams[key], newParams[key]);
+    }
+
+    public static paramsChanged(newParamsFromState: URLSearchParamMap, currentParams: URLSearchParamMap): boolean {
+        return !isEqual(currentParams, newParamsFromState) 
+    }
+
     public static toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
         const initial: AnyAction[] = [];
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
@@ -93,7 +105,8 @@ export default class UrlState {
         return reduce(selections, (accum, selectionStateValue, selectionStateKey) => {
             if (
                 UrlState.stateToUrlParamMap.hasOwnProperty(selectionStateKey) &&
-                UrlState.valueIsMeaningfulToSerialize(selectionStateValue)
+                UrlState.valueIsMeaningfulToSerialize(selectionStateValue) &&
+                UrlState.valueIsNotDefault(selectionStateValue, selectionStateKey)
             ) {
                 return {
                     ...accum,
@@ -116,6 +129,7 @@ export default class UrlState {
             return selectCellFor3DAction;
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
+        [URLSearchParam.dataset]: (id) => changeDataset(String(id)),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => toggleGallery(galleryCollapsed === "true"),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
@@ -140,6 +154,7 @@ export default class UrlState {
             return base;
         },
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
+        [URLSearchParam.dataset]: (id) => ({dataset: String(id)}),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => ({ galleryCollapsed: galleryCollapsed === "true" }),
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
@@ -148,8 +163,10 @@ export default class UrlState {
     };
 
     private static stateToUrlParamMap: StateToUrlSearchParamMap = {
+        
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
+        dataset: (id) => ({ [URLSearchParam.dataset]: String(id)}),
         galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
         selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
         selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as number[]), String) }),
@@ -172,4 +189,11 @@ export default class UrlState {
 
         return !isNaN(selection) && !isNil(selection);
     }
+
+    private static valueIsNotDefault(selection: any, key: string): boolean {
+
+        return (initialState as any)[key] !== selection
+        
+    }
+
 }

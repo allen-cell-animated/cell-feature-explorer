@@ -6,7 +6,7 @@ const { Meta } = Card;
 const styles = require("./style.css");
 
 interface DatasetCardProps extends DatasetMetaData {
-    handleSelectDataset: (link: string) => void;
+    handleSelectDataset: (id: string) => void;
 }
 
 const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
@@ -20,7 +20,8 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     isNew,
     inReview,
     handleSelectDataset,
-    link
+    link,
+    id,
 }: DatasetCardProps) => {
     const title = (
         <>
@@ -36,35 +37,51 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             )}
         </>
     );
-    return (
-        <a
-            href={link}
-            onClick={() => handleSelectDataset(link)}
+    const cardContent = (
+        <Card
+            style={{ width: 430 }}
+            className={styles.card}
+            hoverable
+            bordered={false}
+            cover={
+                <img
+                    className={styles.staticThumbnail}
+                    alt={`Snapshot of simulation for ${name}`}
+                    src={image}
+                />
+            }
         >
-            <Card
-                style={{ width: 430 }}
-                className={styles.card}
-                hoverable
-                bordered={false}
-                cover={
-                    <img
-                        className={styles.staticThumbnail}
-                        alt={`Snapshot of simulation for ${name}`}
-                        src={image}
-                    />
+            <Meta
+                title={title}
+                description={
+                    <div
+                        className="content"
+                        dangerouslySetInnerHTML={{ __html: description }}
+                    ></div>
                 }
-            >
-                <Meta title={title} description={ <div className="content" dangerouslySetInnerHTML={{__html: description}}></div>} />
-                <Descriptions column={1} size="small">
-                    <Descriptions.Item label="Number of Cells">{(totalCells).toLocaleString("en")}</Descriptions.Item>
-                    <Descriptions.Item label="Number of FOVs">{(totalFOVs.toLocaleString("en"))}</Descriptions.Item>
-                    <Descriptions.Item label="Number of tagged structures">
-                        {totalTaggedStructures}
-                    </Descriptions.Item>
-                </Descriptions>
-            </Card>
-        </a>
+            />
+            <Descriptions column={1} size="small">
+                <Descriptions.Item label="Number of Cells">
+                    {totalCells.toLocaleString("en")}
+                </Descriptions.Item>
+                <Descriptions.Item label="Number of FOVs">
+                    {totalFOVs.toLocaleString("en")}
+                </Descriptions.Item>
+                <Descriptions.Item label="Number of tagged structures">
+                    {totalTaggedStructures}
+                </Descriptions.Item>
+            </Descriptions>
+        </Card>
     );
+    if (link) {
+        
+        return (
+            <a href={link}>
+                {cardContent}
+            </a>
+        );
+    } 
+    return <div onClick={() => handleSelectDataset(id)}>{cardContent}</div>;
 };
 
 export default DatasetCard;

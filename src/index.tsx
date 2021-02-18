@@ -1,4 +1,3 @@
-import { MessageTarget } from "@aics/browsing-context-messaging";
 import "core-js/es6/map";
 import "core-js/es6/promise";
 import "core-js/es6/set";
@@ -15,40 +14,38 @@ import {
     selection,
 } from "./state";
 import { UrlState } from "./util";
+import { URLSearchParam } from "./util/UrlState";
 
 const pram = new Pram(createHistory());
 const store = createReduxStore({ selection: UrlState.toAppState(pram.getParams())});
 
-// in the case that this application is run within an iframe, setup communication between this app
-// and it host page to capture any URL search params that are intended to modify the state of this app
-const messenger = new MessageTarget(function updateAppState(messageEvent: MessageEvent) {
-    store.dispatch(selection.actions.syncStateWithURL(messageEvent.data));
-});
+store.dispatch(selection.actions.syncStateWithURL(pram.getParams()));
 
-// when the URL changes, notify host page if run within iframe
-pram.onChange(function notifyHostFrameOfURLChange(urlParams) {
-    if (!location.hash && location.search) {
-        // clear out query params on loading page
-        // temp fix until we decide how we're storing/requesting dataset version
-        window.history.replaceState({}, document.title, "/");
-    } else if (!location.hash && !location.search) {
-        // used the back button to get back to the landing page, 
-        // temp fix until we decide how we're storing/requesting dataset version
-        location.reload();     
-    }
-    try {
-        messenger.postMessage(urlParams);
-    } catch (error) {
-        // one common scenario in which this would fail is in dev/staging, in which this application
-        // is not being run inside an iframe.
-        // swallow error
+// when the dataset query param changes, check if it's been removed
+pram.onChange("dataset", function notifyHostFrameOfURLChange(dataset) {
+    if (!dataset) {
+        // used the back button to get back to the landing page
+        // UrlState doesn't sync actions if a query param doesn't exist, 
+        // so clearing it out here 
+        store.dispatch(selection.actions.changeDataset(""));
     }
 });
 
 // keep the URL in sync with the state of this app
 store.subscribe(function updateURL() {
     const state = store.getState();
-    pram.replaceParams(UrlState.toUrlSearchParameterMap(state.selection));
+    const mapping = UrlState.toUrlSearchParameterMap(state.selection);
+    const currentParams = pram.getParams();
+    const datasetChanged = UrlState.paramChanged(URLSearchParam.dataset, mapping, currentParams);
+    if (datasetChanged) {
+        // only save in browser history if the dataset is different
+        pram.pushParam(URLSearchParam.dataset, mapping.dataset);
+        delete mapping.dataset;
+    }
+    
+    if (UrlState.paramsChanged(mapping, currentParams)) {
+        pram.replaceParams(mapping);
+    }
 });
 
 render(

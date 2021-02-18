@@ -32,11 +32,12 @@ export const CHANGE_HOVERED_POINT_ID = makeConstant("selection", "change-hovered
 export const CHANGE_HOVERED_GALLERY_CARD = makeConstant("selection", "change-hovered-gallery-card");
 export const CHANGE_SELECTED_ALBUM = makeConstant("selection", "change-selected-album");
 export const TOGGLE_GALLERY_OPEN_CLOSE = makeConstant("selection", "toggle-gallery");
-
+export const CHANGE_DATASET = makeConstant("selection", "change-dataset");
 export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_PLOT_BY_ON_X = "DNA volume (\u00b5m\u00b3)";
 export const INITIAL_PLOT_BY_ON_Y = "Cell volume (\u00b5m\u00b3)";
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
+export const SET_DATASET = makeConstant("selection", "set-dataset");
 
 export const INITIAL_COLORS = [
     "#bbcd22",

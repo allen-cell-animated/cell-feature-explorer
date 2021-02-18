@@ -7,11 +7,13 @@ import classNames from "classnames";
 
 import BackToPlot from "../../components/BackToPlot/index";
 import metadataStateBranch from "../../state/metadata";
+import selectionStateBranch from "../../state/selection";
 import LandingPage from "../../components/LandingPage";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
 import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
+import { ChangeSelectionAction } from "../../state/selection/types";
 
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
@@ -19,6 +21,8 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 interface AppProps {
     isLoading: boolean;
     loadingText: string;
+    changeDataset: (id: string) => ChangeSelectionAction;
+    selectedDataset: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -26,14 +30,10 @@ class App extends React.Component<AppProps, {}> {
         dontShowSmallScreenWarningAgain: false,
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
         width: window.innerWidth,
-        renderExplorerApp: false,
     };
 
     public componentDidMount = () => {
         window.addEventListener("resize", this.updateDimensions);
-        if (location.hash) {
-            this.setState({ renderExplorerApp: true })
-        }
     }
 
     public updateDimensions = () => {
@@ -60,17 +60,15 @@ class App extends React.Component<AppProps, {}> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     }
 
-    public handleSelectDataset = (link: string) => {
-        // Temp fix until we have url solution for versions
-        if (link.match("#")) {
-            this.setState({renderExplorerApp: true})
-        }
+    public handleSelectDataset = (id: string) => {
+
+        this.props.changeDataset(id)
     }
 
     public render() {
-        const { isLoading, loadingText } = this.props;
-        const { renderExplorerApp, showSmallScreenWarning } = this.state;
-        const showLoadingOverlay =  isLoading && renderExplorerApp
+        const { isLoading, loadingText, selectedDataset } = this.props;
+        const { showSmallScreenWarning } = this.state;
+        const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
             styles.container,
             { [styles.isLoading]: showLoadingOverlay },
@@ -87,11 +85,11 @@ class App extends React.Component<AppProps, {}> {
                         onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                         visible={showSmallScreenWarning}
                     />
-                    {renderExplorerApp && <BackToPlot />}
+                    {!!selectedDataset && <BackToPlot />}
 
                     <AllenCellHeader show={true} />
                     <Layout>
-                        {renderExplorerApp ? (
+                        {!!selectedDataset ? (
                             <Cfe />
                         ) : (
                             <LandingPage handleSelectDataset={this.handleSelectDataset} />
@@ -108,8 +106,12 @@ function mapStateToProps(state: State) {
     return {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
+        selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
     };
 }
 
+const dispatchToPropsMap = {
+    changeDataset: selectionStateBranch.actions.changeDataset,
+};
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps, dispatchToPropsMap)(App);

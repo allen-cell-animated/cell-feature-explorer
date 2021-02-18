@@ -8,7 +8,7 @@ const { Content, Header } = Layout;
 const styles = require("./style.css");
 
 interface LandingPageProps {
-    handleSelectDataset: (link: string) =>  void;
+    handleSelectDataset: (id: string) =>  void;
 }
 const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
     <Layout>

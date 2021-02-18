@@ -20,6 +20,7 @@ import {
     TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
+    CHANGE_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -172,3 +173,10 @@ export function toggleGallery(payload: boolean): BoolToggleAction {
         type: TOGGLE_GALLERY_OPEN_CLOSE,
     };
 }
+
+export function changeDataset(payload: string): ChangeSelectionAction {
+           return {
+               payload,
+               type: CHANGE_DATASET,
+           };
+       }

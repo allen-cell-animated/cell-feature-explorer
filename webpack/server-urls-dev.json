@@ -1,5 +1,4 @@
 {
-    "CELL_VIEWER_URL": "'http://localhost:9020/imageviewer/'",
     "BASE_API_URL": "'data'",
     "THUMBNAIL_BASE_URL": "'http://dev-aics-dtp-001.corp.alleninstitute.org/cellviewer-2-0-0/Cell-Viewer_Thumbnails'",
     "DOWNLOAD_URL_PREFIX": "'https://files.allencell.org/api/2.0/file/download?collection=cellviewer-2-0'"

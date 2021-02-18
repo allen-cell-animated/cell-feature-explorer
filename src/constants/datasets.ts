@@ -3,6 +3,7 @@ import dataset14Image from "../images/card-cover-dataset-1-4.png";
 export interface DatasetMetaData {
     name: string;
     version: string;
+    id: string;
     isNew: boolean;
     inReview: boolean;
     description: string;
@@ -10,12 +11,13 @@ export interface DatasetMetaData {
     totalFOVs: number;
     totalTaggedStructures: number;
     image: string;
-    link: string;
+    link?: string;
 }
 export default [
     {
         name: "hiPSC Single-Cell Image Dataset",
         version: "v2020.1",
+        id: "aics_hipsc_v2020.1",
         isNew: true,
         inReview: true,
         description:
@@ -29,6 +31,7 @@ export default [
     {
         name: "hiPSC Single-Cell Image Dataset",
         version: "v2019.1",
+        id: "aics_hipsc_v2019.1",
         isNew: false,
         inReview: false,
         description:
@@ -37,6 +40,5 @@ export default [
         totalFOVs: 11023,
         totalTaggedStructures: 20,
         image: dataset14Image,
-        link: "#v2019-1",
     },
 ];
