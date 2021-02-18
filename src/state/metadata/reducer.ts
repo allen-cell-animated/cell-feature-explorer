@@ -5,6 +5,7 @@ import { makeReducer } from "../util";
 
 import {
     RECEIVE_ALBUM_DATA,
+    RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_METADATA,
     SET_IS_LOADING,
@@ -13,6 +14,7 @@ import {
 import {
     MetadataStateBranch,
     ReceiveAction, ReceiveAlbumDataAction,
+    ReceiveAvailableDatasetsAction,
     ReceiveCellLineAction,
     SetLoadingAction,
 } from "./types";
@@ -23,6 +25,7 @@ export const initialState = {
     featureData: [],
     isLoading: true,
     loadingText: "",
+    datasets: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -31,6 +34,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,
+        }),
+    },
+    [RECEIVE_AVAILABLE_DATASETS]: {
+        accepts: (action: AnyAction): action is ReceiveAvailableDatasetsAction =>
+            action.type === RECEIVE_AVAILABLE_DATASETS,
+        perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
+            ...state,
+            datasets: action.payload,
         }),
     },
     [RECEIVE_CELL_LINE_DATA]: {

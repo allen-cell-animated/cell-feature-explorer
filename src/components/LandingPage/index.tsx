@@ -1,16 +1,17 @@
 import React from "react";
 import { Row, Col, Layout } from "antd";
 
-import datasetsMetaData from "../../constants/datasets";
 import DatasetCard from "../../components/DatasetCard";
+import { DatasetMetaData } from "../../constants/datasets";
 const { Content, Header } = Layout;
 
 const styles = require("./style.css");
 
 interface LandingPageProps {
     handleSelectDataset: (id: string) =>  void;
+    datasets: DatasetMetaData[];
 }
-const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
+const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
     <Layout>
         <Header className={styles.headerMain}>
             <h1>Cell Feature Explorer</h1>
@@ -24,7 +25,7 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset</h2>
                 <Row type="flex" justify="space-around" className={styles.section}>
-                    {datasetsMetaData.map((dataset) => (
+                    {datasets.map((dataset) => (
                         <Col key={`${dataset.name}-${dataset.version}`}>
                             <DatasetCard {...dataset} handleSelectDataset={handleSelectDataset} />
                         </Col>
@@ -66,8 +67,11 @@ const LandingPage = ({ handleSelectDataset }: LandingPageProps) => (
                             <ul>
                                 <li>dyed DNA </li>
                                 <li>dyed cell membrane </li>
-                                <li>one fluorescently labeled protein designed to visualize a
-                                particular organelle or cellular structure via endogenous tagging</li>
+                                <li>
+                                    one fluorescently labeled protein designed to visualize a
+                                    particular organelle or cellular structure via endogenous
+                                    tagging
+                                </li>
                             </ul>
                         </p>
                         <p>

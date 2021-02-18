@@ -13,6 +13,7 @@ import {
     CELL_LINE_NAME_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
+import { DatasetMetaData } from "../../constants/datasets";
 import { changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
 import { CLUSTERING_MAP } from "../selection/constants";
 import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
@@ -20,14 +21,30 @@ import { ChangeClusterNumberAction } from "../selection/types";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveCellLineData, receiveMetadata, requestFeatureData, setLoadingText, stopLoading } from "./actions";
+import { receiveAvailableDatasets, receiveCellLineData, receiveMetadata, requestFeatureData, setLoadingText, stopLoading } from "./actions";
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_ALBUM_DATA,
+    REQUEST_AVAILABLE_DATASETS,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
 import { MetaData, MetadataStateBranch } from "./types";
+
+
+const requestAvailableDatasets = createLogic({
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+        const { imageDataSet } = deps;
+        return imageDataSet
+            .getAvailableDatasets()
+            .then((data: DatasetMetaData[]) => dispatch(receiveAvailableDatasets(data)))
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            })
+            .then(() => done());
+    },
+    type: REQUEST_AVAILABLE_DATASETS,
+});
 
 const requestCellLineData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -130,4 +147,9 @@ const requestAlbumData = createLogic({
     type: REQUEST_ALBUM_DATA,
 });
 
-export default [requestAlbumData, requestCellLineData, requestFeatureDataLogic];
+export default [
+    requestAlbumData,
+    requestCellLineData,
+    requestFeatureDataLogic,
+    requestAvailableDatasets,
+];

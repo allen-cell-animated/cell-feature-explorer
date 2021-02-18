@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, Descriptions, Tag, Divider} from "antd";
-import { DatasetMetaData } from "../../constants/datasets";
+import imageMapping, { DatasetId, DatasetMetaData } from "../../constants/datasets";
 const { Meta } = Card;
 
 const styles = require("./style.css");
@@ -12,25 +12,20 @@ interface DatasetCardProps extends DatasetMetaData {
 const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     name,
     version,
-    image,
     description,
-    totalCells,
-    totalFOVs,
-    totalTaggedStructures,
-    isNew,
-    inReview,
     handleSelectDataset,
     link,
     id,
+    userData,
 }: DatasetCardProps) => {
     const title = (
         <>
             <div>
-                {isNew && <Tag color="purple">new</Tag>}
+                {userData.isNew && <Tag color="purple">new</Tag>}
                 {name}
             </div>
             <span className={styles.version}>{version}</span>
-            {inReview && (
+            {userData.inReview && (
                 <>
                     <Divider type="vertical" /> (in review)
                 </>
@@ -47,7 +42,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 <img
                     className={styles.staticThumbnail}
                     alt={`Snapshot of simulation for ${name}`}
-                    src={image}
+                    src={imageMapping[id as DatasetId]}
                 />
             }
         >
@@ -62,13 +57,13 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             />
             <Descriptions column={1} size="small">
                 <Descriptions.Item label="Number of Cells">
-                    {totalCells.toLocaleString("en")}
+                    {userData.totalCells.toLocaleString("en")}
                 </Descriptions.Item>
                 <Descriptions.Item label="Number of FOVs">
-                    {totalFOVs.toLocaleString("en")}
+                    {userData.totalFOVs.toLocaleString("en")}
                 </Descriptions.Item>
                 <Descriptions.Item label="Number of tagged structures">
-                    {totalTaggedStructures}
+                    {userData.totalTaggedStructures}
                 </Descriptions.Item>
             </Descriptions>
         </Card>

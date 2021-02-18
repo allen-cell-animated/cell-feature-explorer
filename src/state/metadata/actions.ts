@@ -1,10 +1,13 @@
+import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
 
 import {
     RECEIVE_ALBUM_DATA,
+    RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_METADATA,
     REQUEST_ALBUM_DATA,
+    REQUEST_AVAILABLE_DATASETS,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     SET_IS_LOADING,
@@ -15,10 +18,23 @@ import {
     MetaData,
     ReceiveAction,
     ReceiveAlbumDataAction,
+    ReceiveAvailableDatasetsAction,
     ReceiveCellLineAction,
     RequestAction,
     SetLoadingAction,
 } from "./types";
+
+export function requestAvailableDatasets() {
+    return { type: REQUEST_AVAILABLE_DATASETS };
+}
+export function receiveAvailableDatasets(
+           payload: DatasetMetaData[]
+       ): ReceiveAvailableDatasetsAction {
+           return {
+               payload,
+               type: RECEIVE_AVAILABLE_DATASETS,
+           };
+       }
 
 export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
     return {
@@ -62,8 +78,8 @@ export function receiveAlbumData(payload: Album[]): ReceiveAlbumDataAction {
 export function stopLoading(): SetLoadingAction {
     return {
         payload: false,
-        type: SET_IS_LOADING
-    }
+        type: SET_IS_LOADING,
+    };
 }
 
 export function setLoadingText(payload: string): SetLoadingAction {

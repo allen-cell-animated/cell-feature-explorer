@@ -14,6 +14,8 @@ import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
+import { DatasetMetaData } from "../../constants/datasets";
+import { RequestAction } from "../../state/metadata/types";
 
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
@@ -23,6 +25,8 @@ interface AppProps {
     loadingText: string;
     changeDataset: (id: string) => ChangeSelectionAction;
     selectedDataset: string;
+    requestAvailableDatasets: () => RequestAction;
+    datasets: DatasetMetaData[];
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -34,6 +38,7 @@ class App extends React.Component<AppProps, {}> {
     };
 
     public componentDidMount = () => {
+        this.props.requestAvailableDatasets();
         window.addEventListener("resize", this.updateDimensions);
         if (location.hash) {
             this.setState({ renderExplorerApp: true })
@@ -70,7 +75,7 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public render() {
-        const { isLoading, loadingText, selectedDataset } = this.props;
+        const { isLoading, loadingText, selectedDataset, datasets } = this.props;
         const { showSmallScreenWarning } = this.state;
         const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
@@ -96,7 +101,10 @@ class App extends React.Component<AppProps, {}> {
                         {!!selectedDataset ? (
                             <Cfe />
                         ) : (
-                            <LandingPage handleSelectDataset={this.handleSelectDataset} />
+                            <LandingPage
+                                datasets={datasets}
+                                handleSelectDataset={this.handleSelectDataset}
+                            />
                         )}
                     </Layout>
                 </Layout>
@@ -111,11 +119,13 @@ function mapStateToProps(state: State) {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
+        datasets: metadataStateBranch.selectors.getDatasets(state)
     };
 }
 
 const dispatchToPropsMap = {
     changeDataset: selectionStateBranch.actions.changeDataset,
+    requestAvailableDatasets: metadataStateBranch.actions.requestAvailableDatasets
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(App);

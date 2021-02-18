@@ -5,6 +5,7 @@ import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
 } from "../../../constants";
+import { DatasetMetaData } from "../../../constants/datasets";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
@@ -27,9 +28,13 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getAvailableDatasets = () => {
-        return firestore.collection("cfe-datasets").doc("datasets").get()
-            .then((doc) => {
-                return doc.data();
+        return firestore
+            .collection("dataset-descriptions")
+            .get()
+            .then((snapShot: QuerySnapshot) => {
+                const datasets: DatasetMetaData[] = [];
+                snapShot.forEach((doc) => datasets.push(doc.data() as DatasetMetaData));
+                return datasets;
             });
         
     }
