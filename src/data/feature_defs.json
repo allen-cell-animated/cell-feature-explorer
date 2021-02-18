@@ -1,0 +1,136 @@
+[
+  {
+    "displayName": "Cell height",
+    "description": "The height of a cell, as measured by the number of pixels that separates the bottom most and top most pixel in the segmented image converted to units of \u00b5m.",
+    "tooltip": "The height of a cell, as measured by the number of pixels that separates the bottom most and top most pixel in the segmented image converted to units of \u00b5m.",
+    "unit": "\u00b5m",
+    "key": "cell-height",
+    "discrete": false
+  },
+  {
+    "displayName": "Cell volume",
+    "description": "The volume of a cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "tooltip": "The volume of a cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "unit": "\u00b5m\u00b3",
+    "key": "cell-volume",
+    "discrete": false
+  },
+  {
+    "displayName": "Cell surface area",
+    "description": "The surface area of a cell, as measured by segmented pixels and associated edge length, in units of \u00b5m\u00b2.",
+    "tooltip": "The surface area of a cell, as measured by segmented pixels and associated edge length, in units of \u00b5m\u00b2.",
+    "unit": "\u00b5m\u00b2",
+    "key": "cell-surface-area",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA height",
+    "description": "The height of a nucleus, as measured by the number of pixels that separates the bottom most and top most pixel in the segmented image converted to units of \u00b5m.",
+    "tooltip": "The height of a nucleus, as measured by the number of pixels that separates the bottom most and top most pixel in the segmented image converted to units of \u00b5m.",
+    "unit": "\u00b5m",
+    "key": "dna-height",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA volume",
+    "description": "The volume of a nucleus of a given cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "tooltip": "The volume of a nucleus of a given cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "unit": "\u00b5m\u00b3",
+    "key": "dna-volume",
+    "discrete": false
+  },
+  {
+    "displayName": "DNA surface area",
+    "description": "The surface area of a cell, as measured by segmented pixels and associated edge length, in units of \u00b5m\u00b2.",
+    "tooltip": "The surface area of a cell, as measured by segmented pixels and associated edge length, in units of \u00b5m\u00b2.",
+    "unit": "\u00b5m\u00b2",
+    "key": "dna-surface-area",
+    "discrete": false
+  },
+  {
+    "displayName": "Intracellular structure volume",
+    "description": "The volume of the fluorescently labeled structure of a given cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "tooltip": "The volume of the fluorescently labeled structure of a given cell, as measured by segmented voxels and associated edge length, in units of \u00b5m\u00b3.",
+    "unit": "\u00b5m\u00b3",
+    "key": "intracellular-structure-volume",
+    "discrete": false
+  },
+  {
+    "displayName": "Anaphase segmentation complete",
+    "description": "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+    "tooltip": "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+    "unit": "unitless",
+    "key": "anaphase-segmentation-complete",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#fed98e",
+        "name": "Incomplete"
+      },
+      "1": {
+        "color": "#7f48f3",
+        "name": "Complete"
+      },
+      "-1": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  },
+  {
+    "displayName": "Interphase or mitosis",
+    "description": "Whether a particular cell is currently in interphase or mitosis.",
+    "tooltip": "Whether a particular cell is currently in interphase or mitosis.",
+    "unit": "stage",
+    "key": "interphase-or-mitosis",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#fed98e",
+        "name": "Incomplete"
+      },
+      "1": {
+        "color": "#7f48f3",
+        "name": "Complete"
+      },
+      "-1": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  },
+  {
+    "displayName": "Interphase & mitotic stages",
+    "description": "Which of our 5 stages of the cell cycle (determined by the shape of the DNA) a particular cell is currently in.",
+    "tooltip": "Which of our 5 stages of the cell cycle (determined by the shape of the DNA) a particular cell is currently in.",
+    "unit": "stage",
+    "key": "interphase-and-mitotic-stages",
+    "discrete": true,
+    "options": {
+      "0": {
+        "color": "#e9ebee",
+        "name": "Interphase"
+      },
+      "1": {
+        "color": "#c51b8a",
+        "name": "Prophase"
+      },
+      "2": {
+        "color": "#fed98e",
+        "name": "Prometaphase"
+      },
+      "3": {
+        "color": "#66c2a4",
+        "name": "Metaphase"
+      },
+      "4": {
+        "color": "#7f48f3",
+        "name": "Anaphase"
+      },
+      "NaN": {
+        "color": "#838383",
+        "name": "Not determined"
+      }
+    }
+  }
+]
