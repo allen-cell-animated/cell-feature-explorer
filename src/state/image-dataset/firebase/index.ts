@@ -19,19 +19,29 @@ import { firestore } from "./configure-firebase";
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     constructor() {
-        this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
+        this.collectionRef = firestore.collection("cfe-datasets").doc("datasetid");
     }
 
     private getCollection = (collection: string) => {
         return this.collectionRef.collection(collection).get();
     };
 
+    public getAvailableDatasets = () => {
+        return firestore.collection("cfe-datasets").doc("datasets").get()
+            .then((doc) => {
+                return doc.data();
+            });
+        
+    }
+
     public setCollectionRef = (id: string) => {
         this.collectionRef = firestore.collection("cfe-datasets").doc(id);
     }
 
-    public getManifest = (id: string) => {
-        return this.getCollection("manifest").then();
+    public getManifest = () => {
+        return this.getCollection("manifest").then((manifestData: QuerySnapshot) => {
+            
+        });
     }
 
     public getCellLineData = () => {
