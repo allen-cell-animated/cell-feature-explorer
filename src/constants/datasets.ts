@@ -7,6 +7,7 @@ export interface DatasetMetaData {
     description: string;
     image: string;
     link?: string;
+    manifest?: string;
     userData: {
         isNew: boolean;
         inReview: boolean;
