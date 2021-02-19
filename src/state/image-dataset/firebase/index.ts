@@ -1,4 +1,9 @@
-import { DocumentReference, QueryDocumentSnapshot, QuerySnapshot } from "@firebase/firestore-types";
+import {
+    DocumentReference,
+    QueryDocumentSnapshot,
+    QuerySnapshot,
+    DocumentData,
+} from "@firebase/firestore-types";
 
 import {
     CELL_LINE_DEF_NAME_KEY,
@@ -13,13 +18,27 @@ import {
     CELL_FEATURE_ANALYSIS_FILENAME,
     CELL_LINE_DEF_FILENAME,
 } from "../constants";
-import { ImageDataset } from "../types";
+import { ImageDataset, InitialDatasetSelections } from "../types";
 
 import { firestore } from "./configure-firebase";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
+    public featureDefs: string;
+    public featuresData: string;
+    public cellLineData: string;
+    public thumbnailRoot: string;
+    public downloadRoot: string;
+    public volumeViewerDataRoot: string;
+    public featuresDisplayOrder: string;
     constructor() {
+        this.featureDefs = "";
+        this.featuresData = "";
+        this.cellLineData = "";
+        this.thumbnailRoot = "";
+        this.downloadRoot = "";
+        this.volumeViewerDataRoot = "";
+        this.featuresDisplayOrder = "";
         this.collectionRef = firestore.collection("cfe-datasets").doc("datasetid");
     }
 
@@ -36,18 +55,35 @@ class FirebaseRequest implements ImageDataset {
                 snapShot.forEach((doc) => datasets.push(doc.data() as DatasetMetaData));
                 return datasets;
             });
-        
-    }
+    };
 
     public setCollectionRef = (id: string) => {
         this.collectionRef = firestore.collection("cfe-datasets").doc(id);
-    }
+    };
 
-    public getManifest = () => {
-        return this.getCollection("manifest").then((manifestData: QuerySnapshot) => {
-            
+    private getManifest = (ref: string) => {
+        return this.getCollection(ref).then((manifestDoc: DocumentData) => {
+            return manifestDoc.data();
         });
-    }
+    };
+
+    public selectDataset = (ref: string) => {
+        return this.getManifest(ref)
+            .then((data) => {
+                this.featureDefs = data.featureDefs;
+                this.featuresData = data.featuresData;
+                this.cellLineData = data.cellLineData;
+                this.thumbnailRoot = data.thumbnailRoot;
+                this.downloadRoot = data.downloadRoot;
+                this.volumeViewerDataRoot = data.volumeViewerDataRoot;
+                this.featuresDisplayOrder = data.featuresDisplayOrder;
+            return {
+                defaultXAxis: data.defaultXAxis,
+                defaultYAxis: data.defaultYAxis,
+            };
+        })
+
+    };
 
     public getCellLineData = () => {
         return this.getCollection(CELL_LINE_DEF_FILENAME).then((snapshot: QuerySnapshot) => {

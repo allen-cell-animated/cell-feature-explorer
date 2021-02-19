@@ -10,6 +10,7 @@ import { createSelector } from "reselect";
 import {
     PROTEIN_NAME_KEY,
 } from "../../constants";
+import { getSelectedDataset } from "../selection/selectors";
 import { ClusteringDatum } from "../selection/types";
 import { State } from "../types";
 
@@ -27,6 +28,13 @@ export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
 export const getDatasets = (state: State) => state.metadata.datasets;
 
+export const getManifestRef = createSelector(
+           [getDatasets, getSelectedDataset],
+           (datasets, selectedId): string => {
+               return datasets[selectedId].manifest;
+           }
+       );
+       
 export const getFileInfo = createSelector([getFullMetaDataArray], (fullMetaData): FileInfo[] => {
     return map(fullMetaData, "file_info");
 });
