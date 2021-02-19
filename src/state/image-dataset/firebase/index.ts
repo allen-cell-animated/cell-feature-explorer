@@ -15,10 +15,9 @@ import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
-    CELL_FEATURE_ANALYSIS_FILENAME,
     CELL_LINE_DEF_FILENAME,
 } from "../constants";
-import { ImageDataset, InitialDatasetSelections } from "../types";
+import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 

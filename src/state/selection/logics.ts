@@ -1,7 +1,6 @@
 import { createLogic } from "redux-logic";
 import { find, remove } from "lodash";
 
-// import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
 import { requestCellLineData } from "../metadata/actions";
@@ -10,7 +9,6 @@ import {
     ReduxLogicDeps,
 } from "../types";
 import { batchActions } from "../util";
-// import { changeAxis } from "./actions";
 
 import { CHANGE_DATASET, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
 
@@ -35,7 +33,7 @@ const changeDatasetLogic = createLogic({
         const { action, imageDataSet, getState } = deps;
         let datasets = getDatasets(getState());
         if (!datasets.length) {
-            // if user goes directly to a dataset, 
+            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET], 
             // the datasets may not have been saved in state yet
             datasets = await imageDataSet.getAvailableDatasets();
         }
@@ -49,9 +47,6 @@ const changeDatasetLogic = createLogic({
         imageDataSet.selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
                 console.log(selections);
-                // TODO: once we have feature defs being read in, use these keys
-                // dispatch(changeAxis(X_AXIS_ID, selections.defaultXAxis));
-                // dispatch(changeAxis(Y_AXIS_ID, selections.defaultYAxis));
 
                 dispatch(requestCellLineData());
                 dispatch({
