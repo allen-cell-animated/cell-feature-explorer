@@ -40,7 +40,6 @@ store.subscribe(function updateURL() {
     if (datasetChanged) {
         // only save in browser history if the dataset is different
         pram.pushParam(URLSearchParam.dataset, mapping.dataset);
-        delete mapping.dataset;
     }
     
     if (UrlState.paramsChanged(mapping, currentParams)) {
