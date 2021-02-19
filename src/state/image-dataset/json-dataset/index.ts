@@ -20,14 +20,14 @@ class JsonRequest implements ImageDataset {
     private labkeyCellDefName = "CellLineId/Name";
     private labkeyStructureKey = "StructureId/Name";
     private labkeyProteinKey = "ProteinId/DisplayName";
-    public featureDefs: string;
-    public featuresData: string;
-    public cellLineData: string;
-    public thumbnailRoot: string;
-    public downloadRoot: string;
-    public volumeViewerDataRoot: string;
-    public featuresDisplayOrder: string;
-    public listOfDatasetsDoc: string;
+    private featureDefs: string;
+    private featuresData: string;
+    private cellLineData: string;
+    private thumbnailRoot: string;
+    private downloadRoot: string;
+    private volumeViewerDataRoot: string;
+    private featuresDisplayOrder: string;
+    private listOfDatasetsDoc: string;
 
     private featureDefinitions: any[] = [];
 
@@ -40,7 +40,7 @@ class JsonRequest implements ImageDataset {
         this.volumeViewerDataRoot = "";
         this.featuresDisplayOrder = "";
         this.databaseDirectory = "data";
-        this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this. 
+        this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this.
     }
 
     public getAvailableDatasets = () => {

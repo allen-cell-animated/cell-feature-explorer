@@ -23,13 +23,13 @@ import { firestore } from "./configure-firebase";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
-    public featureDefs: string;
-    public featuresData: string;
-    public cellLineData: string;
-    public thumbnailRoot: string;
-    public downloadRoot: string;
-    public volumeViewerDataRoot: string;
-    public featuresDisplayOrder: string;
+    private featureDefs: string;
+    private featuresData: string;
+    private cellLineData: string;
+    private thumbnailRoot: string;
+    private downloadRoot: string;
+    private volumeViewerDataRoot: string;
+    private featuresDisplayOrder: string;
     constructor() {
         this.featureDefs = "";
         this.featuresData = "";
@@ -42,7 +42,7 @@ class FirebaseRequest implements ImageDataset {
     }
 
     private getCollection = (collection: string) => {
-        console.log(this.collectionRef.path, collection)
+        console.log(this.collectionRef.path, collection);
         return this.collectionRef.collection(collection).get();
     };
 
@@ -62,27 +62,28 @@ class FirebaseRequest implements ImageDataset {
     };
 
     private getManifest = (ref: string) => {
-        return firestore.doc(ref).get().then((manifestDoc: DocumentData) => {
-            return manifestDoc.data();
-        });
+        return firestore
+            .doc(ref)
+            .get()
+            .then((manifestDoc: DocumentData) => {
+                return manifestDoc.data();
+            });
     };
 
     public selectDataset = (ref: string) => {
-        return this.getManifest(ref)
-            .then((data) => {
-                this.featureDefs = data.featureDefs;
-                this.featuresData = data.featuresData;
-                this.cellLineData = data.cellLineData;
-                this.thumbnailRoot = data.thumbnailRoot;
-                this.downloadRoot = data.downloadRoot;
-                this.volumeViewerDataRoot = data.volumeViewerDataRoot;
-                this.featuresDisplayOrder = data.featuresDisplayOrder;
+        return this.getManifest(ref).then((data) => {
+            this.featureDefs = data.featureDefs;
+            this.featuresData = data.featuresData;
+            this.cellLineData = data.cellLineData;
+            this.thumbnailRoot = data.thumbnailRoot;
+            this.downloadRoot = data.downloadRoot;
+            this.volumeViewerDataRoot = data.volumeViewerDataRoot;
+            this.featuresDisplayOrder = data.featuresDisplayOrder;
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
             };
-        })
-
+        });
     };
 
     public getCellLineData = () => {
@@ -101,14 +102,13 @@ class FirebaseRequest implements ImageDataset {
 
     public getFeatureData = () => {
         // TODO: request from AWS
-        return this.getCollection("cell-feature-analysis")
-            .then((snapshot: QuerySnapshot) => {
-                const dataset: MetadataStateBranch[] = [];
-                snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    dataset.push(doc.data());
-                });
-                return dataset;
+        return this.getCollection("cell-feature-analysis").then((snapshot: QuerySnapshot) => {
+            const dataset: MetadataStateBranch[] = [];
+            snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                dataset.push(doc.data());
             });
+            return dataset;
+        });
     };
 
     public getAlbumData = () => {

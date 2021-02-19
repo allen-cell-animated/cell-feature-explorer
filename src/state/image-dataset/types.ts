@@ -13,11 +13,4 @@ export interface ImageDataset {
     getCellLineData(): Promise<CellLineDef>;
     getFeatureData(): Promise<MetadataStateBranch[]>;
     getAlbumData(): Promise<Album[]>;
-    featureDefs: string;
-    featuresData: string;
-    cellLineData: string;
-    thumbnailRoot: string;
-    downloadRoot: string;
-    volumeViewerDataRoot: string;
-    featuresDisplayOrder: string;
 }
