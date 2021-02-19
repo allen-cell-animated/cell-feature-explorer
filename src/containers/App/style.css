@@ -4,11 +4,6 @@
     z-index: 100;
 }
 
-:global(.ant-layout-header) {
-    display: flex;
-    justify-content: space-between;
-}
-
 :global(.ant-select-dropdown) {
     width: initial !important;
 }

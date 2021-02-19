@@ -6,7 +6,7 @@
 
 :global(.ant-layout-header) {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .content {
@@ -50,7 +50,6 @@
 
 .header-section {
     text-align: center;
-    display: block;
     border-top: 0.5px solid var(--dimgray);
     border-bottom: 0.5px solid var(--dimgray);
 }
