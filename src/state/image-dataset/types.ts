@@ -10,8 +10,7 @@ export interface InitialDatasetSelections {
 export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<DatasetMetaData[]>;
-    getCellLineData(): Promise<CellLineDef>;
-    getCellLineData(): Promise<CellLineDef[]>;
+    getCellLineDefs(): Promise<CellLineDef[]>;
     getFeatureData(): Promise<MetadataStateBranch>;
     getAlbumData(): Promise<Album[]>;
     getMeasuredFeatureNames?(): Promise<MeasuredFeatureDef[]>;

@@ -1,17 +1,16 @@
 import axios, { AxiosResponse } from "axios";
-import { map, reduce } from "lodash";
+import { map } from "lodash";
 
 import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
-    BASE_API_URL,
-    PROTEIN_NAME_KEY,
-    CELL_LINE_DEF_NAME_KEY,
+    CELL_LINE_DEF_PROTEIN_KEY,
     CELL_COUNT_KEY,
+    CELL_LINE_DEF_NAME_KEY,
+    PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import {
-    CELL_LINE_DEF_FILENAME,
     CELL_FEATURE_ANALYSIS_FILENAME,
     FEATURE_DEFS_FILENAME,
     ALBUMS_FILENAME,
@@ -76,18 +75,15 @@ class JsonRequest implements ImageDataset {
             .then((metadata: AxiosResponse) => metadata.data);
     };
 
-    public getCellLineData = () => {
-        return this.getJson(CELL_LINE_DEF_FILENAME).then((data) => {
-            return reduce(
-                data,
-                (accumulator: CellLineDef, datum: MetadataStateBranch) => {
-                    accumulator[datum[this.labkeyCellDefName]] = {
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[this.labkeyStructureKey],
-                        [CELL_LINE_DEF_PROTEIN_KEY]: datum[this.labkeyProteinKey],
-                    };
-                    return accumulator;
-                },
-            );
+    public getCellLineDefs = () => {
+        return this.getJson(this.cellLineData).then((data) => {
+            return map(data, (datum: MetadataStateBranch) => {
+                return {
+                    [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
+                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
+                    [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                };
+            });
         });
     };
 

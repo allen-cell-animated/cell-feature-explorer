@@ -62,7 +62,7 @@ export const getInteractivePanelData = createSelector(
     (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
             const proteinName: string = cellLine[PROTEIN_NAME_KEY];
-            const total: number = cellLine[CELL_COUNT_KEY];
+            const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
                 checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],

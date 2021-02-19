@@ -21,9 +21,6 @@ import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
 import {
-    CATEGORICAL_FEATURES,
-    CATEGORY_TO_ENUM_LOOKUP,
-    AGGLOMERATIVE_KEY,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -361,9 +358,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
 function mapStateToProps(state: State): PropsFromState {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
-        clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
-        clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
-        clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),

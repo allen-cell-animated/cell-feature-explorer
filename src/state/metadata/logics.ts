@@ -8,31 +8,29 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import { DatasetMetaData } from "../../constants/datasets";
-import { changeAxis, changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
-import { CLUSTERING_MAP, INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
-import { getClickedScatterPoints, getColorBySelection, getPlotByOnX, getPlotByOnY, getSelected3DCell } from "../selection/selectors";
-import { ChangeClusterNumberAction } from "../selection/types";
+import { changeAxis, selectCellFor3DViewer, selectPoint } from "../selection/actions";
+import { INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
+import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveFileInfoData, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, requestFeatureData, setLoadingText, stopLoading } from "./actions";
+import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText } from "./actions";
 
 import {
     RECEIVE_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_ALBUM_DATA,
-    REQUEST_CELL_FILE_INFO,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, FileInfo, MetadataStateBranch } from "./types";
+import { CellLineDef, MetadataStateBranch } from "./types";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { imageDataSet } = deps;
 
         return imageDataSet
-            .getCellLineData()
+            .getCellLineDefs()
             .then((data: CellLineDef[]) => dispatch(receiveCellLineData(data)))
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -57,26 +55,11 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
-const requestCellLineData = createLogic({
-    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
-        dispatch(setLoadingText("Loading cell line data..."));
-        return imageDataSet
-            .getFileInfo()
-            .then((data: FileInfo[]) => dispatch(receiveFileInfoData(data)))
-            .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
-            })
-            .then(() => done());
-    },
-    type: REQUEST_CELL_FILE_INFO,
-});
-
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
-        const state = getState();
+        // const state = getState();
         let measuredFeatureNames;
         let xAxisDefaultValue;
         let yAxisDefaultValue;
@@ -93,8 +76,6 @@ const requestFeatureDataLogic = createLogic({
             }
 
             actions.push(receiveMeasuredFeatureNames(measuredFeatureNames));
-            actions.push(setIsLoading(false));
-
         } 
         return imageDataSet
             .getFeatureData()
@@ -151,8 +132,6 @@ const requestAlbumData = createLogic({
 export default [
     requestCellLineDefs,
     requestAlbumData,
-    requestCellLineData,
     requestFeatureDataLogic,
     requestAvailableDatasets,
-    requestFeatureDataLogic,
 ];

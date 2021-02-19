@@ -22,18 +22,14 @@ import {
     MetadataStateBranch,
     ReceiveAction,
     ReceiveAlbumDataAction,
-<<<<<<< HEAD
     ReceiveAvailableDatasetsAction,
-=======
     ReceiveCellFileInfoAction,
->>>>>>> typing fixes
     ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
     RequestAction,
     SetLoadingAction,
 } from "./types";
 
-<<<<<<< HEAD
 export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };
 }
@@ -46,10 +42,7 @@ export function receiveAvailableDatasets(
            };
        }
 
-export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
-=======
 export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
->>>>>>> typing fixes
     return {
         payload,
         type: RECEIVE_CELL_LINE_DATA,
