@@ -27,6 +27,7 @@
 }
 
 .selected-info {
+    margin-top: 2px;
     display: inline-block;
 }
 
