@@ -1,36 +1,57 @@
 import { createLogic } from "redux-logic";
-import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { find, remove } from "lodash";
 
+// import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
 import { requestCellLineData } from "../metadata/actions";
 import { getDatasets } from "../metadata/selectors";
 import {
-    ReduxLogicDeps, ReduxLogicNextCb,
+    ReduxLogicDeps,
 } from "../types";
 import { batchActions } from "../util";
-import { changeAxis } from "./actions";
+// import { changeAxis } from "./actions";
 
 import { CHANGE_DATASET, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
-    transform({ action }: ReduxLogicDeps, dispatch: any, next: ReduxLogicNextCb) {
+    process({ action }: ReduxLogicDeps, dispatch: any, done: any) {
         const searchParameterMap = action.payload;
-        next(dispatch(batchActions(UrlState.toReduxActions(searchParameterMap))));
+        const actions = UrlState.toReduxActions(searchParameterMap);
+        const logicActions = remove(actions, { type: CHANGE_DATASET });
+        // batchActions doesn't include logics
+        if (logicActions) {
+            logicActions.forEach((action) => dispatch(action));
+        }
+        dispatch(batchActions(UrlState.toReduxActions(searchParameterMap)));
+        done();
     },
 });
 
 const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
-    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+    async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
-        const selectedDataset = getDatasets(getState())[action.payload];
-
+        let datasets = getDatasets(getState());
+        if (!datasets.length) {
+            // if user goes directly to a dataset, 
+            // the datasets may not have been saved in state yet
+            datasets = await imageDataSet.getAvailableDatasets();
+        }
+        const selectedDataset = find(datasets, { id: action.payload });
+        if (!action.payload) {
+            return dispatch({
+                type: SET_DATASET,
+                payload: action.payload,
+            });
+        }
         imageDataSet.selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
-                dispatch(changeAxis(X_AXIS_ID, selections.defaultXAxis));
-                dispatch(changeAxis(Y_AXIS_ID, selections.defaultYAxis));
+                console.log(selections);
+                // TODO: once we have feature defs being read in, use these keys
+                // dispatch(changeAxis(X_AXIS_ID, selections.defaultXAxis));
+                // dispatch(changeAxis(Y_AXIS_ID, selections.defaultYAxis));
 
                 dispatch(requestCellLineData());
                 dispatch({

@@ -39,10 +39,11 @@ class FirebaseRequest implements ImageDataset {
         this.downloadRoot = "";
         this.volumeViewerDataRoot = "";
         this.featuresDisplayOrder = "";
-        this.collectionRef = firestore.collection("cfe-datasets").doc("datasetid");
+        this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
     }
 
     private getCollection = (collection: string) => {
+        console.log(this.collectionRef.path, collection)
         return this.collectionRef.collection(collection).get();
     };
 
@@ -62,7 +63,7 @@ class FirebaseRequest implements ImageDataset {
     };
 
     private getManifest = (ref: string) => {
-        return this.getCollection(ref).then((manifestDoc: DocumentData) => {
+        return firestore.doc(ref).get().then((manifestDoc: DocumentData) => {
             return manifestDoc.data();
         });
     };
@@ -100,15 +101,15 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        return this.getCollection(CELL_FEATURE_ANALYSIS_FILENAME).then(
-            (snapshot: QuerySnapshot) => {
+        // TODO: request from AWS
+        return this.getCollection("cell-feature-analysis")
+            .then((snapshot: QuerySnapshot) => {
                 const dataset: MetadataStateBranch[] = [];
                 snapshot.forEach((doc: QueryDocumentSnapshot) => {
                     dataset.push(doc.data());
                 });
                 return dataset;
-            }
-        );
+            });
     };
 
     public getAlbumData = () => {

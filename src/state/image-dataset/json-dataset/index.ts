@@ -4,7 +4,6 @@ import { reduce } from "lodash";
 import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
-    BASE_API_URL,
     FILE_INFO_KEYS,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
@@ -40,7 +39,7 @@ class JsonRequest implements ImageDataset {
         this.downloadRoot = "";
         this.volumeViewerDataRoot = "";
         this.featuresDisplayOrder = "";
-        this.databaseDirectory = "";
+        this.databaseDirectory = "data";
         this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this. 
     }
 

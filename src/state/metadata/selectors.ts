@@ -10,7 +10,6 @@ import { createSelector } from "reselect";
 import {
     PROTEIN_NAME_KEY,
 } from "../../constants";
-import { getSelectedDataset } from "../selection/selectors";
 import { ClusteringDatum } from "../selection/types";
 import { State } from "../types";
 
