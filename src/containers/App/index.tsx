@@ -34,15 +34,11 @@ class App extends React.Component<AppProps, {}> {
         dontShowSmallScreenWarningAgain: false,
         showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
         width: window.innerWidth,
-        renderExplorerApp: false,
     };
 
     public componentDidMount = () => {
         this.props.requestAvailableDatasets();
         window.addEventListener("resize", this.updateDimensions);
-        if (location.hash) {
-            this.setState({ renderExplorerApp: true })
-        }
     }
 
     public updateDimensions = () => {

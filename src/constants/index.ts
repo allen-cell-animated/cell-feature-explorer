@@ -6,19 +6,35 @@ export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
 export const CLUSTERS_PLOT_NAME = "clusters-plot-name";
 export const COLOR_BY_SELECTOR = "colorBy";
-export const CELL_ID_KEY = "CellId";
-export const CELL_LINE_NAME_KEY = "CellLineName";
-export const FOV_ID_KEY = "FOVId";
 export const PROTEIN_NAME_KEY = "structureProteinName";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId_Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
-export const FILE_INFO_KEYS = Object.freeze([CELL_ID_KEY, CELL_LINE_NAME_KEY, FOV_ID_KEY]);
+
+export const CELL_ID_KEY = "CellId";
+export const FOV_ID_KEY = "FOVId";
+export const CELL_LINE_NAME_KEY = "CellLineName";
+export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
+export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
+export const THUMBNAIL_PATH = "thumbnailPath";
+export const VOLUME_VIEWER_PATH = "volumeviewerPath";
+// this defines the order they appear in the data files
+export const FILE_INFO_KEYS = Object.freeze([
+    CELL_ID_KEY,
+    FOV_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    THUMBNAIL_PATH,
+    VOLUME_VIEWER_PATH,
+    FOV_THUMBNAIL_PATH,
+    FOV_VOLUME_VIEWER_PATH,
+]);
+
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
-export const MITOTIC_STAGE_KEY = "Interphase and Mitotic Stages (stage)";
-const INTERPHASE_AND_MITOSIS_KEY = "Interphase and Mitosis (stage)";
-const CELL_SEGMENTATION_KEY = "Cell Segmentation (complete)";
+export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
+export const MITOTIC_STAGE_KEY = "Interphase & mitotic stages (stage)";
+const INTERPHASE_AND_MITOSIS_KEY = "Interphase or mitosis (stage)";
+const CELL_SEGMENTATION_KEY = "Anaphase segmentation complete (unitless)";
 export const CATEGORICAL_FEATURES = Object.freeze([
     INTERPHASE_AND_MITOSIS_KEY,
     CELL_SEGMENTATION_KEY,
@@ -126,11 +142,11 @@ export const GENERAL_PLOT_SETTINGS = {
         orientation: "h" as "h",
         y: 60,
     },
-    margin: {
-        bottom: 10,
-        left: 25,
-        right: 25,
-        top: 10,
+  margin: {
+        b: 50,
+        l: 60,
+        r: 40,
+        t: 10,
     },
     moveDropdownCutoffWidth: 370,
     plotHeight: 580,
@@ -138,11 +154,11 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: .5,
-    xAxisInitial: "Nuclear Volume (fL)",
-    yAxisInitial: "Cellular Volume (fL)",
+    xAxisInitial: "DNA volume (\u00b5m\u00b3)",
+    yAxisInitial: "Cell volume (\u00b5m\u00b3)",
 };
 
-export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x"];
+export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];
 export const OBS_MEMBRANE_NAMES = ["CMDRP"];
 export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
 export const OBS_DNA_NAMES = ["H3342_3", "H3342"];

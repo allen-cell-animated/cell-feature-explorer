@@ -1,0 +1,24 @@
+{
+  "name": "hiPSC Single-Cell Image Dataset",
+  "version": "v2020.1",
+  "id": "aics_hipsc_v2020.1",
+  "image": "",
+  "description": "Through improved cell and nuclear segmentation methods, this dataset contains 5x the number of single-cell images and includes 5 new fluorescently-labeled structures. To learn more about the robust intracellular organization found in this dataset, please see our recent article in <a href='https://www.biorxiv.org/content/10.1101/2020.12.08.415562v1'>bioRxiv.</a>",
+  "userData": {
+    "isNew": true,
+    "inReview": true,
+    "totalCells": 216062,
+    "totalFOVs": 18186,
+    "totalTaggedStructures": 25
+  },
+  "featureDefs": "feature_defs.json",
+  "featuresData": "cell_feature_analysis.json",
+  "cellLineData": "cell_line_defs.json",
+  "albumPath": "albums",
+  "thumbnailRoot": "",
+  "downloadRoot": "",
+  "volumeViewerDataRoot": "",
+  "defaultXAxis": "cell-volume",
+  "defaultYAxis": "dna-volume",
+  "featuresDisplayOrder": []
+}

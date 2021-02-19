@@ -7,7 +7,6 @@ import { $enum } from "ts-enum-util";
 
 import {
     CATEGORICAL_FEATURES,
-    CLUSTERS_PLOT_NAME,
     GENERAL_PLOT_SETTINGS,
     getLabels,
     PROTEIN_NAME_KEY,
@@ -18,7 +17,6 @@ import { getFeatureNames } from "../../state/metadata/selectors";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
-    getClusteringResult,
     getClustersOn,
     getColorBySelection,
     getColorByValues,
@@ -74,13 +72,13 @@ export const composePlotlyData = createSelector([
         getApplyColorToSelections,
         getClustersOn,
         getSelectedGroupsData,
-        getClusteringResult,
+        // getClusteringResult,
     ], (
         mainPlotDataValues,
         applyColorToSelections,
         showClusters,
         selectedGroups,
-        clusteringResultData
+        // clusteringResultData
 ): any => {
     const mainPlotData = {
         ...mainPlotDataValues,
@@ -95,11 +93,12 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
-    const clusteringPlotData = showClusters ? {
-        ...clusteringResultData,
-        groupBy: false,
-        plotName: CLUSTERS_PLOT_NAME,
-    } : null;
+    const clusteringPlotData = null;
+    // showClusters ? {
+    //     ...clusteringResultData,
+    //     groupBy: false,
+    //     plotName: CLUSTERS_PLOT_NAME,
+    // } : null;
     return {
         clusteringPlotData,
         mainPlotData,

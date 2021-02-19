@@ -2,7 +2,6 @@ import {
     Checkbox,
     Col,
     Collapse,
-    Radio,
     Row,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -10,7 +9,6 @@ import { RadioChangeEvent } from "antd/es/radio";
 import {
     filter,
     includes,
-    indexOf,
 } from "lodash";
 import React from "react";
 import {
@@ -22,30 +20,22 @@ import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
-import SliderWithCustomMarks from "../../components/SliderWithCustomMarks";
 import {
-    AGGLOMERATIVE_KEY,
     CATEGORICAL_FEATURES,
     CATEGORY_TO_ENUM_LOOKUP,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    KMEANS_KEY,
+    NUCLEAR_VOLUME_FEATURE_NAME,
     PROTEIN_NAME_KEY,
-    SPECTRAL_KEY,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
-import {
-    CLUSTERING_LABEL,
-    CLUSTERING_MAP,
-} from "../../state/selection/constants";
+
 import {
     BoolToggleAction,
-    ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
     ChangeSelectionAction,
-    ClusteringTypeChoices,
     ColorForPlot,
     DeselectGroupOfPointsAction,
     DownloadConfig,
@@ -66,17 +56,15 @@ import { PanelData } from "./types";
 
 const styles = require("./style.css");
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const initIndex = 2;
+// const initIndex = 2;
 
 const { Panel } = Collapse;
 
 interface ColorByMenuProps {
     // selector props
-    clusteringAlgorithm: ClusteringTypeChoices;
-    clusteringOptions: string[];
-    clusteringSetting: string;
+    // clusteringAlgorithm: ClusteringTypeChoices;
+    // clusteringOptions: string[];
+    // clusteringSetting: string;
     colorBy: string;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
@@ -92,10 +80,10 @@ interface ColorByMenuProps {
     // dispatch props
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
-    handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
-    handleChangeClusteringNumber: ActionCreator<ChangeClusterNumberAction>;
+    // handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
+    // handleChangeClusteringNumber: ActionCreator<ChangeClusterNumberAction>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
-    handleClusteringToggle: ActionCreator<BoolToggleAction>;
+    // handleClusteringToggle: ActionCreator<BoolToggleAction>;
     handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
     // props from <App />
@@ -113,8 +101,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.onBarClicked = this.onBarClicked.bind(this);
         this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
-        this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
-        this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
+        // this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
+        // this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
         this.renderProteinPanel = this.renderProteinPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
@@ -124,16 +112,16 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     }
 
     public componentDidUpdate() {
-        const {
-            clusteringAlgorithm,
-            handleChangeClusteringNumber,
-            clusteringSetting,
-            clusteringOptions,
-        } = this.props;
-        if (!clusteringSetting) {
-            handleChangeClusteringNumber(
-                CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
-        }
+        // const {
+        //     clusteringAlgorithm,
+        //     handleChangeClusteringNumber,
+        //     clusteringSetting,
+        //     clusteringOptions,
+        // } = this.props;
+        // if (!clusteringSetting) {
+        //     handleChangeClusteringNumber(
+        //         CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
+        // }
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
@@ -172,7 +160,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         if (colorByProtein) {
             return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
         }
-        handleChangeAxis(COLOR_BY_SELECTOR, "Nuclear Volume (fL)");
+        handleChangeAxis(COLOR_BY_SELECTOR, NUCLEAR_VOLUME_FEATURE_NAME);
     }
 
     public onActivePanelChange(value: string | string[]) {
@@ -180,57 +168,57 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         onPanelClicked(value as string[]);
     }
 
-    public changeClusteringAlgorithm({ target }: RadioChangeEvent) {
-        const { handleChangeClusteringAlgorithm } = this.props;
-        handleChangeClusteringAlgorithm(target.value);
+    public changeClusteringAlgorithm() {
+        // const { handleChangeClusteringAlgorithm } = this.props;
+        // handleChangeClusteringAlgorithm(target.value);
     }
 
-    public changeClusteringNumber(value: string) {
-        const { handleChangeClusteringNumber, clusteringAlgorithm } = this.props;
-        handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
+    public changeClusteringNumber() {
+        // const { handleChangeClusteringNumber, clusteringAlgorithm } = this.props;
+        // handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
     }
 
     public renderClusteringPanel() {
-        const {
-            clusteringAlgorithm,
-            clusteringSetting,
-            handleClusteringToggle,
-            clusteringOptions,
-            showClusters,
-        } = this.props;
-        const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
+        // const {
+        //     clusteringAlgorithm,
+        //     clusteringSetting,
+        //     handleClusteringToggle,
+        //     clusteringOptions,
+        //     showClusters,
+        // } = this.props;
+        // const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
 
-        return (
-            <React.Fragment>
-                <ColorBySwitcher
-                    defaultChecked={false}
-                    handleChange={handleClusteringToggle}
-                    label="Show clusters:"
-                />
-                <Row
-                    className={styles.colorByRow}
-                    type="flex"
-                    align="middle"
-                >
-                    <RadioGroup
-                        onChange={this.changeClusteringAlgorithm}
-                        defaultValue={KMEANS_KEY}
-                        disabled={!showClusters}
-                    >
-                        <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
-                        <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
-                        <RadioButton value={SPECTRAL_KEY}>Spectral</RadioButton>
-                    </RadioGroup>
-                </Row>
-                    <SliderWithCustomMarks
-                        disabled={!showClusters}
-                        label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
-                        onValueChange={this.changeClusteringNumber}
-                        valueOptions={clusteringOptions}
-                        initIndex={initSliderSetting}
-                    />
-            </React.Fragment>
-        );
+        // return (
+        //     <React.Fragment>
+        //         <ColorBySwitcher
+        //             defaultChecked={false}
+        //             handleChange={handleClusteringToggle}
+        //             label="Show clusters:"
+        //         />
+        //         <Row
+        //             className={styles.colorByRow}
+        //             type="flex"
+        //             align="middle"
+        //         >
+        //             <RadioGroup
+        //                 onChange={this.changeClusteringAlgorithm}
+        //                 defaultValue={KMEANS_KEY}
+        //                 disabled={!showClusters}
+        //             >
+        //                 <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
+        //                 <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
+        //                 <RadioButton value={SPECTRAL_KEY}>Spectral</RadioButton>
+        //             </RadioGroup>
+        //         </Row>
+        //             <SliderWithCustomMarks
+        //                 disabled={!showClusters}
+        //                 label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
+        //                 onValueChange={this.changeClusteringNumber}
+        //                 valueOptions={clusteringOptions}
+        //                 initIndex={initSliderSetting}
+        //             />
+        //     </React.Fragment>
+        // );
     }
 
     public renderSelectionPanel() {
@@ -364,12 +352,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                     >
                         {this.renderSelectionPanel()}
                     </Panel>
-                    <Panel
+                    {/* <Panel
                         key={panelKeys[2]}
                         header="Data group by clustering"
                     >
                         {this.renderClusteringPanel()}
-                    </Panel>
+                    </Panel> */}
                 </Collapse>
         );
     }
@@ -378,9 +366,9 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
 function mapStateToProps(state: State) {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
-        clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
-        clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
-        clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
+        // clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
+        // clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
+        // clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
@@ -398,11 +386,11 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
-    handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
-    handleChangeClusteringNumber: selectionStateBranch.actions.changeClusteringNumber,
+    // handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
+    // handleChangeClusteringNumber: selectionStateBranch.actions.changeClusteringNumber,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
-    handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
+    // handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
     handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
 };
 
