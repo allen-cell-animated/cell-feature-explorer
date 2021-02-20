@@ -3,7 +3,7 @@ import { find, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
-import { requestCellLineData } from "../metadata/actions";
+import { requestCellLineData, requestFeatureData } from "../metadata/actions";
 import { getDatasets } from "../metadata/selectors";
 import {
     ReduxLogicDeps,
@@ -49,6 +49,7 @@ const changeDatasetLogic = createLogic({
                 console.log(selections);
 
                 dispatch(requestCellLineData());
+                dispatch(requestFeatureData());
                 dispatch({
                     type: SET_DATASET,
                     payload: action.payload,

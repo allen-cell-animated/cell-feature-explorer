@@ -13,6 +13,6 @@ export interface ImageDataset {
     getCellLineDefs(): Promise<CellLineDef[]>;
     getFeatureData(): Promise<MetadataStateBranch>;
     getAlbumData(): Promise<Album[]>;
-    getMeasuredFeatureNames?(): Promise<MeasuredFeatureDef[]>;
+    getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfo?(): Promise<FileInfo[]>;
 }

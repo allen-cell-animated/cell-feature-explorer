@@ -87,18 +87,21 @@ class JsonRequest implements ImageDataset {
         });
     };
 
+    public getMeasuredFeatureDefs = () => {
+   // make sure we have the feature defs first.
+        return this.getJson(FEATURE_DEFS_FILENAME)
+            .then((featureDefs) => {
+                this.featureDefinitions = featureDefs;
+                return featureDefs
+            })
+    };
+
     public getFeatureData = () => {
         // helper function
         function getFullFeatureName(featureDef: any) {
             return `${featureDef.displayName} (${featureDef.unit})`;
         }
-
-        // make sure we have the feature defs first.
-        return this.getJson(FEATURE_DEFS_FILENAME)
-            .then((featureDefs) => {
-                this.featureDefinitions = featureDefs;
-                return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME);
-            })
+        return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME)
             .then((featureDataArray) => {
                 // transform data in place to save memory
                 featureDataArray.forEach((el: any) => {

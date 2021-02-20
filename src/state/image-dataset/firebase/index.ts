@@ -4,6 +4,7 @@ import {
     QuerySnapshot,
     DocumentData,
 } from "@firebase/firestore-types";
+import axios, { AxiosResponse } from "axios";
 
 import {
     CELL_COUNT_KEY,
@@ -26,12 +27,11 @@ import { firestore } from "./configure-firebase";
 const CFE_DATASETS = "cfe-datasets";
 const VERSION = "v2";
 const CELL_FILE_INFO_COLLECTION = "cell-file-info";
-const CELL_FEATURES_COLLECTION = "measured-features-values";
+const CELL_FEATURES_COLLECTION = "feature-definitions";
 const CELL_FEATURE_DEFS_COLLECTION = "measured-features-names";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
-    private featureDefs: string;
     private featuresData: string;
     private cellLineData: string;
     private thumbnailRoot: string;
@@ -39,7 +39,6 @@ class FirebaseRequest implements ImageDataset {
     private volumeViewerDataRoot: string;
     private featuresDisplayOrder: string;
     constructor() {
-        this.featureDefs = "";
         this.featuresData = "";
         this.cellLineData = "";
         this.thumbnailRoot = "";
@@ -54,7 +53,6 @@ class FirebaseRequest implements ImageDataset {
     };
 
     private getCollection = (collection: string) => {
-
         return firestore.collection(collection).get();
     };
 
@@ -84,7 +82,6 @@ class FirebaseRequest implements ImageDataset {
 
     public selectDataset = (ref: string) => {
         return this.getManifest(ref).then((data) => {
-            this.featureDefs = data.featureDefs;
             this.featuresData = data.featuresData;
             this.cellLineData = data.cellLineData;
             this.thumbnailRoot = data.thumbnailRoot;
@@ -116,24 +113,48 @@ class FirebaseRequest implements ImageDataset {
         });
     };
 
-    public getFeatureData = () => {
-        // TODO: request from AWS
-        return this.getCollection("cell-feature-analysis").then((snapshot: QuerySnapshot) => {
-            const dataset: MetadataStateBranch[] = [];
-            snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                dataset.push(doc.data());
-            });
-            return dataset;
+    public getMeasuredFeatureDefs = async () => {
+        const snapshot = await firestore
+            .collection(CELL_FEATURES_COLLECTION)
+            .where("key", "in", this.featuresDisplayOrder)
+            .get();
+        const dataset: MeasuredFeatureDef[] = [];
+        snapshot.forEach((doc: QueryDocumentSnapshot) => {
+            dataset.push(doc.data() as MeasuredFeatureDef);
         });
-    }
+        return dataset;
+    };
+
+    public getFeatureData = () => {
+        console.log(this.featuresDisplayOrder)
+        return axios.get(this.featuresData).then((metadata: AxiosResponse) => metadata.data)
+            .then(featureData => {
+
+                return featureData.map((ele) => {
+                    // console.log(ele)
+                    const measured_features = ele.f.reduce((acc, value, index) => {
+                        acc[this.featuresDisplayOrder[index]] = value;
+                        return acc;
+                    }, {});
+                    const file_info = {
+                        [PROTEIN_NAME_KEY]: ele.p,
+                        thumbnailPath: ele.t
+                    }
+                    return {
+                        measured_features,
+                        file_info,
+                    };
+                })
+            })
+ 
+    };
 
     public getFileInfo = () => {
-        return this.getCollection("cell-file-info")
-            .then((snapshot) => {
-                const dataset: FileInfo[] = []
-                snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
-                return dataset;
-            });
+        return this.getCollection("cell-file-info").then((snapshot) => {
+            const dataset: FileInfo[] = [];
+            snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
+            return dataset;
+        });
     };
 
     public getFileInfoByCellId = (cellId: string) => {
@@ -141,18 +162,11 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
-        Promise.all(cellIds.map((id) => {
-            return this.getDoc(id).then((doc) => doc.data());
-        }))
-    };
-
-    public getMeasuredFeatureNames = async () => {
-        const snapshot = await this.getCollection(CELL_FEATURE_DEFS_COLLECTION);
-        const dataset: MeasuredFeatureDef[] = [];
-        snapshot.forEach((doc: QueryDocumentSnapshot) => {
-            dataset.push(doc.data() as MeasuredFeatureDef);
-        });
-        return dataset;
+        Promise.all(
+            cellIds.map((id) => {
+                return this.getDoc(id).then((doc) => doc.data());
+            })
+        );
     };
 
     public getAlbumData = () => {

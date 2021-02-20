@@ -60,26 +60,15 @@ const requestFeatureDataLogic = createLogic({
         const { getState, imageDataSet } = deps;
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
         // const state = getState();
-        let measuredFeatureNames;
-        let xAxisDefaultValue;
-        let yAxisDefaultValue;
         const actions: AnyAction[] = [];
-        if (imageDataSet.getMeasuredFeatureNames) {
-            measuredFeatureNames = await imageDataSet.getMeasuredFeatureNames();
-            xAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_X});
-            yAxisDefaultValue = find(measuredFeatureNames, {displayName: INITIAL_PLOT_BY_ON_Y});
-            if (xAxisDefaultValue) {
-                actions.push(changeAxis(X_AXIS_ID, xAxisDefaultValue.key));
-            }
-            if (yAxisDefaultValue) {
-                actions.push(changeAxis(Y_AXIS_ID, yAxisDefaultValue.key));
-            }
-
-            actions.push(receiveMeasuredFeatureNames(measuredFeatureNames));
-        } 
+        const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
+        console.log(measuredFeatureDefs);
+        actions.push(receiveMeasuredFeatureNames(measuredFeatureDefs));
+        
         return imageDataSet
             .getFeatureData()
             .then((data: MetadataStateBranch) => {
+                console.log("GOT METADAT", data)
                 actions.push(receiveMetadata(data));
                 dispatch(batchActions(actions));
                 return data;
@@ -93,16 +82,16 @@ const requestFeatureDataLogic = createLogic({
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
 
-                if (isEmpty(getClickedScatterPoints(state))) {
-                    secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0]]));
-                }
+                // if (isEmpty(getClickedScatterPoints(state))) {
+                //     secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0]]));
+                // }
 
-                if (!getSelected3DCell(state)) {
-                    secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]));
-                }
-                if (!isEmpty(secondBatch)) {
-                    dispatch(batchActions(secondBatch));
-                }
+                // if (!getSelected3DCell(state)) {
+                //     secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]));
+                // }
+                // if (!isEmpty(secondBatch)) {
+                //     dispatch(batchActions(secondBatch));
+                // }
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
