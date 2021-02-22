@@ -69,6 +69,7 @@ export interface ContinuousPlotData {
     ids?: string[];
     x: number[];
     y: number[];
+    customdata?: string[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -83,6 +84,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: number[];
     y: number[];
+    customdata?: string[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;

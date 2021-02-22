@@ -65,6 +65,9 @@ class JsonRequest implements ImageDataset {
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
+                thumbnailRoot: data.thumbnailRoot,
+                downloadRoot: data.downloadRoot,
+                volumeViewerDataRoot: data.volumeViewerDataRoot,
             };
         });
     };
@@ -88,12 +91,11 @@ class JsonRequest implements ImageDataset {
     };
 
     public getMeasuredFeatureDefs = () => {
-   // make sure we have the feature defs first.
-        return this.getJson(FEATURE_DEFS_FILENAME)
-            .then((featureDefs) => {
-                this.featureDefinitions = featureDefs;
-                return featureDefs
-            })
+        // make sure we have the feature defs first.
+        return this.getJson(FEATURE_DEFS_FILENAME).then((featureDefs) => {
+            this.featureDefinitions = featureDefs;
+            return featureDefs;
+        });
     };
 
     public getFeatureData = () => {
@@ -101,35 +103,34 @@ class JsonRequest implements ImageDataset {
         function getFullFeatureName(featureDef: any) {
             return `${featureDef.displayName} (${featureDef.unit})`;
         }
-        return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME)
-            .then((featureDataArray) => {
-                // transform data in place to save memory
-                featureDataArray.forEach((el: any) => {
-                    // number of feature defs must be same as number of features
-                    if (this.featureDefinitions.length !== el.features.length) {
-                        throw new Error("Bad number of feature entries in data");
-                    }
-                    el["measured_features"] = {};
-                    el.features.forEach((f: any, i: number) => {
-                        el.measured_features[getFullFeatureName(this.featureDefinitions[i])] = f;
-                    });
-                    // now el.features is totally replaced by el.measured_features
-                    delete el.features;
-
-                    // number of file info property names must be same as number of file_info entries in data
-                    if (FILE_INFO_KEYS.length !== el.file_info.length) {
-                        throw new Error("Bad number of file_info entries in data");
-                    }
-                    // convert file_info array to obj
-                    const fileInfo: Record<string, any> = {};
-                    el.file_info.forEach((f: any, i: number) => {
-                        fileInfo[FILE_INFO_KEYS[i]] = f;
-                    });
-
-                    el["file_info"] = fileInfo;
+        return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME).then((featureDataArray) => {
+            // transform data in place to save memory
+            featureDataArray.forEach((el: any) => {
+                // number of feature defs must be same as number of features
+                if (this.featureDefinitions.length !== el.features.length) {
+                    throw new Error("Bad number of feature entries in data");
+                }
+                el["measured_features"] = {};
+                el.features.forEach((f: any, i: number) => {
+                    el.measured_features[getFullFeatureName(this.featureDefinitions[i])] = f;
                 });
-                return featureDataArray;
+                // now el.features is totally replaced by el.measured_features
+                delete el.features;
+
+                // number of file info property names must be same as number of file_info entries in data
+                if (FILE_INFO_KEYS.length !== el.file_info.length) {
+                    throw new Error("Bad number of file_info entries in data");
+                }
+                // convert file_info array to obj
+                const fileInfo: Record<string, any> = {};
+                el.file_info.forEach((f: any, i: number) => {
+                    fileInfo[FILE_INFO_KEYS[i]] = f;
+                });
+
+                el["file_info"] = fileInfo;
             });
+            return featureDataArray;
+        });
     };
 
     public getAlbumData = () => {

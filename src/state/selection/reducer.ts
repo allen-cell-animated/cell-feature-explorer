@@ -40,6 +40,7 @@ import {
     ChangeDownloadConfigAction,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
+    ChangeSelectedDatasetAction,
     ChangeSelectionAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
@@ -66,7 +67,7 @@ export const initialState = {
     filterExclude: [],
     galleryCollapsed: true,
     hoveredCardId: -1,
-    hoveredPointId: -1,
+    hoveredPointData: null,
     mousePosition: {
         pageX: 0,
         pageY: 0,
@@ -84,12 +85,15 @@ export const initialState = {
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [SET_DATASET]: {
-        accepts: (action: AnyAction): action is ChangeSelectionAction =>
+        accepts: (action: AnyAction): action is ChangeSelectedDatasetAction =>
             action.type === SET_DATASET,
-        perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => {
+        perform: (state: SelectionStateBranch, action: ChangeSelectedDatasetAction) => {
             return {
                 ...state,
-                dataset: action.payload,
+                dataset: action.payload.dataset,
+                thumbnailRoot: action.payload.thumbnailRoot,
+                downloadRoot: action.payload.downloadRoot,
+                volumeViewerDataRoot: action.payload.volumeViewerDataRoot,
             };
         },
     },
@@ -222,7 +226,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === CHANGE_HOVERED_POINT_ID,
         perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
-            hoveredPointId: action.payload,
+            hoveredPointData: action.payload,
         }),
     },
     [CHANGE_HOVERED_GALLERY_CARD]: {

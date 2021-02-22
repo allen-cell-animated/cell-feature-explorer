@@ -36,6 +36,7 @@ import {
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
+    SelectedPointData,
     SelectPointAction,
 } from "./types";
 
@@ -146,19 +147,19 @@ export function changeMousePosition(payload: MousePosition): ChangeMousePosition
     };
 }
 
-export function changeHoveredPoint(payload: number): ChangeHoveredPointAction {
-    return {
-        payload,
-        type: CHANGE_HOVERED_POINT_ID,
-    };
-}
+export function changeHoveredPoint(payload: SelectedPointData): ChangeHoveredPointAction {
+           return {
+               payload,
+               type: CHANGE_HOVERED_POINT_ID,
+           };
+       }
 
-export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction {
-    return {
-        payload,
-        type: CHANGE_HOVERED_GALLERY_CARD,
-    };
-}
+export function setHoveredGalleryCard(payload: SelectedPointData): ChangeHoveredPointAction {
+           return {
+               payload,
+               type: CHANGE_HOVERED_GALLERY_CARD,
+           };
+       }
 
 export function selectAlbum(payload: number): SelectAlbumAction {
     return {

@@ -15,7 +15,7 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
-import { CellLineDef, FileInfo, MappingOfCellDataArrays, MeasuredFeatureDef, MetadataStateBranch } from "../../metadata/types";
+import { CellLineDef, FileInfo, MappingOfCellDataArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
@@ -87,6 +87,9 @@ class FirebaseRequest implements ImageDataset {
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
+                thumbnailRoot: data.thumbnailRoot,
+                downloadRoot: data.downloadRoot,
+                volumeViewerDataRoot: data.volumeViewerDataRoot,
             };
         });
     };

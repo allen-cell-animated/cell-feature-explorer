@@ -3,8 +3,11 @@ import { CellLineDef, FileInfo, MeasuredFeatureDef, MetadataStateBranch } from "
 import { Album } from "../types";
 
 export interface InitialDatasetSelections {
-    defaultXAxis:string;
+    defaultXAxis: string;
     defaultYAxis: string;
+    thumbnailRoot: string;
+    downloadRoot: string;
+    volumeViewerDataRoot: string;
 }
 
 export interface ImageDataset {

@@ -20,7 +20,7 @@ const PopoverCard: React.SFC<PopoverCardProps> = (props) => {
         <Card
             className={styles.container}
             cover={props.src &&
-            (<img alt="thumbnail of microscopy image" src={`${THUMBNAIL_BASE_URL}${props.src}`}/>)
+            (<img alt="thumbnail of microscopy image" src={props.src} />)
             }
         >
             <Meta

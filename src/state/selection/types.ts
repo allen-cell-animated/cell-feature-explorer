@@ -1,8 +1,10 @@
 import {
     AGGLOMERATIVE_KEY,
+    CELL_ID_KEY,
     CLUSTER_DISTANCE_KEY,
     CLUSTER_NUMBER_KEY,
     KMEANS_KEY,
+    PROTEIN_NAME_KEY,
     SPECTRAL_KEY,
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
@@ -103,8 +105,24 @@ export interface ChangeMousePositionAction {
     type: string;
 }
 
+export interface SelectedPointData {
+    [CELL_ID_KEY]: number;
+    [PROTEIN_NAME_KEY]: string;
+    thumbnailPath: string;
+}
+
 export interface ChangeHoveredPointAction {
-    payload: number;
+    payload: SelectedPointData;
+    type: string;
+}
+
+export interface ChangeSelectedDatasetAction {
+    payload: {
+        dataset: string;
+        thumbnailRoot: string;
+        downloadRoot: string;
+        volumeViewerDataRoot: string;
+    };
     type: string;
 }
 

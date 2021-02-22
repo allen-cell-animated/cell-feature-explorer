@@ -14,7 +14,6 @@ import { createSelector } from "reselect";
 
 import {
     ARRAY_OF_CELL_IDS_KEY,
-    ARRAY_OF_FILE_INFO_KEY,
     CELL_ID_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -75,11 +74,13 @@ export const getNumberOfClusters = (state: State) => state.selection.numberOfClu
 export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
 export const getMousePosition = (state: State) => state.selection.mousePosition;
-export const getHoveredPointId = (state: State) => state.selection.hoveredPointId;
+export const getHoveredPointData = (state: State) => state.selection.hoveredPointData;
 export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
 export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
 export const getSelectedDataset = (state: State) => state.selection.dataset;
+export const getThumbnailRoot = (state: State) => state.selection.thumbnailRoot;
+
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
@@ -115,12 +116,6 @@ export const getFilteredCellData = createSelector(
                        });
                    }
                }
-               console.log({
-                   ...dataToReturn,
-                   [PROTEIN_NAME_KEY]: proteinNameArray,
-                   [ARRAY_OF_CELL_IDS_KEY]: cellIds,
-                   thumbnailPaths: thumbnails
-               });
                return {
                    ...dataToReturn,
                    [PROTEIN_NAME_KEY]: proteinNameArray,
@@ -150,6 +145,13 @@ export const getYValues = createSelector(
 export const getIds = createSelector([getFilteredCellData], (measuredData: MappingOfCellDataArrays) => {
            return measuredData[ARRAY_OF_CELL_IDS_KEY] || [];
        });
+
+export const getThumbnailPaths = createSelector(
+    [getFilteredCellData],
+    (measuredData: MappingOfCellDataArrays) => {
+        return measuredData.thumbnailPaths || [];
+    }
+);
 
 export const getColorsForPlot = createSelector([getColorBySelection, getProteinNames, getProteinColors, getMeasuredFeaturesDefs,  getCategoricalFeatureKeys],
     (colorBy: string, proteinNames: string[], proteinColors: string[], measuredFeaturesDefs, categoricalFeatureKeys): ColorForPlot[] => {
@@ -245,10 +247,10 @@ export const getColorByValues = createSelector([getFilteredCellData, getColorByS
     
 );
 
-export const getHoveredPointData = createSelector([getHoveredPointId, getFileInfo],
-    (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
-    return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
-});
+// export const getHoveredPointData = createSelector([getHoveredPointData, getFileInfo],
+//     (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
+//     return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
+// });
 
 const getSelectedScatterPointsWithAvailableMetadata = createSelector([
     getFileInfo,

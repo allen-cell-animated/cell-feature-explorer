@@ -43,7 +43,6 @@ import {
     Annotation,
     State,
 } from "../../state/types";
-import { batchActions, convertFileInfoToImgSrc } from "../../state/util";
 
 import {
     getScatterPlotDataArray,
@@ -65,6 +64,7 @@ interface PropsFromState {
     mousePosition: MousePosition;
     plotDataArray: any;
     plotLoadingProgress: number;
+    thumbnailRoot: string;
     xDropDownValue: string;
     yDropDownValue: string;
     yDropDownOptions: MeasuredFeatureDef[];
@@ -74,7 +74,7 @@ interface PropsFromState {
 }
 
 interface DispatchProps {
-    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
+    changeHoveredCell: ActionCreator<ChangeHoveredPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     handleSelectPoint: ActionCreator<SelectPointAction>;
@@ -125,10 +125,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPlotHovered(hovered: any) {
         const { points, event } = hovered;
+        console.log(points)
         const {
             filtersToExclude,
             updateMousePosition,
-            changeHoverCellId,
+            changeHoveredCell,
         } = this.props;
         updateMousePosition({
             pageX: event.pageX,
@@ -137,9 +138,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
-                    changeHoverCellId(Number(point.id));
+                    changeHoveredCell({[CELL_ID_KEY]: Number(point.id), [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
                 } else {
-                    changeHoverCellId(-1);
+                    changeHoveredCell(null);
                 }
             }
         });
@@ -147,11 +148,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public onPlotUnhovered({relatedTarget}: any) {
         const {
-            changeHoverCellId,
+            changeHoveredCell,
         } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
-            changeHoverCellId(-1);
+            changeHoveredCell(null);
         }
     }
 
@@ -171,16 +172,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public renderPopover() {
-        const {
-            hoveredPointData,
-            galleryCollapsed,
-        } = this.props;
-        return (hoveredPointData && galleryCollapsed &&
-            (
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        return (
+            hoveredPointData &&
+            galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
-                    src={convertFileInfoToImgSrc(hoveredPointData)}
+                    src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
                 />
             )
         );
@@ -291,6 +290,7 @@ function mapStateToProps(state: State): PropsFromState {
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
         plotLoadingProgress: getPlotLoadingProgress(state),
+        thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
         xTickConversion: getXTickConversion(state),
@@ -301,7 +301,7 @@ function mapStateToProps(state: State): PropsFromState {
 }
 
 const dispatchToPropsMap: DispatchProps = {
-    changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
+    changeHoveredCell: selectionStateBranch.actions.changeHoveredPoint,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,

@@ -40,6 +40,7 @@ const changeDatasetLogic = createLogic({
             datasets = await imageDataSet.getAvailableDatasets();
         }
         const selectedDataset = find(datasets, { id: action.payload });
+
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
@@ -58,7 +59,12 @@ const changeDatasetLogic = createLogic({
                 dispatch(requestFeatureData());
                 dispatch({
                     type: SET_DATASET,
-                    payload: action.payload,
+                    payload: {
+                        dataset: action.payload,
+                        thumbnailRoot: selections.thumbnailRoot,
+                        downloadRoot: selections.downloadRoot,
+                        volumeViewerDataRoot: selections.volumeViewerDataRoot,
+                    },
                 });
             done();
         });

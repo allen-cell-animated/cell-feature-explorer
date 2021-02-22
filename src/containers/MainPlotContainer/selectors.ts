@@ -19,6 +19,7 @@ import {
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
+    getThumbnailPaths,
     getXValues,
     getYValues,
 } from "../../state/selection/selectors";
@@ -37,6 +38,7 @@ export const getMainPlotData = createSelector(
         getXValues,
         getYValues,
         getIds,
+        getThumbnailPaths,
         getColorByValues,
         getColorBySelection,
         getColorsForPlot,
@@ -46,6 +48,7 @@ export const getMainPlotData = createSelector(
         xValues,
         yValues,
         ids,
+        thumbnailPaths,
         colorByValues,
         colorBy,
         colorsForPlot,
@@ -59,6 +62,7 @@ export const getMainPlotData = createSelector(
             ids: map(ids, (ele) => ele.toString()),
             x: xValues,
             y: yValues,
+            customdata: thumbnailPaths as string[],
         };
     }
 );
@@ -85,6 +89,7 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
+
     return {
         clusteringPlotData: null,
         mainPlotData,
@@ -133,6 +138,7 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     const plotSettings =  {
         hoverinfo: "none" as "none",
         ids: plotData.ids,
+        customdata: plotData.customdata,
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
             symbol: "circle",
