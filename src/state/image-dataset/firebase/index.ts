@@ -7,6 +7,7 @@ import {
 import axios, { AxiosResponse } from "axios";
 
 import {
+    ARRAY_OF_CELL_IDS_KEY,
     CELL_COUNT_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
@@ -14,21 +15,16 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
-import { CellLineDef, FileInfo, MeasuredFeatureDef, MetadataStateBranch } from "../../metadata/types";
+import { CellLineDef, FileInfo, MappingOfCellDataArrays, MeasuredFeatureDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
-    CELL_LINE_DEF_FILENAME,
 } from "../constants";
 import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 
-const CFE_DATASETS = "cfe-datasets";
-const VERSION = "v2";
-const CELL_FILE_INFO_COLLECTION = "cell-file-info";
 const CELL_FEATURES_COLLECTION = "feature-definitions";
-const CELL_FEATURE_DEFS_COLLECTION = "measured-features-names";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
@@ -37,14 +33,14 @@ class FirebaseRequest implements ImageDataset {
     private thumbnailRoot: string;
     private downloadRoot: string;
     private volumeViewerDataRoot: string;
-    private featuresDisplayOrder: string;
+    private featuresDisplayOrder: string[];
     constructor() {
         this.featuresData = "";
         this.cellLineData = "";
         this.thumbnailRoot = "";
         this.downloadRoot = "";
         this.volumeViewerDataRoot = "";
-        this.featuresDisplayOrder = "";
+        this.featuresDisplayOrder = [];
         this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
     }
 
@@ -116,7 +112,7 @@ class FirebaseRequest implements ImageDataset {
     public getMeasuredFeatureDefs = async () => {
         const snapshot = await firestore
             .collection(CELL_FEATURES_COLLECTION)
-            .where("key", "in", this.featuresDisplayOrder)
+            .where("key", "in", this.featuresDisplayOrder.slice(0,9))
             .get();
         const dataset: MeasuredFeatureDef[] = [];
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
@@ -126,25 +122,38 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        console.log(this.featuresDisplayOrder)
         return axios.get(this.featuresData).then((metadata: AxiosResponse) => metadata.data)
             .then(featureData => {
 
-                return featureData.map((ele) => {
-                    // console.log(ele)
-                    const measured_features = ele.f.reduce((acc, value, index) => {
-                        acc[this.featuresDisplayOrder[index]] = value;
+                const dataMappedByMeasuredFeatures = this.featuresDisplayOrder.reduce(
+                    (acc, featureName: string) => {
+                        const initArray: number[] = []
+                        acc[featureName] = initArray;
                         return acc;
+                    },
+                    {} as MappingOfCellDataArrays
+                );
+                const proteinArray: string[] = [];
+                const thumbnails: string[] = [];
+                const ids: number[] = [];
+                for (let index = 0; index < featureData.length; index++) {
+                    const datum = featureData[index];
+                    datum.f.forEach((value: number, index: number) => {
+                        const arrayOfValues =
+                            dataMappedByMeasuredFeatures[this.featuresDisplayOrder[index]] as number[];
+                        arrayOfValues.push(value);
                     }, {});
-                    const file_info = {
-                        [PROTEIN_NAME_KEY]: ele.p,
-                        thumbnailPath: ele.t
-                    }
-                    return {
-                        measured_features,
-                        file_info,
-                    };
-                })
+                    proteinArray.push(datum.p);
+                    thumbnails.push(datum.t);
+                    ids.push(datum.i);
+                }
+                return {
+                    ...dataMappedByMeasuredFeatures,
+                    [PROTEIN_NAME_KEY]: proteinArray,
+                    thumbnailPaths: thumbnails,
+                    [ARRAY_OF_CELL_IDS_KEY]: ids,
+                };
+
             })
  
     };

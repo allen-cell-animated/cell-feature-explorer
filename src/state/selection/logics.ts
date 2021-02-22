@@ -11,6 +11,8 @@ import {
 import { batchActions } from "../util";
 
 import { CHANGE_DATASET, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
+import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { changeAxis } from "./actions";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -46,8 +48,12 @@ const changeDatasetLogic = createLogic({
         }
         imageDataSet.selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
-                console.log(selections);
-
+                dispatch(
+                    batchActions([
+                        changeAxis(X_AXIS_ID, selections.defaultXAxis),
+                        changeAxis(Y_AXIS_ID, selections.defaultYAxis),
+                    ])
+                );
                 dispatch(requestCellLineData());
                 dispatch(requestFeatureData());
                 dispatch({

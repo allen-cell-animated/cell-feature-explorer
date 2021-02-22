@@ -88,7 +88,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === SET_DATASET,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => {
             return {
-                ...initialState,
+                ...state,
                 dataset: action.payload,
             };
         },

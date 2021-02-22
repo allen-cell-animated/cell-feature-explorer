@@ -84,42 +84,48 @@ export const getSelectedDataset = (state: State) => state.selection.dataset;
 
 // MAIN PLOT SELECTORS
 export const getFilteredCellData = createSelector(
-           [getMeasuredFeaturesKeys, getFiltersToExclude, getFileInfo, getMeasuredFeatureValues],
+           [getMeasuredFeaturesKeys, getFiltersToExclude, getMeasuredFeatureValues],
            (
                measuredFeatureKeys,
                filtersToExclude,
-               fileInfo,
                measuredFeaturesByKey
            ): MappingOfCellDataArrays => {
                if (!filtersToExclude.length) {
-                   return {
-                       ...measuredFeaturesByKey,
-                       [ARRAY_OF_FILE_INFO_KEY]: fileInfo,
-                       [PROTEIN_NAME_KEY]: map(fileInfo, PROTEIN_NAME_KEY),
-                   };
+                   return measuredFeaturesByKey
+                 
                }
-               const fileInfoArray: FileInfo[] = [];
                const proteinNameArray: string[] = [];
                const dataToReturn: MappingOfCellDataArrays = {};
-
-               for (let i = 1; i++; i < fileInfo.length) {
-                   const datum: FileInfo = fileInfo[i];
-                   if (includes(filtersToExclude, datum[PROTEIN_NAME_KEY])) {
-                       fileInfoArray.push(datum);
-                       proteinNameArray.push(datum[PROTEIN_NAME_KEY]);
-                       measuredFeatureKeys.forEach((key) => {
-                           if (!dataToReturn[key]) {
-                               dataToReturn[key] = [];
+               const cellIds: number[] = [];
+               const thumbnails: string[] = [];
+               
+               for (let i = 0; i < measuredFeaturesByKey.structureProteinName.length; i++ ) {
+                   const proteinName: string = measuredFeaturesByKey.structureProteinName[i];
+                   if (!includes(filtersToExclude, proteinName)) {
+                       const cellId = measuredFeaturesByKey[ARRAY_OF_CELL_IDS_KEY][i];
+                       cellIds.push(cellId);
+                       proteinNameArray.push(proteinName);
+                       thumbnails.push(measuredFeaturesByKey.thumbnailPaths[i]);
+                       measuredFeatureKeys.forEach((featureKey) => {
+                           if (!dataToReturn[featureKey]) {
+                               dataToReturn[featureKey] = [];
                            }
-                           const array = [...dataToReturn[key], measuredFeaturesByKey[key][i]];
-                           dataToReturn[key] = array;
+    
+                           dataToReturn[featureKey].push(measuredFeaturesByKey[featureKey][i] as never);
                        });
                    }
                }
+               console.log({
+                   ...dataToReturn,
+                   [PROTEIN_NAME_KEY]: proteinNameArray,
+                   [ARRAY_OF_CELL_IDS_KEY]: cellIds,
+                   thumbnailPaths: thumbnails
+               });
                return {
                    ...dataToReturn,
-                   [ARRAY_OF_FILE_INFO_KEY]: fileInfoArray,
                    [PROTEIN_NAME_KEY]: proteinNameArray,
+                   [ARRAY_OF_CELL_IDS_KEY]: cellIds,
+                   thumbnailPaths: thumbnails,
                };
            }
        );

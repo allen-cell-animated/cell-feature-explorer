@@ -1,20 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { isEmpty, find } from "lodash";
 import { createLogic } from "redux-logic";
 import { AnyAction } from "redux";
-import {
-    ARRAY_OF_CELL_IDS_KEY,
-    X_AXIS_ID,
-    Y_AXIS_ID,
-} from "../../constants";
+
 import { DatasetMetaData } from "../../constants/datasets";
-import { changeAxis, selectCellFor3DViewer, selectPoint } from "../selection/actions";
-import { INITIAL_PLOT_BY_ON_X, INITIAL_PLOT_BY_ON_Y } from "../selection/constants";
-import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
+
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText } from "./actions";
+import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
 
 import {
     RECEIVE_ALBUM_DATA,
@@ -24,6 +17,10 @@ import {
     REQUEST_FEATURE_DATA,
 } from "./constants";
 import { CellLineDef, MetadataStateBranch } from "./types";
+import { isEmpty } from "lodash";
+import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
+import { selectPoint, selectCellFor3DViewer } from "../selection/actions";
+import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -62,13 +59,11 @@ const requestFeatureDataLogic = createLogic({
         // const state = getState();
         const actions: AnyAction[] = [];
         const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
-        console.log(measuredFeatureDefs);
         actions.push(receiveMeasuredFeatureNames(measuredFeatureDefs));
         
         return imageDataSet
             .getFeatureData()
             .then((data: MetadataStateBranch) => {
-                console.log("GOT METADAT", data)
                 actions.push(receiveMetadata(data));
                 dispatch(batchActions(actions));
                 return data;
@@ -82,16 +77,17 @@ const requestFeatureDataLogic = createLogic({
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
 
-                // if (isEmpty(getClickedScatterPoints(state))) {
-                //     secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0]]));
-                // }
+                if (isEmpty(getClickedScatterPoints(state))) {
+                    secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0].toString()]));
+                }
 
-                // if (!getSelected3DCell(state)) {
-                //     secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]));
-                // }
-                // if (!isEmpty(secondBatch)) {
-                //     dispatch(batchActions(secondBatch));
-                // }
+                if (!getSelected3DCell(state)) {
+                    secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0].toString()));
+                }
+                if (!isEmpty(secondBatch)) {
+                    dispatch(batchActions(secondBatch));
+                }
+                dispatch(stopLoading());
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
