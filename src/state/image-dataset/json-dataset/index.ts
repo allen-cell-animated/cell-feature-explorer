@@ -4,7 +4,6 @@ import { reduce } from "lodash";
 import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
-    BASE_API_URL,
     FILE_INFO_KEYS,
 } from "../../../constants";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
@@ -17,19 +16,60 @@ import {
 import { ImageDataset } from "../types";
 
 class JsonRequest implements ImageDataset {
-    baseUrl: string;
+    databaseDirectory: string;
     private labkeyCellDefName = "CellLineId/Name";
     private labkeyStructureKey = "StructureId/Name";
     private labkeyProteinKey = "ProteinId/DisplayName";
+    private featureDefs: string;
+    private featuresData: string;
+    private cellLineData: string;
+    private thumbnailRoot: string;
+    private downloadRoot: string;
+    private volumeViewerDataRoot: string;
+    private featuresDisplayOrder: string;
+    private listOfDatasetsDoc: string;
 
-    private featureDefs: any[] = [];
+    private featureDefinitions: any[] = [];
 
     constructor() {
-        this.baseUrl = BASE_API_URL;
+        this.featureDefs = "";
+        this.featuresData = "";
+        this.cellLineData = "";
+        this.thumbnailRoot = "";
+        this.downloadRoot = "";
+        this.volumeViewerDataRoot = "";
+        this.featuresDisplayOrder = "";
+        this.databaseDirectory = "data";
+        this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this.
     }
+
+    public getAvailableDatasets = () => {
+        return axios
+            .get(`${this.listOfDatasetsDoc}`)
+            .then((metadata: AxiosResponse) => metadata.data);
+    };
+
+    public selectDataset = (dir: string) => {
+        return axios.get(`${dir}/dataset.json`).then((metadata: AxiosResponse) => {
+            const { data } = metadata;
+            this.databaseDirectory = dir;
+            this.featureDefs = data.featureDefs;
+            this.featuresData = data.featuresData;
+            this.cellLineData = data.cellLineData;
+            this.thumbnailRoot = data.thumbnailRoot;
+            this.downloadRoot = data.downloadRoot;
+            this.volumeViewerDataRoot = data.volumeViewerDataRoot;
+            this.featuresDisplayOrder = data.featuresDisplayOrder;
+            return {
+                defaultXAxis: data.defaultXAxis,
+                defaultYAxis: data.defaultYAxis,
+            };
+        });
+    };
+
     private getJson = (docName: string) => {
         return axios
-            .get(`${this.baseUrl}/${docName}.json`)
+            .get(`${this.databaseDirectory}/${docName}.json`)
             .then((metadata: AxiosResponse) => metadata.data);
     };
 
@@ -58,19 +98,19 @@ class JsonRequest implements ImageDataset {
         // make sure we have the feature defs first.
         return this.getJson(FEATURE_DEFS_FILENAME)
             .then((featureDefs) => {
-                this.featureDefs = featureDefs;
+                this.featureDefinitions = featureDefs;
                 return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME);
             })
             .then((featureDataArray) => {
                 // transform data in place to save memory
                 featureDataArray.forEach((el: any) => {
                     // number of feature defs must be same as number of features
-                    if (this.featureDefs.length !== el.features.length) {
+                    if (this.featureDefinitions.length !== el.features.length) {
                         throw new Error("Bad number of feature entries in data");
                     }
                     el["measured_features"] = {};
                     el.features.forEach((f: any, i: number) => {
-                        el.measured_features[getFullFeatureName(this.featureDefs[i])] = f;
+                        el.measured_features[getFullFeatureName(this.featureDefinitions[i])] = f;
                     });
                     // now el.features is totally replaced by el.measured_features
                     delete el.features;

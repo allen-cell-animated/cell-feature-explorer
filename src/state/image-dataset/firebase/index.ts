@@ -1,15 +1,20 @@
-import { DocumentReference, QueryDocumentSnapshot, QuerySnapshot } from "@firebase/firestore-types";
+import {
+    DocumentReference,
+    QueryDocumentSnapshot,
+    QuerySnapshot,
+    DocumentData,
+} from "@firebase/firestore-types";
 
 import {
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
 } from "../../../constants";
+import { DatasetMetaData } from "../../../constants/datasets";
 import { CellLineDef, MetadataStateBranch } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
-    CELL_FEATURE_ANALYSIS_FILENAME,
     CELL_LINE_DEF_FILENAME,
 } from "../constants";
 import { ImageDataset } from "../types";
@@ -18,12 +23,67 @@ import { firestore } from "./configure-firebase";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
+    private featureDefs: string;
+    private featuresData: string;
+    private cellLineData: string;
+    private thumbnailRoot: string;
+    private downloadRoot: string;
+    private volumeViewerDataRoot: string;
+    private featuresDisplayOrder: string;
     constructor() {
+        this.featureDefs = "";
+        this.featuresData = "";
+        this.cellLineData = "";
+        this.thumbnailRoot = "";
+        this.downloadRoot = "";
+        this.volumeViewerDataRoot = "";
+        this.featuresDisplayOrder = "";
         this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
     }
 
     private getCollection = (collection: string) => {
+        console.log(this.collectionRef.path, collection);
         return this.collectionRef.collection(collection).get();
+    };
+
+    public getAvailableDatasets = () => {
+        return firestore
+            .collection("dataset-descriptions")
+            .get()
+            .then((snapShot: QuerySnapshot) => {
+                const datasets: DatasetMetaData[] = [];
+                snapShot.forEach((doc) => datasets.push(doc.data() as DatasetMetaData));
+                return datasets;
+            });
+    };
+
+    public setCollectionRef = (id: string) => {
+        this.collectionRef = firestore.collection("cfe-datasets").doc(id);
+    };
+
+    private getManifest = (ref: string) => {
+        return firestore
+            .doc(ref)
+            .get()
+            .then((manifestDoc: DocumentData) => {
+                return manifestDoc.data();
+            });
+    };
+
+    public selectDataset = (ref: string) => {
+        return this.getManifest(ref).then((data) => {
+            this.featureDefs = data.featureDefs;
+            this.featuresData = data.featuresData;
+            this.cellLineData = data.cellLineData;
+            this.thumbnailRoot = data.thumbnailRoot;
+            this.downloadRoot = data.downloadRoot;
+            this.volumeViewerDataRoot = data.volumeViewerDataRoot;
+            this.featuresDisplayOrder = data.featuresDisplayOrder;
+            return {
+                defaultXAxis: data.defaultXAxis,
+                defaultYAxis: data.defaultYAxis,
+            };
+        });
     };
 
     public getCellLineData = () => {
@@ -41,15 +101,14 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        return this.getCollection(CELL_FEATURE_ANALYSIS_FILENAME).then(
-            (snapshot: QuerySnapshot) => {
-                const dataset: MetadataStateBranch[] = [];
-                snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                    dataset.push(doc.data());
-                });
-                return dataset;
-            }
-        );
+        // TODO: request from AWS
+        return this.getCollection("cell-feature-analysis").then((snapshot: QuerySnapshot) => {
+            const dataset: MetadataStateBranch[] = [];
+            snapshot.forEach((doc: QueryDocumentSnapshot) => {
+                dataset.push(doc.data());
+            });
+            return dataset;
+        });
     };
 
     public getAlbumData = () => {

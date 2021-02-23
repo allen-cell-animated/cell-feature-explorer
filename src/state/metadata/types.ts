@@ -6,6 +6,7 @@ import {
     FOV_ID_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
+import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
 
 export interface MetadataStateBranch {
@@ -41,6 +42,10 @@ export interface ReceiveAction {
     type: string;
 }
 
+export interface ReceiveAvailableDatasetsAction {
+    payload: DatasetMetaData[];
+    type: string;
+}
 export interface ReceiveCellLineAction {
     payload: CellLineDef;
     type: string;
