@@ -125,7 +125,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPlotHovered(hovered: any) {
         const { points, event } = hovered;
-        console.log(points)
         const {
             filtersToExclude,
             updateMousePosition,
