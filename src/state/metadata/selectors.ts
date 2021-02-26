@@ -1,13 +1,11 @@
-import { map, filter, sortBy, isEmpty, toInteger } from "lodash";
+import { map, filter, sortBy, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
 import {
-    ARRAY_OF_CELL_IDS_KEY,
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
 import { State } from "../types";
-import { TOTAL_CELLS } from "./reducer";
 
 import {
     CellLineDef,

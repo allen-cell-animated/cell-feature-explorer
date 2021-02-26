@@ -4,8 +4,6 @@ import { CELL_LINE_DEF_NAME_KEY, CELL_LINE_DEF_PROTEIN_KEY, CELL_LINE_DEF_STRUCT
 import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
-    INITIAL_PLOT_BY_ON_X,
-    INITIAL_PLOT_BY_ON_Y,
 } from "../selection/constants";
 
     const cellLineDefs = [
@@ -75,8 +73,8 @@ export const mockState = {
                    type: "",
                },
                filterExclude: [],
-               plotByOnX: INITIAL_PLOT_BY_ON_X,
-               plotByOnY: INITIAL_PLOT_BY_ON_Y,
+               plotByOnX: "INITIAL_PLOT_BY_ON_X",
+               plotByOnY: "INITIAL_PLOT_BY_ON_Y",
                proteinColors: INITIAL_COLORS,
                selectedGroupColors: INITIAL_COLORS,
                selectedGroups: {},

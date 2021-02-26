@@ -1,4 +1,4 @@
-import { find, reduce, isEmpty } from "lodash";
+import { find, isEmpty, map } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -9,23 +9,23 @@ import {
 } from "../../constants";
 import {
     getAllAlbumData,
-    getFileInfo,
     getMeasuredFeatureValues,
     getMitoticKeyPerCell,
 } from "../../state/metadata/selectors";
-import { FileInfo } from "../../state/metadata/types";
+import { FileInfo, MetadataStateBranch } from "../../state/metadata/types";
 import {
-    getClickedScatterPoints,
+    getClickedCellsFileInfo,
     getSelectedAlbum,
+    getSelectedAlbumFileInfo,
 } from "../../state/selection/selectors";
 import {
     Album,
     Thumbnail,
 } from "../../state/types";
 import {
-    convertFileInfoToAICSId,
     convertFileInfoToImgSrc,
     convertFullFieldIdToDownloadId,
+    convertSingleImageIdToDownloadId,
     formatDownloadOfSingleImage,
 } from "../../state/util";
 
@@ -47,48 +47,48 @@ export const getSelectedAlbumName = createSelector([getSelectedAlbumData],
     return selectedAlbumData ? selectedAlbumData.title : "My Selections";
 });
 
-export const getIdsToShow = createSelector(
-    [getSelectedAlbumData, getClickedScatterPoints],
-    (
-        selectedAlbumData: (Album | undefined),
-        clickedScatterPointIDs: number[]): number[] => (
-             selectedAlbumData ? selectedAlbumData.cell_ids : clickedScatterPointIDs
-    ));
 
-export const getThumbnails = createSelector([
-        getFileInfo,
-        getMeasuredFeatureValues,
-        getMitoticKeyPerCell,
-        getIdsToShow,
-    ],
-    (fileInfoArray: FileInfo[], measuredFeatures, mitoticKeysArray, idsToShow: number[]): Thumbnail[] => {
-        const init: Thumbnail[] = [];
-        if (isEmpty(measuredFeatures)) {
-            return []
+export const getFileInfoToShow = createSelector(
+    [getSelectedAlbumData, getClickedCellsFileInfo, getSelectedAlbumFileInfo],
+    (
+        selectedAlbumData: Album | undefined,
+        clickedScatterPointIDs: FileInfo[],
+        albumFileInfo: FileInfo[]
+    ): FileInfo[] => (selectedAlbumData ? albumFileInfo : clickedScatterPointIDs)
+);
+
+export const getThumbnails = createSelector(
+    [getMeasuredFeatureValues, getMitoticKeyPerCell, getFileInfoToShow],
+    (
+        measuredFeatures: MetadataStateBranch,
+        mitoticKeysArray: number[],
+        fileInfoOfSelectedCells: FileInfo[]
+    ): Thumbnail[] => {
+        if (isEmpty(measuredFeatures) || isEmpty(fileInfoOfSelectedCells)) {
+            return [];
         }
-        return reduce(idsToShow, (acc: Thumbnail[], cellID: number) => {
-            if (!cellID || isNaN(cellID)) {
-                return acc;
-            }
-            const fileInfoForCell = find(fileInfoArray, (datum) => datum[CELL_ID_KEY] === cellID);
-            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID.toString());
-            const mitoticKey = mitoticKeysArray[cellIndex];
-            if (fileInfoForCell) {
-                const cellData = fileInfoForCell;
-                const src = convertFileInfoToImgSrc(cellData);
-                const fovId = cellData[FOV_ID_KEY];
-                const downloadHref = formatDownloadOfSingleImage(convertFileInfoToAICSId(cellData));
-                const fullFieldDownloadHref = formatDownloadOfSingleImage(convertFullFieldIdToDownloadId((fovId)));
-                acc.push({
-                    cellID: Number(cellID),
-                    downloadHref,
-                    fullFieldDownloadHref,
-                    labeledStructure: cellData[PROTEIN_NAME_KEY],
-                    mitoticStage: mitoticKey,
-                    src,
-                });
-            }
-            return acc;
-        }, init);
+        return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
+            const cellID = fileInfoForCell[CELL_ID_KEY];
+            console.log(cellID)
+            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
+            const mitoticKey = mitoticKeysArray[cellIndex] as number;
+            const cellData = fileInfoForCell;
+            const src = convertFileInfoToImgSrc(cellData);
+            const fovId = cellData[FOV_ID_KEY];
+            const downloadHref = formatDownloadOfSingleImage(
+                convertSingleImageIdToDownloadId(cellID)
+            );
+            const fullFieldDownloadHref = formatDownloadOfSingleImage(
+                convertFullFieldIdToDownloadId(fovId)
+            );
+            return {
+                cellID,
+                downloadHref,
+                fullFieldDownloadHref,
+                labeledStructure: cellData[PROTEIN_NAME_KEY],
+                mitoticStage: mitoticKey,
+                src,
+            };
+        });
     }
 );

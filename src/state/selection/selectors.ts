@@ -60,7 +60,7 @@ import {
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
 export const getPlotByOnY = (state: State) => state.selection.plotByOnY;
-export const getClickedScatterPoints = (state: State) => state.selection.selectedPoints;
+export const getClickedCellsFileInfo = (state: State) => state.selection.selectedPoints;
 export const getSelectedGroups = (state: State) => state.selection.selectedGroups;
 export const getColorBySelection = (state: State) => state.selection.colorBy;
 export const getProteinColors = (state: State) => state.selection.proteinColors;
@@ -80,6 +80,7 @@ export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
 export const getSelectedDataset = (state: State) => state.selection.dataset;
 export const getThumbnailRoot = (state: State) => state.selection.thumbnailRoot;
+export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
 
 // COMPOSED SELECTORS
 
@@ -142,8 +143,8 @@ export const getYValues = createSelector(
                measuredData[plotByOnY] as number[] || []
        );
 
-export const getIds = createSelector([getFilteredCellData], (measuredData: MappingOfCellDataArrays) => {
-           return measuredData[ARRAY_OF_CELL_IDS_KEY] || [];
+export const getIds = createSelector([getFilteredCellData], (measuredData: MappingOfCellDataArrays): string[] => {
+           return measuredData[ARRAY_OF_CELL_IDS_KEY] as string[] || [];
        });
 
 export const getThumbnailPaths = createSelector(
@@ -246,33 +247,23 @@ export const getColorByValues = createSelector([getFilteredCellData, getColorByS
     }
     
 );
+export const getClickedScatterPoints = createSelector(
+    [getClickedCellsFileInfo],
+    (cells: FileInfo[]) => map(cells, CELL_ID_KEY)
+);
 
-// export const getHoveredPointData = createSelector([getHoveredPointData, getFileInfo],
-//     (hoveredPointId: number, fileInfo: FileInfo[]): FileInfo | undefined => {
-//     return find(fileInfo, {[CELL_ID_KEY]: hoveredPointId});
-// });
-
-const getSelectedScatterPointsWithAvailableMetadata = createSelector([
-    getFileInfo,
-    getClickedScatterPoints,
-], (fileInfo: FileInfo[], clickedScatterPointIDs: number[]): number[] => {
-    const setOfAvailableCellIds = new Set(map(fileInfo, CELL_ID_KEY));
-    return filter(clickedScatterPointIDs, (id) => setOfAvailableCellIds.has(id));
-});
 
 export const getAnnotations = createSelector(
     [
         getMeasuredFeatureValues,
-        getFileInfo,
-        getSelectedScatterPointsWithAvailableMetadata,
+        getClickedCellsFileInfo,
         getPlotByOnX,
         getPlotByOnY,
         getHoveredCardId,
     ],
     (
-        measuredData: MeasuredFeatures[],
-        fileInfo: FileInfo[],
-        clickedScatterPointIDs: number[],
+        measuredData: MappingOfCellDataArrays,
+        clickedCellsFileInfo: FileInfo[],
         xAxis,
         yAxis,
         currentHoveredCellId
@@ -280,14 +271,16 @@ export const getAnnotations = createSelector(
         if (isEmpty(measuredData)) {
             return []
         }
-        return clickedScatterPointIDs.map((cellID) => {
-            const pointIndex = findIndex(fileInfo, (datum) => Number(datum[CELL_ID_KEY]) === Number(cellID));
-            const fovID = fileInfo[pointIndex][FOV_ID_KEY];
-            const cellLine = fileInfo[pointIndex][CELL_LINE_NAME_KEY];
-            const data = fileInfo[pointIndex];
+        return clickedCellsFileInfo.map((data) => {
+            const cellIds = measuredData[ARRAY_OF_CELL_IDS_KEY] as string[]; // ids are stored as strings for plotly
+            const cellID = data[CELL_ID_KEY];
+            const pointIndex = findIndex(cellIds, (id) => Number(id) === Number(cellID));
+            const fovID = data[FOV_ID_KEY];
+            const cellLine = data[CELL_LINE_NAME_KEY];
             const thumbnailPath = data[THUMBNAIL_PATH];
-            const x = measuredData[xAxis][pointIndex];
-            const y = measuredData[yAxis][pointIndex];
+            const x = measuredData[xAxis][pointIndex] as number; // axis values will always be numbers
+            const y = measuredData[yAxis][pointIndex] as number; // axis values will always be numbers
+
             return {
                 cellID,
                 cellLine,
@@ -296,13 +289,15 @@ export const getAnnotations = createSelector(
                 pointIndex,
                 x,
                 y,
+                thumbnailPath,
             };
         });
     }
 );
 
 // 3D VIEWER SELECTORS
-export const getSelected3DCellFileInfo = createSelector([getSelected3DCell, getFileInfo],
+export const getSelected3DCellFileInfo = createSelector(
+    [getSelected3DCell, getClickedCellsFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo | undefined => {
         return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId);
     }

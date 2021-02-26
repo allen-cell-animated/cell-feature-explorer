@@ -78,15 +78,17 @@ const requestFeatureDataLogic = createLogic({
                 const state = getState();
 
                 if (isEmpty(getClickedScatterPoints(state))) {
-                    secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0].toString()]));
+                    dispatch(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]))
+                    // secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0].toString()]));
                 }
 
                 if (!getSelected3DCell(state)) {
-                    secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0].toString()));
+                    dispatch(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]))
+                    // secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0].toString()));
                 }
-                if (!isEmpty(secondBatch)) {
-                    dispatch(batchActions(secondBatch));
-                }
+                // if (!isEmpty(secondBatch)) {
+                //     dispatch(batchActions(secondBatch));
+                // }
                 dispatch(stopLoading());
             })
             .catch((reason: string) => {

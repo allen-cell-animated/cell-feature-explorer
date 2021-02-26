@@ -11,7 +11,6 @@ import React from "react";
 
 import {
     MITOTIC_STAGE_LABELS,
-    THUMBNAIL_BASE_URL,
 } from "../../constants";
 import {
     DeselectPointAction,
@@ -119,7 +118,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     <Avatar
                         className={props.selected && styles.selected}
                         alt="thumbnail of microscopy image"
-                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                        src={props.src}
                     />
                     </div>
                 )}

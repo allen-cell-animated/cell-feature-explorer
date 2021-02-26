@@ -1,4 +1,5 @@
 import { URLSearchParamMap } from "../../util/UrlState";
+import { FileInfo } from "../metadata/types";
 
 import {
     CHANGE_AXIS,
@@ -21,6 +22,8 @@ import {
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     CHANGE_DATASET,
+    RECEIVE_FILE_INFO,
+    REQUEST_CELL_FILE_INFO_BY_CELL_ID,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -33,6 +36,7 @@ import {
     DownloadConfig,
     LassoOrBoxSelectAction,
     MousePosition,
+    RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
@@ -63,14 +67,14 @@ export function deselectGroupOfPoints(payload: string | number) {
     };
 }
 
-export function deselectPoint(payload: number): DeselectPointAction {
-    return {
-        payload,
-        type: DESELECT_POINT,
-    };
-}
+export function deselectPoint(payload: string): DeselectPointAction {
+           return {
+               payload,
+               type: DESELECT_POINT,
+           };
+       }
 
-export function selectPoint(payload: number): SelectPointAction {
+export function selectPoint(payload: string): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
@@ -90,7 +94,7 @@ export function toggleFilterByProteinName(payload: string): ChangeSelectionActio
     };
 }
 
-export function selectCellFor3DViewer(payload: number): SelectPointAction {
+export function selectCellFor3DViewer(payload: string): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
@@ -181,3 +185,17 @@ export function changeDataset(payload: string): ChangeSelectionAction {
                type: CHANGE_DATASET,
            };
        }
+       
+export function receiveFileInfoDataForCell(payload: FileInfo) {
+    return {
+        payload,
+        type: RECEIVE_FILE_INFO,
+    };
+}
+
+export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByCellIDAction {
+    return {
+        payload,
+        type: REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    };
+}

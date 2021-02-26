@@ -2,6 +2,7 @@ import {
     CELL_COUNT_KEY,
     CELL_ID_KEY,
     CELL_LINE_DEF_NAME_KEY,
+    CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
@@ -23,7 +24,7 @@ export interface MetadataStateBranch {
 export interface CellLineDef {
     [CELL_LINE_DEF_NAME_KEY]: string;
     [CELL_LINE_DEF_STRUCTURE_KEY]: string;
-    [PROTEIN_NAME_KEY]: string;
+    [PROTEIN_NAME_KEY]: string; // changed on read from [CELL_LINE_DEF_PROTEIN_KEY]
     [CELL_COUNT_KEY]?: number;
 }
 
@@ -32,10 +33,10 @@ export interface FileInfo {
     [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: number;
     [PROTEIN_NAME_KEY]: string;
-    [FOV_THUMBNAIL_PATH]?: string;
-    [FOV_VOLUME_VIEWER_PATH]?: string;
-    [THUMBNAIL_PATH]?: string;
-    [VOLUME_VIEWER_PATH]?: string;
+    [FOV_THUMBNAIL_PATH]: string;
+    [FOV_VOLUME_VIEWER_PATH]: string;
+    [THUMBNAIL_PATH]: string;
+    [VOLUME_VIEWER_PATH]: string;
 }
 
 export interface MeasuredFeaturesOption {
@@ -55,7 +56,7 @@ export interface MeasuredFeatureDef {
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfCellDataArrays {
-    [key: string]: number[]| FileInfo[] | string[];
+    [key: string]: number[]| string[];
 }
 
 export interface MeasuredFeatures {

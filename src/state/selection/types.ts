@@ -57,7 +57,7 @@ export interface SelectAxisAction {
 }
 
 export interface DeselectPointAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
@@ -67,12 +67,12 @@ export interface DeselectGroupOfPointsAction {
 }
 
 export interface  SelectPointAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
 export interface  SelectCellIn3DAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
@@ -106,7 +106,7 @@ export interface ChangeMousePositionAction {
 }
 
 export interface SelectedPointData {
-    [CELL_ID_KEY]: number;
+    [CELL_ID_KEY]: string;
     [PROTEIN_NAME_KEY]: string;
     thumbnailPath: string;
 }
@@ -141,3 +141,28 @@ export interface ColorForPlot {
     name: string;
     label: string;
 }
+
+export interface RequestFileInfoByCellIDAction {
+    payload: string;
+    type: string;
+}
+
+export interface ReceiveCellFileInfoAction {
+    payload: FileInfo;
+    type: string;
+}
+
+export interface ReceiveArrayOfPointsAction {
+    payload: FileInfo[];
+    type: string;
+}
+
+export interface SelectArrayOfPointsAction {
+    payload: string[];
+    type: string;
+}
+
+export interface SetHoveredCardAction {
+    payload: SelectedPointData;
+    type: string;
+};

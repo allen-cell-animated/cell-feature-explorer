@@ -1,11 +1,11 @@
 import {
     filter,
     pickBy,
-    uniq,
+    uniqBy,
 } from "lodash";
 import { AnyAction } from "redux";
 
-import { KMEANS_KEY } from "../../constants";
+import { CELL_ID_KEY, KMEANS_KEY } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
@@ -25,7 +25,6 @@ import {
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
     SELECT_GROUP_VIA_PLOT,
-    SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -33,6 +32,9 @@ import {
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     SET_DATASET,
+    RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+    RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -45,8 +47,10 @@ import {
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     LassoOrBoxSelectAction,
+    ReceiveCellFileInfoAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectCellIn3DAction,
     SelectionStateBranch,
@@ -150,13 +154,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
             selectedPoints: filter(state.selectedPoints, (e) => e !== action.payload),
         }),
     },
-    [SELECT_POINT]: {
-        accepts: (action: AnyAction): action is SelectPointAction => action.type === SELECT_POINT,
-        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
-            ...state,
-            selectedPoints: uniq([...state.selectedPoints, action.payload]),
-        }),
-    },
     [DESELECT_ALL_POINTS]: {
         accepts: (action: AnyAction): action is ResetSelectionAction =>
             action.type === DESELECT_ALL_POINTS,
@@ -251,6 +248,30 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             galleryCollapsed: action.payload,
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_SELECTED_CELL]: {
+        accepts: (action: AnyAction): action is SelectPointAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
+            ...state,
+            selectedPoints: uniqBy([...state.selectedPoints, action.payload], CELL_ID_KEY),
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS]: {
+        accepts: (action: AnyAction): action is SelectArrayOfPointsAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+        perform: (state: SelectionStateBranch, action: SelectArrayOfPointsAction) => ({
+            ...state,
+            selectedPoints: uniqBy([...state.selectedPoints, ...action.payload], CELL_ID_KEY),
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_ALBUM_CELLS]: {
+        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+        perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
+            ...state,
+            selectedAlbumFileInfo: action.payload,
         }),
     },
 };

@@ -59,7 +59,7 @@ export const getMainPlotData = createSelector(
             groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
-            ids: map(ids, (ele) => ele.toString()),
+            ids,
             x: xValues,
             y: yValues,
             customdata: thumbnailPaths as string[],

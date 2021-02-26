@@ -39,6 +39,7 @@ import {
     getIds,
     getSelected3DCell,
     getSelectedAlbum,
+    getThumbnailRoot,
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
@@ -46,6 +47,7 @@ import {
     SelectAlbumAction,
     SelectCellIn3DAction,
     SelectPointAction,
+    SetHoveredCardAction,
 } from "../../state/selection/types";
 import {
     Album,
@@ -63,25 +65,33 @@ const FormItem = Form.Item;
 
 const styles = require("./style.css");
 
-interface ThumbnailGalleryProps {
+interface PropsFromState {
     albumData: Album[];
-    collapsed: boolean;
     clickedPoints: number[];
     data: Thumbnail[];
     ids: string[];
-    mitoticStage?: number;
-    getAlbumData: ActionCreator<RequestAction>;
-    selectedCell: number;
     selectedAlbum: number;
     selectedAlbumName: string;
+    selectedCell: number;
+    thumbnailRoot: string;
+}
+
+interface DispatchProps {
+    getAlbumData: ActionCreator<RequestAction>;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
     handleSelectAlbum: ActionCreator<SelectAlbumAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
-    setHovered: ActionCreator<SelectPointAction>;
+    setHovered: ActionCreator<SetHoveredCardAction>;
+}
+interface OwnProps {
+    collapsed: boolean;
+    mitoticStage?: number;
     toggleGallery: (value: boolean) => void;
 }
+
+type ThumbnailGalleryProps = PropsFromState & DispatchProps & OwnProps;
 
 interface ThumbnailGalleryState {
     inputStatus: "success" | "error" | "warning" | "validating" | undefined;
@@ -195,7 +205,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         {`My Selections (${clickedPoints.length})`}
                     </Radio.Button>
                     {map(albumData, (album) => {
-
+                        if (!album.cell_ids) {
+                            return;
+                        }
                         return (album.cell_ids.length > 0 &&
                             (
                                 <Radio.Button
@@ -327,28 +339,26 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     private hoverCard({currentTarget}: React.MouseEvent<HTMLElement>) {
         const {setHovered} = this.props;
         if (currentTarget.id) {
-            return setHovered(Number(currentTarget.id));
+            return setHovered(currentTarget.id);
         }
-        setHovered(Number(-1));
+        setHovered(null);
     }
 
     private unHover() {
         const {setHovered} = this.props;
-        setHovered(Number(-1));
+        setHovered(null);
 
     }
 
     private renderMinGalleryCard(item: Thumbnail) {
-        const {
-            handleDeselectPoint,
-            selectedCell,
-        } = this.props;
+        const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
+        console.log(`${thumbnailRoot}${item.src}`);
         return (
             <MinGalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
                 labeledStructure={item.labeledStructure}
-                src={item.src}
+                src={`${thumbnailRoot}${item.src}`}
                 selected={selectedCell === item.cellID}
                 downloadHref={item.downloadHref}
                 cellID={item.cellID}
@@ -368,30 +378,27 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     private renderGalleryCard(item: Thumbnail) {
-        const {
-            handleDeselectPoint,
-            selectedCell,
-        } = this.props;
+        const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
         return (
-                <GalleryCard
-                    onMouseEnter={this.hoverCard}
-                    onMouseLeave={this.unHover}
-                    labeledStructure={item.labeledStructure}
-                    mitoticStage={item.mitoticStage}
-                    src={item.src}
-                    selected={selectedCell === item.cellID}
-                    downloadHref={item.downloadHref}
-                    downloadFullField={item.fullFieldDownloadHref}
-                    cellID={item.cellID}
-                    handleDeselectPoint={handleDeselectPoint}
-                    handleOpenIn3D={this.selectCell}
-                    empty={item.empty}
-                />
+            <GalleryCard
+                onMouseEnter={this.hoverCard}
+                onMouseLeave={this.unHover}
+                labeledStructure={item.labeledStructure}
+                mitoticStage={item.mitoticStage}
+                src={`${thumbnailRoot}${item.src}`}
+                selected={selectedCell === item.cellID}
+                downloadHref={item.downloadHref}
+                downloadFullField={item.fullFieldDownloadHref}
+                cellID={item.cellID}
+                handleDeselectPoint={handleDeselectPoint}
+                handleOpenIn3D={this.selectCell}
+                empty={item.empty}
+            />
         );
     }
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State): PropsFromState{
     return {
         albumData: getAllAlbumData(state),
         clickedPoints: getClickedScatterPoints(state),
@@ -400,10 +407,11 @@ function mapStateToProps(state: State) {
         selectedAlbum: getSelectedAlbum(state),
         selectedAlbumName: getSelectedAlbumName(state),
         selectedCell: getSelected3DCell(state),
+        thumbnailRoot: getThumbnailRoot(state),
     };
 }
 
-const dispatchToPropsMap = {
+const dispatchToPropsMap: DispatchProps = {
     addSearchedCell: selectPoint,
     getAlbumData: requestAlbumData,
     handleClearAllSelectedPoints: clearAllSelectedPoints,
@@ -413,4 +421,5 @@ const dispatchToPropsMap = {
     setHovered: setHoveredGalleryCard,
 };
 
-export default connect(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);
+export default connect<PropsFromState, DispatchProps, OwnProps, State>
+(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);

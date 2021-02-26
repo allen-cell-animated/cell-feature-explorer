@@ -4,7 +4,6 @@ import {
 } from "antd";
 import React from "react";
 
-import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
     DeselectPointAction,
     SelectCellIn3DAction,
@@ -52,7 +51,7 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     <Avatar
                         className={props.selected && styles.selected}
                         alt="thumbnail of microscopy image"
-                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                        src={props.src}
                     />
                     </div>
                 )}
