@@ -1,5 +1,4 @@
 import {
-    filter,
     find,
     findIndex,
     includes,
@@ -37,7 +36,6 @@ import {
     FileInfo,
     MappingOfCellDataArrays,
     MeasuredFeatureDef,
-    MeasuredFeatures,
     MetadataStateBranch,
 } from "../metadata/types";
 import {

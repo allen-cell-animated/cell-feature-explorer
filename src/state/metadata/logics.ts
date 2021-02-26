@@ -72,7 +72,6 @@ const requestFeatureDataLogic = createLogic({
                 if (!metaDatum) {
                     return done();
                 }
-                const secondBatch = [];
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
