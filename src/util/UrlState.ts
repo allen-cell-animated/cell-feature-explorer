@@ -14,10 +14,12 @@ import {
 import { AnyAction } from "redux";
 
 import {
+    CELL_ID_KEY,
     COLOR_BY_SELECTOR,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../constants";
+import { FileInfo } from "../state/metadata/types";
 import {
     changeAxis,
     changeDataset,
@@ -148,7 +150,7 @@ export default class UrlState {
 
             // add this cell to the list of selected points if it does not already exist
             if (!includes(castArray(params[URLSearchParam.selectedPoint]), cellId)) {
-                Object.assign(base, { selectedPoints: [String(cellId)] });
+                Object.assign(base, { initSelectedPoints: [String(cellId)] });
             }
 
             return base;
@@ -159,7 +161,7 @@ export default class UrlState {
         [URLSearchParam.plotByOnX]: (plotByOnX) => ({ [X_AXIS_ID]: String(plotByOnX) }),
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
         [URLSearchParam.selectedAlbum]: (album) => ({ selectedAlbum: Number(album) }),
-        [URLSearchParam.selectedPoint]: (selection) => ({ selectedPoints: map(castArray(selection), String) }),
+        [URLSearchParam.selectedPoint]: (selection) => ({ initSelectedPoints: map(castArray(selection), String) }),
     };
 
     private static stateToUrlParamMap: StateToUrlSearchParamMap = {
@@ -169,7 +171,9 @@ export default class UrlState {
         dataset: (id) => ({ [URLSearchParam.dataset]: String(id)}),
         galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
         selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
-        selectedPoints: (value) => ({ [URLSearchParam.selectedPoint]: map(castArray(value as string[]), String) }),
+        selectedPoints: (value: FileInfo[]) => {
+            const arrayOfIds = map(value, (ele: FileInfo) => String(ele[CELL_ID_KEY]));
+            return { [URLSearchParam.selectedPoint]: arrayOfIds };},  
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
     };

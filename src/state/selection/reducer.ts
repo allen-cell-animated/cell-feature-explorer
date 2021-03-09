@@ -84,6 +84,7 @@ export const initialState = {
     selectedGroupColors: {},
     selectedGroups: {},
     selectedPoints: [],
+    initSelectedPoints: [],
     showClusters: false,
 };
 
