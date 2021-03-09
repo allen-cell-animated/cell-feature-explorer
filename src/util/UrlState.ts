@@ -42,7 +42,7 @@ export enum URLSearchParam {
     galleryCollapsed = "galleryCollapsed",
 }
 
-type StateValue = string | number | number[] | boolean | string[];
+type StateValue = any; // types are narrowed in mappings
 type URLSearchParamValue = string | string[];
 
 export interface URLSearchParamMap {

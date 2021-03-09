@@ -12,43 +12,50 @@ import {
 } from "../../state/selection/actions";
 
 import { initialState } from "../../state/selection/reducer";
+import { selectedCellFileInfo } from "../../state/test/mocks";
 import UrlState, { URLSearchParam } from "../UrlState";
 
 describe("UrlState utility class", () => {
     describe("toAppState", () => {
         it("maps URL search params directly to the shape of the selection state branch", () => {
-            expect(UrlState.toAppState({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
-            })).to.deep.equal({
-               cellSelectedFor3D: "2",
-               [COLOR_BY_SELECTOR]: "feature_z",
-               selectedPoints: ["1", "2", "3", "4", "5"],
-               [X_AXIS_ID]: "feature_x",
-               [Y_AXIS_ID]: "feature_y",
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.plotByOnX]: "feature_x",
+                    [URLSearchParam.plotByOnY]: "feature_y",
+                    [URLSearchParam.colorBy]: "feature_z",
+                    [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+                })
+            ).to.deep.equal({
+                cellSelectedFor3D: "2",
+                [COLOR_BY_SELECTOR]: "feature_z",
+                initSelectedPoints: ["1", "2", "3", "4", "5"],
+                [X_AXIS_ID]: "feature_x",
+                [Y_AXIS_ID]: "feature_y",
             });
         });
 
         it("adds cellSelectedFor3D to list of selected points if not already there", () => {
-            expect(UrlState.toAppState({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.selectedPoint]: ["1"],
-            })).to.deep.equal({
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.selectedPoint]: ["1"],
+                })
+            ).to.deep.equal({
                 cellSelectedFor3D: "2",
-                selectedPoints: ["2", "1"],
+                initSelectedPoints: ["2", "1"],
             });
         });
 
         it("does not duplicate cellSelectedFor3D in list of selected points if it is already there", () => {
-            expect(UrlState.toAppState({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.selectedPoint]: ["2"],
-            })).to.deep.equal({
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.selectedPoint]: ["2"],
+                })
+            ).to.deep.equal({
                 cellSelectedFor3D: "2",
-                selectedPoints: ["2"],
+                initSelectedPoints: ["2"],
             });
         });
     });
@@ -127,15 +134,15 @@ describe("UrlState utility class", () => {
                 colorBy: "Protein",
                 plotByOnX: "X value",
                 plotByOnY: "Y value",
-                selectedPoints: ["1", "3", "5"],
+                selectedPoints: selectedCellFileInfo,
             };
-
+            console.log(UrlState.toUrlSearchParameterMap(selections));
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: "10",
                 [URLSearchParam.colorBy]: "Protein",
                 [URLSearchParam.plotByOnX]: "X value",
                 [URLSearchParam.plotByOnY]: "Y value",
-                [URLSearchParam.selectedPoint]: ["1", "3", "5"],
+                [URLSearchParam.selectedPoint]: ["1", "2"],
             });
         });
 

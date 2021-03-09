@@ -6,58 +6,80 @@ import {
     INITIAL_COLORS,
 } from "../selection/constants";
 
-    const cellLineDefs = [
-        {
-            [CELL_LINE_DEF_NAME_KEY]: "AICS-57",
-            [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
-            [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
-            [PROTEIN_NAME_KEY]: "Nucleophosmin",
-            [CELL_COUNT_KEY]: 3470,
-        },
-    ];
-    const fileInfo = [
-        {
-            [CELL_ID_KEY]: 1,
-            [CELL_LINE_NAME_KEY]: "AICS-57",
-            [FOV_ID_KEY]: 12762,
-            [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
-            [PROTEIN_NAME_KEY]: "Nucleophosmin",
-        },
-        {
-            [CELL_ID_KEY]: 2,
-            [CELL_LINE_NAME_KEY]: "AICS-57",
-            [FOV_ID_KEY]: 12762,
-            [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
-            [PROTEIN_NAME_KEY]: "Nucleophosmin",
-        },
-    ];
-    const measuredFeaturesDefs = [
-        {
-            discrete: false,
-            displayName: "Apical Proximity",
-            key: "apical-proximity",
-            unit: "unitless",
-        },
-        {
-            discrete: true,
-            displayName: "Cell Segmentation",
-            key: "cell-segmentation",
-            unit: "complete",
-        },
-        {
-            discrete: false,
-            displayName: "Cell Surface area",
-            key: "cellular-surface-area",
-            unit: "µm²",
-        },
-    ];
-    const featureData = {
-        [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
+export const selectedCellFileInfo = [
+    {
+        [CELL_ID_KEY]: 1,
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: 12762,
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+    },
+    {
+        [CELL_ID_KEY]: 2,
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: 12762,
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+    },
+];
+
+const cellLineDefs = [
+    {
+        [CELL_LINE_DEF_NAME_KEY]: "AICS-57",
+        [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [CELL_COUNT_KEY]: 3470,
+    },
+];
+const fileInfo = [
+    {
+        [CELL_ID_KEY]: 1,
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: 12762,
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+    },
+    {
+        [CELL_ID_KEY]: 2,
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: 12762,
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+    },
+];
+const measuredFeaturesDefs = [
+    {
+        discrete: false,
+        displayName: "Apical Proximity",
+        key: "apical-proximity",
+        unit: "unitless",
+    },
+    {
+        discrete: true,
+        displayName: "Cell Segmentation",
+        key: "cell-segmentation",
+        unit: "complete",
+    },
+    {
+        discrete: false,
+        displayName: "Cell Surface area",
+        key: "cellular-surface-area",
+        unit: "µm²",
+    },
+];
+const featureData = {
+    values: {
         "apical-proximity": [-0.25868651080317, -0.1],
         "cell-segmentation": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
-        [MITOTIC_STAGE_KEY]: [2, 1],
-    };
+    },
+    labels: {
+        [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
+        thumbnailPaths: ["path1", "path2"],
+        PROTEIN_NAME_KEY: ["protein1", "protein2"]
+    }
+};
 
 export const mockState = {
            metadata: {
@@ -78,6 +100,6 @@ export const mockState = {
                proteinColors: INITIAL_COLORS,
                selectedGroupColors: INITIAL_COLORS,
                selectedGroups: {},
-               selectedPoints: [],
+               selectedPoints: selectedCellFileInfo,
            },
        };
