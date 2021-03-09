@@ -53,7 +53,7 @@ export interface Thumbnail {
     labeledStructure: string;
     mitoticStage: number;
     src: string;
-    cellID: number;
+    cellID: string;
     empty?: boolean;
     fullFieldDownloadHref: string;
 }

@@ -72,7 +72,7 @@ interface PropsFromState {
     ids: string[];
     selectedAlbum: number;
     selectedAlbumName: string;
-    selectedCell: number;
+    selectedCell: string;
     thumbnailRoot: string;
 }
 
@@ -231,7 +231,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
-    public selectCell(cellId: number): SelectCellIn3DAction {
+    public selectCell(cellId: string): SelectCellIn3DAction {
         const { handleOpenIn3D } = this.props;
         window.setTimeout(this.scrollGallery, 3000);
         this.closeGallery();
@@ -353,13 +353,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     private renderMinGalleryCard(item: Thumbnail) {
         const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
         console.log(`${thumbnailRoot}${item.src}`);
+        const selectedCellId = selectedCell ? selectedCell.toString() : "";
         return (
             <MinGalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
                 labeledStructure={item.labeledStructure}
                 src={`${thumbnailRoot}${item.src}`}
-                selected={selectedCell === item.cellID}
+                selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
                 cellID={item.cellID}
                 handleDeselectPoint={handleDeselectPoint}
@@ -379,6 +380,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     private renderGalleryCard(item: Thumbnail) {
         const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
+        const selectedCellId = selectedCell ? selectedCell.toString() : "";
+
         return (
             <GalleryCard
                 onMouseEnter={this.hoverCard}
@@ -386,7 +389,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 labeledStructure={item.labeledStructure}
                 mitoticStage={item.mitoticStage}
                 src={`${thumbnailRoot}${item.src}`}
-                selected={selectedCell === item.cellID}
+                selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
                 downloadFullField={item.fullFieldDownloadHref}
                 cellID={item.cellID}

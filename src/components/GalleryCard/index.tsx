@@ -24,10 +24,10 @@ interface GalleryCardProps {
     src: string;
     selected: boolean;
     downloadHref: string;
-    cellID: number;
+    cellID: string;
     mitoticStage?: number;
-    handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
+    handleDeselectPoint: (payload: string) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -37,7 +37,7 @@ interface GalleryCardProps {
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.cellID));
+        props.handleDeselectPoint(props.cellID);
     };
 
     const openCellin3D = () => {
