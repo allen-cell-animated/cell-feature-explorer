@@ -7,7 +7,6 @@ import {
 import axios, { AxiosResponse } from "axios";
 
 import {
-    ARRAY_OF_CELL_IDS_KEY,
     CELL_COUNT_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,

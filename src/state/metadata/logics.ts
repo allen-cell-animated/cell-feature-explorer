@@ -16,7 +16,7 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, DataForPlot, MetadataStateBranch } from "./types";
+import { CellLineDef, DataForPlot } from "./types";
 import { isEmpty } from "lodash";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 import { selectPoint, selectCellFor3DViewer } from "../selection/actions";

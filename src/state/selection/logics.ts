@@ -39,7 +39,6 @@ const changeDatasetLogic = createLogic({
             datasets = await imageDataSet.getAvailableDatasets();
         }
         const selectedDataset = find(datasets, { id: action.payload });
-
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
