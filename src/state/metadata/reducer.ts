@@ -30,7 +30,10 @@ export const initialState = {
     loadingText: "",
     datasets: [],
     measuredFeatureNames: [],
-    featureData: {},
+    featureData: {
+        values: {},
+        labels: {},
+    },
     measuredFeaturesDefs: [],
     clusterData: [],
 };

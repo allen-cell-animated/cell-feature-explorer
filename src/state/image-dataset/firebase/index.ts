@@ -15,7 +15,7 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
-import { CellLineDef, FileInfo, MappingOfCellDataArrays, MeasuredFeatureDef } from "../../metadata/types";
+import { CellLineDef, FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
 import {
     ALBUMS_FILENAME,
@@ -140,7 +140,7 @@ class FirebaseRequest implements ImageDataset {
                         acc[featureName] = initArray;
                         return acc;
                     },
-                    {} as MappingOfCellDataArrays
+                    {} as MappingOfMeasuredValuesArrays
                 );
                 const proteinArray: string[] = [];
                 const thumbnails: string[] = [];
@@ -158,10 +158,13 @@ class FirebaseRequest implements ImageDataset {
                     ids.push(datum.i.toString());
                 }
                 return {
-                    ...dataMappedByMeasuredFeatures,
-                    [PROTEIN_NAME_KEY]: proteinArray,
-                    thumbnailPaths: thumbnails,
-                    [ARRAY_OF_CELL_IDS_KEY]: ids,
+                    values: dataMappedByMeasuredFeatures,
+                    labels: {
+
+                        [PROTEIN_NAME_KEY]: proteinArray,
+                        thumbnailPaths: thumbnails,
+                        cellIds: ids,
+                    }
                 };
             });
     };

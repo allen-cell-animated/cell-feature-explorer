@@ -16,7 +16,7 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, MetadataStateBranch } from "./types";
+import { CellLineDef, DataForPlot, MetadataStateBranch } from "./types";
 import { isEmpty } from "lodash";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 import { selectPoint, selectCellFor3DViewer } from "../selection/actions";
@@ -63,12 +63,12 @@ const requestFeatureDataLogic = createLogic({
         
         return imageDataSet
             .getFeatureData()
-            .then((data: MetadataStateBranch) => {
+            .then((data: DataForPlot) => {
                 actions.push(receiveMetadata(data));
                 dispatch(batchActions(actions));
                 return data;
             })
-            .then((metaDatum: MetadataStateBranch | void) => {
+            .then((metaDatum: DataForPlot | void) => {
                 if (!metaDatum) {
                     return done();
                 }
@@ -77,17 +77,13 @@ const requestFeatureDataLogic = createLogic({
                 const state = getState();
 
                 if (isEmpty(getClickedScatterPoints(state))) {
-                    dispatch(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]))
-                    // secondBatch.push(selectPoint(metaDatum[ARRAY_OF_CELL_IDS_KEY[0].toString()]));
+                    dispatch(selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
 
                 if (!getSelected3DCell(state)) {
-                    dispatch(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0]))
-                    // secondBatch.push(selectCellFor3DViewer(metaDatum[ARRAY_OF_CELL_IDS_KEY][0].toString()));
+                    dispatch(selectCellFor3DViewer(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
-                // if (!isEmpty(secondBatch)) {
-                //     dispatch(batchActions(secondBatch));
-                // }
+  
                 dispatch(stopLoading());
             })
             .catch((reason: string) => {

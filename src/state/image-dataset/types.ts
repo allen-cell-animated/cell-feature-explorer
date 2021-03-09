@@ -1,5 +1,5 @@
 import { DatasetMetaData } from "../../constants/datasets";
-import { CellLineDef, FileInfo, MeasuredFeatureDef, MetadataStateBranch } from "../metadata/types";
+import { CellLineDef, DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
 export interface InitialDatasetSelections {
@@ -14,7 +14,7 @@ export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<DatasetMetaData[]>;
     getCellLineDefs(): Promise<CellLineDef[]>;
-    getFeatureData(): Promise<MetadataStateBranch>;
+    getFeatureData(): Promise<DataForPlot>;
     getAlbumData(): Promise<Album[]>;
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;

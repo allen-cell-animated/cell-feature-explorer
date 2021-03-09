@@ -15,7 +15,7 @@ import {
 import {
     CellLineDef,
     FileInfo,
-    MappingOfCellDataArrays,
+    MappingOfMeasuredValuesArrays,
     MetadataStateBranch,
 } from "../../metadata/types";
 import {
@@ -117,7 +117,7 @@ class JsonRequest implements ImageDataset {
             const initArray: number[] = [];
             acc[featureName] = initArray;
             return acc;
-        }, {} as MappingOfCellDataArrays);
+        }, {} as MappingOfMeasuredValuesArrays);
         const proteinArray: string[] = [];
         const thumbnails: string[] = [];
         const ids: string[] = [];
@@ -160,10 +160,12 @@ class JsonRequest implements ImageDataset {
                 ids.push(fileInfo[CELL_ID_KEY].toString());
             });
             return {
-                ...dataMappedByMeasuredFeatures,
-                [PROTEIN_NAME_KEY]: proteinArray,
-                thumbnailPaths: thumbnails,
-                [ARRAY_OF_CELL_IDS_KEY]: ids,
+                values: dataMappedByMeasuredFeatures,
+                labels: {
+                    [PROTEIN_NAME_KEY]: proteinArray,
+                    thumbnailPaths: thumbnails,
+                    [ARRAY_OF_CELL_IDS_KEY]: ids,
+                }
             };
         });
     };

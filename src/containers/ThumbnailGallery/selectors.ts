@@ -9,10 +9,10 @@ import {
 } from "../../constants";
 import {
     getAllAlbumData,
-    getMeasuredFeatureValues,
+    getPerCellDataForPlot,
     getMitoticKeyPerCell,
 } from "../../state/metadata/selectors";
-import { FileInfo, MetadataStateBranch } from "../../state/metadata/types";
+import { DataForPlot, FileInfo } from "../../state/metadata/types";
 import {
     getClickedCellsFileInfo,
     getSelectedAlbum,
@@ -58,20 +58,26 @@ export const getFileInfoToShow = createSelector(
 );
 
 export const getThumbnails = createSelector(
-    [getMeasuredFeatureValues, getMitoticKeyPerCell, getFileInfoToShow],
+    [getPerCellDataForPlot, getMitoticKeyPerCell, getFileInfoToShow],
     (
-        measuredFeatures: MetadataStateBranch,
+        perCellPlotData: DataForPlot,
         mitoticKeysArray: number[],
         fileInfoOfSelectedCells: FileInfo[]
     ): Thumbnail[] => {
-        if (isEmpty(measuredFeatures) || isEmpty(fileInfoOfSelectedCells)) {
+        if (isEmpty(perCellPlotData.labels) || !fileInfoOfSelectedCells.length) {
             return [];
         }
         return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
-            const cellID = fileInfoForCell[CELL_ID_KEY];
+            if (isNaN(fileInfoForCell[CELL_ID_KEY])) {
+                return {} as Thumbnail;
+            }
+            const cellID = fileInfoForCell[CELL_ID_KEY].toString();
             console.log(cellID)
-            const cellIndex = measuredFeatures[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
-            const mitoticKey = mitoticKeysArray[cellIndex] as number;
+            const cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
+            if (cellIndex < 0) {
+                return {} as Thumbnail;
+            }
+            const mitoticKey = mitoticKeysArray[cellIndex];
             const cellData = fileInfoForCell;
             const src = convertFileInfoToImgSrc(cellData);
             const fovId = cellData[FOV_ID_KEY];

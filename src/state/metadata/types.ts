@@ -54,12 +54,27 @@ export interface MeasuredFeatureDef {
 }
 
 // DATA HELD IN STATE TYPINGS
-export interface MappingOfCellDataArrays {
-    [key: string]: number[]| string[];
+export interface MappingOfMeasuredValuesArrays {
+    [key: string]: number[];
 }
 
 export interface MeasuredFeatures {
     [key: string]: number;
+}
+
+export interface MeasuredFeaturesWithProteinNames {
+    [key: string]: number[] | string[];
+}
+
+export interface PerCellLabels {
+    thumbnailPaths: string[];
+    cellIds: string[];
+    structureProteinName: string[];
+}
+
+export interface DataForPlot {
+    values: MappingOfMeasuredValuesArrays;
+    labels: PerCellLabels;
 }
 
 // ACTIONS

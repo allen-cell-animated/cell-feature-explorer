@@ -9,11 +9,14 @@ import { State } from "../types";
 
 import {
     CellLineDef,
+    DataForPlot,
+    MappingOfMeasuredValuesArrays,
     MetadataStateBranch,
+    PerCellLabels,
 } from "./types";
 
 // BASIC SELECTORS
-export const getMeasuredFeatureValues = (state: State) => state.metadata.featureData;
+export const getPerCellDataForPlot = (state: State) => state.metadata.featureData;
 export const getCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
@@ -24,7 +27,15 @@ export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measured
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getClusterData = (state: State) => state.metadata.clusterData;
 
-export const getPlotLoadingProgress = createSelector([getMeasuredFeatureValues], (measuredFeatures) => {
+export const getMeasuredFeatureArrays = createSelector([getPerCellDataForPlot], (dataForPlot: DataForPlot) => {
+    return dataForPlot.values;
+});
+
+export const getLabelsPerCell = createSelector([getPerCellDataForPlot], (dataForPlot: DataForPlot) => {
+    return dataForPlot.labels;
+});
+
+export const getPlotLoadingProgress = createSelector([getPerCellDataForPlot], (measuredFeatures) => {
     if (isEmpty(measuredFeatures)) {
         return 0;
     }
@@ -35,6 +46,13 @@ export const getSortedCellLineDefs = createSelector([getCellLineDefs], (cellLine
     sortBy(cellLineDefs, [PROTEIN_NAME_KEY])
 );
 
+export const getProteinNames = createSelector(
+    [getSortedCellLineDefs],
+    (cellLineDef: CellLineDef[]): string[] => {
+        return map(cellLineDef, PROTEIN_NAME_KEY);
+    }
+);
+
 export const getMeasuredFeaturesKeys = createSelector([getMeasuredFeaturesDefs], (measuredFeatureDefs): string[] => {
     return map(measuredFeatureDefs,  "key");
 });
@@ -43,14 +61,11 @@ export const getCategoricalFeatureKeys = createSelector([getMeasuredFeaturesDefs
     return map(filter(measuredFeatureDefs,  "discrete"), "key");
 });
 
-export const getProteinLabelsPerCell = createSelector([getFileInfo], (fullMetaData: MetadataStateBranch): string[] => {
-    return map(fullMetaData, PROTEIN_NAME_KEY);
+export const getProteinLabelsPerCell = createSelector([getLabelsPerCell], (labels: PerCellLabels): string[] => {
+    return labels[PROTEIN_NAME_KEY] || [];
 });
 
-export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureValues], (measuredFeatures) => {
-    return measuredFeatures[MITOTIC_STAGE_KEY];
+export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureArrays], (measuredFeatures: MappingOfMeasuredValuesArrays): number[] => {
+    return measuredFeatures[MITOTIC_STAGE_KEY] || [];
 })
-export const getProteinNames = createSelector([getSortedCellLineDefs], (cellLineDef: CellLineDef[]): string[] => {
-    return  map(cellLineDef, PROTEIN_NAME_KEY);
-    }
-);
+
