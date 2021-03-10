@@ -74,14 +74,12 @@ const requestCellFileInfoForSelectedPoint = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet } = deps;
 
-        console.log("SELECTED POINT", action.payload)
         return imageDataSet
             .getFileInfoByCellId(action.payload.toString())
             .then((data?: FileInfo) => {
                 if (!data) {
                     return {}
                 }
-                console.log(data)
                 return data;
             })
             .catch((reason: string) => {

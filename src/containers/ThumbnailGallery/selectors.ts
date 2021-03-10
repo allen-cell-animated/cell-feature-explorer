@@ -76,7 +76,6 @@ export const getThumbnails = createSelector(
                 return {} as Thumbnail;
             }
             const cellID = fileInfoForCell[CELL_ID_KEY].toString();
-            console.log(cellID)
             const cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
             if (cellIndex < 0) {
                 return {} as Thumbnail;

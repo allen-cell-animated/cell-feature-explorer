@@ -136,7 +136,6 @@ describe("UrlState utility class", () => {
                 plotByOnY: "Y value",
                 selectedPoints: selectedCellFileInfo,
             };
-            console.log(UrlState.toUrlSearchParameterMap(selections));
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: "10",
                 [URLSearchParam.colorBy]: "Protein",
