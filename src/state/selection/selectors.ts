@@ -14,6 +14,7 @@ import { createSelector } from "reselect";
 import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
+    CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     CLUSTER_DISTANCE_KEY,
@@ -23,7 +24,6 @@ import {
     THUMBNAIL_PATH,
 } from "../../constants";
 import {
-    getFileInfo,
     getPerCellDataForPlot,
     getProteinLabelsPerCell,
     getProteinNames,
@@ -31,8 +31,10 @@ import {
     getCategoricalFeatureKeys,
     getMeasuredFeaturesDefs,
     getClusterData,
+    getCellLineDefs,
 } from "../metadata/selectors";
 import {
+    CellLineDef,
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
@@ -345,9 +347,14 @@ export const getSelected3DCellLabeledProtein = createSelector([getSelected3DCell
     }
 );
 
-export const getSelected3DCellLabeledStructure = createSelector([getFileInfo, getSelected3DCellCellLine],
-    (cellFileInfo, cellLineId): string => {
-        return cellFileInfo[cellLineId] ? cellFileInfo[cellLineId][CELL_LINE_DEF_STRUCTURE_KEY] : "";
+export const getSelected3DCellLabeledStructure = createSelector([getCellLineDefs, getSelected3DCellCellLine],
+    (cellLineDefs: CellLineDef[], cellLineId: string): string => {
+        const cellLineData =  find(cellLineDefs, {[CELL_LINE_DEF_NAME_KEY]: cellLineId});
+        if (cellLineData) {
+            return cellLineData[CELL_LINE_DEF_STRUCTURE_KEY];
+        }
+        return "";
+     
     }
 );
 
