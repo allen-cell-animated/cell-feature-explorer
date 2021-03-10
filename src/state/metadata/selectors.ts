@@ -11,7 +11,6 @@ import {
     CellLineDef,
     DataForPlot,
     MappingOfMeasuredValuesArrays,
-    MetadataStateBranch,
     PerCellLabels,
 } from "./types";
 
@@ -34,13 +33,6 @@ export const getMeasuredFeatureArrays = createSelector([getPerCellDataForPlot], 
 export const getLabelsPerCell = createSelector([getPerCellDataForPlot], (dataForPlot: DataForPlot) => {
     return dataForPlot.labels;
 });
-
-export const getPlotLoadingProgress = createSelector([getPerCellDataForPlot], (measuredFeatures) => {
-    if (isEmpty(measuredFeatures)) {
-        return 0;
-    }
-    return 100;
-})
 
 export const getSortedCellLineDefs = createSelector([getCellLineDefs], (cellLineDefs: CellLineDef[]): CellLineDef[] =>
     sortBy(cellLineDefs, [PROTEIN_NAME_KEY])

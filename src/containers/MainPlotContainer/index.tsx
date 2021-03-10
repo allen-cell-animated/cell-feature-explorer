@@ -1,4 +1,4 @@
-import { Popover, Progress, Row } from "antd";
+import { Popover } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons"
 import {
     filter,
@@ -26,7 +26,6 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { getPlotLoadingProgress } from "../../state/metadata/selectors";
 import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
@@ -63,7 +62,6 @@ interface PropsFromState {
     hoveredPointData: FileInfo | undefined;
     mousePosition: MousePosition;
     plotDataArray: any;
-    plotLoadingProgress: number;
     thumbnailRoot: string;
     xDropDownValue: string;
     yDropDownValue: string;
@@ -197,7 +195,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             yTickConversion,
             xTickConversion,
             categoricalFeatures,
-            plotLoadingProgress,
         } = this.props;
         if (plotDataArray.length === 0) {
             return null;
@@ -224,21 +221,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     className={styles.container}
                     onMouseLeave={this.onPlotUnhovered}
                 >
-                    {plotLoadingProgress < 100 && (
-                        <Row>
-                            <div>Plot loading...</div>
-                            <Progress
-                                strokeColor={{
-                                    from: "#654d98",
-                                    to: "#f5f0ff",
-                                }}
-                                strokeLinecap="square"
-                                percent={plotLoadingProgress}
-                                status={"active"}
-                                trailColor="#6e6e6e" // will work with antd4
-                            />
-                        </Row>
-                    )}
                     <AxisDropDown
                         axisId={X_AXIS_ID}
                         value={xDropDownValue}
@@ -288,7 +270,6 @@ function mapStateToProps(state: State): PropsFromState {
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
-        plotLoadingProgress: getPlotLoadingProgress(state),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
