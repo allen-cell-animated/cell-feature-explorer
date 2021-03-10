@@ -1,4 +1,4 @@
-import { map, filter, sortBy, isEmpty } from "lodash";
+import { map, filter, sortBy } from "lodash";
 import { createSelector } from "reselect";
 
 import {
