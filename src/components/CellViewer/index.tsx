@@ -7,21 +7,27 @@ import {
     OBS_DNA_NAMES,
     OBS_MEMBRANE_NAMES,
     OBS_STRUCTURE_NAMES,
-    THUMBNAIL_BASE_URL,
 } from "../../constants/index";
+import { FileInfo } from "../../state/metadata/types";
 
 const styles = require("./style.css");
 
-interface CellViewerProps {
-    cellId: string;
-    cellLineName: string;
-    fovId: string;
+interface CellViewerProps extends FileInfo{
     fovDownloadHref: string;
     cellDownloadHref: string;
+    volumeViewerDataRoot: string;
 }
 
-const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId, fovDownloadHref, cellDownloadHref}) => {
-    if (!cellId || !cellLineName) {
+const CellViewer: React.FunctionComponent<CellViewerProps> = ({
+    CellId,
+    structureProteinName,
+    volumeviewerPath,
+    fovDownloadHref,
+    fovVolumeviewerPath,
+    cellDownloadHref,
+    volumeViewerDataRoot,
+}) => {
+    if (!CellId || !structureProteinName) {
         return null;
     }
 
@@ -40,14 +46,13 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId, f
         }
         return name;
     };
-
     return (
         <div className={styles.cellViewer}>
             <ImageViewerApp
-                cellId={cellId}
-                baseUrl={`${THUMBNAIL_BASE_URL}`}
-                cellPath={`${cellLineName}/${cellLineName}_${fovId}_${cellId}`}
-                fovPath={`${cellLineName}/${cellLineName}_${fovId}`}
+                cellId={CellId}
+                baseUrl={volumeViewerDataRoot}
+                cellPath={volumeviewerPath.split("_atlas.json")[0]} //TODO: remove this formatting from the viewer
+                fovPath={fovVolumeviewerPath.split("_atlas.json")[0]} //TODO: remove this formatting from the viewer
                 defaultVolumesOn={[0, 1, 2]}
                 defaultSurfacesOn={[]}
                 channelNameClean={standardizeNames}
@@ -55,7 +60,6 @@ const CellViewer: React.SFC<CellViewerProps> = ({ cellId, cellLineName, fovId, f
                 fovDownloadHref={fovDownloadHref}
                 cellDownloadHref={cellDownloadHref}
             />
-
         </div>
     );
 };

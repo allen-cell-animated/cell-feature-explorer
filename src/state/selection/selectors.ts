@@ -10,7 +10,6 @@ import {
     values,
 } from "lodash";
 import { createSelector } from "reselect";
-import { metadata } from "..";
 
 import {
     ARRAY_OF_CELL_IDS_KEY,
@@ -83,7 +82,8 @@ export const getGalleryCollapsed = (state: State) => state.selection.galleryColl
 export const getSelectedDataset = (state: State) => state.selection.dataset;
 export const getThumbnailRoot = (state: State) => state.selection.thumbnailRoot;
 export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
-
+export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
+export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
@@ -322,26 +322,27 @@ export const getAnnotations = createSelector(
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(
     [getSelected3DCell, getClickedCellsFileInfo],
-    (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo | undefined => {
-        return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId);
+    (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo => {
+        console.log(getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId));
+        return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || {} as FileInfo;
     }
 );
 
 export const getSelected3DCellFOV = createSelector([getSelected3DCellFileInfo],
-    (fileInfo: FileInfo | undefined): string => {
-        return fileInfo ? fileInfo[FOV_ID_KEY].toString() : "";
+    (fileInfo: FileInfo): string => {
+        return !isEmpty(fileInfo) ? fileInfo[FOV_ID_KEY].toString() : "";
     }
 );
 
 export const getSelected3DCellCellLine = createSelector([getSelected3DCellFileInfo],
-    (fileInfo: FileInfo | undefined): string => {
-        return fileInfo ? fileInfo[CELL_LINE_NAME_KEY] : "";
+    (fileInfo: FileInfo ): string => {
+        return !isEmpty(fileInfo) ? fileInfo[CELL_LINE_NAME_KEY] : "";
     }
 );
 
 export const getSelected3DCellLabeledProtein = createSelector([getSelected3DCellFileInfo],
-    (fileInfo: FileInfo | undefined): string => {
-        return fileInfo ? fileInfo[PROTEIN_NAME_KEY] : "";
+    (fileInfo: FileInfo ): string => {
+        return !isEmpty(fileInfo) ? fileInfo[PROTEIN_NAME_KEY] : "";
     }
 );
 

@@ -86,6 +86,9 @@ export const initialState = {
     selectedPoints: [],
     initSelectedPoints: [],
     showClusters: false,
+    thumbnailRoot: "",
+    downloadRoot: "",
+    volumeViewerDataRoot: "",
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
