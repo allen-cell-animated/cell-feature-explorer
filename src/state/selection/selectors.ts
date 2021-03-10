@@ -414,7 +414,7 @@ export const getClusteringRange = createSelector([getClusterData, getClusteringA
     }
 );
 
-export const getFilteredClusteringData = createSelector([getFilteredCellData], (fullMetaData): any[] => {
+export const getFilteredClusteringData = createSelector([getFilteredCellData], (): any[] => {
     return [];
 });
 

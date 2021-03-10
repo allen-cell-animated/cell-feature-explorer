@@ -25,7 +25,6 @@ import {
     Thumbnail,
 } from "../../state/types";
 import {
-    convertFileInfoToImgSrc,
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
     formatDownloadOfSingleImage,
