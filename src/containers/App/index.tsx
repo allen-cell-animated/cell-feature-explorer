@@ -37,7 +37,10 @@ class App extends React.Component<AppProps, {}> {
     };
 
     public componentDidMount = () => {
-        this.props.requestAvailableDatasets();
+        console.log("showSmallScreenWarning", this.state.showSmallScreenWarning)
+        if (!this.state.showSmallScreenWarning) {
+            this.props.requestAvailableDatasets();
+        }
         window.addEventListener("resize", this.updateDimensions);
     }
 
@@ -59,6 +62,7 @@ class App extends React.Component<AppProps, {}> {
         this.setState({
             showSmallScreenWarning: false,
         });
+        this.props.requestAvailableDatasets();
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
