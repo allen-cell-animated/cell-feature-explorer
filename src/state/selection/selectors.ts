@@ -323,7 +323,6 @@ export const getAnnotations = createSelector(
 export const getSelected3DCellFileInfo = createSelector(
     [getSelected3DCell, getClickedCellsFileInfo],
     (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo => {
-        console.log(getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId));
         return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || {} as FileInfo;
     }
 );

@@ -39,7 +39,6 @@ import {
     getIds,
     getSelected3DCell,
     getSelectedAlbum,
-    getThumbnailRoot,
 } from "../../state/selection/selectors";
 import {
     DeselectPointAction,
@@ -73,7 +72,6 @@ interface PropsFromState {
     selectedAlbum: number;
     selectedAlbumName: string;
     selectedCell: string;
-    thumbnailRoot: string;
 }
 
 interface DispatchProps {
@@ -351,15 +349,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     private renderMinGalleryCard(item: Thumbnail) {
-        const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
-        console.log(`${thumbnailRoot}${item.src}`);
+        const { handleDeselectPoint, selectedCell } = this.props;
         const selectedCellId = selectedCell ? selectedCell.toString() : "";
         return (
             <MinGalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
                 labeledStructure={item.labeledStructure}
-                src={`${thumbnailRoot}${item.src}`}
+                src={item.src}
                 selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
                 cellID={item.cellID}
@@ -379,16 +376,15 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     private renderGalleryCard(item: Thumbnail) {
-        const { handleDeselectPoint, selectedCell, thumbnailRoot } = this.props;
-        const selectedCellId = selectedCell ? selectedCell.toString() : "";
-
+        const { handleDeselectPoint, selectedCell } = this.props;
+        const selectedCellId = selectedCell || "";
         return (
             <GalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
                 labeledStructure={item.labeledStructure}
                 mitoticStage={item.mitoticStage}
-                src={`${thumbnailRoot}${item.src}`}
+                src={item.src}
                 selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
                 downloadFullField={item.fullFieldDownloadHref}
@@ -410,7 +406,6 @@ function mapStateToProps(state: State): PropsFromState{
         selectedAlbum: getSelectedAlbum(state),
         selectedAlbumName: getSelectedAlbumName(state),
         selectedCell: getSelected3DCell(state),
-        thumbnailRoot: getThumbnailRoot(state),
     };
 }
 

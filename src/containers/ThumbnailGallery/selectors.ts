@@ -15,8 +15,10 @@ import {
 import { DataForPlot, FileInfo } from "../../state/metadata/types";
 import {
     getClickedCellsFileInfo,
+    getDownloadRoot,
     getSelectedAlbum,
     getSelectedAlbumFileInfo,
+    getThumbnailRoot,
 } from "../../state/selection/selectors";
 import {
     Album,
@@ -27,6 +29,7 @@ import {
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
     formatDownloadOfSingleImage,
+    formatThumbnailSrc,
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
@@ -58,11 +61,13 @@ export const getFileInfoToShow = createSelector(
 );
 
 export const getThumbnails = createSelector(
-    [getPerCellDataForPlot, getMitoticKeyPerCell, getFileInfoToShow],
+    [getPerCellDataForPlot, getMitoticKeyPerCell, getFileInfoToShow, getDownloadRoot, getThumbnailRoot],
     (
         perCellPlotData: DataForPlot,
         mitoticKeysArray: number[],
-        fileInfoOfSelectedCells: FileInfo[]
+        fileInfoOfSelectedCells: FileInfo[],
+        downloadRoot: string,
+        thumbnailRoot: string,
     ): Thumbnail[] => {
         if (isEmpty(perCellPlotData.labels) || !fileInfoOfSelectedCells.length) {
             return [];
@@ -78,22 +83,21 @@ export const getThumbnails = createSelector(
                 return {} as Thumbnail;
             }
             const mitoticKey = mitoticKeysArray[cellIndex];
-            const cellData = fileInfoForCell;
-            const src = convertFileInfoToImgSrc(cellData);
-            const fovId = cellData[FOV_ID_KEY];
-            const downloadHref = formatDownloadOfSingleImage(
+            const fovId = fileInfoForCell[FOV_ID_KEY];
+            const downloadHref = formatDownloadOfSingleImage(downloadRoot, 
                 convertSingleImageIdToDownloadId(cellID)
             );
-            const fullFieldDownloadHref = formatDownloadOfSingleImage(
+            const fullFieldDownloadHref = formatDownloadOfSingleImage(downloadRoot, 
                 convertFullFieldIdToDownloadId(fovId)
             );
+            const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
             return {
                 cellID,
                 downloadHref,
                 fullFieldDownloadHref,
-                labeledStructure: cellData[PROTEIN_NAME_KEY],
+                labeledStructure: fileInfoForCell[PROTEIN_NAME_KEY],
                 mitoticStage: mitoticKey,
-                src,
+                src: thumbnailSrc,
             };
         });
     }

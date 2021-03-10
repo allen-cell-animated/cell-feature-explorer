@@ -71,13 +71,21 @@ export function convertSingleImageIdToDownloadId(id: number | string): string {
     return `C${id}`;
 }
 
-export function convertFileInfoToImgSrc(datum: FileInfo): string {
+function convertFileInfoToImgSrc(datum: FileInfo): string {
     if (datum.thumbnailPath) {
-        return `/${datum.thumbnailPath}`;
+        return `${datum.thumbnailPath}`;
     }
-    return `/${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
+    return `${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
 }
 
 export function formatDownloadOfSingleImage(root: string, id: string): string {
     return`${root}&id=${id}`;
+}
+
+export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
+    if (!thumbnailRoot || !item) {
+        return "";
+    }
+    const path = convertFileInfoToImgSrc(item);
+    return `${thumbnailRoot}/${path}`;
 }
