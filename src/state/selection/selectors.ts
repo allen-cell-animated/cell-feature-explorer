@@ -92,10 +92,10 @@ export const getFilteredCellData = createSelector(
            (
                measuredFeatureKeys,
                filtersToExclude,
-               measuredFeaturesByKey
+               perCellDataForPlot: DataForPlot
            ): DataForPlot => {
                if (!filtersToExclude.length) {
-                   return measuredFeaturesByKey
+                   return perCellDataForPlot
                  
                }
                const proteinNameArray: string[] = [];
@@ -103,19 +103,19 @@ export const getFilteredCellData = createSelector(
                const cellIds: string[] = [];
                const thumbnails: string[] = [];
                
-               for (let i = 0; i < measuredFeaturesByKey.structureProteinName.length; i++ ) {
-                   const proteinName: string = measuredFeaturesByKey.structureProteinName[i];
+               for (let i = 0; i < perCellDataForPlot.labels.structureProteinName.length; i++ ) {
+                   const proteinName: string = perCellDataForPlot.labels.structureProteinName[i];
                    if (!includes(filtersToExclude, proteinName)) {
-                       const cellId = measuredFeaturesByKey[ARRAY_OF_CELL_IDS_KEY][i];
+                       const cellId = perCellDataForPlot.labels.cellIds[i];
                        cellIds.push(cellId);
                        proteinNameArray.push(proteinName);
-                       thumbnails.push(measuredFeaturesByKey.thumbnailPaths[i]);
+                       thumbnails.push(perCellDataForPlot.labels.thumbnailPaths[i]);
                        measuredFeatureKeys.forEach((featureKey) => {
                            if (!dataToReturn[featureKey]) {
                                dataToReturn[featureKey] = [];
                            }
     
-                           dataToReturn[featureKey].push(measuredFeaturesByKey[featureKey][i] as never);
+                           dataToReturn[featureKey].push(perCellDataForPlot.values[featureKey][i] as never);
                        });
                    }
                }
