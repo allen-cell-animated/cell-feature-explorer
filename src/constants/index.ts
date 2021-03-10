@@ -44,7 +44,7 @@ export const CELL_COUNT_KEY = "cellCount";
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
-export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages";
+export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end
 
 export enum MITOTIC_STAGE_LABELS {
     "Interphase" = 0,
