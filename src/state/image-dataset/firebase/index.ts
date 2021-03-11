@@ -173,14 +173,6 @@ class FirebaseRequest implements ImageDataset {
             });
     };
 
-    public getFileInfo = () => {
-        return this.getCollection("cell-file-info").then((snapshot) => {
-            const dataset: FileInfo[] = [];
-            snapshot.forEach((doc) => dataset.push(doc.data() as FileInfo));
-            return dataset;
-        });
-    };
-
     public getFileInfoByCellId = (cellId: string) => {
         return this.getDoc(`${this.fileInfoPath}/${cellId}`).then((doc) => {
             const data = doc.data() as FileInfo;
