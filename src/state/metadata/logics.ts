@@ -17,10 +17,9 @@ import {
     REQUEST_FEATURE_DATA,
 } from "./constants";
 import { CellLineDef, DataForPlot } from "./types";
-import { isEmpty } from "lodash";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
-import { selectPoint, selectCellFor3DViewer } from "../selection/actions";
-import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
+import { selectPoint, selectCellFor3DViewer, requestCellFileInfoByArrayOfCellIds } from "../selection/actions";
+import { getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -75,8 +74,10 @@ const requestFeatureDataLogic = createLogic({
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
-
-                if (isEmpty(getClickedScatterPoints(state))) {
+                const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
+                if (selectedCellIdsFromUrls.length) {
+                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls))
+                } else {
                     dispatch(selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
 

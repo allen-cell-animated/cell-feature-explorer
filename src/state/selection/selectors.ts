@@ -83,6 +83,7 @@ export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
 export const getSelectedDataset = (state: State) => state.selection.dataset;
 export const getThumbnailRoot = (state: State) => state.selection.thumbnailRoot;
+export const getSelectedIdsFromUrl = (state: State) => state.selection.initSelectedPoints;
 export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
 export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
@@ -298,12 +299,13 @@ export const getAnnotations = createSelector(
             return [];
         }
         return clickedCellsFileInfo.map((data) => {
-            const cellIds = dataForPlot.labels[ARRAY_OF_CELL_IDS_KEY]; 
             const cellID = data[CELL_ID_KEY];
-            const pointIndex = findIndex(cellIds, (id) => Number(id) === Number(cellID)); // ids in fileInfo are numbers
-            const fovID = data[FOV_ID_KEY];
-            const cellLine = data[CELL_LINE_NAME_KEY];
-            const thumbnailPath = data[THUMBNAIL_PATH];
+            const fovID = data[FOV_ID_KEY] || "";
+            const cellLine = data[CELL_LINE_NAME_KEY] || "";
+            const thumbnailPath = data[THUMBNAIL_PATH] || "";
+            
+            const cellIds = dataForPlot.labels[ARRAY_OF_CELL_IDS_KEY]; 
+            const pointIndex = findIndex(cellIds, (id) => (id) === cellID); 
             const x = dataForPlot.values[xAxis][pointIndex]; 
             const y = dataForPlot.values[yAxis][pointIndex]; 
 

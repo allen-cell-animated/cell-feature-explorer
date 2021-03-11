@@ -95,9 +95,7 @@ const requestCellFileInfoForSelectedPoint = createLogic({
 const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet } = deps;
-        if (!imageDataSet.getFileInfoByArrayOfCellIds) {
-            return Promise.resolve({});
-        }
+
         return imageDataSet
             .getFileInfoByArrayOfCellIds(action.payload)
             .then((data?: FileInfo[]) => {

@@ -24,6 +24,7 @@ import {
     CHANGE_DATASET,
     RECEIVE_FILE_INFO,
     REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    SELECT_ARRAY_OF_POINTS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -197,5 +198,12 @@ export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByC
     return {
         payload,
         type: REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    };
+}
+
+export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
+    return {
+        payload,
+        type: SELECT_ARRAY_OF_POINTS,
     };
 }
