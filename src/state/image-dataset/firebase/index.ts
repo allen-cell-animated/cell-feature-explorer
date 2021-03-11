@@ -178,14 +178,14 @@ class FirebaseRequest implements ImageDataset {
 
     public getFileInfoByCellId = (cellId: string) => {
         return this.getDoc(`${this.fileInfoPath}/${cellId}`).then((doc) => {
-            const data = doc.data();
+            const data = doc.data() as FileInfo;
             if (!data) {
-                return {};
+                return;
             }
             return {
                 ...data, 
                 CellId: data.CellId.toString(),
-                FOVId: data.FOVId.toString()
+                FOVId: data.FOVId.toString(),
             }
         })
 

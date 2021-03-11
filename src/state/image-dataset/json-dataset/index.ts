@@ -170,8 +170,10 @@ class JsonRequest implements ImageDataset {
         });
     };
     public getFileInfoByCellId = (cellId: string) => {
+        const fileInfo = this.fileInfo[cellId];
         // wrapped to match the return type on the database implementation
-        return Promise.resolve(this.fileInfo[cellId]);
+        // convert ides to string to match front end data structure where all ids are strings
+        return Promise.resolve({ ...fileInfo, CellId: fileInfo.CellId.toString(), FOVId: fileInfo.FOVId.toString()});
     };
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {

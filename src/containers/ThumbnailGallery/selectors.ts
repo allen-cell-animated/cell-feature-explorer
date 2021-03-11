@@ -72,7 +72,8 @@ export const getThumbnails = createSelector(
             return [];
         }
         return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
-            if (isNaN(fileInfoForCell[CELL_ID_KEY])) {
+            // if something weird got typed in the url, ie, not a cell id, don't try to find it
+            if (isNaN(Number(fileInfoForCell[CELL_ID_KEY]))) {
                 return {} as Thumbnail;
             }
             const cellID = fileInfoForCell[CELL_ID_KEY].toString();

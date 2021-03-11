@@ -110,7 +110,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 return acc;
             }, returnArray);
         } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
-            const selectedCellIds: number[] = map(selectedGroups[downloadConfig.key], Number);
+            const selectedCellIds = selectedGroups[downloadConfig.key];
             return reduce(fileInfo, (acc, cur: FileInfo) => {
                 if (includes(selectedCellIds, cur[CELL_ID_KEY])) {
                     acc.push(convertFileInfoToAICSId(cur));

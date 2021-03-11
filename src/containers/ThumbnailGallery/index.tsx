@@ -66,7 +66,7 @@ const styles = require("./style.css");
 
 interface PropsFromState {
     albumData: Album[];
-    clickedPoints: number[];
+    clickedPoints: string[];
     data: Thumbnail[];
     ids: string[];
     selectedAlbum: number;

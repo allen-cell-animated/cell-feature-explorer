@@ -56,7 +56,7 @@ const styles = require("./style.css");
 interface PropsFromState {
     annotations: Annotation[];
     categoricalFeatures: string[];
-    clickedPoints: number[];
+    clickedPoints: string[];
     filtersToExclude: string[];
     galleryCollapsed: boolean;
     hoveredPointData: FileInfo | undefined;
@@ -111,10 +111,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         } = this.props;
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
-                if (includes(clickedPoints, Number(point.id))) {
-                    handleDeselectPoint(Number(point.id));
+                if (includes(clickedPoints, point.id)) {
+                    handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint(Number(point.id));
+                    handleSelectPoint(point.id);
                 }
             }
         });
@@ -135,7 +135,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
-                    changeHoveredCell({[CELL_ID_KEY]: Number(point.id), [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
+                    changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
                 } else {
                     changeHoveredCell(null);
                 }
