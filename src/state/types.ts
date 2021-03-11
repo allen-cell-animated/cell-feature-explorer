@@ -40,9 +40,9 @@ export interface TypeToDescriptionMap {
 
 export interface Annotation {
     cellLine: string;
-    cellID: number;
+    cellID: string;
     hovered: boolean;
-    fovID: number;
+    fovID: string;
     pointIndex: number;
     x: number;
     y: number;
