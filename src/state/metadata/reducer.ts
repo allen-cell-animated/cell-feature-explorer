@@ -37,7 +37,6 @@ export const initialState = {
     measuredFeaturesDefs: [],
     clusterData: [],
 };
-export const TOTAL_CELLS = 216061; //TODO put this in the dataset manifest
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_METADATA]: {
