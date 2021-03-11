@@ -117,9 +117,14 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getMeasuredFeatureDefs = async () => {
+        const displayOrder = [...this.featuresDisplayOrder];
+        // TODO: request rest of features, currently only requesting non shape mode features
+        // Firebase limits the array to ten items, so will need to make multiple requests for 
+        // more features
+        const batchToRequest = displayOrder.splice(0, 10);
         const snapshot = await firestore
             .collection(CELL_FEATURES_COLLECTION)
-            .where("key", "in", this.featuresDisplayOrder.slice(0, 9))
+            .where("key", "in", batchToRequest)
             .get();
         const dataset: MeasuredFeatureDef[] = [];
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
