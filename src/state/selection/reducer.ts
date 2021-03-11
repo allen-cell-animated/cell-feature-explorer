@@ -35,6 +35,7 @@ import {
     RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+    CLEAR_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -44,6 +45,7 @@ import {
     ChangeMousePositionAction,
     ChangeSelectedDatasetAction,
     ChangeSelectionAction,
+    ClearDatasetAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     LassoOrBoxSelectAction,
@@ -105,6 +107,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
             };
         },
     },
+    [CLEAR_DATASET]: {
+        accepts: (action: AnyAction): action is ClearDatasetAction => action.type === CLEAR_DATASET,
+        perform: () => {
+            return { ...initialState }
+        }
+    },
+
     [CHANGE_AXIS]: {
         accepts: (action: AnyAction): action is SelectAxisAction => action.type === CHANGE_AXIS,
         perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({

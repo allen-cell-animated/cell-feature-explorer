@@ -25,6 +25,7 @@ import {
     RECEIVE_FILE_INFO,
     REQUEST_CELL_FILE_INFO_BY_CELL_ID,
     SELECT_ARRAY_OF_POINTS,
+    CLEAR_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -33,6 +34,7 @@ import {
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     ChangeSelectionAction,
+    ClearDatasetAction,
     DeselectPointAction,
     DownloadConfig,
     LassoOrBoxSelectAction,
@@ -186,6 +188,12 @@ export function changeDataset(payload: string): ChangeSelectionAction {
                type: CHANGE_DATASET,
            };
        }
+
+export function clearDataset(): ClearDatasetAction {
+    return {
+        type: CLEAR_DATASET,
+    };
+}
        
 export function receiveFileInfoDataForCell(payload: FileInfo) {
     return {

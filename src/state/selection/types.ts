@@ -166,3 +166,7 @@ export interface SetHoveredCardAction {
     payload: SelectedPointData;
     type: string;
 };
+
+export interface ClearDatasetAction {
+    type: string;
+}
