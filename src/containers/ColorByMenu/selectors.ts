@@ -13,7 +13,6 @@ import {
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    DOWNLOAD_URL_PREFIX,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
@@ -27,6 +26,7 @@ import {
     getApplyColorToSelections,
     getColorBySelection,
     getDownloadConfig,
+    getDownloadRoot,
     getFiltersToExclude,
     getProteinColors,
     getSelectedGroupKeys,
@@ -122,11 +122,12 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
 });
 
 export const createUrlFromListOfIds = createSelector(
-    [getListOfCellIdsByDownloadConfig],
-    (cellIdsToDownload): string[] => {
+    [getDownloadRoot, getListOfCellIdsByDownloadConfig],
+    (downloadRoot: string, cellIdsToDownload): string[] => {
     const chunkSize = 300;
     const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
-    return map(chunksOfIds,
-        (listOfIds) => (`${DOWNLOAD_URL_PREFIX}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`)
+    return map(
+        chunksOfIds,
+        (listOfIds) => `${downloadRoot}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`
     );
 });

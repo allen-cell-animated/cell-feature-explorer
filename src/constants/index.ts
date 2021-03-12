@@ -46,35 +46,12 @@ export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
 export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end
 
-export enum MITOTIC_STAGE_LABELS {
-    "Interphase" = 0,
-    "Prophase" = 1,
-    "Prometaphase" = 2,
-    "Metaphase" = 3,
-    "Anaphase" = 4,
-    "Not determined" = NaN,
-}
-
 export const AGGLOMERATIVE_KEY = "Agglomerative";
 export const KMEANS_KEY = "KMeans";
 export const SPECTRAL_KEY = "Spectral";
 
 export const CLUSTER_NUMBER_KEY = "numberOfClusters";
 export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
-
-// These lines are typing and exporting variables created by webpack DefinePlugin
-
-declare const BASE_API_URL: string;
-const _BASE_API_URL = BASE_API_URL;
-export { _BASE_API_URL as BASE_API_URL };
-
-declare const THUMBNAIL_BASE_URL: string;
-const _THUMBNAIL_BASE_URL = THUMBNAIL_BASE_URL;
-export { _THUMBNAIL_BASE_URL as THUMBNAIL_BASE_URL };
-
-declare const DOWNLOAD_URL_PREFIX: string;
-const _DOWNLOAD_URL_PREFIX = DOWNLOAD_URL_PREFIX;
-export { _DOWNLOAD_URL_PREFIX as DOWNLOAD_URL_PREFIX };
 
 export const MY_SELECTIONS_ID = 0;
 
@@ -106,8 +83,6 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
-    xAxisInitial: "DNA volume (\u00b5m\u00b3)",
-    yAxisInitial: "Cell volume (\u00b5m\u00b3)",
 };
 
 export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];

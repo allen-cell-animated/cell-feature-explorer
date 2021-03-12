@@ -10,10 +10,6 @@ const webpack = require('webpack');
 
 const Env = require('./constants').Env;
 
-const DevServers = require('./server-urls-dev.json');
-const ProductionServers = require('./server-urls-production.json');
-const StagingServers = require('./server-urls-staging.json');
-
 const BASE_PLUGINS = [
     new webpack.DefinePlugin({
         'process.env.USE_GITHUB_FOR_DATASET': JSON.stringify(process.env.USE_GITHUB_FOR_DATASET) || false,
@@ -64,27 +60,18 @@ const PLUGINS_BY_ENV = {
     [Env.PRODUCTION]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
-            BASE_API_URL: ProductionServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: ProductionServers.THUMBNAIL_BASE_URL,
-            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
         new webpack.HashedModuleIdsPlugin()
     ],
     [Env.STAGE]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('staging'),
-            BASE_API_URL: StagingServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: StagingServers.THUMBNAIL_BASE_URL,
-            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
         new webpack.NamedModulesPlugin()
     ],
     [Env.DEVELOPMENT]: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('dev'),
-            BASE_API_URL: DevServers.BASE_API_URL,
-            THUMBNAIL_BASE_URL: DevServers.THUMBNAIL_BASE_URL,
-            DOWNLOAD_URL_PREFIX: ProductionServers.DOWNLOAD_URL_PREFIX,
         }),
     ]
 };

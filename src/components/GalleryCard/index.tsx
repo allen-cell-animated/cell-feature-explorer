@@ -10,9 +10,6 @@ import {
 import React from "react";
 
 import {
-    MITOTIC_STAGE_LABELS,
-} from "../../constants";
-import {
     DeselectPointAction,
     SelectCellIn3DAction,
 } from "../../state/selection/types";
@@ -25,7 +22,7 @@ interface GalleryCardProps {
     selected: boolean;
     downloadHref: string;
     cellID: string;
-    mitoticStage?: number;
+    mitoticStage?: string;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
     handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
     empty?: boolean;
@@ -88,11 +85,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         ),
     ];
 
-    let mitoticStage;
 
-    if (props.mitoticStage !== undefined) {
-        mitoticStage = MITOTIC_STAGE_LABELS[props.mitoticStage] as keyof typeof MITOTIC_STAGE_LABELS;
-    }
 
     return (
         <List.Item
@@ -124,7 +117,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 )}
                 description={props.cellID}
             />
-                {mitoticStage && <span className={styles.stage}>{mitoticStage}</span>}
+                {props.mitoticStage && <span className={styles.stage}>{props.mitoticStage}</span>}
                 {!props.empty &&
                         <div className={styles.actionList}>
                             {actions}
