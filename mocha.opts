@@ -2,4 +2,3 @@
 --require jsdom-global/register
 --require mock-css-modules
 --require ./scripts/adapt-enzyme-to-react-16.js
---require ./scripts/mock-server-urls.js
