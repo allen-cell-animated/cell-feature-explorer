@@ -122,7 +122,6 @@ class JsonRequest implements ImageDataset {
         const thumbnails: string[] = [];
         const ids: string[] = [];
         return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME).then((featureDataArray) => {
-            // transform data in place to save memory
             featureDataArray.forEach((el: any) => {
                 // FILE INFO
                 // number of file info property names must be same as number of file_info entries in data
