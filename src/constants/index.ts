@@ -43,7 +43,6 @@ export const FILE_INFO_KEYS = Object.freeze([
 export const CELL_COUNT_KEY = "cellCount";
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
-export const NUCLEAR_VOLUME_FEATURE_NAME = "DNA volume (\u00b5m\u00b3)";
 export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end
 
 export const AGGLOMERATIVE_KEY = "Agglomerative";

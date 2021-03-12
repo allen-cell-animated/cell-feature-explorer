@@ -24,8 +24,6 @@ import {
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    NUCLEAR_VOLUME_FEATURE_NAME,
-    PROTEIN_NAME_KEY,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
 import { MeasuredFeatureDef } from "../../state/metadata/types";
@@ -106,7 +104,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
-        this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
         // this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
         // this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
@@ -147,14 +144,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             return handleFilterByProteinName([]);
         }
         handleFilterByProteinName(proteinNames);
-    }
-
-    public onColorBySwitchChanged(colorByProtein: boolean) {
-        const { handleChangeAxis } = this.props;
-        if (colorByProtein) {
-            return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
-        }
-        handleChangeAxis(COLOR_BY_SELECTOR, NUCLEAR_VOLUME_FEATURE_NAME);
     }
 
     public onActivePanelChange(value: string | string[]) {
