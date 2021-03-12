@@ -190,9 +190,19 @@ class FirebaseRequest implements ImageDataset {
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
         return Promise.all(
-            cellIds.map((id) => {
+            cellIds.map((id: string) => {
                 return this.getDoc(`${this.fileInfoPath}/${id}`).then(
-                    (doc) => doc.data() as FileInfo
+                    (doc) => {
+                        const data = doc.data() as FileInfo;
+                        if (!data) {
+                            return;
+                        }
+                        return {
+                            ...data,
+                            CellId: data.CellId.toString(),
+                            FOVId: data.FOVId.toString(),
+                        };
+                    }
                 );
             })
         );

@@ -18,5 +18,5 @@ export interface ImageDataset {
     getAlbumData(): Promise<Album[]>;
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
-    getFileInfoByArrayOfCellIds(ids: string[]): Promise<FileInfo[] | undefined>;
+    getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
 }

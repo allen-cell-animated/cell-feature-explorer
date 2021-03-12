@@ -1,5 +1,5 @@
 import { createLogic } from "redux-logic";
-import { find, remove } from "lodash";
+import { filter, find, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
@@ -98,11 +98,8 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
 
         return imageDataSet
             .getFileInfoByArrayOfCellIds(action.payload)
-            .then((data?: FileInfo[]) => {
-                if (!data) {
-                    return []
-                }
-                return data;
+            .then((data: (FileInfo | undefined)[]) => {
+                return filter(data);
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -123,11 +120,8 @@ const selectAlbum = createLogic({
 
         return imageDataSet
             .getFileInfoByArrayOfCellIds(action.payload)
-            .then((data?: FileInfo[]) => {
-                if (!data) {
-                    return [];
-                }
-                return data;
+            .then((data: (FileInfo | undefined)[]) => {
+                return filter(data);
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console

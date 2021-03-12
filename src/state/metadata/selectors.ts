@@ -1,4 +1,4 @@
-import { map, filter, sortBy } from "lodash";
+import { map, filter, sortBy, find } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -11,6 +11,7 @@ import {
     CellLineDef,
     DataForPlot,
     MappingOfMeasuredValuesArrays,
+    MeasuredFeatureDef,
     PerCellLabels,
 } from "./types";
 
@@ -55,6 +56,14 @@ export const getCategoricalFeatureKeys = createSelector([getMeasuredFeaturesDefs
 
 export const getProteinLabelsPerCell = createSelector([getLabelsPerCell], (labels: PerCellLabels): string[] => {
     return labels[PROTEIN_NAME_KEY] || [];
+});
+
+export const getMitoticStageNames = createSelector([getMeasuredFeaturesDefs], (defs: MeasuredFeatureDef[]) => {
+    const mitoticFeature = find(defs, {key: MITOTIC_STAGE_KEY});
+    if (mitoticFeature) {
+        return mitoticFeature.options;
+    }
+    else return {};
 });
 
 export const getMitoticKeyPerCell = createSelector([getMeasuredFeatureArrays], (measuredFeatures: MappingOfMeasuredValuesArrays): number[] => {

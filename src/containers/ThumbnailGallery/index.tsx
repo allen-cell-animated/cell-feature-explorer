@@ -153,7 +153,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             });
         }
         if (includes(ids, value)) {
-            addSearchedCell(Number(value));
+            addSearchedCell(value);
             return this.setState({
                 inputStatus: "success",
                 message: messages.success,
