@@ -83,12 +83,12 @@ interface DispatchProps {
     requestCellFileInfoData: ActionCreator<RequestAction>;
 }
 
-interface OwnProps {
+interface PropsFromApp {
     // props from <App />
     handleSelectionToolUsed: () => void;
 }
 
-type MainPlotContainerProps = PropsFromState & DispatchProps & OwnProps;
+type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
@@ -292,5 +292,5 @@ const dispatchToPropsMap: DispatchProps = {
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };
 
-export default connect<PropsFromState, DispatchProps, OwnProps, State>
+export default connect<PropsFromState, DispatchProps, PropsFromApp, State>
     (mapStateToProps, dispatchToPropsMap)(MainPlotContainer);
