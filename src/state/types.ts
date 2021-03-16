@@ -40,7 +40,7 @@ export interface TypeToDescriptionMap {
 
 export interface Annotation {
     cellLine: string;
-    cellID: number;
+    cellID: string;
     hovered: boolean;
     fovID: string;
     pointIndex: number;
@@ -51,9 +51,9 @@ export interface Annotation {
 export interface Thumbnail {
     downloadHref: string;
     labeledStructure: string;
-    mitoticStage: number;
+    mitoticStage: string;
     src: string;
-    cellID: number;
+    cellID: string;
     empty?: boolean;
     fullFieldDownloadHref: string;
 }
@@ -69,6 +69,7 @@ export interface ContinuousPlotData {
     ids?: string[];
     x: number[];
     y: number[];
+    customdata?: string[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -83,6 +84,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: number[];
     y: number[];
+    customdata?: string[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;

@@ -1,4 +1,5 @@
 import { URLSearchParamMap } from "../../util/UrlState";
+import { FileInfo } from "../metadata/types";
 
 import {
     CHANGE_AXIS,
@@ -21,6 +22,10 @@ import {
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     CHANGE_DATASET,
+    RECEIVE_FILE_INFO,
+    REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    SELECT_ARRAY_OF_POINTS,
+    CLEAR_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -29,13 +34,16 @@ import {
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     ChangeSelectionAction,
+    ClearDatasetAction,
     DeselectPointAction,
     DownloadConfig,
     LassoOrBoxSelectAction,
     MousePosition,
+    RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
     SelectAxisAction,
+    SelectedPointData,
     SelectPointAction,
 } from "./types";
 
@@ -62,14 +70,14 @@ export function deselectGroupOfPoints(payload: string | number) {
     };
 }
 
-export function deselectPoint(payload: number): DeselectPointAction {
-    return {
-        payload,
-        type: DESELECT_POINT,
-    };
-}
+export function deselectPoint(payload: string): DeselectPointAction {
+           return {
+               payload,
+               type: DESELECT_POINT,
+           };
+       }
 
-export function selectPoint(payload: number): SelectPointAction {
+export function selectPoint(payload: string): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
@@ -89,7 +97,7 @@ export function toggleFilterByProteinName(payload: string): ChangeSelectionActio
     };
 }
 
-export function selectCellFor3DViewer(payload: number): SelectPointAction {
+export function selectCellFor3DViewer(payload: string): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
@@ -146,19 +154,19 @@ export function changeMousePosition(payload: MousePosition): ChangeMousePosition
     };
 }
 
-export function changeHoveredPoint(payload: number): ChangeHoveredPointAction {
-    return {
-        payload,
-        type: CHANGE_HOVERED_POINT_ID,
-    };
-}
+export function changeHoveredPoint(payload: SelectedPointData): ChangeHoveredPointAction {
+           return {
+               payload,
+               type: CHANGE_HOVERED_POINT_ID,
+           };
+       }
 
-export function setHoveredGalleryCard(payload: number): ChangeHoveredPointAction {
-    return {
-        payload,
-        type: CHANGE_HOVERED_GALLERY_CARD,
-    };
-}
+export function setHoveredGalleryCard(payload: SelectedPointData): ChangeHoveredPointAction {
+           return {
+               payload,
+               type: CHANGE_HOVERED_GALLERY_CARD,
+           };
+       }
 
 export function selectAlbum(payload: number): SelectAlbumAction {
     return {
@@ -180,3 +188,30 @@ export function changeDataset(payload: string): ChangeSelectionAction {
                type: CHANGE_DATASET,
            };
        }
+
+export function clearDataset(): ClearDatasetAction {
+    return {
+        type: CLEAR_DATASET,
+    };
+}
+       
+export function receiveFileInfoDataForCell(payload: FileInfo) {
+    return {
+        payload,
+        type: RECEIVE_FILE_INFO,
+    };
+}
+
+export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByCellIDAction {
+    return {
+        payload,
+        type: REQUEST_CELL_FILE_INFO_BY_CELL_ID,
+    };
+}
+
+export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
+    return {
+        payload,
+        type: SELECT_ARRAY_OF_POINTS,
+    };
+}

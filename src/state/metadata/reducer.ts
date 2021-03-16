@@ -6,7 +6,9 @@ import { makeReducer } from "../util";
 import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
+    RECEIVE_CELL_FILE_INFO,
     RECEIVE_CELL_LINE_DATA,
+    RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
@@ -17,15 +19,23 @@ import {
     ReceiveAvailableDatasetsAction,
     ReceiveCellLineAction,
     SetLoadingAction,
+    ReceiveMeasuredFeaturesAction,
 } from "./types";
 
 export const initialState = {
     albums: [],
+    cellFileInfo: [],
     cellLineDefs: {},
-    featureData: [],
     isLoading: true,
     loadingText: "",
     datasets: [],
+    measuredFeatureNames: [],
+    featureData: {
+        values: {},
+        labels: {},
+    },
+    measuredFeaturesDefs: [],
+    clusterData: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -52,6 +62,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
             cellLineDefs: action.payload,
         }),
     },
+    [RECEIVE_CELL_FILE_INFO]: {
+        accepts: (action: AnyAction): action is ReceiveCellLineAction =>
+            action.type === RECEIVE_CELL_FILE_INFO,
+        perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
+            ...state,
+            cellFileInfo: action.payload,
+        }),
+    },
     [RECEIVE_ALBUM_DATA]: {
         accepts: (action: AnyAction): action is ReceiveAlbumDataAction =>
             action.type === RECEIVE_ALBUM_DATA,
@@ -74,6 +92,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
             loadingText: action.payload,
+        }),
+    },
+    [RECEIVE_MEASURED_FEATURE_NAMES]: {
+        accepts: (action: AnyAction): action is ReceiveMeasuredFeaturesAction =>
+            action.type === RECEIVE_MEASURED_FEATURE_NAMES,
+        perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
+            ...state,
+            measuredFeaturesDefs: action.payload,
         }),
     },
 };

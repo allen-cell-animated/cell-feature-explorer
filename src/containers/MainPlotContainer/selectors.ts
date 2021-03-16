@@ -1,23 +1,17 @@
-import {
-    includes,
-    map,
-} from "lodash";
+import { includes, map, find } from "lodash";
 import { createSelector } from "reselect";
-import { $enum } from "ts-enum-util";
 
 import {
-    CATEGORICAL_FEATURES,
     GENERAL_PLOT_SETTINGS,
-    getLabels,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
 } from "../../constants";
-import { getFeatureNames } from "../../state/metadata/selectors";
+import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
+import { MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
-    getClustersOn,
     getColorBySelection,
     getColorByValues,
     getColorsForPlot,
@@ -25,6 +19,7 @@ import {
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
+    getThumbnailPaths,
     getXValues,
     getYValues,
 } from "../../state/selection/selectors";
@@ -43,26 +38,31 @@ export const getMainPlotData = createSelector(
         getXValues,
         getYValues,
         getIds,
+        getThumbnailPaths,
         getColorByValues,
         getColorBySelection,
         getColorsForPlot,
+        getCategoricalFeatureKeys
     ],
     (
         xValues,
         yValues,
         ids,
+        thumbnailPaths,
         colorByValues,
         colorBy,
-        colorsForPlot
+        colorsForPlot,
+        categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || includes(CATEGORICAL_FEATURES, colorBy),
+            groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
             x: xValues,
             y: yValues,
+            customdata: thumbnailPaths as string[],
         };
     }
 );
@@ -70,15 +70,11 @@ export const getMainPlotData = createSelector(
 export const composePlotlyData = createSelector([
         getMainPlotData,
         getApplyColorToSelections,
-        getClustersOn,
         getSelectedGroupsData,
-        // getClusteringResult,
     ], (
         mainPlotDataValues,
         applyColorToSelections,
-        showClusters,
         selectedGroups,
-        // clusteringResultData
 ): any => {
     const mainPlotData = {
         ...mainPlotDataValues,
@@ -93,14 +89,9 @@ export const composePlotlyData = createSelector([
         groupBy: false,
         plotName: SELECTIONS_PLOT_NAME,
     } : null;
-    const clusteringPlotData = null;
-    // showClusters ? {
-    //     ...clusteringResultData,
-    //     groupBy: false,
-    //     plotName: CLUSTERS_PLOT_NAME,
-    // } : null;
+
     return {
-        clusteringPlotData,
+        clusteringPlotData: null,
         mainPlotData,
         selectedGroupPlotData,
     };
@@ -147,6 +138,7 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     const plotSettings =  {
         hoverinfo: "none" as "none",
         ids: plotData.ids,
+        customdata: plotData.customdata,
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
             symbol: "circle",
@@ -223,25 +215,39 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
     return data;
 });
 
-export const getXDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
-    return featureNames;
-});
+export const getXDisplayOptions = createSelector(
+           [getMeasuredFeaturesDefs],
+           (featureNames): MeasuredFeatureDef[] => {
+               return featureNames;
+           }
+       );
 
-export const getYDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
-    return featureNames;
-});
+export const getYDisplayOptions = createSelector(
+           [getMeasuredFeaturesDefs],
+           (featureNames): MeasuredFeatureDef[] => {
+               return featureNames;
+           }
+       );
 
-export const getColorByDisplayOptions = createSelector([getFeatureNames], (featureNames): string[] => {
-    if (!includes(featureNames, PROTEIN_NAME_KEY)) {
-        return [PROTEIN_NAME_KEY, ...featureNames];
+export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureDefs): MeasuredFeatureDef[] => {
+    if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+        return [
+            {
+                key: PROTEIN_NAME_KEY,
+                displayName: "Protein",
+                discrete: true,
+                unit: null,
+            },
+            ...featureDefs,
+        ];
     }
-    return featureNames;
+    return featureDefs;
 });
 
-const makeNumberToTextConversion = (categoryEnum: { [index: string]: number } ) => {
+const makeNumberToTextConversion = (options: MeasuredFeaturesOptions) => {
     return {
-        tickText:  $enum(categoryEnum).getKeys() as string[],
-        tickValues:  $enum(categoryEnum).getValues() as number[],
+        tickText:  map(options, "name"),
+        tickValues:  map(options, (_, key) => Number(key)),
     };
 };
 
@@ -253,22 +259,24 @@ const makeNumberAxis = (): TickConversion => {
     };
 };
 
-export const getXTickConversion = createSelector([getPlotByOnX], (plotByOnX): TickConversion => {
-    if (includes(CATEGORICAL_FEATURES, plotByOnX)) {
-        const categoryEnum = getLabels(plotByOnX);
-        if (categoryEnum) {
-            return makeNumberToTextConversion(categoryEnum);
+export const getXTickConversion = createSelector(
+    [getPlotByOnX, getMeasuredFeaturesDefs],
+    (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
+        const feature = find(measuredFeaturesDefs, { key: plotByOnX });
+        if (feature && feature.discrete) {
+            return makeNumberToTextConversion(feature.options);
         }
+        return makeNumberAxis();
     }
-    return makeNumberAxis();
-});
+);
 
-export const getYTickConversion = createSelector([getPlotByOnY], (plotByOnY): TickConversion => {
-    if (includes(CATEGORICAL_FEATURES, plotByOnY)) {
-        const categoryEnum = getLabels(plotByOnY);
-        if (categoryEnum) {
-            return makeNumberToTextConversion(categoryEnum);
+export const getYTickConversion = createSelector(
+    [getPlotByOnY, getMeasuredFeaturesDefs],
+    (plotByOnY, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
+        const feature = find(measuredFeaturesDefs, { key: plotByOnY });
+        if (feature && feature.discrete) {
+            return makeNumberToTextConversion(feature.options);
         }
+        return makeNumberAxis();
     }
-    return makeNumberAxis();
-});
+);

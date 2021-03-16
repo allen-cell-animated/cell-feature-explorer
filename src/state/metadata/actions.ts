@@ -4,10 +4,13 @@ import { Album } from "../types";
 import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
+    RECEIVE_CELL_FILE_INFO,
     RECEIVE_CELL_LINE_DATA,
+    RECEIVE_MEASURED_FEATURE_NAMES,
     RECEIVE_METADATA,
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
+    REQUEST_CELL_FILE_INFO,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     SET_IS_LOADING,
@@ -15,11 +18,14 @@ import {
 } from "./constants";
 import {
     CellLineDef,
-    MetaData,
+    FileInfo,
+    MetadataStateBranch,
     ReceiveAction,
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
+    ReceiveCellFileInfoAction,
     ReceiveCellLineAction,
+    ReceiveMeasuredFeaturesAction,
     RequestAction,
     SetLoadingAction,
 } from "./types";
@@ -36,23 +42,45 @@ export function receiveAvailableDatasets(
            };
        }
 
-export function receiveCellLineData(payload: CellLineDef): ReceiveCellLineAction {
+export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
     return {
         payload,
         type: RECEIVE_CELL_LINE_DATA,
     };
 }
 
-export function receiveMetadata(payload: MetaData[]): ReceiveAction {
+export function receiveFileInfoData(payload: FileInfo[]): ReceiveCellFileInfoAction {
+    return {
+        payload,
+        type: RECEIVE_CELL_FILE_INFO,
+    };
+}
+
+
+export function receiveMetadata(payload:MetadataStateBranch): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,
     };
 }
 
+
+export function receiveMeasuredFeatureNames(payload: MetadataStateBranch[]): ReceiveMeasuredFeaturesAction {
+    return {
+        payload,
+        type: RECEIVE_MEASURED_FEATURE_NAMES,
+    };
+}
+
 export function requestCellLineData(): RequestAction {
     return {
         type: REQUEST_CELL_LINE_DATA,
+    };
+}
+
+export function requestCellFileInfoData(): RequestAction {
+    return {
+        type: REQUEST_CELL_FILE_INFO,
     };
 }
 

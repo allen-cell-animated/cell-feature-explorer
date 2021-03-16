@@ -8,24 +8,25 @@ import {
 import { createSelector } from "reselect";
 
 import {
+    CELL_COUNT_KEY,
     CELL_ID_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    DOWNLOAD_URL_PREFIX,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import {
     getFileInfo,
     getProteinNames,
-    getProteinTotals,
+    getSortedCellLineDefs,
 } from "../../state/metadata/selectors";
-import { FileInfo } from "../../state/metadata/types";
+import { CellLineDef, FileInfo } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
     getDownloadConfig,
+    getDownloadRoot,
     getFiltersToExclude,
     getProteinColors,
     getSelectedGroupKeys,
@@ -57,14 +58,16 @@ const getColors = createSelector(
     });
 
 export const getInteractivePanelData = createSelector(
-    [getProteinNames, getFiltersToExclude, getProteinTotals, getColors],
-    (proteinNames, filtersToExclude, proteinTotals, proteinColors): PanelData[] => {
-        return map(proteinTotals, (total, index) => {
+    [getSortedCellLineDefs, getFiltersToExclude, getColors],
+    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+        return map(cellLines, (cellLine: CellLineDef, index: number) => {
+            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
+            const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
-                checked: !includes(filtersToExclude, proteinNames[index]),
+                checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],
-                id: proteinNames[index],
-                name: proteinNames[index],
+                id: proteinName,
+                name: proteinName,
                 total,
             };
         });
@@ -107,7 +110,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 return acc;
             }, returnArray);
         } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
-            const selectedCellIds: number[] = map(selectedGroups[downloadConfig.key], Number);
+            const selectedCellIds = selectedGroups[downloadConfig.key];
             return reduce(fileInfo, (acc, cur: FileInfo) => {
                 if (includes(selectedCellIds, cur[CELL_ID_KEY])) {
                     acc.push(convertFileInfoToAICSId(cur));
@@ -119,11 +122,12 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
 });
 
 export const createUrlFromListOfIds = createSelector(
-    [getListOfCellIdsByDownloadConfig],
-    (cellIdsToDownload): string[] => {
+    [getDownloadRoot, getListOfCellIdsByDownloadConfig],
+    (downloadRoot: string, cellIdsToDownload): string[] => {
     const chunkSize = 300;
     const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
-    return map(chunksOfIds,
-        (listOfIds) => (`${DOWNLOAD_URL_PREFIX}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`)
+    return map(
+        chunksOfIds,
+        (listOfIds) => `${downloadRoot}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`
     );
 });

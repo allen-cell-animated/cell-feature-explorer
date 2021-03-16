@@ -1,16 +1,22 @@
 import { DatasetMetaData } from "../../constants/datasets";
-import { CellLineDef, MetadataStateBranch } from "../metadata/types";
+import { CellLineDef, DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
 export interface InitialDatasetSelections {
-    defaultXAxis:string;
+    defaultXAxis: string;
     defaultYAxis: string;
+    thumbnailRoot: string;
+    downloadRoot: string;
+    volumeViewerDataRoot: string;
 }
 
 export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<DatasetMetaData[]>;
-    getCellLineData(): Promise<CellLineDef>;
-    getFeatureData(): Promise<MetadataStateBranch[]>;
+    getCellLineDefs(): Promise<CellLineDef[]>;
+    getFeatureData(): Promise<DataForPlot>;
     getAlbumData(): Promise<Album[]>;
+    getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
+    getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
+    getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
 }

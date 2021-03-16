@@ -1,11 +1,11 @@
 import {
     filter,
     pickBy,
-    uniq,
+    uniqBy,
 } from "lodash";
 import { AnyAction } from "redux";
 
-import { KMEANS_KEY } from "../../constants";
+import { CELL_ID_KEY, KMEANS_KEY } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
@@ -21,13 +21,10 @@ import {
     DESELECT_POINT,
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
-    INITIAL_PLOT_BY_ON_X,
-    INITIAL_PLOT_BY_ON_Y,
     INITIAL_SELECTED_ALBUM_ID,
     INITIAL_SELECTION_COLORS,
     OPEN_CELL_IN_3D,
     SELECT_GROUP_VIA_PLOT,
-    SELECT_POINT,
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
@@ -35,6 +32,10 @@ import {
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     SET_DATASET,
+    RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+    RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+    CLEAR_DATASET,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -42,12 +43,16 @@ import {
     ChangeDownloadConfigAction,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
+    ChangeSelectedDatasetAction,
     ChangeSelectionAction,
+    ClearDatasetAction,
     DeselectGroupOfPointsAction,
     DeselectPointAction,
     LassoOrBoxSelectAction,
+    ReceiveCellFileInfoAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectCellIn3DAction,
     SelectionStateBranch,
@@ -68,33 +73,47 @@ export const initialState = {
     filterExclude: [],
     galleryCollapsed: true,
     hoveredCardId: -1,
-    hoveredPointId: -1,
+    hoveredPointData: null,
     mousePosition: {
         pageX: 0,
         pageY: 0,
     },
     numberOfClusters: "",
-    plotByOnX: INITIAL_PLOT_BY_ON_X,
-    plotByOnY: INITIAL_PLOT_BY_ON_Y,
+    plotByOnX: "",
+    plotByOnY: "",
     proteinColors: INITIAL_COLORS,
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},
     selectedGroups: {},
     selectedPoints: [],
+    initSelectedPoints: [],
     showClusters: false,
+    thumbnailRoot: "",
+    downloadRoot: "",
+    volumeViewerDataRoot: "",
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [SET_DATASET]: {
-        accepts: (action: AnyAction): action is ChangeSelectionAction =>
+        accepts: (action: AnyAction): action is ChangeSelectedDatasetAction =>
             action.type === SET_DATASET,
-        perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => {
+        perform: (state: SelectionStateBranch, action: ChangeSelectedDatasetAction) => {
             return {
-                ...initialState,
-                dataset: action.payload,
+                ...state,
+                dataset: action.payload.dataset,
+                thumbnailRoot: action.payload.thumbnailRoot,
+                downloadRoot: action.payload.downloadRoot,
+                volumeViewerDataRoot: action.payload.volumeViewerDataRoot,
             };
         },
     },
+    [CLEAR_DATASET]: {
+        accepts: (action: AnyAction): action is ClearDatasetAction => action.type === CLEAR_DATASET,
+        perform: () => {
+            return { ...initialState }
+        }
+    },
+
     [CHANGE_AXIS]: {
         accepts: (action: AnyAction): action is SelectAxisAction => action.type === CHANGE_AXIS,
         perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
@@ -146,13 +165,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
             selectedPoints: filter(state.selectedPoints, (e) => e !== action.payload),
-        }),
-    },
-    [SELECT_POINT]: {
-        accepts: (action: AnyAction): action is SelectPointAction => action.type === SELECT_POINT,
-        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
-            ...state,
-            selectedPoints: uniq([...state.selectedPoints, action.payload]),
         }),
     },
     [DESELECT_ALL_POINTS]: {
@@ -224,7 +236,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === CHANGE_HOVERED_POINT_ID,
         perform: (state: SelectionStateBranch, action: ChangeHoveredPointAction) => ({
             ...state,
-            hoveredPointId: action.payload,
+            hoveredPointData: action.payload,
         }),
     },
     [CHANGE_HOVERED_GALLERY_CARD]: {
@@ -249,6 +261,30 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             galleryCollapsed: action.payload,
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_SELECTED_CELL]: {
+        accepts: (action: AnyAction): action is SelectPointAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
+            ...state,
+            selectedPoints: uniqBy([...state.selectedPoints, action.payload], CELL_ID_KEY),
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS]: {
+        accepts: (action: AnyAction): action is SelectArrayOfPointsAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+        perform: (state: SelectionStateBranch, action: SelectArrayOfPointsAction) => ({
+            ...state,
+            selectedPoints: uniqBy([...state.selectedPoints, ...action.payload], CELL_ID_KEY),
+        }),
+    },
+    [RECEIVE_FILE_INFO_FOR_ALBUM_CELLS]: {
+        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction =>
+            action.type === RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+        perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
+            ...state,
+            selectedAlbumFileInfo: action.payload,
         }),
     },
 };

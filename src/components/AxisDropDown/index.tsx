@@ -5,9 +5,7 @@ import {
     ActionCreator,
 } from "react-redux";
 
-import {
-    PROTEIN_NAME_KEY,
-} from "../../constants";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import { SelectAxisAction } from "../../state/selection/types";
 
 const styles = require("./style.css");
@@ -16,7 +14,7 @@ interface AxisDropDownProps {
     axisId: string;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     value: string;
-    options: string[];
+    options: MeasuredFeatureDef[];
 }
 
 const Option = Select.Option;
@@ -53,10 +51,10 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
                     {options.map((option) => {
                         return (
                             <Option
-                                value={option}
-                                key={option}
+                                value={option.key}
+                                key={option.key}
                             >
-                                {option === PROTEIN_NAME_KEY ? "Protein" : option}
+                                {option.displayName}
                             </Option>
                         );
                     })}

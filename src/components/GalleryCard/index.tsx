@@ -10,10 +10,6 @@ import {
 import React from "react";
 
 import {
-    MITOTIC_STAGE_LABELS,
-    THUMBNAIL_BASE_URL,
-} from "../../constants";
-import {
     DeselectPointAction,
     SelectCellIn3DAction,
 } from "../../state/selection/types";
@@ -25,10 +21,10 @@ interface GalleryCardProps {
     src: string;
     selected: boolean;
     downloadHref: string;
-    cellID: number;
-    mitoticStage?: number;
-    handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
+    cellID: string;
+    mitoticStage?: string;
+    handleDeselectPoint: (payload: string) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -38,7 +34,7 @@ interface GalleryCardProps {
 const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const deselectPoint = () => {
-        props.handleDeselectPoint(Number(props.cellID));
+        props.handleDeselectPoint(props.cellID);
     };
 
     const openCellin3D = () => {
@@ -89,11 +85,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         ),
     ];
 
-    let mitoticStage;
 
-    if (props.mitoticStage !== undefined) {
-        mitoticStage = MITOTIC_STAGE_LABELS[props.mitoticStage] as keyof typeof MITOTIC_STAGE_LABELS;
-    }
 
     return (
         <List.Item
@@ -119,13 +111,13 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     <Avatar
                         className={props.selected && styles.selected}
                         alt="thumbnail of microscopy image"
-                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                        src={props.src}
                     />
                     </div>
                 )}
                 description={props.cellID}
             />
-                {mitoticStage && <span className={styles.stage}>{mitoticStage}</span>}
+                {props.mitoticStage && <span className={styles.stage}>{props.mitoticStage}</span>}
                 {!props.empty &&
                         <div className={styles.actionList}>
                             {actions}

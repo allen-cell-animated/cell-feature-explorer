@@ -3,8 +3,6 @@ import { merge } from "lodash";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { createLogicMiddleware } from "redux-logic";
 
-import { BASE_API_URL } from "../constants";
-
 import { enableBatching, initialState, metadata, selection, State } from "./";
 import RequestClassToUse from "./image-dataset";
 
@@ -16,7 +14,6 @@ const reducers = {
 const logics = [...metadata.logics, ...selection.logics];
 
 const reduxLogicDependencies = {
-    baseApiUrl: BASE_API_URL,
     httpClient: axios,
     imageDataSet: RequestClassToUse(),
 };

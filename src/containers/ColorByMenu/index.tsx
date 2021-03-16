@@ -21,15 +21,12 @@ import BarChart from "../../components/BarChart";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
 import {
-    CATEGORICAL_FEATURES,
-    CATEGORY_TO_ENUM_LOOKUP,
     COLOR_BY_SELECTOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
-    NUCLEAR_VOLUME_FEATURE_NAME,
-    PROTEIN_NAME_KEY,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 
 import {
@@ -60,7 +57,7 @@ const styles = require("./style.css");
 
 const { Panel } = Collapse;
 
-interface ColorByMenuProps {
+interface PropsFromState {
     // selector props
     // clusteringAlgorithm: ClusteringTypeChoices;
     // clusteringOptions: string[];
@@ -74,10 +71,13 @@ interface ColorByMenuProps {
     selectionSetsPanelData: PanelData[];
     showClusters: boolean;
     someProteinsOff: boolean;
-    colorByMenuOptions: string[];
+    colorByMenuOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
-    // dispatch props
+    categoricalFeatures: string[];
+}
+
+interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     // handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
@@ -86,12 +86,17 @@ interface ColorByMenuProps {
     // handleClusteringToggle: ActionCreator<BoolToggleAction>;
     handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
-    // props from <App />
+}
+
+interface PropsFromApp {
+   // props from <App />
     panelKeys: string[];
     openKeys: string[];
     defaultActiveKey: string[];
     onPanelClicked: (value: string[]) => void;
 }
+
+type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 
 class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     // submenu keys of first level
@@ -99,7 +104,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
-        this.onColorBySwitchChanged = this.onColorBySwitchChanged.bind(this);
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
         // this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
         // this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
@@ -109,19 +113,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.allOnOff = this.allOnOff.bind(this);
         this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
         this.onSelectionSetDownloadButtonClicked = this.onSelectionSetDownloadButtonClicked.bind(this);
-    }
-
-    public componentDidUpdate() {
-        // const {
-        //     clusteringAlgorithm,
-        //     handleChangeClusteringNumber,
-        //     clusteringSetting,
-        //     clusteringOptions,
-        // } = this.props;
-        // if (!clusteringSetting) {
-        //     handleChangeClusteringNumber(
-        //         CLUSTERING_MAP(clusteringAlgorithm), clusteringOptions[initIndex]);
-        // }
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
@@ -153,14 +144,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             return handleFilterByProteinName([]);
         }
         handleFilterByProteinName(proteinNames);
-    }
-
-    public onColorBySwitchChanged(colorByProtein: boolean) {
-        const { handleChangeAxis } = this.props;
-        if (colorByProtein) {
-            return handleChangeAxis(COLOR_BY_SELECTOR, PROTEIN_NAME_KEY);
-        }
-        handleChangeAxis(COLOR_BY_SELECTOR, NUCLEAR_VOLUME_FEATURE_NAME);
     }
 
     public onActivePanelChange(value: string | string[]) {
@@ -269,35 +252,33 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             handleChangeAxis,
             colorForPlot,
             categoryCounts,
+            categoricalFeatures,
         } = this.props;
         return (
             <React.Fragment>
                 <Row className={styles.colorByRow}>
-                        <Col span={6}>
-                            Color by:
-                        </Col>
-                        <Col span={18}>
-                            <AxisDropDown
-                                axisId={COLOR_BY_SELECTOR}
-                                value={colorBy}
-                                options={colorByMenuOptions}
-                                handleChangeAxis={handleChangeAxis}
-                            />
-                        </Col>
+                    <Col span={6}>Color by:</Col>
+                    <Col span={18}>
+                        <AxisDropDown
+                            axisId={COLOR_BY_SELECTOR}
+                            value={colorBy}
+                            options={colorByMenuOptions}
+                            handleChangeAxis={handleChangeAxis}
+                        />
+                    </Col>
                 </Row>
-                {includes(CATEGORICAL_FEATURES, colorBy) && (
+                {includes(categoricalFeatures, colorBy) && (
                     <Row className={styles.colorByRow}>
-                        <Col span={6}/>
+                        <Col span={6} />
                         <Col span={18}>
                             {colorForPlot.map((ele, index) => {
                                 return (<ColorLegendRow
-                                    color={ele.color}
-                                    name={CATEGORY_TO_ENUM_LOOKUP[colorBy][ele.name]}
-                                    key={ele.name}
-                                    total={categoryCounts[index]}
-                                />);
-                            })
-                            }
+                                        color={ele.color}
+                                        name={ele.label}
+                                        key={ele.name}
+                                        total={categoryCounts[index]}
+                                    />);
+                            })}
                         </Col>
                     </Row>
                 )}
@@ -363,15 +344,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     }
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State): PropsFromState {
     return {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
-        // clusteringAlgorithm: selectionStateBranch.selectors.getClusteringAlgorithm(state),
-        // clusteringOptions: selectionStateBranch.selectors.getClusteringRange(state),
-        // clusteringSetting: selectionStateBranch.selectors.getClusteringSetting(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
+        categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
@@ -383,7 +362,7 @@ function mapStateToProps(state: State) {
     };
 }
 
-const dispatchToPropsMap = {
+const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     // handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
@@ -393,5 +372,7 @@ const dispatchToPropsMap = {
     // handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
     handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
 };
-
-export default connect(mapStateToProps, dispatchToPropsMap)(ColorByMenu);
+export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
+    mapStateToProps,
+    dispatchToPropsMap
+)(ColorByMenu);

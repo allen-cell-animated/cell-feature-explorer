@@ -1,16 +1,17 @@
 import { createLogic } from "redux-logic";
-import { find, remove } from "lodash";
+import { filter, find, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
-import { requestCellLineData } from "../metadata/actions";
+import { requestCellLineData, requestFeatureData } from "../metadata/actions";
 import { getDatasets } from "../metadata/selectors";
-import {
-    ReduxLogicDeps,
-} from "../types";
+import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { CHANGE_DATASET, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
+import { CHANGE_DATASET, CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, SELECT_ARRAY_OF_POINTS, SELECT_POINT, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
+import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { changeAxis } from "./actions";
+import { FileInfo } from "../metadata/types";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -33,7 +34,7 @@ const changeDatasetLogic = createLogic({
         const { action, imageDataSet, getState } = deps;
         let datasets = getDatasets(getState());
         if (!datasets.length) {
-            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET], 
+            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
             // the datasets may not have been saved in state yet
             datasets = await imageDataSet.getAvailableDatasets();
         }
@@ -44,18 +45,98 @@ const changeDatasetLogic = createLogic({
                 payload: action.payload,
             });
         }
-        imageDataSet.selectDataset(selectedDataset.manifest)
+        imageDataSet
+            .selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
-                console.log(selections);
-
+                dispatch(
+                    batchActions([
+                        changeAxis(X_AXIS_ID, selections.defaultXAxis),
+                        changeAxis(Y_AXIS_ID, selections.defaultYAxis),
+                    ])
+                );
                 dispatch(requestCellLineData());
+                dispatch(requestFeatureData());
                 dispatch({
                     type: SET_DATASET,
-                    payload: action.payload,
+                    payload: {
+                        dataset: action.payload,
+                        thumbnailRoot: selections.thumbnailRoot,
+                        downloadRoot: selections.downloadRoot,
+                        volumeViewerDataRoot: selections.volumeViewerDataRoot,
+                    },
                 });
-            done();
-        });
+                done();
+            });
     },
 });
 
-export default [syncStateWithUrl, changeDatasetLogic];
+const requestCellFileInfoForSelectedPoint = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const { action, imageDataSet } = deps;
+
+        return imageDataSet
+            .getFileInfoByCellId(action.payload.toString())
+            .then((data?: FileInfo) => {
+                if (!data) {
+                    return {}
+                }
+                return data;
+            })
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+    },
+    type: SELECT_POINT,
+});
+
+const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const { action, imageDataSet } = deps;
+
+        return imageDataSet
+            .getFileInfoByArrayOfCellIds(action.payload)
+            .then((data: (FileInfo | undefined)[]) => {
+                return filter(data);
+            })
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+    },
+    type: SELECT_ARRAY_OF_POINTS,
+});
+
+const selectAlbum = createLogic({
+    process(deps: ReduxLogicDeps) {
+        const { action, imageDataSet } = deps;
+        if (!imageDataSet.getFileInfoByArrayOfCellIds) {
+            return Promise.resolve({});
+        }
+
+        return imageDataSet
+            .getFileInfoByArrayOfCellIds(action.payload)
+            .then((data: (FileInfo | undefined)[]) => {
+                return filter(data);
+            })
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            });
+    },
+    processOptions: {
+        successType: RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    },
+    type: CHANGE_SELECTED_ALBUM,
+});
+
+export default [
+    syncStateWithUrl,
+    changeDatasetLogic,
+    requestCellFileInfoForSelectedPoint,
+    selectAlbum,
+    requestCellFileInfoForSelectedArrayOfPoints,
+];

@@ -1,11 +1,13 @@
 import {
     AGGLOMERATIVE_KEY,
+    CELL_ID_KEY,
     CLUSTER_DISTANCE_KEY,
     CLUSTER_NUMBER_KEY,
     KMEANS_KEY,
+    PROTEIN_NAME_KEY,
     SPECTRAL_KEY,
 } from "../../constants";
-import { MetadataStateBranch } from "../metadata/types";
+import { FileInfo, MetadataStateBranch } from "../metadata/types";
 
 type AGGLOMERATIVE_KEY = typeof AGGLOMERATIVE_KEY;
 type KMEANS_KEY = typeof KMEANS_KEY;
@@ -16,6 +18,10 @@ type CLUSTER_NUMBER_KEY = typeof CLUSTER_NUMBER_KEY;
 export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
 export type ClusteringTypeChoices = KMEANS_KEY | SPECTRAL_KEY | AGGLOMERATIVE_KEY;
 export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
+
+export interface CellDataArrays {
+    [key: string]: number[] | FileInfo[] | string[];
+}
 
 export interface DownloadConfig {
     key: string;
@@ -51,7 +57,7 @@ export interface SelectAxisAction {
 }
 
 export interface DeselectPointAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
@@ -61,12 +67,12 @@ export interface DeselectGroupOfPointsAction {
 }
 
 export interface  SelectPointAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
 export interface  SelectCellIn3DAction {
-    payload: number;
+    payload: string;
     type: string;
 }
 
@@ -99,8 +105,24 @@ export interface ChangeMousePositionAction {
     type: string;
 }
 
+export interface SelectedPointData {
+    [CELL_ID_KEY]: string;
+    [PROTEIN_NAME_KEY]: string;
+    thumbnailPath: string;
+}
+
 export interface ChangeHoveredPointAction {
-    payload: number;
+    payload: SelectedPointData;
+    type: string;
+}
+
+export interface ChangeSelectedDatasetAction {
+    payload: {
+        dataset: string;
+        thumbnailRoot: string;
+        downloadRoot: string;
+        volumeViewerDataRoot: string;
+    };
     type: string;
 }
 
@@ -117,4 +139,34 @@ export interface TickConversion {
 export interface ColorForPlot {
     color: string;
     name: string;
+    label: string;
+}
+
+export interface RequestFileInfoByCellIDAction {
+    payload: string;
+    type: string;
+}
+
+export interface ReceiveCellFileInfoAction {
+    payload: FileInfo;
+    type: string;
+}
+
+export interface ReceiveArrayOfPointsAction {
+    payload: FileInfo[];
+    type: string;
+}
+
+export interface SelectArrayOfPointsAction {
+    payload: string[];
+    type: string;
+}
+
+export interface SetHoveredCardAction {
+    payload: SelectedPointData;
+    type: string;
+};
+
+export interface ClearDatasetAction {
+    type: string;
 }

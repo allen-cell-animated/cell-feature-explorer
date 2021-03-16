@@ -8,7 +8,6 @@ import {
     APP_ID,
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
-    DOWNLOAD_URL_PREFIX,
     FOV_ID_KEY,
 } from "../constants";
 
@@ -56,8 +55,8 @@ export function enableBatching<S>(reducer: Reducer<S>, initialState: S): Reducer
     };
 }
 
-export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string | number): FileInfo | undefined {
-    return find(fileInfoArray, (datum: FileInfo) => Number(datum[CELL_ID_KEY]) === Number(cellId));
+export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string): FileInfo | undefined {
+    return find(fileInfoArray, (datum: FileInfo) => ((datum[CELL_ID_KEY].toString()) === cellId));
 }
 
 export function convertFileInfoToAICSId(datum: FileInfo): string {
@@ -72,10 +71,21 @@ export function convertSingleImageIdToDownloadId(id: number | string): string {
     return `C${id}`;
 }
 
-export function convertFileInfoToImgSrc(datum: FileInfo): string {
-    return `/${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
+function convertFileInfoToImgSrc(datum: FileInfo): string {
+    if (datum.thumbnailPath) {
+        return `${datum.thumbnailPath}`;
+    }
+    return `${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
 }
 
-export function formatDownloadOfSingleImage(id: string): string {
-    return`${DOWNLOAD_URL_PREFIX}&id=${id}`;
+export function formatDownloadOfSingleImage(root: string, id: string): string {
+    return`${root}&id=${id}`;
+}
+
+export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
+    if (!thumbnailRoot || !item) {
+        return "";
+    }
+    const path = convertFileInfoToImgSrc(item);
+    return `${thumbnailRoot}/${path}`;
 }

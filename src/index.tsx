@@ -27,7 +27,7 @@ pram.onChange("dataset", function notifyHostFrameOfURLChange(dataset) {
         // used the back button to get back to the landing page
         // UrlState doesn't sync actions if a query param doesn't exist, 
         // so clearing it out here 
-        store.dispatch(selection.actions.changeDataset(""));
+        store.dispatch(selection.actions.clearDataset());
     }
 });
 

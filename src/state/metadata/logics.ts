@@ -1,35 +1,40 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {
-    isEmpty,
-    keys,
-    map,
-    shuffle,
-} from "lodash";
 import { createLogic } from "redux-logic";
+import { AnyAction } from "redux";
 
-import {
-    CELL_ID_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_NAME_KEY,
-    PROTEIN_NAME_KEY,
-} from "../../constants";
 import { DatasetMetaData } from "../../constants/datasets";
-import { changeClusteringNumber, selectCellFor3DViewer, selectPoint } from "../selection/actions";
-import { CLUSTERING_MAP } from "../selection/constants";
-import { getClickedScatterPoints, getSelected3DCell } from "../selection/selectors";
-import { ChangeClusterNumberAction } from "../selection/types";
+
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveCellLineData, receiveMetadata, requestFeatureData, setLoadingText, stopLoading } from "./actions";
+import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
+
 import {
     RECEIVE_ALBUM_DATA,
-    REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
+    REQUEST_ALBUM_DATA,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { MetaData, MetadataStateBranch } from "./types";
+import { CellLineDef, DataForPlot } from "./types";
+import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
+import { selectPoint, selectCellFor3DViewer, requestCellFileInfoByArrayOfCellIds } from "../selection/actions";
+import { getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
+
+const requestCellLineDefs = createLogic({
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+        const { imageDataSet } = deps;
+
+        return imageDataSet
+            .getCellLineDefs()
+            .then((data: CellLineDef[]) => dispatch(receiveCellLineData(data)))
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            })
+            .then(() => done());
+    },
+    type: REQUEST_CELL_LINE_DATA,
+});
 
 
 const requestAvailableDatasets = createLogic({
@@ -46,81 +51,41 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
-const requestCellLineData = createLogic({
-    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
-        dispatch(setLoadingText("Loading cell line data..."));
-        return imageDataSet
-            .getCellLineData()
-            .then((data: MetadataStateBranch) => dispatch(receiveCellLineData(data)))
-            .then(() => dispatch(requestFeatureData()))
-            .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
-            })
-            .then(() => done());
-    },
-    type: REQUEST_CELL_LINE_DATA,
-});
-
 const requestFeatureDataLogic = createLogic({
-    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+    async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
+        // const state = getState();
+        const actions: AnyAction[] = [];
+        const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
+        actions.push(receiveMeasuredFeatureNames(measuredFeatureDefs));
+        
         return imageDataSet
             .getFeatureData()
-            .then((data: MetadataStateBranch[]) => {
-                const cellLineDefs = getState().metadata.cellLineDefs;
-                dispatch(stopLoading())
-                // shuffle to keep the plot from being organized in z
-                return shuffle(
-                    map(data, (datum: MetadataStateBranch) => {
-                        return {
-                            clusters: datum.clusters,
-                            file_info: {
-                                ...datum.file_info,
-                                // TODO: The following field is unnecessary but convenient.
-                                // To optimize, remove this and use selectors to get protein name via
-                                // cell line name and state.metadata.cellLineDefs
-                                [PROTEIN_NAME_KEY]:
-                                    cellLineDefs[datum.file_info[CELL_LINE_NAME_KEY]][
-                                        CELL_LINE_DEF_PROTEIN_KEY
-                                    ],
-                            },
-                            measured_features: datum.measured_features,
-                        };
-                    })
-                );
+            .then((data: DataForPlot) => {
+                actions.push(receiveMetadata(data));
+                dispatch(batchActions(actions));
+                return data;
             })
-            .then((metaData: MetaData[]): MetaData => {
-                // set the clustering options based on the dataset
-                const changeClusterNumberActions = map(
-                    metaData[0].clusters,
-                    (value, clusteringName: string): ChangeClusterNumberAction => {
-                        const initVal = keys(value)[Math.floor(keys(value).length / 2)];
-                        return changeClusteringNumber(CLUSTERING_MAP(clusteringName), initVal);
-                    }
-                );
-
-                dispatch(batchActions([...changeClusterNumberActions, receiveMetadata(metaData)]));
-                return metaData[0];
-            })
-            .then((metaDatum: MetadataStateBranch) => {
+            .then((metaDatum: DataForPlot | void) => {
+                if (!metaDatum) {
+                    return done();
+                }
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
-                const actions = [];
-
-                if (isEmpty(getClickedScatterPoints(state))) {
-                    actions.push(selectPoint(Number(metaDatum.file_info[CELL_ID_KEY])));
+                const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
+                if (selectedCellIdsFromUrls.length) {
+                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls))
+                } else {
+                    dispatch(selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
 
                 if (!getSelected3DCell(state)) {
-                    actions.push(selectCellFor3DViewer(metaDatum.file_info[CELL_ID_KEY]));	                
+                    dispatch(selectCellFor3DViewer(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
                 }
-
-                if (!isEmpty(actions)) {
-                    dispatch(batchActions(actions));
-                }
+  
+                dispatch(stopLoading());
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -148,8 +113,8 @@ const requestAlbumData = createLogic({
 });
 
 export default [
+    requestCellLineDefs,
     requestAlbumData,
-    requestCellLineData,
     requestFeatureDataLogic,
     requestAvailableDatasets,
 ];

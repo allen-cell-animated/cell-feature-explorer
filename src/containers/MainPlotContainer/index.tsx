@@ -19,7 +19,6 @@ import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
-    CATEGORICAL_FEATURES,
     CELL_ID_KEY,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
@@ -27,7 +26,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { FileInfo, RequestAction } from "../../state/metadata/types";
+import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     ChangeHoveredPointAction,
@@ -43,7 +42,6 @@ import {
     Annotation,
     State,
 } from "../../state/types";
-import { convertFileInfoToImgSrc } from "../../state/util";
 
 import {
     getScatterPlotDataArray,
@@ -57,22 +55,24 @@ const styles = require("./style.css");
 
 interface PropsFromState {
     annotations: Annotation[];
-    clickedPoints: number[];
+    categoricalFeatures: string[];
+    clickedPoints: string[];
     filtersToExclude: string[];
     galleryCollapsed: boolean;
     hoveredPointData: FileInfo | undefined;
     mousePosition: MousePosition;
     plotDataArray: any;
+    thumbnailRoot: string;
     xDropDownValue: string;
     yDropDownValue: string;
-    yDropDownOptions: string[];
-    xDropDownOptions: string[];
+    yDropDownOptions: MeasuredFeatureDef[];
+    xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
 }
 
 interface DispatchProps {
-    changeHoverCellId: ActionCreator<ChangeHoveredPointAction>;
+    changeHoveredCell: ActionCreator<ChangeHoveredPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     handleSelectPoint: ActionCreator<SelectPointAction>;
@@ -80,13 +80,15 @@ interface DispatchProps {
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
+    requestCellFileInfoData: ActionCreator<RequestAction>;
 }
 
-interface OwnProps {
+interface PropsFromApp {
+    // props from <App />
     handleSelectionToolUsed: () => void;
 }
 
-type MainPlotContainerProps = PropsFromState & DispatchProps & OwnProps;
+type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
@@ -109,10 +111,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         } = this.props;
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
-                if (includes(clickedPoints, Number(point.id))) {
-                    handleDeselectPoint(Number(point.id));
+                if (includes(clickedPoints, point.id)) {
+                    handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint(Number(point.id));
+                    handleSelectPoint(point.id);
                 }
             }
         });
@@ -124,7 +126,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         const {
             filtersToExclude,
             updateMousePosition,
-            changeHoverCellId,
+            changeHoveredCell,
         } = this.props;
         updateMousePosition({
             pageX: event.pageX,
@@ -133,9 +135,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
-                    changeHoverCellId(Number(point.id));
+                    changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
                 } else {
-                    changeHoverCellId(-1);
+                    changeHoveredCell(null);
                 }
             }
         });
@@ -143,11 +145,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public onPlotUnhovered({relatedTarget}: any) {
         const {
-            changeHoverCellId,
+            changeHoveredCell,
         } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
-            changeHoverCellId(-1);
+            changeHoveredCell(null);
         }
     }
 
@@ -167,16 +169,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public renderPopover() {
-        const {
-            hoveredPointData,
-            galleryCollapsed,
-        } = this.props;
-        return (hoveredPointData && galleryCollapsed &&
-            (
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        return (
+            hoveredPointData &&
+            galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
-                    src={convertFileInfoToImgSrc(hoveredPointData)}
+                    src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
                 />
             )
         );
@@ -194,8 +194,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             handleChangeAxis,
             yTickConversion,
             xTickConversion,
+            categoricalFeatures,
         } = this.props;
-
         if (plotDataArray.length === 0) {
             return null;
         }
@@ -249,12 +249,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
                         onPlotHovered={this.onPlotHovered}
-                        xAxisType={
-                            includes(CATEGORICAL_FEATURES, xDropDownValue) ? "array" : "auto"
-                        }
-                        yAxisType={
-                            includes(CATEGORICAL_FEATURES, yDropDownValue) ? "array" : "auto"
-                        }
+                        xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
+                        yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
                     />
@@ -268,11 +264,13 @@ function mapStateToProps(state: State): PropsFromState {
     return {
         annotations: selectionStateBranch.selectors.getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
+        categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
+        thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
         xTickConversion: getXTickConversion(state),
@@ -283,15 +281,16 @@ function mapStateToProps(state: State): PropsFromState {
 }
 
 const dispatchToPropsMap: DispatchProps = {
-    changeHoverCellId: selectionStateBranch.actions.changeHoveredPoint,
+    changeHoveredCell: selectionStateBranch.actions.changeHoveredPoint,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
+    requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };
 
-export default connect<PropsFromState, DispatchProps, OwnProps, State>
+export default connect<PropsFromState, DispatchProps, PropsFromApp, State>
     (mapStateToProps, dispatchToPropsMap)(MainPlotContainer);

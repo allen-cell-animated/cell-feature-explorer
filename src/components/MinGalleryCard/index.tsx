@@ -4,7 +4,6 @@ import {
 } from "antd";
 import React from "react";
 
-import { THUMBNAIL_BASE_URL } from "../../constants";
 import {
     DeselectPointAction,
     SelectCellIn3DAction,
@@ -17,9 +16,9 @@ interface GalleryCardProps {
     src: string;
     selected: boolean;
     downloadHref: string;
-    cellID: number;
-    handleDeselectPoint: (payload: number) => DeselectPointAction;
-    handleOpenIn3D: (payload: number) => SelectCellIn3DAction;
+    cellID: string;
+    handleDeselectPoint: (payload: string) => DeselectPointAction;
+    handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -52,7 +51,7 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
                     <Avatar
                         className={props.selected && styles.selected}
                         alt="thumbnail of microscopy image"
-                        src={`${THUMBNAIL_BASE_URL}${props.src}`}
+                        src={props.src}
                     />
                     </div>
                 )}

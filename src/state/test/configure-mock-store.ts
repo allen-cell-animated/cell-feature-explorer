@@ -15,7 +15,6 @@ import {
 } from "../";
 
 export interface ReduxLogicDependencies {
-    baseApiUrl: string;
     httpClient: {
         get: SinonStub
     };

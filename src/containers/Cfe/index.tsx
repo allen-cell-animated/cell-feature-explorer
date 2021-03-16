@@ -18,6 +18,7 @@ import {
 } from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
+import { FileInfo } from "../../state/metadata/types";
 
 const {
     Content,
@@ -36,6 +37,10 @@ interface CfeProps {
     selected3DCellStructureName: string;
     selected3DCellProteinName: string;
     toggleGallery: ActionCreator<BoolToggleAction>;
+    selected3DCellFileInfo: FileInfo;
+    thumbnailRoot: string;
+    downloadRoot: string;
+    volumeViewerDataRoot: string;
 }
 
 class Cfe extends React.Component<CfeProps, {}> {
@@ -64,11 +69,12 @@ class Cfe extends React.Component<CfeProps, {}> {
         const {
             galleryCollapsed,
             selected3DCell,
-            selected3DCellFOV,
-            selected3DCellCellLine,
+            downloadRoot,
+            volumeViewerDataRoot,
             selected3DCellProteinName,
             selected3DCellStructureName,
             toggleGallery,
+            selected3DCellFileInfo,
         } = this.props;
 
         const {
@@ -138,14 +144,19 @@ class Cfe extends React.Component<CfeProps, {}> {
                             )}
                         </Header>
                         <CellViewer
-                            cellId={selected3DCell}
-                            fovId={selected3DCellFOV}
-                            cellLineName={selected3DCellCellLine}
+                            {...selected3DCellFileInfo}
+                            volumeViewerDataRoot={volumeViewerDataRoot}
                             fovDownloadHref={formatDownloadOfSingleImage(
-                                convertFullFieldIdToDownloadId(selected3DCellFOV)
+                                downloadRoot,
+                                convertFullFieldIdToDownloadId(
+                                    selected3DCellFileInfo ? selected3DCellFileInfo.FOVId : ""
+                                )
                             )}
                             cellDownloadHref={formatDownloadOfSingleImage(
-                                convertSingleImageIdToDownloadId(selected3DCell)
+                                downloadRoot,
+                                convertSingleImageIdToDownloadId(
+                                    selected3DCellFileInfo ? selected3DCellFileInfo.CellId : ""
+                                )
                             )}
                         />
                     </div>
@@ -160,10 +171,18 @@ function mapStateToProps(state: State) {
     return {
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
+        selected3DCellFileInfo: selectionStateBranch.selectors.getSelected3DCellFileInfo(state),
         selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
         selected3DCellFOV: selectionStateBranch.selectors.getSelected3DCellFOV(state),
-        selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(state),
-        selected3DCellStructureName: selectionStateBranch.selectors.getSelected3DCellLabeledStructure(state),
+        selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(
+            state
+        ),
+        selected3DCellStructureName: selectionStateBranch.selectors.getSelected3DCellLabeledStructure(
+            state
+        ),
+        thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
+        volumeViewerDataRoot: selectionStateBranch.selectors.getVolumeViewerDataRoot(state),
+        downloadRoot: selectionStateBranch.selectors.getDownloadRoot(state),
     };
 }
 

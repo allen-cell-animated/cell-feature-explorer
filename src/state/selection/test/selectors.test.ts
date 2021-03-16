@@ -15,12 +15,9 @@ import {
 } from "../selectors";
 
 describe("Selection selectors", () => {
-    const cellIDs = ["AICS-1_1_1", "AICS-2_2_2", "AICS-3_3_3", "AICS-4_4_4"];
-    const proteinNames = ["protein1", "protein2", "protein1", "protein2"];
-    const feature1Values = [1, 4, 2, 1];
-    const feature2Values = [2, 4, 2, 4];
 
-    const newMockState = mockState(cellIDs, proteinNames, feature1Values, feature2Values);
+
+    const newMockState = mockState;
     describe("getXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
 
@@ -28,7 +25,7 @@ describe("Selection selectors", () => {
                     ...newMockState,
                     selection: {
                         ...newMockState.selection,
-                        plotByOnX: "feature1",
+                        plotByOnX: "apical-proximity",
                     },
                 };
                 const result: number[] = getXValues(state);
@@ -36,9 +33,12 @@ describe("Selection selectors", () => {
                     ...state,
                     selection: {
                         ...newMockState.selection,
-                        plotByOnX: "feature2",
+                        plotByOnX: "cell-segmentation",
                     },
                 };
+                const feature1Values = [-0.25868651080317, -0.1];
+                const feature2Values = [1, 0];
+
                 const newResult: number[] = getXValues(newState);
                 expect(result).to.deep.equal(feature1Values);
                 expect(newResult).to.deep.equal(feature2Values);
@@ -52,7 +52,7 @@ describe("Selection selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnY: "feature1",
+                    plotByOnY: "apical-proximity",
                 },
             };
             const result: number[] = getYValues(state);
@@ -60,7 +60,7 @@ describe("Selection selectors", () => {
                 ...state,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnY: "feature2",
+                    plotByOnY: "cell-segmentation",
                 },
             };
             const newResult: number[] = getYValues(newState);
@@ -124,8 +124,8 @@ describe("Selection selectors", () => {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnX: "feature1",
-                    plotByOnY: "feature2",
+                    plotByOnX: "apical-proximity",
+                    plotByOnY: "apical-proximity",
                     selectedPoints: [1, 2],
                 },
             };
