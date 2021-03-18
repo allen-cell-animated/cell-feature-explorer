@@ -2,6 +2,7 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
 
 import {
+    CLEAR_DATASET_VALUES,
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
@@ -34,13 +35,19 @@ export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };
 }
 export function receiveAvailableDatasets(
-           payload: DatasetMetaData[]
-       ): ReceiveAvailableDatasetsAction {
-           return {
-               payload,
-               type: RECEIVE_AVAILABLE_DATASETS,
-           };
-       }
+    payload: DatasetMetaData[]
+): ReceiveAvailableDatasetsAction {
+    return {
+        payload,
+        type: RECEIVE_AVAILABLE_DATASETS,
+    };
+}
+
+export function clearDatasetValues() {
+    return {
+        type: CLEAR_DATASET_VALUES,
+    };
+}
 
 export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
     return {
@@ -56,16 +63,16 @@ export function receiveFileInfoData(payload: FileInfo[]): ReceiveCellFileInfoAct
     };
 }
 
-
-export function receiveMetadata(payload:MetadataStateBranch): ReceiveAction {
+export function receiveMetadata(payload: MetadataStateBranch): ReceiveAction {
     return {
         payload,
         type: RECEIVE_METADATA,
     };
 }
 
-
-export function receiveMeasuredFeatureNames(payload: MetadataStateBranch[]): ReceiveMeasuredFeaturesAction {
+export function receiveMeasuredFeatureNames(
+    payload: MetadataStateBranch[]
+): ReceiveMeasuredFeaturesAction {
     return {
         payload,
         type: RECEIVE_MEASURED_FEATURE_NAMES,
