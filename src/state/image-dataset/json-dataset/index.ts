@@ -18,11 +18,7 @@ import {
     MappingOfMeasuredValuesArrays,
     MetadataStateBranch,
 } from "../../metadata/types";
-import {
-    CELL_FEATURE_ANALYSIS_FILENAME,
-    FEATURE_DEFS_FILENAME,
-    ALBUMS_FILENAME,
-} from "../constants";
+
 import { ImageDataset } from "../types";
 
 class JsonRequest implements ImageDataset {
@@ -30,13 +26,15 @@ class JsonRequest implements ImageDataset {
     private labkeyCellDefName = "CellLineId/Name";
     private labkeyStructureKey = "StructureId/Name";
     private labkeyProteinKey = "ProteinId/DisplayName";
-    private featureDefs: string;
-    private featuresData: string;
-    private cellLineData: string;
+    private albumPath: string;
+    private featureDefsPath: string;
+    private featuresDataPath: string;
+    private cellLineDataPath: string;
     private thumbnailRoot: string;
     private downloadRoot: string;
     private volumeViewerDataRoot: string;
-    private featuresDisplayOrder: string;
+    private featuresDisplayOrder: string[];
+    private featuresDataOrder: string[];
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
@@ -44,13 +42,15 @@ class JsonRequest implements ImageDataset {
     private featureDefinitions: any[] = [];
 
     constructor() {
-        this.featureDefs = "";
-        this.featuresData = "";
-        this.cellLineData = "";
+        this.albumPath = "";
+        this.featureDefsPath = "";
+        this.featuresDataPath = "";
+        this.cellLineDataPath = "";
         this.thumbnailRoot = "";
         this.downloadRoot = "";
         this.volumeViewerDataRoot = "";
-        this.featuresDisplayOrder = "";
+        this.featuresDisplayOrder = [];
+        this.featuresDataOrder = [];
         this.databaseDirectory = "data";
         this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this.
     }
@@ -65,13 +65,14 @@ class JsonRequest implements ImageDataset {
         return axios.get(`${dir}/dataset.json`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.databaseDirectory = dir;
-            this.featureDefs = data.featureDefs;
-            this.featuresData = data.featuresData;
-            this.cellLineData = data.cellLineData;
+            this.featureDefsPath = data.featureDefsPath;
+            this.featuresDataPath = data.featuresDataPath;
+            this.cellLineDataPath = data.cellLineDataPath;
             this.thumbnailRoot = data.thumbnailRoot;
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
             this.featuresDisplayOrder = data.featuresDisplayOrder;
+            this.albumPath = data.albumPath;
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
@@ -89,7 +90,7 @@ class JsonRequest implements ImageDataset {
     };
 
     public getCellLineDefs = () => {
-        return this.getJson(this.cellLineData).then((data) => {
+        return this.getJson(this.cellLineDataPath).then((data) => {
             const cellLines = map(data, (datum: MetadataStateBranch) => {
                 return {
                     [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
@@ -104,14 +105,13 @@ class JsonRequest implements ImageDataset {
 
     public getMeasuredFeatureDefs = () => {
         // make sure we have the feature defs first.
-        return this.getJson(FEATURE_DEFS_FILENAME).then((featureDefs) => {
+        return this.getJson(this.featureDefsPath).then((featureDefs) => {
             this.featureDefinitions = featureDefs;
             return featureDefs;
         });
     };
 
     public getFeatureData = () => {
-
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
         const dataMappedByMeasuredFeatures = featureKeys.reduce((acc, featureName: string) => {
             const initArray: number[] = [];
@@ -121,7 +121,7 @@ class JsonRequest implements ImageDataset {
         const proteinArray: string[] = [];
         const thumbnails: string[] = [];
         const ids: string[] = [];
-        return this.getJson(CELL_FEATURE_ANALYSIS_FILENAME).then((featureDataArray) => {
+        return this.getJson(this.featuresDataPath).then((featureDataArray) => {
             featureDataArray.forEach((el: any) => {
                 // FILE INFO
                 // number of file info property names must be same as number of file_info entries in data
@@ -164,7 +164,7 @@ class JsonRequest implements ImageDataset {
                     [PROTEIN_NAME_KEY]: proteinArray,
                     thumbnailPaths: thumbnails,
                     [ARRAY_OF_CELL_IDS_KEY]: ids,
-                }
+                },
             };
         });
     };
@@ -172,7 +172,11 @@ class JsonRequest implements ImageDataset {
         const fileInfo = this.fileInfo[cellId];
         // wrapped to match the return type on the database implementation
         // convert ides to string to match front end data structure where all ids are strings
-        return Promise.resolve({ ...fileInfo, CellId: fileInfo.CellId.toString(), FOVId: fileInfo.FOVId.toString()});
+        return Promise.resolve({
+            ...fileInfo,
+            CellId: fileInfo.CellId.toString(),
+            FOVId: fileInfo.FOVId.toString(),
+        });
     };
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
@@ -184,7 +188,7 @@ class JsonRequest implements ImageDataset {
     };
 
     public getAlbumData = () => {
-        return this.getJson(ALBUMS_FILENAME);
+        return this.getJson(this.albumPath);
     };
 }
 
