@@ -44,6 +44,7 @@ export interface Annotation {
     hovered: boolean;
     fovID: string;
     pointIndex: number;
+    thumbnailPath: string;
     x: number;
     y: number;
 }

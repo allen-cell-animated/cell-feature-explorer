@@ -277,7 +277,8 @@ export const getAnnotations = createSelector(
         if (isEmpty(dataForPlot)) {
             return [];
         }
-        return clickedCellsFileInfo.map((data) => {
+        const initAcc: Annotation[] = [];
+        return clickedCellsFileInfo.reduce((acc, data) => {
             const cellID = data[CELL_ID_KEY];
             const fovID = data[FOV_ID_KEY] || "";
             const cellLine = data[CELL_LINE_NAME_KEY] || "";
@@ -285,20 +286,23 @@ export const getAnnotations = createSelector(
 
             const cellIds = dataForPlot.labels[ARRAY_OF_CELL_IDS_KEY];
             const pointIndex = findIndex(cellIds, (id) => id === cellID);
-            const x = dataForPlot.values[xAxis][pointIndex];
-            const y = dataForPlot.values[yAxis][pointIndex];
+            if (pointIndex > 0) {
+                const x = dataForPlot.values[xAxis][pointIndex];
+                const y = dataForPlot.values[yAxis][pointIndex];
 
-            return {
-                cellID,
-                cellLine,
-                fovID,
-                hovered: cellID === currentHoveredCellId,
-                pointIndex,
-                x,
-                y,
-                thumbnailPath,
-            };
-        });
+                acc.push({
+                    cellID,
+                    cellLine,
+                    fovID,
+                    hovered: cellID === currentHoveredCellId,
+                    pointIndex,
+                    x,
+                    y,
+                    thumbnailPath,
+                });
+            }
+            return acc;
+        }, initAcc);
     }
 );
 
