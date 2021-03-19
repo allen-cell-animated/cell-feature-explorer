@@ -286,7 +286,7 @@ export const getAnnotations = createSelector(
 
             const cellIds = dataForPlot.labels[ARRAY_OF_CELL_IDS_KEY];
             const pointIndex = findIndex(cellIds, (id) => id === cellID);
-            if (pointIndex > 0) {
+            if (pointIndex >= 0) {
                 const x = dataForPlot.values[xAxis][pointIndex];
                 const y = dataForPlot.values[yAxis][pointIndex];
 
