@@ -209,6 +209,9 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public getAlbumData = () => {
+        if (!this.albumPath) {
+            return Promise.resolve([])
+        }
         return this.getCollection(this.albumPath).then((snapshot: QuerySnapshot) => {
             const dataset: Album[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {

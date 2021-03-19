@@ -188,6 +188,9 @@ class JsonRequest implements ImageDataset {
     };
 
     public getAlbumData = () => {
+        if (!this.albumPath) {
+            return Promise.resolve([]);
+        }
         return this.getJson(this.albumPath);
     };
 }
