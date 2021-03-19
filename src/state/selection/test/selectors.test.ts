@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { mockState } from "../../test/mocks";
+import { mockState, selectedCellFileInfo } from "../../test/mocks";
 import {
     Annotation,
     NumberOrString,
@@ -126,7 +126,7 @@ describe("Selection selectors", () => {
                     ...newMockState.selection,
                     plotByOnX: "apical-proximity",
                     plotByOnY: "apical-proximity",
-                    selectedPoints: [1, 2],
+                    selectedPoints: selectedCellFileInfo,
                 },
             };
             const result: Annotation[] = getAnnotations(state);
