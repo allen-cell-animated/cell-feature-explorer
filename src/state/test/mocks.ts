@@ -10,26 +10,37 @@ import {
     FOV_ID_KEY,
     ARRAY_OF_CELL_IDS_KEY,
     CELL_COUNT_KEY,
+    FOV_THUMBNAIL_PATH,
+    FOV_VOLUME_VIEWER_PATH,
+    THUMBNAIL_PATH,
+    VOLUME_VIEWER_PATH,
 } from "../../constants";
+import { FileInfo } from "../metadata/types";
 import {
     INITIAL_COLOR_BY,
     INITIAL_COLORS,
 } from "../selection/constants";
 
-export const selectedCellFileInfo = [
+export const selectedCellFileInfo: FileInfo[] = [
     {
-        [CELL_ID_KEY]: 1,
+        [CELL_ID_KEY]: "1",
         [CELL_LINE_NAME_KEY]: "AICS-57",
-        [FOV_ID_KEY]: 12762,
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [FOV_ID_KEY]: "12762",
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "path",
+        [FOV_VOLUME_VIEWER_PATH]: "path",
+        [THUMBNAIL_PATH]: "path",
+        [VOLUME_VIEWER_PATH]: "path",
     },
     {
-        [CELL_ID_KEY]: 2,
+        [CELL_ID_KEY]: "2",
         [CELL_LINE_NAME_KEY]: "AICS-57",
-        [FOV_ID_KEY]: 12762,
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [FOV_ID_KEY]: "12762",
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "path",
+        [FOV_VOLUME_VIEWER_PATH]: "path",
+        [THUMBNAIL_PATH]: "path",
+        [VOLUME_VIEWER_PATH]: "path",
     },
 ];
 
@@ -42,22 +53,29 @@ const cellLineDefs = [
         [CELL_COUNT_KEY]: 3470,
     },
 ];
-const fileInfo = [
+const fileInfo: FileInfo[] = [
     {
-        [CELL_ID_KEY]: 1,
+        [CELL_ID_KEY]: "1",
         [CELL_LINE_NAME_KEY]: "AICS-57",
-        [FOV_ID_KEY]: 12762,
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [FOV_ID_KEY]: "12762",
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "path",
+        [FOV_VOLUME_VIEWER_PATH]: "path",
+        [THUMBNAIL_PATH]: "path",
+        [VOLUME_VIEWER_PATH]: "path",
     },
     {
-        [CELL_ID_KEY]: 2,
+        [CELL_ID_KEY]: "2",
         [CELL_LINE_NAME_KEY]: "AICS-57",
-        [FOV_ID_KEY]: 12762,
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
+        [FOV_ID_KEY]: "12762",
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "path",
+        [FOV_VOLUME_VIEWER_PATH]: "path",
+        [THUMBNAIL_PATH]: "path",
+        [VOLUME_VIEWER_PATH]: "path",
     },
 ];
+
 const measuredFeaturesDefs = [
     {
         discrete: false,
