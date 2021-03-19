@@ -274,7 +274,7 @@ export const getAnnotations = createSelector(
         yAxis,
         currentHoveredCellId
     ): Annotation[] => {
-        if (isEmpty(dataForPlot)) {
+        if (isEmpty(dataForPlot.values) || isEmpty(dataForPlot.labels)) {
             return [];
         }
         const initAcc: Annotation[] = [];
