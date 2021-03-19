@@ -11,6 +11,7 @@ import { APP_ID } from "./constants";
 import App from "./containers/App";
 import {
     createReduxStore,
+    metadata,
     selection,
 } from "./state";
 import { UrlState } from "./util";
@@ -27,6 +28,7 @@ pram.onChange("dataset", function notifyHostFrameOfURLChange(dataset) {
         // used the back button to get back to the landing page
         // UrlState doesn't sync actions if a query param doesn't exist, 
         // so clearing it out here 
+        store.dispatch(metadata.actions.clearDatasetValues());
         store.dispatch(selection.actions.clearDataset());
     }
 });

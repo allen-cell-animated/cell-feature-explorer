@@ -116,3 +116,7 @@ export interface SetLoadingAction {
     payload: boolean | string;
     type: string;
 }
+
+export interface ClearAction {
+    type: string;
+}

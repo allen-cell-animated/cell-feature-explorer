@@ -4,6 +4,7 @@ import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
+    CLEAR_DATASET_VALUES,
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
@@ -20,6 +21,7 @@ import {
     ReceiveCellLineAction,
     SetLoadingAction,
     ReceiveMeasuredFeaturesAction,
+    ClearAction,
 } from "./types";
 
 export const initialState = {
@@ -44,6 +46,18 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,
+        }),
+    },
+    [CLEAR_DATASET_VALUES]: {
+        accepts: (action: AnyAction): action is ClearAction => action.type === CLEAR_DATASET_VALUES,
+        perform: (state: MetadataStateBranch) => ({
+            ...state,
+            cellFileInfo: initialState.cellFileInfo,
+            cellLineDefs: initialState.cellLineDefs,
+            isLoading: initialState.isLoading,
+            measuredFeatureNames: initialState.measuredFeatureNames,
+            featureData: initialState.featureData,
+            measuredFeaturesDefs: initialState.measuredFeaturesDefs,
         }),
     },
     [RECEIVE_AVAILABLE_DATASETS]: {

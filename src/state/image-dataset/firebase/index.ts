@@ -16,9 +16,7 @@ import {
 import { DatasetMetaData } from "../../../constants/datasets";
 import { CellLineDef, FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
-import {
-    ALBUMS_FILENAME,
-} from "../constants";
+
 import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
@@ -27,7 +25,7 @@ const CELL_FEATURES_COLLECTION = "feature-definitions";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
-    private featuresData: string;
+    private featuresDataPath: string;
     private cellLineDataPath: string;
     private thumbnailRoot: string;
     private downloadRoot: string;
@@ -35,8 +33,10 @@ class FirebaseRequest implements ImageDataset {
     private featuresDisplayOrder: string[];
     private datasetId: string;
     private fileInfoPath: string;
+    private featuresDataOrder: string[];
+    private albumPath: string;
     constructor() {
-        this.featuresData = "";
+        this.featuresDataPath = "";
         this.cellLineDataPath = "";
         this.thumbnailRoot = "";
         this.downloadRoot = "";
@@ -44,6 +44,8 @@ class FirebaseRequest implements ImageDataset {
         this.featuresDisplayOrder = [];
         this.fileInfoPath = "";
         this.datasetId = "";
+        this.featuresDataOrder = [];
+        this.albumPath = "";
         this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
     }
 
@@ -81,13 +83,15 @@ class FirebaseRequest implements ImageDataset {
 
     public selectDataset = (ref: string) => {
         return this.getManifest(ref).then((data) => {
-            this.featuresData = data.featuresData;
+            this.featuresDataPath = data.featuresDataPath;
             this.thumbnailRoot = data.thumbnailRoot;
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
             this.featuresDisplayOrder = data.featuresDisplayOrder;
             this.cellLineDataPath = data.cellLineDataPath;
             this.fileInfoPath = data.fileInfoPath;
+            this.featuresDataOrder = data.featuresDataOrder;
+            this.albumPath = data.albumPath;
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
@@ -119,7 +123,7 @@ class FirebaseRequest implements ImageDataset {
     public getMeasuredFeatureDefs = async () => {
         const displayOrder = [...this.featuresDisplayOrder];
         // TODO: request rest of features, currently only requesting non shape mode features
-        // Firebase limits the array to ten items, so will need to make multiple requests for 
+        // Firebase limits the array to ten items, so will need to make multiple requests for
         // more features
         const batchToRequest = displayOrder.splice(0, 10);
         const snapshot = await firestore
@@ -135,7 +139,7 @@ class FirebaseRequest implements ImageDataset {
 
     public getFeatureData = () => {
         return axios
-            .get(this.featuresData)
+            .get(this.featuresDataPath)
             .then((metadata: AxiosResponse) => metadata.data)
             .then((featureData) => {
                 const dataMappedByMeasuredFeatures = this.featuresDisplayOrder.reduce(
@@ -153,7 +157,7 @@ class FirebaseRequest implements ImageDataset {
                     const datum = featureData[index];
                     datum.f.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
-                            this.featuresDisplayOrder[index]
+                            this.featuresDataOrder[index]
                         ] as number[];
                         arrayOfValues.push(value);
                     }, {});
@@ -164,11 +168,10 @@ class FirebaseRequest implements ImageDataset {
                 return {
                     values: dataMappedByMeasuredFeatures,
                     labels: {
-
                         [PROTEIN_NAME_KEY]: proteinArray,
                         thumbnailPaths: thumbnails,
                         cellIds: ids,
-                    }
+                    },
                 };
             });
     };
@@ -180,36 +183,36 @@ class FirebaseRequest implements ImageDataset {
                 return;
             }
             return {
-                ...data, 
+                ...data,
                 CellId: data.CellId.toString(),
                 FOVId: data.FOVId.toString(),
-            }
-        })
-
+            };
+        });
     };
 
     public getFileInfoByArrayOfCellIds = (cellIds: string[]) => {
         return Promise.all(
             cellIds.map((id: string) => {
-                return this.getDoc(`${this.fileInfoPath}/${id}`).then(
-                    (doc) => {
-                        const data = doc.data() as FileInfo;
-                        if (!data) {
-                            return;
-                        }
-                        return {
-                            ...data,
-                            CellId: data.CellId.toString(),
-                            FOVId: data.FOVId.toString(),
-                        };
+                return this.getDoc(`${this.fileInfoPath}/${id}`).then((doc) => {
+                    const data = doc.data() as FileInfo;
+                    if (!data) {
+                        return;
                     }
-                );
+                    return {
+                        ...data,
+                        CellId: data.CellId.toString(),
+                        FOVId: data.FOVId.toString(),
+                    };
+                });
             })
         );
     };
 
     public getAlbumData = () => {
-        return this.getCollection(ALBUMS_FILENAME).then((snapshot: QuerySnapshot) => {
+        if (!this.albumPath) {
+            return Promise.resolve([])
+        }
+        return this.getCollection(this.albumPath).then((snapshot: QuerySnapshot) => {
             const dataset: Album[] = [];
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 dataset.push(doc.data() as Album);

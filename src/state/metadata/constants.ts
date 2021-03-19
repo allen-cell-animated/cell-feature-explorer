@@ -13,3 +13,4 @@ export const REQUEST_AVAILABLE_DATASETS = makeConstant("metadata", "REQUEST_AVAI
 export const RECEIVE_MEASURED_FEATURE_NAMES = makeConstant("metadata", "receive-measured-feature-names");
 export const REQUEST_CELL_FILE_INFO = makeConstant("metadata", "request-cell-file-info");
 export const RECEIVE_CELL_FILE_INFO = makeConstant("metadata", "receive-cell-file-info");
+export const CLEAR_DATASET_VALUES = makeConstant("metadata", "CLEAR_DATASET_VALUES");
