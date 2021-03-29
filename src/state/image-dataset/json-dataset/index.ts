@@ -116,6 +116,9 @@ class JsonRequest implements ImageDataset {
 
     public getFeatureData = () => {
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
+        if (!this.featuresDisplayOrder || this.featuresDisplayOrder.length === 0) {
+            this.featuresDisplayOrder = featureKeys;
+        }
         const dataMappedByMeasuredFeatures = featureKeys.reduce((acc, featureName: string) => {
             const initArray: number[] = [];
             acc[featureName] = initArray;
