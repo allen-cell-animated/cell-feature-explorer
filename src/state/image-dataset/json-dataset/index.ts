@@ -62,8 +62,8 @@ class JsonRequest implements ImageDataset {
             .then((metadata: AxiosResponse) => metadata.data);
     };
 
-    public selectDataset = (dir: string) => {
-        return axios.get(`${dir}/dataset.json`).then((metadata: AxiosResponse) => {
+    public selectDataset = (manifestPath: string) => {
+        return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.featureDefsPath = data.featureDefsPath;
             this.featuresDataPath = data.featuresDataPath;
