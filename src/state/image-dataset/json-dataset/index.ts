@@ -162,6 +162,11 @@ class JsonRequest implements ImageDataset {
                 const cellLine = find(this.cellLines, {
                     [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
                 });
+                if (!cellLine) {
+                    throw new Error(`Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`);
+                }
+                // augment file info with protein name
+                fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
 
                 el.features.forEach((value: number, index: number) => {
                     const arrayOfValues = dataMappedByMeasuredFeatures[
