@@ -55,7 +55,7 @@ class JsonRequest implements ImageDataset {
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
         this.listOfDatasetsDoc =
-            "https://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
+            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
     }
 
     public getAvailableDatasets = () => {
