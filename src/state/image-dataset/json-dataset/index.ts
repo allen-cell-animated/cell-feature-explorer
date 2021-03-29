@@ -13,6 +13,11 @@ import {
     CELL_LINE_NAME_KEY,
 } from "../../../constants";
 import {
+    CELL_LINE_DEF_NAME_JSON_KEY,
+    CELL_LINE_DEF_PROTEIN_JSON_KEY,
+    CELL_LINE_DEF_STRUCTURE_JSON_KEY,
+} from "./constants";
+import {
     CellLineDef,
     FileInfo,
     MappingOfMeasuredValuesArrays,
@@ -91,9 +96,9 @@ class JsonRequest implements ImageDataset {
         return this.getJson(this.cellLineDataPath).then((data) => {
             const cellLines = map(data, (datum: MetadataStateBranch) => {
                 return {
-                    [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
-                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                    [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                    [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
+                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
+                    [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
                 };
             });
             this.cellLines = cellLines;
