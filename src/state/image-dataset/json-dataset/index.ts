@@ -22,7 +22,6 @@ import {
 import { ImageDataset } from "../types";
 
 class JsonRequest implements ImageDataset {
-    databaseDirectory: string;
     private labkeyCellDefName = "CellLineId/Name";
     private labkeyStructureKey = "StructureId/Name";
     private labkeyProteinKey = "ProteinId/DisplayName";
@@ -51,7 +50,6 @@ class JsonRequest implements ImageDataset {
         this.volumeViewerDataRoot = "";
         this.featuresDisplayOrder = [];
         this.featuresDataOrder = [];
-        this.databaseDirectory = "data";
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
         this.listOfDatasetsDoc =
@@ -67,7 +65,6 @@ class JsonRequest implements ImageDataset {
     public selectDataset = (dir: string) => {
         return axios.get(`${dir}/dataset.json`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
-            this.databaseDirectory = dir;
             this.featureDefsPath = data.featureDefsPath;
             this.featuresDataPath = data.featuresDataPath;
             this.cellLineDataPath = data.cellLineDataPath;
@@ -87,9 +84,7 @@ class JsonRequest implements ImageDataset {
     };
 
     private getJson = (docName: string) => {
-        return axios
-            .get(`${this.databaseDirectory}/${docName}.json`)
-            .then((metadata: AxiosResponse) => metadata.data);
+        return axios.get(`${docName}`).then((metadata: AxiosResponse) => metadata.data);
     };
 
     public getCellLineDefs = () => {
