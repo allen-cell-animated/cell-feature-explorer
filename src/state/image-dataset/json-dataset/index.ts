@@ -96,18 +96,29 @@ class JsonRequest implements ImageDataset {
             return Promise.resolve(this.cellLines);
         }
 
-        return this.getJson(this.cellLineDataPath).then((data) => {
-            const cellLines = map(data, (datum: MetadataStateBranch) => {
-                return {
-                    [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
-                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
-                    [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
-                    [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
-                };
+        return this.getJson(this.cellLineDataPath)
+            .then((data) => {
+                const cellLines = map(data, (datum: MetadataStateBranch) => {
+                    return {
+                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
+                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
+                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
+                    };
+                });
+                this.cellLines = cellLines;
+                return cellLines;
+            })
+            .then(() => {
+                this.getMeasuredFeatureDefs();
+            })
+            .then(() => {
+                // filter cell lines and return subset
+                this.cellLines = this.cellLines.filter(
+                    (cellLine) => (cellLine[CELL_COUNT_KEY] as number) > 0
+                );
+                return this.cellLines;
             });
-            this.cellLines = cellLines;
-            return cellLines;
-        });
     };
 
     public getMeasuredFeatureDefs = () => {
@@ -167,6 +178,12 @@ class JsonRequest implements ImageDataset {
                 }
                 // augment file info with protein name
                 fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
+                // increment count in cell line
+                if (cellLine[CELL_COUNT_KEY] !== undefined) {
+                    (cellLine[CELL_COUNT_KEY] as number)++;
+                } else {
+                    cellLine[CELL_COUNT_KEY] = 1;
+                }
 
                 el.features.forEach((value: number, index: number) => {
                     const arrayOfValues = dataMappedByMeasuredFeatures[
