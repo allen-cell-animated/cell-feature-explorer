@@ -20,6 +20,7 @@ import {
 } from "./constants";
 import {
     CellLineDef,
+    DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MetadataStateBranch,
@@ -40,10 +41,12 @@ class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
+    private dataForPlot?: DataForPlot;
 
     private featureDefinitions: any[] = [];
 
     constructor() {
+        this.dataForPlot = undefined;
         this.albumPath = "";
         this.featureDefsPath = "";
         this.featuresDataPath = "";
@@ -134,6 +137,10 @@ class JsonRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
+        if (this.dataForPlot) {
+            return Promise.resolve(this.dataForPlot);
+        }
+
         // ASSUME cell line defs are already loaded
 
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
@@ -196,7 +203,7 @@ class JsonRequest implements ImageDataset {
                 thumbnails.push(fileInfo.thumbnailPath);
                 ids.push(fileInfo[CELL_ID_KEY].toString());
             });
-            return {
+            this.dataForPlot = {
                 values: dataMappedByMeasuredFeatures,
                 labels: {
                     [PROTEIN_NAME_KEY]: proteinArray,
@@ -204,6 +211,7 @@ class JsonRequest implements ImageDataset {
                     [ARRAY_OF_CELL_IDS_KEY]: ids,
                 },
             };
+            return this.dataForPlot;
         });
     };
 
