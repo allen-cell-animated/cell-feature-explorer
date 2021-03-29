@@ -52,7 +52,8 @@ class JsonRequest implements ImageDataset {
         this.featuresDisplayOrder = [];
         this.featuresDataOrder = [];
         this.databaseDirectory = "data";
-        this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this.
+        this.listOfDatasetsDoc =
+            "https://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
     }
 
     public getAvailableDatasets = () => {
