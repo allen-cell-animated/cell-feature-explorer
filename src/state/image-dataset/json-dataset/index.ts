@@ -4,7 +4,6 @@ import { find, map } from "lodash";
 import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
-    CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_NAME_KEY,
     PROTEIN_NAME_KEY,
     CELL_ID_KEY,
