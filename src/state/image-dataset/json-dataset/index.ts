@@ -119,8 +119,8 @@ class JsonRequest implements ImageDataset {
                 this.cellLines = cellLines;
                 return cellLines;
             })
-            .then(() => {
-                this.getFeatureDataAfterCellLines();
+            .then((cellLines) => {
+                this.getFeatureDataAfterCellLines(cellLines);
             })
             .then(() => {
                 // filter cell lines and return subset
@@ -153,8 +153,9 @@ class JsonRequest implements ImageDataset {
         }
     };
 
-    public getFeatureDataAfterCellLines = () => {
+    public getFeatureDataAfterCellLines = (cellLines: CellLineDef[]) => {
         // ASSUME cell line defs are already loaded
+        this.cellLines = cellLines;
 
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
         if (!this.featuresDataOrder || this.featuresDataOrder.length === 0) {
