@@ -95,8 +95,7 @@ class JsonRequest implements ImageDataset {
     };
 
     public getCellLineDefs = () => {
-        if (/*this.hasFeatureData() &&*/ this.cellLines && this.cellLines.length > 0) {
-            console.log("Returning cached cellline defs");
+        if (this.cellLines && this.cellLines.length > 0) {
             return Promise.resolve(this.cellLines);
         }
 
