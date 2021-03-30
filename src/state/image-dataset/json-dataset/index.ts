@@ -41,19 +41,12 @@ class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
-    private dataForPlot: DataForPlot;
 
     private featureDefinitions: any[] = [];
 
+    private dataPromise?: Promise<DataForPlot>;
+
     constructor() {
-        this.dataForPlot = {
-            values: { ["0"]: [0] },
-            labels: {
-                thumbnailPaths: [""],
-                cellIds: [""],
-                structureProteinName: [""],
-            },
-        };
         this.albumPath = "";
         this.featureDefsPath = "";
         this.featuresDataPath = "";
@@ -102,7 +95,8 @@ class JsonRequest implements ImageDataset {
     };
 
     public getCellLineDefs = () => {
-        if (this.cellLines && this.cellLines.length > 0) {
+        if (/*this.hasFeatureData() &&*/ this.cellLines && this.cellLines.length > 0) {
+            console.log("Returning cached cellline defs");
             return Promise.resolve(this.cellLines);
         }
 
@@ -119,8 +113,9 @@ class JsonRequest implements ImageDataset {
                 this.cellLines = cellLines;
                 return cellLines;
             })
-            .then((cellLines) => {
-                this.getFeatureDataAfterCellLines(cellLines);
+            .then(() => {
+                this.dataPromise = this.getFeatureData();
+                return this.dataPromise;
             })
             .then(() => {
                 // filter cell lines and return subset
@@ -144,18 +139,11 @@ class JsonRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        if (this.dataForPlot.labels.cellIds.length > 0) {
-            return Promise.resolve(this.dataForPlot);
-        } else {
-            return this.getCellLineDefs().then(() => {
-                return this.dataForPlot;
-            });
+        if (this.dataPromise) {
+            return this.dataPromise;
         }
-    };
 
-    public getFeatureDataAfterCellLines = (cellLines: CellLineDef[]) => {
-        // ASSUME cell line defs are already loaded
-        this.cellLines = cellLines;
+        // ASSUME cell line defs are already loaded by the time the feature data arrives
 
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
         if (!this.featuresDataOrder || this.featuresDataOrder.length === 0) {
@@ -169,7 +157,7 @@ class JsonRequest implements ImageDataset {
         const proteinArray: string[] = [];
         const thumbnails: string[] = [];
         const ids: string[] = [];
-        return this.getJson(this.featuresDataPath).then((featureDataArray) => {
+        this.dataPromise = this.getJson(this.featuresDataPath).then((featureDataArray) => {
             featureDataArray.forEach((el: any) => {
                 // FILE INFO
                 // number of file info property names must be same as number of file_info entries in data
@@ -217,7 +205,7 @@ class JsonRequest implements ImageDataset {
                 thumbnails.push(fileInfo.thumbnailPath);
                 ids.push(fileInfo[CELL_ID_KEY].toString());
             });
-            this.dataForPlot = {
+            return {
                 values: dataMappedByMeasuredFeatures,
                 labels: {
                     [PROTEIN_NAME_KEY]: proteinArray,
@@ -225,8 +213,8 @@ class JsonRequest implements ImageDataset {
                     [ARRAY_OF_CELL_IDS_KEY]: ids,
                 },
             };
-            return this.dataForPlot;
         });
+        return this.dataPromise;
     };
 
     public getFileInfoByCellId = (cellId: string) => {
