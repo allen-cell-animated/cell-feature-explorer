@@ -41,12 +41,19 @@ class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
-    private dataForPlot?: DataForPlot;
+    private dataForPlot: DataForPlot;
 
     private featureDefinitions: any[] = [];
 
     constructor() {
-        this.dataForPlot = undefined;
+        this.dataForPlot = {
+            values: { ["0"]: [0] },
+            labels: {
+                thumbnailPaths: [""],
+                cellIds: [""],
+                structureProteinName: [""],
+            },
+        };
         this.albumPath = "";
         this.featureDefsPath = "";
         this.featuresDataPath = "";
@@ -113,7 +120,7 @@ class JsonRequest implements ImageDataset {
                 return cellLines;
             })
             .then(() => {
-                this.getMeasuredFeatureDefs();
+                this.getFeatureDataAfterCellLines();
             })
             .then(() => {
                 // filter cell lines and return subset
@@ -137,10 +144,16 @@ class JsonRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
-        if (this.dataForPlot) {
+        if (this.dataForPlot.labels.cellIds.length > 0) {
             return Promise.resolve(this.dataForPlot);
+        } else {
+            return this.getCellLineDefs().then(() => {
+                return this.dataForPlot;
+            });
         }
+    };
 
+    public getFeatureDataAfterCellLines = () => {
         // ASSUME cell line defs are already loaded
 
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
