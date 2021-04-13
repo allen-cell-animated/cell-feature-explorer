@@ -12,7 +12,7 @@ import { FileInfo } from "../../state/metadata/types";
 
 const styles = require("./style.css");
 
-interface CellViewerProps extends FileInfo{
+interface CellViewerProps extends FileInfo {
     fovDownloadHref: string;
     cellDownloadHref: string;
     volumeViewerDataRoot: string;
@@ -31,6 +31,10 @@ const CellViewer: React.FunctionComponent<CellViewerProps> = ({
         return null;
     }
 
+    // TODO maybe this function could be pushed out closer to the "dataset" implementation code
+    // !! Really it would be nice to have the names standardized BEFORE data is read. !!
+    // So this transformation COULD be done at dataset generation time and error out if it finds
+    // a name it doesn't recognize
     const standardizeNames = (name: string) => {
         if (includes(OBS_MEMBRANE_NAMES, name)) {
             return OBS_MEMBRANE_NAMES[0];

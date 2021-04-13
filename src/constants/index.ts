@@ -84,6 +84,7 @@ export const GENERAL_PLOT_SETTINGS = {
     unselectedCircleOpacity: 0.5,
 };
 
+// TODO these are literally only used in one single place; maybe they could be moved into that one place?
 export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];
 export const OBS_MEMBRANE_NAMES = ["CMDRP"];
 export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];

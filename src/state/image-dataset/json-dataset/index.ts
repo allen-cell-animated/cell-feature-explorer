@@ -4,16 +4,22 @@ import { find, map } from "lodash";
 import {
     CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
-    CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_NAME_KEY,
     PROTEIN_NAME_KEY,
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
     CELL_LINE_NAME_KEY,
+    CELL_COUNT_KEY,
 } from "../../../constants";
 import {
+    CELL_LINE_DEF_NAME_JSON_KEY,
+    CELL_LINE_DEF_PROTEIN_JSON_KEY,
+    CELL_LINE_DEF_STRUCTURE_JSON_KEY,
+} from "./constants";
+import {
     CellLineDef,
+    DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MetadataStateBranch,
@@ -22,10 +28,6 @@ import {
 import { ImageDataset } from "../types";
 
 class JsonRequest implements ImageDataset {
-    databaseDirectory: string;
-    private labkeyCellDefName = "CellLineId/Name";
-    private labkeyStructureKey = "StructureId/Name";
-    private labkeyProteinKey = "ProteinId/DisplayName";
     private albumPath: string;
     private featureDefsPath: string;
     private featuresDataPath: string;
@@ -41,6 +43,8 @@ class JsonRequest implements ImageDataset {
 
     private featureDefinitions: any[] = [];
 
+    private dataPromise?: Promise<DataForPlot>;
+
     constructor() {
         this.albumPath = "";
         this.featureDefsPath = "";
@@ -51,8 +55,10 @@ class JsonRequest implements ImageDataset {
         this.volumeViewerDataRoot = "";
         this.featuresDisplayOrder = [];
         this.featuresDataOrder = [];
-        this.databaseDirectory = "data";
-        this.listOfDatasetsDoc = ""; // TODO: figure out how and where to initialize this.
+        // for now this particular file must be kept up to date.
+        // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
+        this.listOfDatasetsDoc =
+            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
     }
 
     public getAvailableDatasets = () => {
@@ -61,10 +67,9 @@ class JsonRequest implements ImageDataset {
             .then((metadata: AxiosResponse) => metadata.data);
     };
 
-    public selectDataset = (dir: string) => {
-        return axios.get(`${dir}/dataset.json`).then((metadata: AxiosResponse) => {
+    public selectDataset = (manifestPath: string) => {
+        return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
-            this.databaseDirectory = dir;
             this.featureDefsPath = data.featureDefsPath;
             this.featuresDataPath = data.featuresDataPath;
             this.cellLineDataPath = data.cellLineDataPath;
@@ -72,6 +77,7 @@ class JsonRequest implements ImageDataset {
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
             this.featuresDisplayOrder = data.featuresDisplayOrder;
+            this.featuresDataOrder = data.featuresDataOrder;
             this.albumPath = data.albumPath;
             return {
                 defaultXAxis: data.defaultXAxis,
@@ -84,26 +90,45 @@ class JsonRequest implements ImageDataset {
     };
 
     private getJson = (docName: string) => {
-        return axios
-            .get(`${this.databaseDirectory}/${docName}.json`)
-            .then((metadata: AxiosResponse) => metadata.data);
+        return axios.get(`${docName}`).then((metadata: AxiosResponse) => metadata.data);
     };
 
     public getCellLineDefs = () => {
-        return this.getJson(this.cellLineDataPath).then((data) => {
-            const cellLines = map(data, (datum: MetadataStateBranch) => {
-                return {
-                    [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
-                    [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                    [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                };
+        if (this.cellLines && this.cellLines.length > 0) {
+            return Promise.resolve(this.cellLines);
+        }
+
+        return this.getJson(this.cellLineDataPath)
+            .then((data) => {
+                const cellLines = map(data, (datum: MetadataStateBranch) => {
+                    return {
+                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
+                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
+                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
+                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
+                    };
+                });
+                this.cellLines = cellLines;
+                return cellLines;
+            })
+            .then(() => {
+                this.dataPromise = this.getFeatureData();
+                return this.dataPromise;
+            })
+            .then(() => {
+                // filter cell lines and return subset
+                this.cellLines = this.cellLines.filter(
+                    (cellLine) => (cellLine[CELL_COUNT_KEY] as number) > 0
+                );
+                return this.cellLines;
             });
-            this.cellLines = cellLines;
-            return cellLines;
-        });
     };
 
     public getMeasuredFeatureDefs = () => {
+        if (this.featureDefinitions && this.featureDefinitions.length > 0) {
+            return Promise.resolve(this.featureDefinitions);
+        }
+
         // make sure we have the feature defs first.
         return this.getJson(this.featureDefsPath).then((featureDefs) => {
             this.featureDefinitions = featureDefs;
@@ -112,7 +137,16 @@ class JsonRequest implements ImageDataset {
     };
 
     public getFeatureData = () => {
+        if (this.dataPromise) {
+            return this.dataPromise;
+        }
+
+        // ASSUME cell line defs are already loaded by the time the feature data arrives
+
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
+        if (!this.featuresDataOrder || this.featuresDataOrder.length === 0) {
+            this.featuresDataOrder = featureKeys;
+        }
         const dataMappedByMeasuredFeatures = featureKeys.reduce((acc, featureName: string) => {
             const initArray: number[] = [];
             acc[featureName] = initArray;
@@ -121,7 +155,7 @@ class JsonRequest implements ImageDataset {
         const proteinArray: string[] = [];
         const thumbnails: string[] = [];
         const ids: string[] = [];
-        return this.getJson(this.featuresDataPath).then((featureDataArray) => {
+        this.dataPromise = this.getJson(this.featuresDataPath).then((featureDataArray) => {
             featureDataArray.forEach((el: any) => {
                 // FILE INFO
                 // number of file info property names must be same as number of file_info entries in data
@@ -146,10 +180,21 @@ class JsonRequest implements ImageDataset {
                 const cellLine = find(this.cellLines, {
                     [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
                 });
+                if (!cellLine) {
+                    throw new Error(`Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`);
+                }
+                // augment file info with protein name
+                fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
+                // increment count in cell line
+                if (cellLine[CELL_COUNT_KEY] !== undefined) {
+                    (cellLine[CELL_COUNT_KEY] as number)++;
+                } else {
+                    cellLine[CELL_COUNT_KEY] = 1;
+                }
 
                 el.features.forEach((value: number, index: number) => {
                     const arrayOfValues = dataMappedByMeasuredFeatures[
-                        this.featuresDisplayOrder[index]
+                        this.featuresDataOrder[index]
                     ] as number[];
                     arrayOfValues.push(value);
                 }, {});
@@ -167,7 +212,9 @@ class JsonRequest implements ImageDataset {
                 },
             };
         });
+        return this.dataPromise;
     };
+
     public getFileInfoByCellId = (cellId: string) => {
         const fileInfo = this.fileInfo[cellId];
         // wrapped to match the return type on the database implementation
