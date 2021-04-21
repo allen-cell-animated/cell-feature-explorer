@@ -105,7 +105,7 @@ const featureData = {
     labels: {
         [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
         thumbnailPaths: ["path1", "path2"],
-        PROTEIN_NAME_KEY: ["protein1", "protein2"]
+        [PROTEIN_NAME_KEY]: ["protein1", "protein2"]
     }
 };
 
