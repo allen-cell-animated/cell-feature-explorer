@@ -59,8 +59,8 @@ export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: st
     return find(fileInfoArray, (datum: FileInfo) => ((datum[CELL_ID_KEY].toString()) === cellId));
 }
 
-export function convertFileInfoToAICSId(datum: FileInfo): string {
-    return `C${datum[CELL_ID_KEY]}`;
+export function convertFileInfoToAICSId(id: string): string {
+    return `C${id}`;
 }
 
 export function convertFullFieldIdToDownloadId(id: number | string): string {

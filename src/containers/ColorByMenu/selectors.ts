@@ -9,7 +9,6 @@ import { createSelector } from "reselect";
 
 import {
     CELL_COUNT_KEY,
-    CELL_ID_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -17,11 +16,11 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import {
-    getFileInfo,
+    getLabelsPerCell,
     getProteinNames,
     getSortedCellLineDefs,
 } from "../../state/metadata/selectors";
-import { CellLineDef, FileInfo } from "../../state/metadata/types";
+import { CellLineDef } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -34,6 +33,7 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
 } from "../../state/selection/selectors";
+import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
 import { convertFileInfoToAICSId } from "../../state/util";
 
@@ -90,33 +90,31 @@ export const getSelectionPanelData = createSelector(
 
 export const getListOfCellIdsByDownloadConfig = createSelector(
     [
-        getProteinNames,
-        getFileInfo,
+        getLabelsPerCell,
         getDownloadConfig,
         getSelectedGroups,
     ],
     (
-        proteinNames,
-        fileInfo,
+        labelsPerCell,
         downloadConfig,
         selectedGroups
     ): string[] => {
         const returnArray: string[] = [];
         if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
-            return reduce(fileInfo, (acc, cur: FileInfo) => {
-                if (cur[PROTEIN_NAME_KEY] === downloadConfig.key) {
-                    acc.push(convertFileInfoToAICSId(cur));
-                }
-                return acc;
-            }, returnArray);
+            return reduce(
+                labelsPerCell.structureProteinName,
+                (acc, proteinName: string, index) => {
+                    if (proteinName === downloadConfig.key) {
+                        acc.push(convertFileInfoToAICSId(labelsPerCell.cellIds[index]));
+                    }
+                    return acc;
+                },
+                returnArray
+            );
         } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
-            const selectedCellIds = selectedGroups[downloadConfig.key];
-            return reduce(fileInfo, (acc, cur: FileInfo) => {
-                if (includes(selectedCellIds, cur[CELL_ID_KEY])) {
-                    acc.push(convertFileInfoToAICSId(cur));
-                }
-                return acc;
-            }, returnArray);
+            const selectedCells = selectedGroups[downloadConfig.key];
+            return selectedCells.map((point: LassoOrBoxSelectPointData) => convertFileInfoToAICSId(point.cellId));
+          
         }
         return returnArray;
 });
