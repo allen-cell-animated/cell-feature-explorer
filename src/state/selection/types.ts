@@ -44,9 +44,13 @@ export interface ClusteringDatum {
     [key: string]: OneCluster;
 }
 
+export interface LassoOrBoxSelectPointData {
+    pointIndex: number;
+    cellId: string;
+}
 export interface LassoOrBoxSelectAction {
     key: string | number;
-    payload: number[];
+    payload: LassoOrBoxSelectPointData[];
     type: string;
 }
 

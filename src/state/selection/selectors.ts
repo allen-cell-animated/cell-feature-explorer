@@ -37,7 +37,7 @@ import { Annotation, ContinuousPlotData, NumberOrString, SelectedGroups, State }
 import { getFileInfoDatumFromCellId } from "../util";
 import { CLUSTERING_MAP } from "./constants";
 
-import { ColorForPlot, DownloadConfig } from "./types";
+import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
@@ -362,11 +362,10 @@ export const getSelectedGroupsData = createSelector(
 
         mapValues(selectedGroups, (value, key) => {
             // for each point index, get x, y, and color for the point.
-            value.forEach((cellId: string) => {
-                const index = metaData.labels.cellIds.indexOf(cellId);
+            value.forEach((point: LassoOrBoxSelectPointData) => {
                 colorArray.push(selectedGroupColorMapping[key]);
-                xValues.push(metaData.values[plotByOnX][index]);
-                yValues.push(metaData.values[plotByOnY][index]);
+                xValues.push(metaData.values[plotByOnX][point.pointIndex]);
+                yValues.push(metaData.values[plotByOnY][point.pointIndex]);
             });
         });
 
