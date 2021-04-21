@@ -363,11 +363,10 @@ export const getSelectedGroupsData = createSelector(
         mapValues(selectedGroups, (value, key) => {
             // for each point index, get x, y, and color for the point.
             value.forEach((cellId: string) => {
-                // ids are converted to strings for plotly, so converting both to numbers to be sure
-                const index = metaData[ARRAY_OF_CELL_IDS_KEY].indexOf(cellId);
+                const index = metaData.labels.cellIds.indexOf(cellId);
                 colorArray.push(selectedGroupColorMapping[key]);
-                xValues.push(metaData[plotByOnX][index]);
-                yValues.push(metaData[plotByOnY][index]);
+                xValues.push(metaData.values[plotByOnX][index]);
+                yValues.push(metaData.values[plotByOnY][index]);
             });
         });
 
