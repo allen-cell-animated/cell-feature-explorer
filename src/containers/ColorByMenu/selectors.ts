@@ -35,7 +35,7 @@ import {
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
-import { convertFileInfoToAICSId } from "../../state/util";
+import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
 
@@ -105,7 +105,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
                 labelsPerCell.structureProteinName,
                 (acc, proteinName: string, index) => {
                     if (proteinName === downloadConfig.key) {
-                        acc.push(convertFileInfoToAICSId(labelsPerCell.cellIds[index]));
+                        acc.push(convertSingleImageIdToDownloadId(labelsPerCell.cellIds[index]));
                     }
                     return acc;
                 },
@@ -113,7 +113,9 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
             );
         } else if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_SELECTION_SET) {
             const selectedCells = selectedGroups[downloadConfig.key];
-            return selectedCells.map((point: LassoOrBoxSelectPointData) => convertFileInfoToAICSId(point.cellId));
+            return selectedCells.map((point: LassoOrBoxSelectPointData) =>
+                convertSingleImageIdToDownloadId(point.cellId)
+            );
           
         }
         return returnArray;
