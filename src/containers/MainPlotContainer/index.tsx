@@ -7,6 +7,7 @@ import {
 } from "lodash";
 import {
     PlotSelectionEvent,
+    PlotDatum
 } from "plotly.js";
 import * as React from "react";
 import {
@@ -35,6 +36,7 @@ import {
     LassoOrBoxSelectAction,
     MousePosition,
     SelectAxisAction,
+    LassoOrBoxSelectPointData,
     SelectPointAction,
     TickConversion,
 } from "../../state/selection/types";
@@ -52,6 +54,10 @@ import {
 } from "./selectors";
 
 const styles = require("./style.css");
+
+interface PlotDatumWithId extends PlotDatum {
+    id: string;
+}
 
 interface PropsFromState {
     annotations: Annotation[];
@@ -158,12 +164,19 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             return;
         }
         const { points } = eventData;
+        const pointsWithIds = points as PlotDatumWithId[];
         const {
             handleLassoOrBoxSelect,
             handleSelectionToolUsed,
         } = this.props;
         const key = Date.now().valueOf().toString();
-        const payload = map(filter(points, (ele) => ele.data.name === SCATTER_PLOT_NAME), "id");
+        const payload: LassoOrBoxSelectPointData[] = map(
+            filter(pointsWithIds, (ele: PlotDatumWithId) => ele.data.name === SCATTER_PLOT_NAME),
+            (point: PlotDatumWithId) => ({
+                pointIndex: point.pointIndex as number,
+                cellId: point.id as string,
+            })
+        );
         handleLassoOrBoxSelect(key, payload);
         handleSelectionToolUsed();
     }

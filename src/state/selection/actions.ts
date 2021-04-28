@@ -38,6 +38,7 @@ import {
     DeselectPointAction,
     DownloadConfig,
     LassoOrBoxSelectAction,
+    LassoOrBoxSelectPointData,
     MousePosition,
     RequestFileInfoByCellIDAction,
     ResetSelectionAction,
@@ -55,7 +56,7 @@ export function changeAxis(axisId: string, payload: string): SelectAxisAction {
     };
 }
 
-export function lassoOrBoxSelectGroup(key: string | number, payload: number[]): LassoOrBoxSelectAction  {
+export function lassoOrBoxSelectGroup(key: string | number, payload: LassoOrBoxSelectPointData[]): LassoOrBoxSelectAction  {
     return {
         key,
         payload,

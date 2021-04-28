@@ -69,14 +69,14 @@ describe("ColorByMenu selectors", () => {
                 selection: {
                     ...newMockState.selection,
                     downloadConfig: {
-                        key: "Nucleophosmin",
+                        key: "protein1",
                         type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
                     },
                 },
             };
 
             const result: string[] = getListOfCellIdsByDownloadConfig(state);
-            expect(result).to.deep.equal(["C1", "C2"]);
+            expect(result).to.deep.equal(["C1"]);
 
         });
     });
