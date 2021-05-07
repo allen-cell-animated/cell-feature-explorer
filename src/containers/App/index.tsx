@@ -17,7 +17,6 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { RequestAction } from "../../state/metadata/types";
 
 const styles = require("./style.css");
-const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface AppProps {
     isLoading: boolean;

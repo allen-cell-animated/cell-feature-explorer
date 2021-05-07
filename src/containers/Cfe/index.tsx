@@ -83,7 +83,6 @@ class Cfe extends React.Component<CfeProps, {}> {
         this.setState({
             showSmallScreenWarning: false,
         });
-        // this.props.requestAvailableDatasets();
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
