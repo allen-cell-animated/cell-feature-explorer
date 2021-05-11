@@ -11,3 +11,4 @@ build/
 .settings/
 .env
 awscli-bundle
+.vscode/
