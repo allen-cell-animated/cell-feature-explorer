@@ -4,7 +4,7 @@ import { filter, find, remove } from "lodash";
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
 import { requestCellLineData, requestFeatureData } from "../metadata/actions";
-import { getDatasets } from "../metadata/selectors";
+import { getDatasets, getShowSmallScreenWarning } from "../metadata/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -32,6 +32,10 @@ const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
+
+        const showSmallScreenWarning = getShowSmallScreenWarning(getState());
+        if (showSmallScreenWarning) return;
+
         let datasets = getDatasets(getState());
         if (!datasets.length) {
             // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],

@@ -16,6 +16,7 @@ import {
     REQUEST_FEATURE_DATA,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
+    SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
     CellLineDef,
@@ -29,6 +30,7 @@ import {
     ReceiveMeasuredFeaturesAction,
     RequestAction,
     SetLoadingAction,
+    SetSmallScreenWarningAction,
 } from "./types";
 
 export function requestAvailableDatasets() {
@@ -121,5 +123,12 @@ export function setLoadingText(payload: string): SetLoadingAction {
     return {
         payload,
         type: SET_LOADING_TEXT,
+    };
+}
+
+export function setShowSmallScreenWarning(payload: boolean): SetSmallScreenWarningAction {
+    return {
+        payload,
+        type: SET_SHOW_SMALL_SCREEN_WARNING,
     };
 }

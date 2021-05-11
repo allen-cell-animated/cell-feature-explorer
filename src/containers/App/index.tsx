@@ -33,7 +33,6 @@ class App extends React.Component<AppProps, {}> {
     }
 
     public handleSelectDataset = (id: string) => {
-
         this.props.changeDataset(id)
     }
 
