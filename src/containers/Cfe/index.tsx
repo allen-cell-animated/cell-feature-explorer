@@ -20,7 +20,7 @@ import {
 } from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-import { FileInfo, SetSmallScreenWarningAction } from "../../state/metadata/types";
+import { FileInfo, SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 
 const {
     Content,
@@ -45,6 +45,7 @@ interface CfeProps {
     volumeViewerDataRoot: string;
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
 }
 
 class Cfe extends React.Component<CfeProps, {}> {
@@ -82,6 +83,7 @@ class Cfe extends React.Component<CfeProps, {}> {
 
     public handleClose = () => {
         this.props.setShowSmallScreenWarning(false);
+        this.props.requestFeatureData();
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
@@ -219,6 +221,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     toggleGallery: selectionStateBranch.actions.toggleGallery,
     setShowSmallScreenWarning: metadataStateBranch.actions.setShowSmallScreenWarning,
+    requestFeatureData: metadataStateBranch.actions.requestFeatureData,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(Cfe);

@@ -4,7 +4,7 @@ import { filter, find, remove } from "lodash";
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
 import { requestCellLineData, requestFeatureData } from "../metadata/actions";
-import { getDatasets, getShowSmallScreenWarning } from "../metadata/selectors";
+import { getDatasets } from "../metadata/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -33,9 +33,6 @@ const changeDatasetLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
 
-        const showSmallScreenWarning = getShowSmallScreenWarning(getState());
-        if (showSmallScreenWarning) return;
-
         let datasets = getDatasets(getState());
         if (!datasets.length) {
             // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
@@ -58,8 +55,6 @@ const changeDatasetLogic = createLogic({
                         changeAxis(Y_AXIS_ID, selections.defaultYAxis),
                     ])
                 );
-                dispatch(requestCellLineData());
-                dispatch(requestFeatureData());
                 dispatch({
                     type: SET_DATASET,
                     payload: {
@@ -69,6 +64,8 @@ const changeDatasetLogic = createLogic({
                         volumeViewerDataRoot: selections.volumeViewerDataRoot,
                     },
                 });
+                dispatch(requestCellLineData());
+                dispatch(requestFeatureData());
                 done();
             });
     },
