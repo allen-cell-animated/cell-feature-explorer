@@ -7,6 +7,7 @@ import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 
 import CellViewer from "../../components/CellViewer/index";
+import SmallScreenWarning from "../../components/SmallScreenWarning";
 import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
@@ -53,12 +54,35 @@ class Cfe extends React.Component<CfeProps, {}> {
         width: window.innerWidth,
     };
 
+    public componentDidMount = () => {
+        window.addEventListener("resize", this.updateDimensions);
+    }
+
+    public updateDimensions = () => {
+        if (window.innerWidth === this.state.width) {
+            // listener is triggered on scroll in some mobile devices
+            return;
+        }
+        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
+            !this.state.dontShowSmallScreenWarningAgain;
+        this.setState({
+            showSmallScreenWarning: shouldShow,
+            width: window.innerWidth,
+        });
+    }
+
     public onSelectionToolUsed = () => {
         this.setState({ openKeys: uniq([...this.state.openKeys, Cfe.panelKeys[1]]) });
     }
 
     public onPanelClicked = (value: string[]) => {
         this.setState({ openKeys: value });
+    }
+
+    public handleClose = () => {
+        this.setState({
+            showSmallScreenWarning: false,
+        });
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
@@ -108,6 +132,11 @@ class Cfe extends React.Component<CfeProps, {}> {
                         <h2>Plot</h2>
                     </Header>
                     <Layout>
+                        <SmallScreenWarning
+                            handleClose={this.handleClose}
+                            onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                            visible={this.state.showSmallScreenWarning}
+                        />
                         <Sider
                             className={styles.colorMenu}
                             width={450}

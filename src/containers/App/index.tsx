@@ -9,7 +9,6 @@ import BackToPlot from "../../components/BackToPlot/index";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
 import LandingPage from "../../components/LandingPage";
-import SmallScreenWarning from "../../components/SmallScreenWarning";
 import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
@@ -18,7 +17,6 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { RequestAction } from "../../state/metadata/types";
 
 const styles = require("./style.css");
-const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface AppProps {
     isLoading: boolean;
@@ -30,39 +28,8 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    public state = {
-        dontShowSmallScreenWarningAgain: false,
-        showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
-        width: window.innerWidth,
-    };
-
     public componentDidMount = () => {
         this.props.requestAvailableDatasets();
-        window.addEventListener("resize", this.updateDimensions);
-    }
-
-    public updateDimensions = () => {
-        if (window.innerWidth === this.state.width) {
-            // listener is triggered on scroll in some mobile devices
-            return;
-        }
-        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
-        !this.state.dontShowSmallScreenWarningAgain;
-        this.setState({
-            showSmallScreenWarning: shouldShow,
-            width: window.innerWidth,
-        });
-    }
-
-
-    public handleClose = () => {
-        this.setState({
-            showSmallScreenWarning: false,
-        });
-    }
-
-    public onDismissCheckboxChecked = (value: boolean) => {
-        this.setState({ dontShowSmallScreenWarningAgain: value });
     }
 
     public handleSelectDataset = (id: string) => {
@@ -72,7 +39,6 @@ class App extends React.Component<AppProps, {}> {
 
     public render() {
         const { isLoading, loadingText, selectedDataset, datasets } = this.props;
-        const { showSmallScreenWarning } = this.state;
         const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
             styles.container,
@@ -85,11 +51,6 @@ class App extends React.Component<AppProps, {}> {
                 <Layout className={layoutClassnames}>
                     <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
 
-                    <SmallScreenWarning
-                        handleClose={this.handleClose}
-                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                        visible={showSmallScreenWarning}
-                    />
                     {!!selectedDataset && <BackToPlot />}
 
                     <AllenCellHeader show={true} />
