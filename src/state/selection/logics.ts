@@ -32,7 +32,6 @@ const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
-
         let datasets = getDatasets(getState());
         if (!datasets.length) {
             // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
