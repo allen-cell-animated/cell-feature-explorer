@@ -11,6 +11,7 @@ import SmallScreenWarning from "../../components/SmallScreenWarning";
 import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
+import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
 import {
     convertFullFieldIdToDownloadId,
@@ -19,7 +20,7 @@ import {
 } from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-import { FileInfo } from "../../state/metadata/types";
+import { FileInfo, SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 
 const {
     Content,
@@ -42,6 +43,9 @@ interface CfeProps {
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
+    showSmallScreenWarning: boolean;
+    setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
+    requestFeatureData: ActionCreator<RequestAction>;
 }
 
 class Cfe extends React.Component<CfeProps, {}> {
@@ -50,11 +54,11 @@ class Cfe extends React.Component<CfeProps, {}> {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
-        showSmallScreenWarning: window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT,
         width: window.innerWidth,
     };
 
     public componentDidMount = () => {
+        this.props.setShowSmallScreenWarning(window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT);
         window.addEventListener("resize", this.updateDimensions);
     }
 
@@ -65,10 +69,8 @@ class Cfe extends React.Component<CfeProps, {}> {
         }
         const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
             !this.state.dontShowSmallScreenWarningAgain;
-        this.setState({
-            showSmallScreenWarning: shouldShow,
-            width: window.innerWidth,
-        });
+        this.setState({ width: window.innerWidth });
+        this.props.setShowSmallScreenWarning(shouldShow);
     }
 
     public onSelectionToolUsed = () => {
@@ -80,9 +82,8 @@ class Cfe extends React.Component<CfeProps, {}> {
     }
 
     public handleClose = () => {
-        this.setState({
-            showSmallScreenWarning: false,
-        });
+        this.props.setShowSmallScreenWarning(false);
+        this.props.requestFeatureData();
     }
 
     public onDismissCheckboxChecked = (value: boolean) => {
@@ -99,6 +100,7 @@ class Cfe extends React.Component<CfeProps, {}> {
             selected3DCellStructureName,
             toggleGallery,
             selected3DCellFileInfo,
+            showSmallScreenWarning,
         } = this.props;
 
         const {
@@ -135,7 +137,7 @@ class Cfe extends React.Component<CfeProps, {}> {
                         <SmallScreenWarning
                             handleClose={this.handleClose}
                             onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                            visible={this.state.showSmallScreenWarning}
+                            visible={showSmallScreenWarning}
                         />
                         <Sider
                             className={styles.colorMenu}
@@ -212,11 +214,14 @@ function mapStateToProps(state: State) {
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         volumeViewerDataRoot: selectionStateBranch.selectors.getVolumeViewerDataRoot(state),
         downloadRoot: selectionStateBranch.selectors.getDownloadRoot(state),
+        showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
     };
 }
 
 const dispatchToPropsMap = {
     toggleGallery: selectionStateBranch.actions.toggleGallery,
+    setShowSmallScreenWarning: metadataStateBranch.actions.setShowSmallScreenWarning,
+    requestFeatureData: metadataStateBranch.actions.requestFeatureData,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(Cfe);

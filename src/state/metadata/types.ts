@@ -117,6 +117,11 @@ export interface SetLoadingAction {
     type: string;
 }
 
+export interface SetSmallScreenWarningAction {
+    payload: boolean;
+    type: string;
+}
+
 export interface ClearAction {
     type: string;
 }

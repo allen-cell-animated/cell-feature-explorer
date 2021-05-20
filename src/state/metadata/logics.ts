@@ -8,6 +8,7 @@ import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
 import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
+import { getShowSmallScreenWarning } from "./selectors";
 
 import {
     RECEIVE_ALBUM_DATA,
@@ -54,6 +55,10 @@ const requestAvailableDatasets = createLogic({
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
+
+        const showSmallScreenWarning = getShowSmallScreenWarning(getState());
+        if (showSmallScreenWarning) return;
+
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
         // const state = getState();
         const actions: AnyAction[] = [];

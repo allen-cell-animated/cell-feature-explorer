@@ -54,8 +54,6 @@ const changeDatasetLogic = createLogic({
                         changeAxis(Y_AXIS_ID, selections.defaultYAxis),
                     ])
                 );
-                dispatch(requestCellLineData());
-                dispatch(requestFeatureData());
                 dispatch({
                     type: SET_DATASET,
                     payload: {
@@ -65,6 +63,8 @@ const changeDatasetLogic = createLogic({
                         volumeViewerDataRoot: selections.volumeViewerDataRoot,
                     },
                 });
+                dispatch(requestCellLineData());
+                dispatch(requestFeatureData());
                 done();
             });
     },

@@ -13,6 +13,7 @@ import {
     RECEIVE_METADATA,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
+    SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
     MetadataStateBranch,
@@ -20,6 +21,7 @@ import {
     ReceiveAvailableDatasetsAction,
     ReceiveCellLineAction,
     SetLoadingAction,
+    SetSmallScreenWarningAction,
     ReceiveMeasuredFeaturesAction,
     ClearAction,
 } from "./types";
@@ -30,6 +32,7 @@ export const initialState = {
     cellLineDefs: {},
     isLoading: true,
     loadingText: "",
+    showSmallScreenWarning: false,
     datasets: [],
     measuredFeatureNames: [],
     featureData: {
@@ -106,6 +109,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
             loadingText: action.payload,
+        }),
+    },
+    [SET_SHOW_SMALL_SCREEN_WARNING]: {
+        accepts: (action: AnyAction): action is SetSmallScreenWarningAction => action.type === SET_SHOW_SMALL_SCREEN_WARNING,
+        perform: (state: MetadataStateBranch, action: SetSmallScreenWarningAction) => ({
+            ...state,
+            showSmallScreenWarning: action.payload,
         }),
     },
     [RECEIVE_MEASURED_FEATURE_NAMES]: {
