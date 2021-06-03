@@ -1,0 +1,79 @@
+@import "../../styles/colors.css";
+
+.cfe-home {
+    color: var(--dark-theme-text-color);
+}
+.page-header {
+    position: relative;
+    color: var(--dark-theme-text-color);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0px 3px 3px var(--dark);
+    z-index: 200;
+    padding: 0 10px;
+}
+
+.page-header img {
+    padding-bottom: 5px;
+}
+
+.page-header a {
+    color: var(--dark-theme-primary-color);
+}
+
+.page-header :global(.ant-btn-primary) {
+    text-shadow: none;
+}
+
+.page-header :global(.ant-btn-ghost) {
+    color: var(--dark-theme-primary-color);
+    border-color: var(--dark-theme-primary-color);
+    border-radius: 3px;
+    margin-left: 12px;
+}
+
+.vertical-bar {
+    display: inline-block;
+    margin-right: 14px;
+    margin-left: 14px;
+    font-size: 16px;
+    font-weight: 100;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* For large screens only */
+@media screen and (min-width: 768px) {
+    .page-header {
+        padding: 0 20px;
+    }
+
+    .buttons {
+        min-width: 282px;
+    }
+}
+/* For small-med tablet in portrait mode or narrower */
+@media screen and (max-width: 768px) {
+
+    /* Hide the Load Model button and the loaded trajectory name */
+    .page-header .viewer-title,
+    .page-header :global(.ant-btn-primary) {
+        display: none;
+    }
+
+    .page-header :global(.ant-btn-ghost) {
+        margin: 0;
+    }
+}
+/* For smartphone in portrait mode */
+@media screen and (max-width: 480px) {
+    /* Hide "| Simularium Home" */
+    .vertical-bar, .cfe-home {
+        display: none;
+    }
+}

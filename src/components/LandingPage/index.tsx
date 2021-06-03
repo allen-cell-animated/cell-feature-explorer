@@ -14,8 +14,6 @@ interface LandingPageProps {
 const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
     <Layout>
         <Header className={styles.headerMain}>
-            <h1>Cell Feature Explorer</h1>
-
             <div>
                 View any of over 200,000 3D cell images and plot cells by features such as organelle
                 volume

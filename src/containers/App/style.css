@@ -1,5 +1,8 @@
 @import "../../styles/colors.css";
 
+.nav-bar {
+    padding: 0;
+}
 :global(.ant-affix) {
     z-index: 100;
 }

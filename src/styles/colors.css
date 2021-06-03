@@ -8,5 +8,8 @@
     --header-gray: #4b4b4b;
     --panel-body-background-gray: #313131;
     --light-gray: #aeacae;
+    --off-white: #f8f8f8;
     --border-gray: var(--dimgray);
+    --dark-theme-text-color: var(--off-white);
+
 }

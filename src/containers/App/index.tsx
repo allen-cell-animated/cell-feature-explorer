@@ -1,10 +1,9 @@
-import AllenCellHeader from "@aics/allencell-nav-bar";
-import "@aics/allencell-nav-bar/style/style.css";
 import { Layout } from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
 
+import AllenCellHeader from "../../components/AppHeader";
 import BackToPlot from "../../components/BackToPlot/index";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
@@ -16,6 +15,7 @@ import { ChangeSelectionAction } from "../../state/selection/types";
 import { DatasetMetaData } from "../../constants/datasets";
 import { RequestAction } from "../../state/metadata/types";
 
+const { Header } = Layout;
 const styles = require("./style.css");
 
 interface AppProps {
@@ -52,8 +52,9 @@ class App extends React.Component<AppProps, {}> {
                     <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
 
                     {!!selectedDataset && <BackToPlot />}
-
-                    <AllenCellHeader show={true} />
+                    <Header className={styles.navBar}>
+                        <AllenCellHeader />
+                    </Header>
                     <Layout>
                         {!!selectedDataset ? (
                             <Cfe />
