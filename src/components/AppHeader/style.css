@@ -12,6 +12,7 @@
     box-shadow: 0px 3px 3px var(--dark);
     z-index: 200;
     padding: 0 10px;
+    width: 100%;
 }
 
 .page-header img {
@@ -33,6 +34,11 @@
     margin-left: 12px;
 }
 
+.viewer-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+}
 .vertical-bar {
     display: inline-block;
     margin-right: 14px;
