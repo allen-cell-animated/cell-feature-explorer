@@ -6,11 +6,12 @@ import { AicsLogo } from "../Icons";
 const styles = require("./style.css");
 
 interface AppHeaderProps {
-    isBuffering: boolean;
+    selectedDataset: string;
 }
 
 class AppHeader extends React.Component<AppHeaderProps, {}> {
     public render(): JSX.Element {
+        const { selectedDataset } = this.props;
 
         return (
             <div className={styles.pageHeader}>
@@ -23,7 +24,7 @@ class AppHeader extends React.Component<AppHeaderProps, {}> {
                         Cell Feature Explorer Datasets
                     </a>
                 </div>
-                <div className={styles.viewerTitle}></div>
+                <div className={styles.viewerTitle}>{selectedDataset}</div>
                 <div className={styles.buttons}></div>
             </div>
         );

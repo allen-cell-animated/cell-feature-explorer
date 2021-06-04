@@ -53,7 +53,7 @@ class App extends React.Component<AppProps, {}> {
 
                     {!!selectedDataset && <BackToPlot />}
                     <Header className={styles.navBar}>
-                        <AllenCellHeader />
+                        <AllenCellHeader selectedDataset={selectedDataset}/>
                     </Header>
                     <Layout>
                         {!!selectedDataset ? (
