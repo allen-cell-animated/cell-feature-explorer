@@ -94,46 +94,27 @@ interface PropsFromApp {
     handleSelectionToolUsed: () => void;
 }
 
-interface MainPlotContainerState {
-    isHoveringHistogram: boolean;
-}
-
 type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
-class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
+class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     constructor(props: MainPlotContainerProps) {
         super(props);
-        this.attachHistogramListeners = this.attachHistogramListeners.bind(this);
         this.onPointClicked = this.onPointClicked.bind(this);
         this.onPlotHovered = this.onPlotHovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
-        this.shouldRenderPopover = this.shouldRenderPopover.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
-        this.state = { isHoveringHistogram: false };
     }
 
     public componentDidMount() {
-        setTimeout(this.attachHistogramListeners, 1000)
-    }
-
-    public attachHistogramListeners() {
-        const xHistogram = document.getElementsByClassName("xy2")[0].getElementsByClassName("nsewdrag")[0];
-        xHistogram.addEventListener("mouseenter", () => {
-            this.setState({ isHoveringHistogram: true })
-        });
-        xHistogram.addEventListener("mouseleave", () => {
-            this.setState({ isHoveringHistogram: false })
-        });
-
-        const yHistogram = document.getElementsByClassName("x2y")[0].getElementsByClassName("nsewdrag")[0];
-        yHistogram.addEventListener("mouseenter", () => {
-            this.setState({ isHoveringHistogram: true })
-        });
-        yHistogram.addEventListener("mouseleave", () => {
-            this.setState({ isHoveringHistogram: false })
-        });
+        const attachHistogramListeners = () => {
+            const innerPlotArea = document.getElementsByClassName("xy")[0].getElementsByClassName("nsewdrag")[0];
+            innerPlotArea.addEventListener("mouseleave", () => {
+                this.props.changeHoveredCell(null);
+            });
+        }
+        setTimeout(attachHistogramListeners, 500);
     }
 
     // TODO: retype once plotly has id and fullData types
@@ -210,15 +191,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         handleSelectionToolUsed();
     }
 
-    public shouldRenderPopover() {
-        const { hoveredPointData, galleryCollapsed } = this.props;
-        return hoveredPointData && !this.state.isHoveringHistogram && galleryCollapsed;
-    }
-
     public renderPopover() {
-        const { hoveredPointData, thumbnailRoot } = this.props;
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
         return (
-            hoveredPointData && this.shouldRenderPopover() && (
+            hoveredPointData && galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
@@ -253,7 +229,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                 <Popover
                     placement="right"
                     content={popover}
-                    visible={this.shouldRenderPopover()}
+                    visible={!!popover}
                     {...{
                         // props not in ant.d component, but do exist
                         // needed to style this component since it's out of the DOM structure
