@@ -110,13 +110,15 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     private thumbnailTimeout = 0;
 
     public componentDidMount() {
-        const attachHistogramListeners = () => {
+        // Prevent thumbnails from showing when hovering over histograms
+        const attachPlotAreaListener = () => {
+            // Rectangle bounded by the x and y axes, not including the histogram axes
             const innerPlotArea = document.getElementsByClassName("xy")[0].getElementsByClassName("nsewdrag")[0];
             innerPlotArea.addEventListener("mouseleave", () => {
                 this.props.changeHoveredCell(null);
             });
         }
-        setTimeout(attachHistogramListeners, 500);
+        setTimeout(attachPlotAreaListener, 500);
     }
 
     // TODO: retype once plotly has id and fullData types
@@ -169,6 +171,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         // prevents click events from triggering the popover to close
         if (relatedTarget && relatedTarget.className) {
             changeHoveredCell(null);
+            return;
         }
         this.thumbnailTimeout = window.setTimeout(() => changeHoveredCell(null), 500);
     }
@@ -198,7 +201,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
         return (
-            hoveredPointData && galleryCollapsed && (
+            hoveredPointData && 
+            galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
