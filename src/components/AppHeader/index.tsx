@@ -21,7 +21,7 @@ class AppHeader extends React.Component<AppHeaderProps, {}> {
                     </a>
                     <span className={styles.verticalBar}>|</span>
                     <a href="/" className={styles.cfeHome}>
-                        Cell Feature Explorer Datasets
+                        Cell Feature Explorer
                     </a>
                 </div>
                 <div className={styles.viewerTitle}>{selectedDataset}</div>
