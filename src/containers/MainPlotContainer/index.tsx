@@ -119,6 +119,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 this.props.changeHoveredCell(null);
             });
         }
+        // Need a delay for the plot to finish rendering before attaching the event listener
         setTimeout(attachPlotAreaListener, 500);
     }
 
