@@ -84,7 +84,6 @@
         "webpack-dev-server": "^3.11.1"
     },
     "dependencies": {
-        "@aics/allencell-nav-bar": "^1.0.2",
         "@aics/browsing-context-messaging": "~1.1",
         "@aics/web-3d-viewer": "^1.0.1",
         "@ant-design/icons": "^4.2.2",

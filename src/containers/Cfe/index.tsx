@@ -127,9 +127,6 @@ class Cfe extends React.Component<CfeProps, {}> {
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <Header className={styles.headerMain}>
-                        <h1>Cell Feature Explorer</h1>
-                    </Header>
                     <Header className={styles.headerSection}>
                         <h2>Plot</h2>
                     </Header>
