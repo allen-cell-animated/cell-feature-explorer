@@ -107,7 +107,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.renderPopover = this.renderPopover.bind(this);
     }
     
-    private thumbnailTimer = 0;
+    private thumbnailTimeout = 0;
 
     public componentDidMount() {
         const attachHistogramListeners = () => {
@@ -153,7 +153,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
-                    window.clearTimeout(this.thumbnailTimer);
+                    window.clearTimeout(this.thumbnailTimeout);
                     changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
                 } else {
                     changeHoveredCell(null);
@@ -170,7 +170,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         if (relatedTarget && relatedTarget.className) {
             changeHoveredCell(null);
         }
-        this.thumbnailTimer = window.setTimeout(() => changeHoveredCell(null), 500);
+        this.thumbnailTimeout = window.setTimeout(() => changeHoveredCell(null), 500);
     }
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
