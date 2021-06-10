@@ -106,6 +106,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
     }
+    
+    private thumbnailTimer = 0;
 
     public componentDidMount() {
         const attachHistogramListeners = () => {
@@ -151,6 +153,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME ) {
                 if (!includes(filtersToExclude, point.fullData.name)) {
+                    window.clearTimeout(this.thumbnailTimer);
                     changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
                 } else {
                     changeHoveredCell(null);
@@ -164,9 +167,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             changeHoveredCell,
         } = this.props;
         // prevents click events from triggering the popover to close
-        if (relatedTarget.className) {
+        if (relatedTarget && relatedTarget.className) {
             changeHoveredCell(null);
         }
+        this.thumbnailTimer = window.setTimeout(() => changeHoveredCell(null), 500);
     }
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
@@ -271,6 +275,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
                         onPlotHovered={this.onPlotHovered}
+                        onPlotUnhovered={this.onPlotUnhovered}
                         xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}

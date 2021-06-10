@@ -22,6 +22,7 @@ interface MainPlotProps {
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPlotHovered: (hovered: PlotMouseEvent) => void;
+    onPlotUnhovered: (unhovered: PlotMouseEvent) => void;
     onGroupSelected: (selected: PlotSelectionEvent) => void;
     xAxisType: string;
     yAxisType: string;
@@ -177,6 +178,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         const {
             onPointClicked,
             onPlotHovered,
+            onPlotUnhovered,
             onGroupSelected,
             plotDataArray,
         } = this.props;
@@ -203,6 +205,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
                 onHover={onPlotHovered}
+                onUnhover={onPlotUnhovered}
                 onSelected={onGroupSelected}
             />
         );
