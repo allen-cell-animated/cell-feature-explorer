@@ -101,7 +101,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     constructor(props: MainPlotContainerProps) {
         super(props);
         this.onPointClicked = this.onPointClicked.bind(this);
-        this.onPlotHovered = this.onPlotHovered.bind(this);
+        this.onPointHovered = this.onPointHovered.bind(this);
+        this.onPointUnhovered = this.onPointUnhovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
@@ -141,7 +142,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     // TODO: retype once plotly has id and fullData types
-    public onPlotHovered(hovered: any) {
+    public onPointHovered(hovered: any) {
         const { points, event } = hovered;
         const {
             filtersToExclude,
@@ -164,16 +165,18 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         });
     }
 
+    public onPointUnhovered() {
+        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredCell(null), 500);
+    }
+
     public onPlotUnhovered({relatedTarget}: any) {
         const {
             changeHoveredCell,
         } = this.props;
         // prevents click events from triggering the popover to close
-        if (relatedTarget && relatedTarget.className) {
+        if (relatedTarget.className) {
             changeHoveredCell(null);
-            return;
         }
-        this.thumbnailTimeout = window.setTimeout(() => changeHoveredCell(null), 500);
     }
 
     public onGroupSelected(eventData: PlotSelectionEvent) {
@@ -278,8 +281,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         onPointClicked={this.onPointClicked}
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
-                        onPlotHovered={this.onPlotHovered}
-                        onPlotUnhovered={this.onPlotUnhovered}
+                        onPointHovered={this.onPointHovered}
+                        onPointUnhovered={this.onPointUnhovered}
                         xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}
