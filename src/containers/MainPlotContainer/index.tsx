@@ -110,19 +110,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     
     private thumbnailTimeout = 0;
 
-    public componentDidMount() {
-        // Prevent thumbnails from showing when hovering over histograms
-        const attachPlotAreaListener = () => {
-            // Rectangle bounded by the x and y axes, not including the histogram axes
-            const innerPlotArea = document.getElementsByClassName("xy")[0].getElementsByClassName("nsewdrag")[0];
-            innerPlotArea.addEventListener("mouseleave", () => {
-                this.props.changeHoveredCell(null);
-            });
-        }
-        // Need a delay for the plot to finish rendering before attaching the event listener
-        setTimeout(attachPlotAreaListener, 500);
-    }
-
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
         const { points } = clicked;
@@ -155,13 +142,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             pageY: event.pageY,
         });
         points.forEach((point: any) => {
-            if (point.data.name === SCATTER_PLOT_NAME ) {
-                if (!includes(filtersToExclude, point.fullData.name)) {
-                    window.clearTimeout(this.thumbnailTimeout);
-                    changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
-                } else {
-                    changeHoveredCell(null);
-                }
+            if (point.data.name === SCATTER_PLOT_NAME && !includes(filtersToExclude, point.fullData.name) ) {
+                window.clearTimeout(this.thumbnailTimeout);
+                changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
+            } else {
+                changeHoveredCell(null);
             }
         });
     }
