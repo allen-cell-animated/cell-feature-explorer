@@ -101,11 +101,14 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     constructor(props: MainPlotContainerProps) {
         super(props);
         this.onPointClicked = this.onPointClicked.bind(this);
-        this.onPlotHovered = this.onPlotHovered.bind(this);
+        this.onPointHovered = this.onPointHovered.bind(this);
+        this.onPointUnhovered = this.onPointUnhovered.bind(this);
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
     }
+    
+    private thumbnailTimeout = 0;
 
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
@@ -127,7 +130,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     // TODO: retype once plotly has id and fullData types
-    public onPlotHovered(hovered: any) {
+    public onPointHovered(hovered: any) {
         const { points, event } = hovered;
         const {
             filtersToExclude,
@@ -139,14 +142,17 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             pageY: event.pageY,
         });
         points.forEach((point: any) => {
-            if (point.data.name === SCATTER_PLOT_NAME ) {
-                if (!includes(filtersToExclude, point.fullData.name)) {
-                    changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
-                } else {
-                    changeHoveredCell(null);
-                }
+            if (point.data.name === SCATTER_PLOT_NAME && !includes(filtersToExclude, point.fullData.name) ) {
+                window.clearTimeout(this.thumbnailTimeout);
+                changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
+            } else {
+                changeHoveredCell(null);
             }
         });
+    }
+
+    public onPointUnhovered() {
+        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredCell(null), 500);
     }
 
     public onPlotUnhovered({relatedTarget}: any) {
@@ -184,7 +190,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
         return (
-            hoveredPointData &&
+            hoveredPointData && 
             galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
@@ -261,7 +267,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         onPointClicked={this.onPointClicked}
                         annotations={annotations}
                         onGroupSelected={this.onGroupSelected}
-                        onPlotHovered={this.onPlotHovered}
+                        onPointHovered={this.onPointHovered}
+                        onPointUnhovered={this.onPointUnhovered}
                         xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}
