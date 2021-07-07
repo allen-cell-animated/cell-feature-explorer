@@ -14,6 +14,7 @@ import {
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
 } from "../../constants/index";
 import {
     getLabelsPerCell,
@@ -76,6 +77,7 @@ export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] =
 
 export const getInteractivePanelData = createSelector(
     [getSortedCellLineDefs, getFiltersToExclude, getColors],
+<<<<<<< HEAD
     (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
         const structureNames = disambiguateStructureNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
@@ -86,6 +88,16 @@ export const getInteractivePanelData = createSelector(
                 checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],
                 id: proteinName,
+=======
+    (cellLines, filtersToExclude, structureColors: string[]): PanelData[] => {
+        return map(cellLines, (cellLine: CellLineDef, index: number) => {
+            const structureName: string = cellLine[CELL_LINE_DEF_STRUCTURE_KEY];
+            const total: number = cellLine[CELL_COUNT_KEY] || 0;
+            return {
+                checked: !includes(filtersToExclude, structureName),
+                color: structureColors[index],
+                id: structureName,
+>>>>>>> Display structure names instead of protein names
                 name: structureName,
                 total,
             };
