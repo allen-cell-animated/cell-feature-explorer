@@ -14,6 +14,7 @@ import {
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
+    CELL_LINE_DEF_STRUCTURE_KEY,
 } from "../../constants/index";
 import {
     getLabelsPerCell,
@@ -59,15 +60,15 @@ const getColors = createSelector(
 
 export const getInteractivePanelData = createSelector(
     [getSortedCellLineDefs, getFiltersToExclude, getColors],
-    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+    (cellLines, filtersToExclude, structureColors: string[]): PanelData[] => {
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
-            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
+            const structureName: string = cellLine[CELL_LINE_DEF_STRUCTURE_KEY];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
-                checked: !includes(filtersToExclude, proteinName),
-                color: proteinColors[index],
-                id: proteinName,
-                name: proteinName,
+                checked: !includes(filtersToExclude, structureName),
+                color: structureColors[index],
+                id: structureName,
+                name: structureName,
                 total,
             };
         });
