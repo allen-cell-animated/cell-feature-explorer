@@ -60,14 +60,15 @@ const getColors = createSelector(
 
 export const getInteractivePanelData = createSelector(
     [getSortedCellLineDefs, getFiltersToExclude, getColors],
-    (cellLines, filtersToExclude, structureColors: string[]): PanelData[] => {
+    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
+            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
             const structureName: string = cellLine[CELL_LINE_DEF_STRUCTURE_KEY];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
                 checked: !includes(filtersToExclude, structureName),
-                color: structureColors[index],
-                id: structureName,
+                color: proteinColors[index],
+                id: proteinName,
                 name: structureName,
                 total,
             };
