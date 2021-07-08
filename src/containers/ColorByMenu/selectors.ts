@@ -66,7 +66,7 @@ export const getInteractivePanelData = createSelector(
             const structureName: string = cellLine[CELL_LINE_DEF_STRUCTURE_KEY];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
-                checked: !includes(filtersToExclude, structureName),
+                checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],
                 id: proteinName,
                 name: structureName,
