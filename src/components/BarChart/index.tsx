@@ -33,7 +33,7 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
             {map(panelData, (item) => {
                 return (
                     <InteractiveRow
-                        key={item.name}
+                        key={item.id}
                         closeable={closeable}
                         checked={item.checked}
                         hideable={hideable}
