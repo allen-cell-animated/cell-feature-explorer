@@ -24,8 +24,7 @@ describe("Metadata branch selectors", () => {
             const result: string[] = getProteinNames(state).sort((a: string, b: string) => {
                 return b > a ? 1 : -1;
             });
-            expect(result).to.deep.equal(["Nucleophosmin"]);
-            
+            expect(result).to.deep.equal(["Nucleophosmin", "Delta-actin", "Beta-catenin", "Beta-actin", "Alpha-actinin-1"]);
         });
     });
 
