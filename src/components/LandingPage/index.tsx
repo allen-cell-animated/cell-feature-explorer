@@ -48,7 +48,7 @@ const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
                 <Row className={styles.lightSection}>
                     <Col className={styles.section}>
                         <h2 className={styles.subtitle}>Cell features in our data </h2>
-                        <p>
+                        <div className={styles.paragraph}>
                             hiPS cells from the{" "}
                             <a
                                 target="_blank"
@@ -71,8 +71,8 @@ const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
                                     tagging
                                 </li>
                             </ul>
-                        </p>
-                        <p>
+                        </div>
+                        <div className={styles.paragraph}>
                             The fluorescent channels are segmented to demarcate structures and to
                             define the boundaries of individual cells. The segmented structures are
                             then measured, and the data for these measurements, as well as cell and
@@ -88,7 +88,7 @@ const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
                             ) are made available for plotting at the top of the CFE tool page. The
                             beautiful cells and the FOVs from which they were segmented can be
                             explored in a 3D viewer at the bottom of the CFE tool page.
-                        </p>
+                        </div>
                     </Col>
                 </Row>
             </Content>
