@@ -24,7 +24,7 @@ describe("ColorByMenu selectors", () => {
                     checked: true,
                     color: "#bbcd22",
                     id: "Nucleophosmin",
-                    name: "Nucleophosmin",
+                    name: "Nucleolus (Granular Component)",
                     total: 3470,
                 },
             ];
