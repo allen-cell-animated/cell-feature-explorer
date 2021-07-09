@@ -14,7 +14,6 @@ import {
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
     PROTEIN_NAME_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
 } from "../../constants/index";
 import {
     getLabelsPerCell,
