@@ -234,7 +234,7 @@ export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs]
         return [
             {
                 key: PROTEIN_NAME_KEY,
-                displayName: "Protein",
+                displayName: "Structure",
                 discrete: true,
                 unit: null,
             },
