@@ -7,7 +7,7 @@ import {
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
     RECEIVE_CELL_LINE_DATA,
-    RECEIVE_MEASURED_FEATURE_NAMES,
+    RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
@@ -72,12 +72,12 @@ export function receiveMetadata(payload: MetadataStateBranch): ReceiveAction {
     };
 }
 
-export function receiveMeasuredFeatureNames(
+export function receiveMeasuredFeatureDefs(
     payload: MetadataStateBranch[]
 ): ReceiveMeasuredFeaturesAction {
     return {
         payload,
-        type: RECEIVE_MEASURED_FEATURE_NAMES,
+        type: RECEIVE_MEASURED_FEATURE_DEFS,
     };
 }
 

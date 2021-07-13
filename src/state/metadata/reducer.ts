@@ -9,7 +9,7 @@ import {
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
     RECEIVE_CELL_LINE_DATA,
-    RECEIVE_MEASURED_FEATURE_NAMES,
+    RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
@@ -118,9 +118,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
             showSmallScreenWarning: action.payload,
         }),
     },
-    [RECEIVE_MEASURED_FEATURE_NAMES]: {
+    [RECEIVE_MEASURED_FEATURE_DEFS]: {
         accepts: (action: AnyAction): action is ReceiveMeasuredFeaturesAction =>
-            action.type === RECEIVE_MEASURED_FEATURE_NAMES,
+            action.type === RECEIVE_MEASURED_FEATURE_DEFS,
         perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
             ...state,
             measuredFeaturesDefs: action.payload,

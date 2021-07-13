@@ -132,7 +132,10 @@ class FirebaseRequest implements ImageDataset {
             .get();
         const dataset: MeasuredFeatureDef[] = [];
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
-            dataset.push(doc.data() as MeasuredFeatureDef);
+            const data = doc.data()
+            const key = data.key;
+            const index = this.featuresDisplayOrder.indexOf(key);
+            dataset[index] = doc.data() as MeasuredFeatureDef
         });
         return dataset;
     };
