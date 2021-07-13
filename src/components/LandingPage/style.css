@@ -68,7 +68,7 @@
     line-height: 1.75;
     color: var(--text-gray);
 }
-.light-section p {
+.light-section .paragraph {
     padding: 0 20px;
 }
 

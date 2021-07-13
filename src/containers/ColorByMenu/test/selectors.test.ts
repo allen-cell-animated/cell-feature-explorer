@@ -4,6 +4,7 @@ import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
 import { State } from "../../../state/types";
 import {
+    disambiguateStructureNames,
     getInteractivePanelData,
     getListOfCellIdsByDownloadConfig,
     getSelectionPanelData
@@ -14,6 +15,30 @@ describe("ColorByMenu selectors", () => {
 
     const newMockState = mockState;
 
+    describe("disambiguateStructureNames", () => {
+        it("attaches the protein name to each non-unique structure name", () => {
+            const result = disambiguateStructureNames(newMockState.metadata.cellLineDefs);
+            
+            /* Without disambiguation, structure names would be:
+            [
+                "Nucleolus (Granular Component)",
+                "Actin filaments",
+                "Actin filaments",
+                "Actin filaments",
+                "Adherens junctions",
+            ]
+            */
+            const expected = [
+                "Nucleolus (Granular Component)",
+                "Actin filaments (Alpha-actinin-1)",
+                "Actin filaments (Beta-actin)",
+                "Actin filaments (Delta-actin)",
+                "Adherens junctions",
+            ];
+            expect(result).to.deep.equal(expected);
+        });
+    });
+    
     describe("getInteractivePanelData", () => {
 
         it("returns an set of props for each protein in state", () => {
@@ -23,8 +48,36 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#bbcd22",
+                    id: "Alpha-actinin-1",
+                    name: "Actin filaments (Alpha-actinin-1)",
+                    total: 1809,
+                },
+                {
+                    checked: true,
+                    color: "#ff9900",
+                    id: "Beta-actin",
+                    name: "Actin filaments (Beta-actin)",
+                    total: 1039,
+                },
+                {
+                    checked: true,
+                    color: "#FFEE1E",
+                    id: "Beta-catenin",
+                    name: "Adherens junctions",
+                    total: 2343,
+                },
+                {
+                    checked: true,
+                    color: "#FD92B6",
+                    id: "Delta-actin",
+                    name: "Actin filaments (Delta-actin)",
+                    total: 2003,
+                },
+                {
+                    checked: true,
+                    color: "#33a02c",
                     id: "Nucleophosmin",
-                    name: "Nucleophosmin",
+                    name: "Nucleolus (Granular Component)",
                     total: 3470,
                 },
             ];

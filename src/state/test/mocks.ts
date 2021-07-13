@@ -52,7 +52,36 @@ const cellLineDefs = [
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
         [CELL_COUNT_KEY]: 3470,
     },
+    {
+        [CELL_LINE_DEF_NAME_KEY]: "AICS-7",
+        [CELL_LINE_DEF_PROTEIN_KEY]: "Alpha-actinin-1",
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
+        [PROTEIN_NAME_KEY]: "Alpha-actinin-1",
+        [CELL_COUNT_KEY]: 1809,
+    },
+    {
+        [CELL_LINE_DEF_NAME_KEY]: "AICS-16",
+        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-actin",
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
+        [PROTEIN_NAME_KEY]: "Beta-actin",
+        [CELL_COUNT_KEY]: 1039,
+    },
+    {
+        [CELL_LINE_DEF_NAME_KEY]: "AICS-999",
+        [CELL_LINE_DEF_PROTEIN_KEY]: "Delta-actin",
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
+        [PROTEIN_NAME_KEY]: "Delta-actin",
+        [CELL_COUNT_KEY]: 2003,
+    },
+    {
+        [CELL_LINE_DEF_NAME_KEY]: "AICS-58",
+        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-catenin",
+        [CELL_LINE_DEF_STRUCTURE_KEY]: "Adherens junctions",
+        [PROTEIN_NAME_KEY]: "Beta-catenin",
+        [CELL_COUNT_KEY]: 2343,
+    },
 ];
+
 const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
