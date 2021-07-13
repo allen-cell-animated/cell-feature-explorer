@@ -57,17 +57,36 @@ const getColors = createSelector(
                     includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR);
     });
 
+export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] => {
+    const proteinNames: string[] = cellLines.map(cellLine => cellLine.structureProteinName);
+    const structureNames: string[] = cellLines.map(cellLine => cellLine.StructureId_Name);
+    
+    const repeatedNames: string[] = structureNames.filter((name, i) => {
+        return structureNames.indexOf(name) !== i;
+    });
+    const disambiguatedNames: string[] = structureNames.map((name, i) => {
+        if (repeatedNames.includes(name)) {
+            return `${name} (${proteinNames[i]})`;
+        }
+        return name;
+    });
+
+    return disambiguatedNames;
+};
+
 export const getInteractivePanelData = createSelector(
     [getSortedCellLineDefs, getFiltersToExclude, getColors],
     (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+        const structureNames = disambiguateStructureNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
             const proteinName: string = cellLine[PROTEIN_NAME_KEY];
+            const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
                 checked: !includes(filtersToExclude, proteinName),
                 color: proteinColors[index],
                 id: proteinName,
-                name: proteinName,
+                name: structureName,
                 total,
             };
         });
