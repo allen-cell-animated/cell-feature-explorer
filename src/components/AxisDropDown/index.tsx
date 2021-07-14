@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Select, Tooltip } from "antd";
 import { SelectValue } from "antd/es/select";
 import React from "react";
 import {
@@ -15,6 +15,7 @@ interface AxisDropDownProps {
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     value: string;
     options: MeasuredFeatureDef[];
+    tooltip: string;
 }
 
 const Option = Select.Option;
@@ -36,29 +37,24 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
     }
 
     public render() {
-        const {
-            axisId,
-            value,
-            options,
-        } = this.props;
-
+        const { axisId, value, options, tooltip } = this.props;
         return (
             <div className={styles[axisId]}>
-                <Select
-                    onChange={this.handleChange}
-                    value={value}
-                >
-                    {options.map((option) => {
-                        return (
-                            <Option
-                                value={option.key}
-                                key={option.key}
-                            >
-                                {option.displayName}
-                            </Option>
-                        );
-                    })}
-                </Select>
+                <Tooltip title={tooltip}>
+                    <Select
+                        onChange={this.handleChange}
+                        value={value}
+                    >
+                        {options.map((option) => {
+                            return (
+                                <Option value={option.key} key={option.key}>
+                                    {option.displayName}
+                                </Option>
+                            );
+                        })}
+                    </Select>
+
+                </Tooltip>
             </div>
         );
     }

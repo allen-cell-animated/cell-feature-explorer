@@ -51,6 +51,7 @@ export interface MeasuredFeatureDef {
     key: string;
     unit?: string;
     options: MeasuredFeaturesOptions;
+    tooltip: string;
 }
 
 // DATA HELD IN STATE TYPINGS
