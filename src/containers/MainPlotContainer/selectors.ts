@@ -237,6 +237,7 @@ export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs]
                 displayName: "Structure",
                 discrete: true,
                 unit: null,
+                tooltip: "Name of the cellular structure that has been fluorescently labeled in each cell line",
             },
             ...featureDefs,
         ];
