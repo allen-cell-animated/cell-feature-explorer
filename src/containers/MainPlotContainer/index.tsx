@@ -52,7 +52,7 @@ import {
     getYDisplayOptions,
     getYTickConversion
 } from "./selectors";
-import { getAxisToolTip } from "../../state/selection/selectors";
+import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
 const styles = require("./style.css");
 
@@ -246,7 +246,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         value={xDropDownValue}
                         options={xDropDownOptions}
                         handleChangeAxis={handleChangeAxis}
-                        tooltip={getAxisToolTip(xDropDownValue, xDropDownOptions)}
+                        tooltip={getFeatureDefTooltip(xDropDownValue, xDropDownOptions)}
                     />
                     <div className={styles.glossaryLink}>
                         <a
@@ -262,7 +262,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         value={yDropDownValue}
                         options={yDropDownOptions}
                         handleChangeAxis={handleChangeAxis}
-                        tooltip={getAxisToolTip(yDropDownValue, yDropDownOptions)}
+                        tooltip={getFeatureDefTooltip(yDropDownValue, yDropDownOptions)}
                     />
 
                     <MainPlot

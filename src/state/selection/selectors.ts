@@ -73,7 +73,7 @@ export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeV
 
 // not truly a selector, it just seemed cleaner to make this one function instead of 3
 // (2 for each axis and one for the color by)
-export function getAxisToolTip(key: string, options: MeasuredFeatureDef[]): string {
+export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[]): string {
         const data = find(options, {key: key})
         if (data) {
             return data.tooltip

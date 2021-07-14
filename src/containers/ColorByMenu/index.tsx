@@ -28,7 +28,7 @@ import {
 import metadataStateBranch from "../../state/metadata";
 import { MeasuredFeatureDef } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
-import { getAxisToolTip } from "../../state/selection/selectors";
+import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
 import {
     BoolToggleAction,
@@ -265,7 +265,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                             value={colorBy}
                             options={colorByMenuOptions}
                             handleChangeAxis={handleChangeAxis}
-                            tooltip={getAxisToolTip(colorBy, colorByMenuOptions)}
+                            tooltip={getFeatureDefTooltip(colorBy, colorByMenuOptions)}
                         />
                     </Col>
                 </Row>
