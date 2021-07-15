@@ -93,10 +93,13 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                         }}
                         dot={true}
                     />
-                    <Tooltip placement="right" title={tooltip}>
+                    {gene ? (
+                        <Tooltip placement="right" title={tooltip}>
+                            <span className={styles.label}>{name}</span>
+                        </Tooltip>
+                    ) : (
                         <span className={styles.label}>{name}</span>
-                    </Tooltip>
-
+                    )}
                 </div>
                 <div>
                     <span className={styles.label}>{total}</span>
