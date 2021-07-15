@@ -7,7 +7,7 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveMeasuredFeatureNames, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
+import { receiveAvailableDatasets, receiveMeasuredFeatureDefs, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
 import { getShowSmallScreenWarning } from "./selectors";
 
 import {
@@ -63,7 +63,7 @@ const requestFeatureDataLogic = createLogic({
         // const state = getState();
         const actions: AnyAction[] = [];
         const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
-        actions.push(receiveMeasuredFeatureNames(measuredFeatureDefs));
+        actions.push(receiveMeasuredFeatureDefs(measuredFeatureDefs));
         
         return imageDataSet
             .getFeatureData()
