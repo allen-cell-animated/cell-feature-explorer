@@ -48,13 +48,13 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps, {}>
                         {options.map((option) => {
                             return (
                                 <Option value={option.key} key={option.key}>
-                                    {option.displayName}
+                                  {option.displayName} {option.unit ? `(${option.unit})` : ""}
                                 </Option>
                             );
                         })}
                     </Select>
-
                 </Tooltip>
+
             </div>
         );
     }

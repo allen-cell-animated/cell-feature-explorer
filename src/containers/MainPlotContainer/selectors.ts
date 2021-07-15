@@ -234,7 +234,7 @@ export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs]
         return [
             {
                 key: PROTEIN_NAME_KEY,
-                displayName: "Structure",
+                displayName: "Labeled structure name",
                 discrete: true,
                 unit: null,
                 tooltip: "Name of the cellular structure that has been fluorescently labeled in each cell line",
