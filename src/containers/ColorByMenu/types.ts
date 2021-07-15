@@ -3,6 +3,6 @@ export interface PanelData {
     color: string;
     id: string;
     name: string;
-    gene: string;
+    gene?: string;
     total: number;
 }
