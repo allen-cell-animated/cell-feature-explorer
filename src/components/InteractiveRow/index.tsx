@@ -64,14 +64,12 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             handleDownload,
         } = this.props;
 
-        const tooltip = () => {
-            return (
-                <div>
-                    Protein: {id}<br/>
-                    Gene: {gene}
-                </div>
-            )
-        }
+        const tooltip = (
+            <div>
+                Protein: {id}<br/>
+                Gene: {gene}
+            </div>
+        )
 
         return (
             <div
