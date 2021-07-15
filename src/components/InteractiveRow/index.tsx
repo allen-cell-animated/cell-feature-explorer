@@ -20,6 +20,7 @@ interface InteractiveRowProps {
     gene?: string;
     checked?: boolean;
     closeable?: boolean;
+    showTooltips: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
     hideable?: boolean;
@@ -52,6 +53,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         const {
             closeable,
             hideable,
+            showTooltips,
             id,
             color,
             name,
@@ -91,7 +93,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                         }}
                         dot={true}
                     />
-                    {gene ? (
+                    {showTooltips ? (
                         <Tooltip placement="right" title={tooltip}>
                             <span className={styles.label}>{name}</span>
                         </Tooltip>
