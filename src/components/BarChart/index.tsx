@@ -41,6 +41,7 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
                         name={item.name}
                         total={item.total}
                         id={item.id}
+                        gene={item.gene}
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
                         handleDownload={handleDownload}
