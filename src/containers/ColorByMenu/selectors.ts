@@ -105,7 +105,6 @@ export const getSelectionPanelData = createSelector(
                 color,
                 id: name.toString(),
                 name: displayName.toString(),
-                gene: "",
                 total: selectedSetTotals[index],
             };
         });
