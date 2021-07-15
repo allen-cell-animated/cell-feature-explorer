@@ -7,14 +7,18 @@ import {
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
-import { PanelData } from "../../containers/ColorByMenu/types";
 import { DownloadConfig } from "../../state/selection/types";
 import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 const styles = require("./style.css");
 
 interface InteractiveRowProps {
-    item: PanelData;
+    color: string;
+    id: string;
+    name: string;
+    total: number;
+    gene: string;
+    checked?: boolean;
     closeable?: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
@@ -48,21 +52,24 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         const {
             closeable,
             hideable,
-            item,
+            id,
+            color,
+            name,
+            gene,
+            total,
             onBarClicked,
+            checked,
             downloadUrls,
             downloadConfig,
             handleDownload,
         } = this.props;
-
-        const { id, checked, color, name, total, gene} = item;
 
         const tooltip = (
             <div>
                 Protein: {id}<br/>
                 Gene: {gene}
             </div>
-        );
+        )
 
         return (
             <div

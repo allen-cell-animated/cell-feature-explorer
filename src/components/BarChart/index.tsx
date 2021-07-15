@@ -34,9 +34,14 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
                 return (
                     <InteractiveRow
                         key={item.id}
-                        item={item}
                         closeable={closeable}
+                        checked={item.checked}
                         hideable={hideable}
+                        color={item.color as string}
+                        name={item.name}
+                        total={item.total}
+                        id={item.id}
+                        gene={item.gene}
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
                         handleDownload={handleDownload}
