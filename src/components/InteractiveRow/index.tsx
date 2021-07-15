@@ -17,7 +17,7 @@ interface InteractiveRowProps {
     id: string;
     name: string;
     total: number;
-    gene: string;
+    gene?: string;
     checked?: boolean;
     closeable?: boolean;
     downloadConfig: DownloadConfig;
@@ -69,7 +69,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                 Protein: {id}<br/>
                 Gene: {gene}
             </div>
-        )
+        );
 
         return (
             <div
