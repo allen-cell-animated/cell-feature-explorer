@@ -141,11 +141,6 @@ class JsonRequest implements ImageDataset {
     };
 
     public getMeasuredFeatureDefs = () => {
-        if (!this.datasetInfo) {
-            // or reject?
-            return Promise.resolve([]);
-        }
-
         if (this.featureDefinitions && this.featureDefinitions.length > 0) {
             return Promise.resolve(this.featureDefinitions);
         }
@@ -173,7 +168,7 @@ class JsonRequest implements ImageDataset {
         }
 
         // if display order is not provided, then use data order as display order.
-        if (this.datasetInfo?.featuresDisplayOrder.length === 0) {
+        if (this.datasetInfo.featuresDisplayOrder.length === 0) {
             this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
         }
         const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
