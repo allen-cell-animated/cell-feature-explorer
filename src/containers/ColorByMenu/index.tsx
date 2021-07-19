@@ -108,7 +108,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
         // this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
         // this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
-        this.renderProteinPanel = this.renderProteinPanel.bind(this);
+        this.renderTaggedStructuresPanel = this.renderTaggedStructuresPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
@@ -230,6 +230,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                     <BarChart
                         closeable={true}
                         hideable={false}
+                        showTooltips={false}
                         handleCloseSelectionSet={handleCloseSelectionSet}
                         panelData={selectionSetsPanelData}
                         downloadUrls={downloadUrls}
@@ -241,7 +242,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         );
     }
 
-    public renderProteinPanel() {
+    public renderTaggedStructuresPanel() {
         const {
             filtersToExclude,
             someProteinsOff,
@@ -299,6 +300,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
 
                     <BarChart
                         closeable={false}
+                        showTooltips={true}
                         panelData={proteinPanelData}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
@@ -327,7 +329,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         key={panelKeys[0]}
                         header="Data grouped by tagged structures"
                     >
-                        {this.renderProteinPanel()}
+                        {this.renderTaggedStructuresPanel()}
                     </Panel>
                     <Panel
                         key={panelKeys[1]}

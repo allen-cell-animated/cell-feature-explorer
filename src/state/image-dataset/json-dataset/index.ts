@@ -11,6 +11,7 @@ import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_LINE_NAME_KEY,
     CELL_COUNT_KEY,
+    CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
 import {
     CELL_LINE_DEF_NAME_JSON_KEY,
@@ -27,16 +28,27 @@ import {
 
 import { ImageDataset } from "../types";
 
+interface DatasetInfo {
+    name: string;
+    version: string;
+    id: string;
+    image: string;
+    description: string;
+    userData: { [propName: string]: any };
+    featureDefsPath: string;
+    featuresDataPath: string;
+    cellLineDataPath: string;
+    albumPath: string;
+    thumbnailRoot: string;
+    downloadRoot: string;
+    volumeViewerDataRoot: string;
+    defaultXAxis: string;
+    defaultYAxis: string;
+    featuresDisplayOrder: string[];
+    featuresDataOrder: string[];
+}
+
 class JsonRequest implements ImageDataset {
-    private albumPath: string;
-    private featureDefsPath: string;
-    private featuresDataPath: string;
-    private cellLineDataPath: string;
-    private thumbnailRoot: string;
-    private downloadRoot: string;
-    private volumeViewerDataRoot: string;
-    private featuresDisplayOrder: string[];
-    private featuresDataOrder: string[];
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
@@ -45,16 +57,29 @@ class JsonRequest implements ImageDataset {
 
     private dataPromise?: Promise<DataForPlot>;
 
+    private datasetInfo: DatasetInfo;
+
     constructor() {
-        this.albumPath = "";
-        this.featureDefsPath = "";
-        this.featuresDataPath = "";
-        this.cellLineDataPath = "";
-        this.thumbnailRoot = "";
-        this.downloadRoot = "";
-        this.volumeViewerDataRoot = "";
-        this.featuresDisplayOrder = [];
-        this.featuresDataOrder = [];
+        this.datasetInfo = {
+            name: "",
+            version: "",
+            id: "",
+            image: "",
+            description: "",
+            userData: {},
+            featureDefsPath: "",
+            featuresDataPath: "",
+            cellLineDataPath: "",
+            albumPath: "",
+            thumbnailRoot: "",
+            downloadRoot: "",
+            volumeViewerDataRoot: "",
+            defaultXAxis: "",
+            defaultYAxis: "",
+            featuresDisplayOrder: [],
+            featuresDataOrder: [],
+        };
+
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
         this.listOfDatasetsDoc =
@@ -70,15 +95,7 @@ class JsonRequest implements ImageDataset {
     public selectDataset = (manifestPath: string) => {
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
-            this.featureDefsPath = data.featureDefsPath;
-            this.featuresDataPath = data.featuresDataPath;
-            this.cellLineDataPath = data.cellLineDataPath;
-            this.thumbnailRoot = data.thumbnailRoot;
-            this.downloadRoot = data.downloadRoot;
-            this.volumeViewerDataRoot = data.volumeViewerDataRoot;
-            this.featuresDisplayOrder = data.featuresDisplayOrder;
-            this.featuresDataOrder = data.featuresDataOrder;
-            this.albumPath = data.albumPath;
+            this.datasetInfo = data as DatasetInfo;
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
@@ -98,13 +115,14 @@ class JsonRequest implements ImageDataset {
             return Promise.resolve(this.cellLines);
         }
 
-        return this.getJson(this.cellLineDataPath)
+        return this.getJson(this.datasetInfo.cellLineDataPath)
             .then((data) => {
                 const cellLines = map(data, (datum: MetadataStateBranch) => {
                     return {
                         [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
                         [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
+                        [CELL_LINE_DEF_GENE_KEY]: datum[CELL_LINE_DEF_GENE_KEY],
                         [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
                     };
                 });
@@ -130,7 +148,7 @@ class JsonRequest implements ImageDataset {
         }
 
         // make sure we have the feature defs first.
-        return this.getJson(this.featureDefsPath).then((featureDefs) => {
+        return this.getJson(this.datasetInfo.featureDefsPath).then((featureDefs) => {
             this.featureDefinitions = featureDefs;
             return featureDefs;
         });
@@ -144,74 +162,88 @@ class JsonRequest implements ImageDataset {
         // ASSUME cell line defs are already loaded by the time the feature data arrives
 
         const featureKeys = this.featureDefinitions.map((ele) => ele.key);
-        if (!this.featuresDataOrder || this.featuresDataOrder.length === 0) {
-            this.featuresDataOrder = featureKeys;
+        if (
+            !this.datasetInfo.featuresDataOrder ||
+            this.datasetInfo.featuresDataOrder.length === 0
+        ) {
+            this.datasetInfo.featuresDataOrder = featureKeys;
         }
-        const dataMappedByMeasuredFeatures = featureKeys.reduce((acc, featureName: string) => {
-            const initArray: number[] = [];
-            acc[featureName] = initArray;
-            return acc;
-        }, {} as MappingOfMeasuredValuesArrays);
+
+        // if display order is not provided, then use data order as display order.
+        if (this.datasetInfo.featuresDisplayOrder.length === 0) {
+            this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
+        }
+        const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
+            (acc, featureName: string) => {
+                const initArray: number[] = [];
+                acc[featureName] = initArray;
+                return acc;
+            },
+            {} as MappingOfMeasuredValuesArrays
+        );
+
         const proteinArray: string[] = [];
         const thumbnails: string[] = [];
         const ids: string[] = [];
-        this.dataPromise = this.getJson(this.featuresDataPath).then((featureDataArray) => {
-            featureDataArray.forEach((el: any) => {
-                // FILE INFO
-                // number of file info property names must be same as number of file_info entries in data
-                if (FILE_INFO_KEYS.length !== el.file_info.length) {
-                    throw new Error("Bad number of file_info entries in data");
-                }
-                // convert file_info array to obj
-                const fileInfo = {} as FileInfo;
-                el.file_info.forEach((f: string, i: number) => {
-                    const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
+        this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
+            (featureDataArray) => {
+                featureDataArray.forEach((el: any) => {
+                    // FILE INFO
+                    // number of file info property names must be same as number of file_info entries in data
+                    if (FILE_INFO_KEYS.length !== el.file_info.length) {
+                        throw new Error("Bad number of file_info entries in data");
+                    }
+                    // convert file_info array to obj
+                    const fileInfo = {} as FileInfo;
+                    el.file_info.forEach((f: string, i: number) => {
+                        const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
 
-                    fileInfo[key] = f as never;
+                        fileInfo[key] = f as never;
+                    });
+                    this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
+
+                    // FEATURE DATA
+                    // number of feature defs must be same as number of features
+                    if (this.featureDefinitions.length !== el.features.length) {
+                        throw new Error("Bad number of feature entries in data");
+                    }
+
+                    const cellLine = find(this.cellLines, {
+                        [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
+                    });
+                    if (!cellLine) {
+                        throw new Error(`Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`);
+                    }
+                    // augment file info with protein name
+                    fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
+                    // increment count in cell line
+                    if (cellLine[CELL_COUNT_KEY] !== undefined) {
+                        (cellLine[CELL_COUNT_KEY] as number)++;
+                    } else {
+                        cellLine[CELL_COUNT_KEY] = 1;
+                    }
+
+                    el.features.forEach((value: number, index: number) => {
+                        const arrayOfValues = dataMappedByMeasuredFeatures[
+                            this.datasetInfo.featuresDataOrder[index]
+                        ] as number[];
+                        arrayOfValues.push(value);
+                    }, {});
+
+                    proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
+                    thumbnails.push(fileInfo.thumbnailPath);
+                    ids.push(fileInfo[CELL_ID_KEY].toString());
                 });
-                this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
-
-                // FEATURE DATA
-                // number of feature defs must be same as number of features
-                if (this.featureDefinitions.length !== el.features.length) {
-                    throw new Error("Bad number of feature entries in data");
-                }
-
-                const cellLine = find(this.cellLines, {
-                    [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
-                });
-                if (!cellLine) {
-                    throw new Error(`Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`);
-                }
-                // augment file info with protein name
-                fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
-                // increment count in cell line
-                if (cellLine[CELL_COUNT_KEY] !== undefined) {
-                    (cellLine[CELL_COUNT_KEY] as number)++;
-                } else {
-                    cellLine[CELL_COUNT_KEY] = 1;
-                }
-
-                el.features.forEach((value: number, index: number) => {
-                    const arrayOfValues = dataMappedByMeasuredFeatures[
-                        this.featuresDataOrder[index]
-                    ] as number[];
-                    arrayOfValues.push(value);
-                }, {});
-
-                proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
-                thumbnails.push(fileInfo.thumbnailPath);
-                ids.push(fileInfo[CELL_ID_KEY].toString());
-            });
-            return {
-                values: dataMappedByMeasuredFeatures,
-                labels: {
-                    [PROTEIN_NAME_KEY]: proteinArray,
-                    thumbnailPaths: thumbnails,
-                    [ARRAY_OF_CELL_IDS_KEY]: ids,
-                },
-            };
-        });
+                return {
+                    values: dataMappedByMeasuredFeatures,
+                    labels: {
+                        [PROTEIN_NAME_KEY]: proteinArray,
+                        thumbnailPaths: thumbnails,
+                        [ARRAY_OF_CELL_IDS_KEY]: ids,
+                    },
+                };
+            }
+        );
         return this.dataPromise;
     };
 
@@ -235,10 +267,10 @@ class JsonRequest implements ImageDataset {
     };
 
     public getAlbumData = () => {
-        if (!this.albumPath) {
+        if (!this.datasetInfo.albumPath) {
             return Promise.resolve([]);
         }
-        return this.getJson(this.albumPath);
+        return this.getJson(this.datasetInfo.albumPath);
     };
 }
 

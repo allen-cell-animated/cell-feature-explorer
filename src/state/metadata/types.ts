@@ -1,6 +1,7 @@
 import {
     CELL_COUNT_KEY,
     CELL_ID_KEY,
+    CELL_LINE_DEF_GENE_KEY,
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
@@ -24,6 +25,7 @@ export interface CellLineDef {
     [CELL_LINE_DEF_NAME_KEY]: string;
     [CELL_LINE_DEF_STRUCTURE_KEY]: string;
     [PROTEIN_NAME_KEY]: string; // changed on read from [CELL_LINE_DEF_PROTEIN_KEY]
+    [CELL_LINE_DEF_GENE_KEY]: string;
     [CELL_COUNT_KEY]?: number;
 }
 

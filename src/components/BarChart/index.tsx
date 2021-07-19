@@ -7,6 +7,7 @@ import { DownloadConfig } from "../../state/selection/types";
 import InteractiveRow from "../InteractiveRow";
 
 interface BarChartProps {
+    showTooltips: boolean;
     closeable: boolean;
     hideable: boolean;
     panelData: PanelData[];
@@ -19,6 +20,7 @@ interface BarChartProps {
 
 const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
     const {
+        showTooltips,
         closeable,
         downloadUrls,
         handleCloseSelectionSet,
@@ -34,6 +36,7 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
                 return (
                     <InteractiveRow
                         key={item.id}
+                        showTooltips={showTooltips}
                         closeable={closeable}
                         checked={item.checked}
                         hideable={hideable}
@@ -41,6 +44,7 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
                         name={item.name}
                         total={item.total}
                         id={item.id}
+                        gene={item.gene}
                         onBarClicked={onBarClicked}
                         handleClose={handleCloseSelectionSet}
                         handleDownload={handleDownload}
