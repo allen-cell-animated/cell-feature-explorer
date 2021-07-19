@@ -8,26 +8,14 @@ import {
     OBS_MEMBRANE_NAMES,
     OBS_STRUCTURE_NAMES,
 } from "../../constants/index";
-import { FileInfo } from "../../state/metadata/types";
+import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
 const styles = require("./style.css");
 
-interface CellViewerProps extends FileInfo {
-    fovDownloadHref: string;
-    cellDownloadHref: string;
-    volumeViewerDataRoot: string;
-}
 
-const CellViewer: React.FunctionComponent<CellViewerProps> = ({
-    CellId,
-    structureProteinName,
-    volumeviewerPath,
-    fovDownloadHref,
-    fovVolumeviewerPath,
-    cellDownloadHref,
-    volumeViewerDataRoot,
-}) => {
-    if (!CellId || !structureProteinName) {
+const CellViewer: React.FunctionComponent<VolumeViewerProps> = (
+    props) => {
+    if (!props.cellId) {
         return null;
     }
 
@@ -53,16 +41,16 @@ const CellViewer: React.FunctionComponent<CellViewerProps> = ({
     return (
         <div className={styles.cellViewer}>
             <ImageViewerApp
-                cellId={CellId}
-                baseUrl={volumeViewerDataRoot}
-                cellPath={volumeviewerPath.split("_atlas.json")[0]} //TODO: remove this formatting from the viewer
-                fovPath={fovVolumeviewerPath.split("_atlas.json")[0]} //TODO: remove this formatting from the viewer
+                cellId={props.cellId}
+                baseUrl={props.baseUrl}
+                cellPath={props.cellPath}
+                fovDownloadHref={props.fovDownloadHref}
+                cellDownloadHref={props.cellDownloadHref}
+                fovPath={props.fovPath}
                 defaultVolumesOn={[0, 1, 2]}
                 defaultSurfacesOn={[]}
                 channelNameClean={standardizeNames}
                 appHeight="90vh"
-                fovDownloadHref={fovDownloadHref}
-                cellDownloadHref={cellDownloadHref}
             />
         </div>
     );

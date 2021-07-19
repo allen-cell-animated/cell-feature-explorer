@@ -13,14 +13,10 @@ import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
-import {
-    convertFullFieldIdToDownloadId,
-    convertSingleImageIdToDownloadId,
-    formatDownloadOfSingleImage
-} from "../../state/util";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
-import { FileInfo, SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
+import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
+import { getPropsForVolumeViewer, VolumeViewerProps } from "./selectors";
 
 const {
     Content,
@@ -34,15 +30,12 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 interface CfeProps {
     galleryCollapsed: boolean;
     selected3DCell: string;
-    selected3DCellFOV: string;
     selected3DCellCellLine: string;
     selected3DCellStructureName: string;
     selected3DCellProteinName: string;
     toggleGallery: ActionCreator<BoolToggleAction>;
-    selected3DCellFileInfo: FileInfo;
+    volumeViewerProps: VolumeViewerProps;
     thumbnailRoot: string;
-    downloadRoot: string;
-    volumeViewerDataRoot: string;
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
@@ -94,12 +87,10 @@ class Cfe extends React.Component<CfeProps, {}> {
         const {
             galleryCollapsed,
             selected3DCell,
-            downloadRoot,
-            volumeViewerDataRoot,
             selected3DCellProteinName,
             selected3DCellStructureName,
             toggleGallery,
-            selected3DCellFileInfo,
+            volumeViewerProps,
             showSmallScreenWarning,
         } = this.props;
 
@@ -172,20 +163,8 @@ class Cfe extends React.Component<CfeProps, {}> {
                             )}
                         </Header>
                         <CellViewer
-                            {...selected3DCellFileInfo}
-                            volumeViewerDataRoot={volumeViewerDataRoot}
-                            fovDownloadHref={formatDownloadOfSingleImage(
-                                downloadRoot,
-                                convertFullFieldIdToDownloadId(
-                                    selected3DCellFileInfo ? selected3DCellFileInfo.FOVId : ""
-                                )
-                            )}
-                            cellDownloadHref={formatDownloadOfSingleImage(
-                                downloadRoot,
-                                convertSingleImageIdToDownloadId(
-                                    selected3DCellFileInfo ? selected3DCellFileInfo.CellId : ""
-                                )
-                            )}
+                            {...volumeViewerProps}
+                          
                         />
                     </div>
                 </Layout>
@@ -199,9 +178,8 @@ function mapStateToProps(state: State) {
     return {
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
-        selected3DCellFileInfo: selectionStateBranch.selectors.getSelected3DCellFileInfo(state),
+        volumeViewerProps: getPropsForVolumeViewer(state),
         selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
-        selected3DCellFOV: selectionStateBranch.selectors.getSelected3DCellFOV(state),
         selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(
             state
         ),
@@ -209,8 +187,6 @@ function mapStateToProps(state: State) {
             state
         ),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
-        volumeViewerDataRoot: selectionStateBranch.selectors.getVolumeViewerDataRoot(state),
-        downloadRoot: selectionStateBranch.selectors.getDownloadRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
     };
 }
