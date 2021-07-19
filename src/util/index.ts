@@ -17,3 +17,8 @@ export function bindAll<T extends object>(obj: T, methods: Array<() => any>) {
 export function getCellLineFromLegacyCellID(cellID: string): string {
     return cellID.split("_")[0];
 }
+
+export function isNotProductionSite(host: string): boolean {
+    // first condition is for testing with no client
+    return !host || host.includes("localhost") || host.includes("staging") 
+}

@@ -14,6 +14,7 @@ import {
     PROTEIN_NAME_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
+import { isNotProductionSite } from "../../../util";
 import { CellLineDef, FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
 
@@ -63,7 +64,20 @@ class FirebaseRequest implements ImageDataset {
             .get()
             .then((snapShot: QuerySnapshot) => {
                 const datasets: DatasetMetaData[] = [];
-                snapShot.forEach((doc) => datasets.push(doc.data() as DatasetMetaData));
+                
+                snapShot.forEach((doc) => {
+                    const metadata = doc.data() as DatasetMetaData;
+                    /** if running the site in a local development env or on staging.cfe.allencell.org
+                     * include any cards that are marked "staging"
+                     * this is based on hostname instead of a build time variable so we don't need a separate build
+                     * for staging and production
+                     */                    
+                    if (isNotProductionSite(location.hostname) && metadata.staging) {
+                        datasets.push(metadata)
+                    } else if (!metadata.staging) {
+                        datasets.push(metadata)
+                    }
+                });
                 return datasets;
             });
     };
