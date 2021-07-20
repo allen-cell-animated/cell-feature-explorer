@@ -12,8 +12,10 @@ import {
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     PROTEIN_NAME_KEY,
+    CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
+import { isDevOrStagingSite } from "../../../util";
 import { CellLineDef, FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
 
@@ -63,7 +65,20 @@ class FirebaseRequest implements ImageDataset {
             .get()
             .then((snapShot: QuerySnapshot) => {
                 const datasets: DatasetMetaData[] = [];
-                snapShot.forEach((doc) => datasets.push(doc.data() as DatasetMetaData));
+                
+                snapShot.forEach((doc) => {
+                    const metadata = doc.data() as DatasetMetaData;
+                    /** if running the site in a local development env or on staging.cfe.allencell.org
+                     * include all cards, otherwise, only include cards with a production flag.
+                     * this is based on hostname instead of a build time variable so we don't
+                     * need a separate build for staging and production
+                     */                    
+                    if (isDevOrStagingSite(location.hostname)) {
+                        datasets.push(metadata)
+                    } else if (metadata.production) {
+                        datasets.push(metadata)
+                    }
+                });
                 return datasets;
             });
     };
@@ -112,6 +127,7 @@ class FirebaseRequest implements ImageDataset {
                         [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
                         [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
                         [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
+                        [CELL_LINE_DEF_GENE_KEY]: datum[CELL_LINE_DEF_GENE_KEY],
                         [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY],
                     });
                 }

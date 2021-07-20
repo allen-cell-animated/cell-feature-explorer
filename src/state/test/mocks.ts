@@ -4,6 +4,7 @@ import {
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
+    CELL_LINE_DEF_GENE_KEY,
     PROTEIN_NAME_KEY,
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
@@ -50,6 +51,7 @@ const cellLineDefs = [
         [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
         [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
         [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [CELL_LINE_DEF_GENE_KEY]: "ABC-1",
         [CELL_COUNT_KEY]: 3470,
     },
     {
@@ -57,6 +59,7 @@ const cellLineDefs = [
         [CELL_LINE_DEF_PROTEIN_KEY]: "Alpha-actinin-1",
         [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
         [PROTEIN_NAME_KEY]: "Alpha-actinin-1",
+        [CELL_LINE_DEF_GENE_KEY]: "ABC-2",
         [CELL_COUNT_KEY]: 1809,
     },
     {
@@ -64,6 +67,7 @@ const cellLineDefs = [
         [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-actin",
         [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
         [PROTEIN_NAME_KEY]: "Beta-actin",
+        [CELL_LINE_DEF_GENE_KEY]: "ABC-3",
         [CELL_COUNT_KEY]: 1039,
     },
     {
@@ -71,6 +75,7 @@ const cellLineDefs = [
         [CELL_LINE_DEF_PROTEIN_KEY]: "Delta-actin",
         [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
         [PROTEIN_NAME_KEY]: "Delta-actin",
+        [CELL_LINE_DEF_GENE_KEY]: "ABC-4",
         [CELL_COUNT_KEY]: 2003,
     },
     {
@@ -78,6 +83,7 @@ const cellLineDefs = [
         [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-catenin",
         [CELL_LINE_DEF_STRUCTURE_KEY]: "Adherens junctions",
         [PROTEIN_NAME_KEY]: "Beta-catenin",
+        [CELL_LINE_DEF_GENE_KEY]: "ABC-5",
         [CELL_COUNT_KEY]: 2343,
     },
 ];

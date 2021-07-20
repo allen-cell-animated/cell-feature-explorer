@@ -12,6 +12,7 @@ export const PROTEIN_NAME_KEY = "structureProteinName";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
 export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId_Name";
 export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
+export const CELL_LINE_DEF_GENE_KEY = "GeneId_Name";
 
 export const CELL_ID_KEY = "CellId";
 export const FOV_ID_KEY = "FOVId";

@@ -64,12 +64,12 @@ and b) copying the contents of the artifact to an S3 website bucket. For both st
 steps are captured in this project's Jenkinsfile and can be executed by setting the proper parameters for the Jenkins build.
 
 #### Staging deployment
-Automatically builds from `master`, can also be manually triggered on Jenkins
+Automatically builds from `main`, can also be manually triggered on Jenkins
 
 #### Production deployment
-On `master` branch
+On `main` branch
 1. Make a new version: `npm version [patch/minor/major]`
-2. Push the new package.json version: `git push origin master`
+2. Push the new package.json version: `git push origin main`
 3. Push the new tag: `git push origin [NEW_TAG]`
 
 This will trigger a github workflow which copies the assets from the staging bucket into the production bucket.

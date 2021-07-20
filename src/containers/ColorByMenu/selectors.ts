@@ -9,6 +9,7 @@ import { createSelector } from "reselect";
 
 import {
     CELL_COUNT_KEY,
+    CELL_LINE_DEF_GENE_KEY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -80,6 +81,7 @@ export const getInteractivePanelData = createSelector(
         const structureNames = disambiguateStructureNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
             const proteinName: string = cellLine[PROTEIN_NAME_KEY];
+            const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
             const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             return {
@@ -87,6 +89,7 @@ export const getInteractivePanelData = createSelector(
                 color: proteinColors[index],
                 id: proteinName,
                 name: structureName,
+                gene: geneName,
                 total,
             };
         });

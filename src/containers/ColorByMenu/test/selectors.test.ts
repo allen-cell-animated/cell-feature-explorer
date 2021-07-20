@@ -48,6 +48,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#bbcd22",
+                    gene: "ABC-2",
                     id: "Alpha-actinin-1",
                     name: "Actin filaments (Alpha-actinin-1)",
                     total: 1809,
@@ -55,6 +56,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#ff9900",
+                    gene: "ABC-3",
                     id: "Beta-actin",
                     name: "Actin filaments (Beta-actin)",
                     total: 1039,
@@ -62,6 +64,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#FFEE1E",
+                    gene: "ABC-5",
                     id: "Beta-catenin",
                     name: "Adherens junctions",
                     total: 2343,
@@ -69,6 +72,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#FD92B6",
+                    gene: "ABC-4",
                     id: "Delta-actin",
                     name: "Actin filaments (Delta-actin)",
                     total: 2003,
@@ -76,6 +80,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#33a02c",
+                    gene: "ABC-1",
                     id: "Nucleophosmin",
                     name: "Nucleolus (Granular Component)",
                     total: 3470,

@@ -2,6 +2,7 @@ import {
     Badge,
     Button,
     Checkbox,
+    Tooltip,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
@@ -16,8 +17,10 @@ interface InteractiveRowProps {
     id: string;
     name: string;
     total: number;
+    gene?: string;
     checked?: boolean;
     closeable?: boolean;
+    showTooltips: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
     hideable?: boolean;
@@ -50,9 +53,11 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
         const {
             closeable,
             hideable,
+            showTooltips,
             id,
             color,
             name,
+            gene,
             total,
             onBarClicked,
             checked,
@@ -60,6 +65,13 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             downloadConfig,
             handleDownload,
         } = this.props;
+
+        const tooltip = (
+            <div>
+                Protein: {id}<br/>
+                Gene: {gene}
+            </div>
+        );
 
         return (
             <div
@@ -81,8 +93,13 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                         }}
                         dot={true}
                     />
-                    <span className={styles.label}>{name}</span>
-
+                    {showTooltips ? (
+                        <Tooltip placement="right" title={tooltip}>
+                            <span className={styles.label}>{name}</span>
+                        </Tooltip>
+                    ) : (
+                        <span className={styles.label}>{name}</span>
+                    )}
                 </div>
                 <div>
                     <span className={styles.label}>{total}</span>

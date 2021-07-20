@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 
-import { bindAll } from "../";
+import { bindAll, isDevOrStagingSite } from "../";
 
 describe("General utilities", () => {
     describe("bindAll", () => {
@@ -47,5 +47,28 @@ describe("General utilities", () => {
            expect(foo.baz()).to.equal("Hello from Foo");
            expect(baz).to.throw(TypeError);
        });
+    });
+    describe("isNotProductionSite", () => {
+        it("returns true if location is localhost or has staging in the name", () => {
+            const notProductionSites = [
+                "stg.allencell.org",
+                "localhost",
+                "localhost:9002",
+                "staging.cfe.allencell.org",
+                "",
+                "cfe.staging.org",
+            ];
+            const result = notProductionSites.map(isDevOrStagingSite)
+            expect(result).to.deep.equal(Array(notProductionSites.length).fill(true))
+        })
+        it("returns false if location is the main site", () => {
+            const productionSite = [
+                "cfe.allencell.org",
+                "allencell.org",
+                "cfe.org",
+            ];
+            const result = productionSite.map(isDevOrStagingSite);
+            expect(result).to.deep.equal(Array(productionSite.length).fill(false));
+        });
     });
 });

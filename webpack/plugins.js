@@ -13,6 +13,7 @@ const Env = require("./constants").Env;
 const BASE_PLUGINS = [
     new webpack.DefinePlugin({
         "process.env.USE_JSON_DATASET": JSON.stringify(process.env.USE_JSON_DATASET) || false,
+        "process.env.USE_DEV_DB": JSON.stringify(process.env.USE_DEV_DB) || false,
     }),
     new ForkTsCheckerWebpackPlugin({
         tsconfig: path.resolve(__dirname, "../", "tsconfig.json"),
