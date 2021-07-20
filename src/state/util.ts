@@ -7,8 +7,6 @@ import {
 import {
     APP_ID,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
-    FOV_ID_KEY,
 } from "../constants";
 
 import { FileInfo } from "./metadata/types";
@@ -67,21 +65,13 @@ export function convertSingleImageIdToDownloadId(id: string): string {
     return `C${id}`;
 }
 
-function convertFileInfoToImgSrc(datum: FileInfo): string {
-    if (datum.thumbnailPath) {
-        return `${datum.thumbnailPath}`;
-    }
-    return `${datum[CELL_LINE_NAME_KEY]}/${datum[CELL_LINE_NAME_KEY]}_${datum[FOV_ID_KEY]}_${datum[CELL_ID_KEY]}.png`;
-}
-
 export function formatDownloadOfSingleImage(root: string, id: string): string {
     return`${root}&id=${id}`;
 }
 
 export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
-    if (!thumbnailRoot || !item) {
+    if (!thumbnailRoot || !item || !item.thumbnailPath) {
         return "";
     }
-    const path = convertFileInfoToImgSrc(item);
-    return `${thumbnailRoot}/${path}`;
+    return `${thumbnailRoot}/${item.thumbnailPath}`;
 }
