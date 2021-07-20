@@ -18,7 +18,7 @@ export function getCellLineFromLegacyCellID(cellID: string): string {
     return cellID.split("_")[0];
 }
 
-export function isNotProductionSite(host: string): boolean {
+export function isDevOrStagingSite(host: string): boolean {
     // first condition is for testing with no client
-    return !host || host.includes("localhost") || host.includes("staging") 
+    return !host || host.includes("localhost") || host.includes("staging") || host.includes("stg");
 }
