@@ -163,7 +163,6 @@ class FirebaseRequest implements ImageDataset {
         const listOfFeatureKeys = [...this.featuresDisplayOrder];
         const dataset: MeasuredFeatureDef[] = [];
         await this.requestSetOfFeatureDefs(listOfFeatureKeys, dataset);
-        console.log(dataset)
         return dataset;
     };
 
