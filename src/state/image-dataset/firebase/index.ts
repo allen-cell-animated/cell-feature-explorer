@@ -187,13 +187,21 @@ class FirebaseRequest implements ImageDataset {
                     datum.f.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
                             this.featuresDataOrder[index]
-                        ] as number[];
-                        arrayOfValues.push(value);
+                        ] as (number | null)[];
+                        // value actually can be a number or a string, but isNaN
+                        // only accepts a number, so the typing here had to identify 
+                        // value as a number until this point
+                        if (isNaN(value)) {
+                            arrayOfValues.push(null);
+                        } else {
+                            arrayOfValues.push(Number(value));
+                        }
                     }, {});
                     proteinArray.push(datum.p);
                     thumbnails.push(datum.t);
                     ids.push(datum.i.toString());
                 }
+                console.log(dataMappedByMeasuredFeatures)
                 return {
                     values: dataMappedByMeasuredFeatures,
                     labels: {
