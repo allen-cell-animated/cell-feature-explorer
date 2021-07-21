@@ -201,7 +201,6 @@ class FirebaseRequest implements ImageDataset {
                     thumbnails.push(datum.t);
                     ids.push(datum.i.toString());
                 }
-                console.log(dataMappedByMeasuredFeatures)
                 return {
                     values: dataMappedByMeasuredFeatures,
                     labels: {
