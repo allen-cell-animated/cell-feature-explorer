@@ -81,17 +81,18 @@ export const getThumbnails = createSelector(
                    return [];
                }
                return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
-                   // if something weird got typed in the url, ie, not a cell id, don't try to find it
-                   if (isNaN(Number(fileInfoForCell[CELL_ID_KEY]))) {
-                       return {} as Thumbnail;
-                   }
                    const cellID = fileInfoForCell[CELL_ID_KEY];
                    const cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
                    if (cellIndex < 0) {
                        return {} as Thumbnail;
                    }
                    const mitoticKey = mitoticKeysArray[cellIndex];
-                   const mitoticStage = mitoticStageNames[mitoticKey].name;
+
+                   let mitoticStage = "";
+                   if (mitoticStageNames[mitoticKey]) {
+                       mitoticStage = mitoticStageNames[mitoticKey].name;
+                   }
+                   
                    const fovId = fileInfoForCell[FOV_ID_KEY];
                    const downloadHref = formatDownloadOfSingleImage(
                        downloadRoot,
