@@ -86,10 +86,10 @@ export const getThumbnails = createSelector(
             if (cellIndex < 0) {
                 return {} as Thumbnail;
             }
-            const mitoticKey = mitoticKeysArray[cellIndex];
 
             let mitoticStage = "";
-            if (mitoticStageNames[mitoticKey]) {
+            if (!isEmpty(mitoticStageNames) && mitoticKeysArray.length) {
+                const mitoticKey = mitoticKeysArray[cellIndex];
                 mitoticStage = mitoticStageNames[mitoticKey].name;
             }
 
