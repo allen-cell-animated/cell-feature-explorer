@@ -8,6 +8,8 @@ import {
     enableBatching,
     makeConstant,
     makeReducer,
+    convertFullFieldIdToDownloadId,
+    convertSingleImageIdToDownloadId,
 } from "../util";
 
 describe("state utilities", () => {
@@ -144,6 +146,38 @@ describe("state utilities", () => {
             const result = batchingReducer(initialState, enableBeans);
             expect(result).to.deep.equal(reducer(initialState, enableBeans));
             expect(result).to.deep.equal(expectedState);
+        });
+    });
+});
+
+describe("general utilities", () => {
+    describe("convertFullFieldIdToDownloadId", () => {
+        it("attaches prefix to an ID if it is a number of type number", () => {
+            const id = 12345;
+            const downloadId = convertFullFieldIdToDownloadId(id);
+            expect(downloadId).to.equal("F12345");
+        });
+        it("attaches prefix to an ID if it is a number of type string", () => {
+            const id = "12345";
+            const downloadId = convertFullFieldIdToDownloadId(id);
+            expect(downloadId).to.equal("F12345");
+        });
+        it("does not attach prefix to an ID if it is not a number", () => {
+            const id = "F12345";
+            const downloadId = convertFullFieldIdToDownloadId(id);
+            expect(downloadId).to.equal("F12345");
+        });
+    });
+    describe("convertSingleImageIdToDownloadId", () => {
+        it("attaches prefix to an ID if it is a number", () => {
+            const id = "12345";
+            const downloadId = convertSingleImageIdToDownloadId(id);
+            expect(downloadId).to.equal("C12345");
+        });
+        it("does not attach prefix to an ID if it is not a number", () => {
+            const id = "C12345";
+            const downloadId = convertSingleImageIdToDownloadId(id);
+            expect(downloadId).to.equal("C12345");
         });
     });
 });
