@@ -23,8 +23,6 @@ import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 
-const CELL_FEATURES_COLLECTION = "feature-definitions";
-
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     private featuresDataPath: string;
@@ -37,6 +35,7 @@ class FirebaseRequest implements ImageDataset {
     private fileInfoPath: string;
     private featuresDataOrder: string[];
     private albumPath: string;
+    private featureDefsPath: string;
     constructor() {
         this.featuresDataPath = "";
         this.cellLineDataPath = "";
@@ -48,6 +47,7 @@ class FirebaseRequest implements ImageDataset {
         this.datasetId = "";
         this.featuresDataOrder = [];
         this.albumPath = "";
+        this.featureDefsPath = "";
         this.collectionRef = firestore.collection("cfe-datasets").doc("v1");
     }
 
@@ -65,18 +65,19 @@ class FirebaseRequest implements ImageDataset {
             .get()
             .then((snapShot: QuerySnapshot) => {
                 const datasets: DatasetMetaData[] = [];
-                
+
                 snapShot.forEach((doc) => {
                     const metadata = doc.data() as DatasetMetaData;
                     /** if running the site in a local development env or on staging.cfe.allencell.org
                      * include all cards, otherwise, only include cards with a production flag.
                      * this is based on hostname instead of a build time variable so we don't
                      * need a separate build for staging and production
-                     */                    
+                     */
+
                     if (isDevOrStagingSite(location.hostname)) {
-                        datasets.push(metadata)
+                        datasets.push(metadata);
                     } else if (metadata.production) {
-                        datasets.push(metadata)
+                        datasets.push(metadata);
                     }
                 });
                 return datasets;
@@ -106,6 +107,7 @@ class FirebaseRequest implements ImageDataset {
             this.cellLineDataPath = data.cellLineDataPath;
             this.fileInfoPath = data.fileInfoPath;
             this.featuresDataOrder = data.featuresDataOrder;
+            this.featureDefsPath = data.featureDefsPath;
             this.albumPath = data.albumPath;
             return {
                 defaultXAxis: data.defaultXAxis,
@@ -136,23 +138,31 @@ class FirebaseRequest implements ImageDataset {
         });
     };
 
-    public getMeasuredFeatureDefs = async () => {
-        const displayOrder = [...this.featuresDisplayOrder];
-        // TODO: request rest of features, currently only requesting non shape mode features
+    private requestSetOfFeatureDefs = async (featuresLeftToRequest: string[], dataset: MeasuredFeatureDef[]) => {
         // Firebase limits the array to ten items, so will need to make multiple requests for
         // more features
-        const batchToRequest = displayOrder.splice(0, 10);
+        const batchToRequest = featuresLeftToRequest.splice(0, 10);
+
         const snapshot = await firestore
-            .collection(CELL_FEATURES_COLLECTION)
+            .collection(this.featureDefsPath)
             .where("key", "in", batchToRequest)
             .get();
-        const dataset: MeasuredFeatureDef[] = [];
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
             const data = doc.data() as MeasuredFeatureDef;
             const key = data.key;
             const index = this.featuresDisplayOrder.indexOf(key);
             dataset[index] = data;
         });
+        if (featuresLeftToRequest.length) {
+            this.requestSetOfFeatureDefs(featuresLeftToRequest, dataset);
+        }
+
+    }
+
+    public getMeasuredFeatureDefs = async () => {
+        const listOfFeatureKeys = [...this.featuresDisplayOrder];
+        const dataset: MeasuredFeatureDef[] = [];
+        await this.requestSetOfFeatureDefs(listOfFeatureKeys, dataset);
         return dataset;
     };
 
@@ -177,8 +187,15 @@ class FirebaseRequest implements ImageDataset {
                     datum.f.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
                             this.featuresDataOrder[index]
-                        ] as number[];
-                        arrayOfValues.push(value);
+                        ] as (number | null)[];
+                        // value actually can be a number or a string, but isNaN
+                        // only accepts a number, so the typing here had to identify 
+                        // value as a number until this point
+                        if (isNaN(value)) {
+                            arrayOfValues.push(null);
+                        } else {
+                            arrayOfValues.push(Number(value));
+                        }
                     }, {});
                     proteinArray.push(datum.p);
                     thumbnails.push(datum.t);
@@ -229,7 +246,7 @@ class FirebaseRequest implements ImageDataset {
 
     public getAlbumData = () => {
         if (!this.albumPath) {
-            return Promise.resolve([])
+            return Promise.resolve([]);
         }
         return this.getCollection(this.albumPath).then((snapshot: QuerySnapshot) => {
             const dataset: Album[] = [];

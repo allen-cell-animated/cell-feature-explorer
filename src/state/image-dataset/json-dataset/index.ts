@@ -226,8 +226,12 @@ class JsonRequest implements ImageDataset {
                     el.features.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
                             this.datasetInfo.featuresDataOrder[index]
-                        ] as number[];
-                        arrayOfValues.push(value);
+                        ] as (number | null)[];
+                        if (isNaN(value)) {
+                            arrayOfValues.push(null);
+                        } else {
+                            arrayOfValues.push(Number(value));
+                        }
                     }, {});
 
                     proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");

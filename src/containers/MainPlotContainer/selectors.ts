@@ -1,4 +1,4 @@
-import { includes, map, find } from "lodash";
+import { includes, map, find, filter } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -54,6 +54,14 @@ export const getMainPlotData = createSelector(
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
+        // for datasets that have a lot of null values, 
+        // if the whole array is null it throws an error
+        if (!filter(xValues).length) {
+            xValues = [];
+        }
+        if (!filter(yValues).length) {
+            yValues = [];
+        }
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
             groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),

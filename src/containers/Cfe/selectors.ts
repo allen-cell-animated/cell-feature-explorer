@@ -30,7 +30,7 @@ export const getPropsForVolumeViewer = createSelector(
                const formatPathForViewer = (path: string) => path.split("_atlas.json")[0];
 
                /**
-                * By if there is not both single cell volume data and full field volume data
+                * If there is not both single cell volume data and full field volume data
                 * in the dataset, use the full field data as the default/main image
                 */
                const mainCellPath = fileInfo.volumeviewerPath
