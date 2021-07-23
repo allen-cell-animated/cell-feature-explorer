@@ -58,11 +58,21 @@ export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: st
 }
 
 export function convertFullFieldIdToDownloadId(id: number | string): string {
-    return `F${id}`;
+    // Only attach prefix if id is a number (not already prefixed with a letter)
+    if (!isNaN(Number(id))) {
+        return `F${id}`;
+    } else {
+        return id as string;
+    }
 }
 
 export function convertSingleImageIdToDownloadId(id: string): string {
-    return `C${id}`;
+    // Only attach prefix if id is a number (not already prefixed with a letter)
+    if (!isNaN(Number(id))) {
+        return `C${id}`;
+    } else {
+        return id;
+    }
 }
 
 export function formatDownloadOfSingleImage(root: string, id: string): string {
