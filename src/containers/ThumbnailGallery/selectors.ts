@@ -96,18 +96,22 @@ export const getThumbnails = createSelector(
             }
             
             let downloadHref = "";
-            if (fileInfoForCell[VOLUME_VIEWER_PATH] && fileInfoForCell[FOV_VOLUME_VIEWER_PATH]) {
+            if (fileInfoForCell[VOLUME_VIEWER_PATH]) {
                 downloadHref = formatDownloadOfSingleImage(
                     downloadRoot,
                     convertSingleImageIdToDownloadId(cellID)
                 );
             }
 
-            const fovId = fileInfoForCell[FOV_ID_KEY];    
-            const fullFieldDownloadHref = formatDownloadOfSingleImage(
-                downloadRoot,
-                convertFullFieldIdToDownloadId(fovId)
-            );
+            const fovId = fileInfoForCell[FOV_ID_KEY];
+            let fullFieldDownloadHref = "";
+            if (fileInfoForCell[FOV_VOLUME_VIEWER_PATH]) {
+                fullFieldDownloadHref = formatDownloadOfSingleImage(
+                    downloadRoot,
+                    convertFullFieldIdToDownloadId(fovId)
+                );
+            }
+            
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
             return {
                 cellID,
