@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import 'antd/dist/antd.css';
+import 'antd/lib/slider/style/index.css';
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
