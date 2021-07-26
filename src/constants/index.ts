@@ -86,6 +86,7 @@ export const GENERAL_PLOT_SETTINGS = {
 };
 
 // TODO these are literally only used in one single place; maybe they could be moved into that one place?
+// TODO move these to the dataset data
 export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];
 export const OBS_MEMBRANE_NAMES = ["CMDRP"];
 export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
@@ -112,3 +113,23 @@ export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
     "Segmentation channels": ["SEG_STRUCT", "SEG_Memb", "SEG_DNA"],
     "Contour channels": ["CON_Memb", "CON_DNA"],
 };
+
+export const NO_SETTINGS = {
+    channelNameMapping: "" as "", // type to empty string, not any string
+    groupToChannelNameMap: "" as "", // type to empty string, not any string
+};
+
+export const VIEWER_CHANNEL_SETTINGS: {
+           [key: string]:
+               | {
+                     channelNameMapping: "" | { test: RegExp; label: string }[];
+                     groupToChannelNameMap: "" | { [key: string]: string[] };
+                 }
+               | undefined;
+       } = {
+           // eslint-disable-next-line @typescript-eslint/camelcase
+           aics_hipsc: {
+               channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
+               groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
+           },
+       };

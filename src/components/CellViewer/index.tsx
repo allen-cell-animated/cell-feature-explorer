@@ -7,8 +7,6 @@ import {
     OBS_DNA_NAMES,
     OBS_MEMBRANE_NAMES,
     OBS_STRUCTURE_NAMES,
-    VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
-    VARIANCE_DATASET_CHANNEL_GROUPINGS,
 } from "../../constants/index";
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
@@ -52,8 +50,8 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 // TODO see if channelNameClean is redundant with channelNameMapping
                 channelNameClean={standardizeNames}
                 appHeight="90vh"
-                channelNameMapping={VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS}
-                groupToChannelNameMap={VARIANCE_DATASET_CHANNEL_GROUPINGS}
+                channelNameMapping={props.channelNameMapping}
+                groupToChannelNameMap={props.groupToChannelNameMap}
             />
         </div>
     );
