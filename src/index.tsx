@@ -6,6 +6,7 @@ import Pram from "pram";
 import * as React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
+import "antd/dist/antd.css";
 
 import { APP_ID } from "./constants";
 import App from "./containers/App";
