@@ -1,4 +1,5 @@
 import { Layout } from "antd";
+import "antd/dist/antd.less";
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
