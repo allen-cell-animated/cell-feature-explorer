@@ -41,17 +41,22 @@ export const getPropsForVolumeViewer = createSelector(
                 * If there is not both single cell volume data and full field volume data
                 * in the dataset, use the full field data as the default/main image
                 */
-               const mainCellPath = fileInfo.volumeviewerPath
-                   ? formatPathForViewer(fileInfo.volumeviewerPath)
-                   : formatPathForViewer(fileInfo.fovVolumeviewerPath);
-
-               const parentCellPath =
-                   fileInfo.volumeviewerPath && fileInfo.fovVolumeviewerPath
-                       ? formatPathForViewer(fileInfo.fovVolumeviewerPath)
-                       : "";
+               let cellId = fileInfo.CellId;
+               let mainCellPath = "";
+               let parentCellPath = "";
+               if (fileInfo.volumeviewerPath) {
+                    mainCellPath = formatPathForViewer(fileInfo.volumeviewerPath);
+                    if (fileInfo.fovVolumeviewerPath) {
+                        parentCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
+                    }
+               } else {
+                   mainCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
+                   cellId = fileInfo.FOVId
+               }
+             
 
                const props = {
-                   cellId: fileInfo.CellId,
+                   cellId: cellId,
                    baseUrl: dataRoot,
                    cellPath: mainCellPath,
                    fovPath: parentCellPath,
