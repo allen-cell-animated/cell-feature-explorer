@@ -1,7 +1,4 @@
-import {
-    Affix,
-    Layout,
-} from "antd";
+import { Affix, Layout } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
@@ -18,11 +15,7 @@ import ThumbnailGallery from "../ThumbnailGallery";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
-const {
-    Content,
-    Header,
-    Sider,
-} = Layout;
+const { Content, Header, Sider } = Layout;
 
 const styles = require("./style.css");
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
@@ -35,7 +28,7 @@ interface CfeProps {
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
-    viewerHeader: string;
+    viewerHeader: { cellId: string; label: string; value: string };
 }
 
 class Cfe extends React.Component<CfeProps, {}> {
@@ -50,35 +43,36 @@ class Cfe extends React.Component<CfeProps, {}> {
     public componentDidMount = () => {
         this.props.setShowSmallScreenWarning(window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT);
         window.addEventListener("resize", this.updateDimensions);
-    }
+    };
 
     public updateDimensions = () => {
         if (window.innerWidth === this.state.width) {
             // listener is triggered on scroll in some mobile devices
             return;
         }
-        const shouldShow = window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
+        const shouldShow =
+            window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT &&
             !this.state.dontShowSmallScreenWarningAgain;
         this.setState({ width: window.innerWidth });
         this.props.setShowSmallScreenWarning(shouldShow);
-    }
+    };
 
     public onSelectionToolUsed = () => {
         this.setState({ openKeys: uniq([...this.state.openKeys, Cfe.panelKeys[1]]) });
-    }
+    };
 
     public onPanelClicked = (value: string[]) => {
         this.setState({ openKeys: value });
-    }
+    };
 
     public handleClose = () => {
         this.props.setShowSmallScreenWarning(false);
         this.props.requestFeatureData();
-    }
+    };
 
     public onDismissCheckboxChecked = (value: boolean) => {
         this.setState({ dontShowSmallScreenWarningAgain: value });
-    }
+    };
 
     public render() {
         const {
@@ -89,10 +83,7 @@ class Cfe extends React.Component<CfeProps, {}> {
             showSmallScreenWarning,
         } = this.props;
 
-        const {
-            openKeys,
-            defaultActiveKey,
-        } = this.state;
+        const { openKeys, defaultActiveKey } = this.state;
         return (
             <Layout>
                 <Affix>
@@ -148,7 +139,14 @@ class Cfe extends React.Component<CfeProps, {}> {
                     <div className={styles.cellViewerContainer}>
                         <Header className={styles.headerSection}>
                             <h2 className={styles.header}>3D Viewer</h2>
-                                <h4 className={styles.selectedInfo}>{viewerHeader}</h4>
+                            {viewerHeader.cellId && (
+                                <h4 className={styles.selectedInfo}>
+                                    <span className={styles.label}>Viewing cell:</span>{" "}
+                                    {viewerHeader.cellId},{" "}
+                                    <span className={styles.label}>{viewerHeader.label}:</span>{" "}
+                                    {viewerHeader.value}
+                                </h4>
+                            )}
                         </Header>
                         <CellViewer {...volumeViewerProps} />
                     </div>
@@ -156,7 +154,6 @@ class Cfe extends React.Component<CfeProps, {}> {
             </Layout>
         );
     }
-
 }
 
 function mapStateToProps(state: State) {
