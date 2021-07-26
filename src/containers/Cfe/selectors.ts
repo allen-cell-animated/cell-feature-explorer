@@ -99,9 +99,10 @@ export const getViewerHeader = createSelector(
         if (selectedDatasetName === "cellsystems_fish") {
             label = "Gene pair";
             value = protein;
+        } else {
+            label = "Labeled structure (protein)";
+            value = `${structureName} (${protein})`;
         }
-        label = "Labeled structure (protein)";
-        value = `${structureName} (${protein})`;
         return {
             cellId,
             label,
