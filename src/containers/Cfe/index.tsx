@@ -16,7 +16,7 @@ import { State } from "../../state/types";
 import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
-import { getPropsForVolumeViewer, VolumeViewerProps } from "./selectors";
+import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
 const {
     Content,
@@ -29,16 +29,13 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface CfeProps {
     galleryCollapsed: boolean;
-    selected3DCell: string;
-    selected3DCellCellLine: string;
-    selected3DCellStructureName: string;
-    selected3DCellProteinName: string;
     toggleGallery: ActionCreator<BoolToggleAction>;
     volumeViewerProps: VolumeViewerProps;
     thumbnailRoot: string;
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
+    viewerHeader: string;
 }
 
 class Cfe extends React.Component<CfeProps, {}> {
@@ -86,9 +83,7 @@ class Cfe extends React.Component<CfeProps, {}> {
     public render() {
         const {
             galleryCollapsed,
-            selected3DCell,
-            selected3DCellProteinName,
-            selected3DCellStructureName,
+            viewerHeader,
             toggleGallery,
             volumeViewerProps,
             showSmallScreenWarning,
@@ -153,19 +148,9 @@ class Cfe extends React.Component<CfeProps, {}> {
                     <div className={styles.cellViewerContainer}>
                         <Header className={styles.headerSection}>
                             <h2 className={styles.header}>3D Viewer</h2>
-                            {selected3DCell && selected3DCellStructureName && (
-                                <h4 className={styles.selectedInfo}>
-                                    <span className={styles.label}>Viewing cell:</span>{" "}
-                                    {selected3DCell},
-                                    <span className={styles.label}> Protein (structure): </span>
-                                    {selected3DCellProteinName} ({selected3DCellStructureName})
-                                </h4>
-                            )}
+                                <h4 className={styles.selectedInfo}>{viewerHeader}</h4>
                         </Header>
-                        <CellViewer
-                            {...volumeViewerProps}
-                          
-                        />
+                        <CellViewer {...volumeViewerProps} />
                     </div>
                 </Layout>
             </Layout>
@@ -177,17 +162,10 @@ class Cfe extends React.Component<CfeProps, {}> {
 function mapStateToProps(state: State) {
     return {
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
-        selected3DCell: selectionStateBranch.selectors.getSelected3DCell(state),
         volumeViewerProps: getPropsForVolumeViewer(state),
-        selected3DCellCellLine: selectionStateBranch.selectors.getSelected3DCellCellLine(state),
-        selected3DCellProteinName: selectionStateBranch.selectors.getSelected3DCellLabeledProtein(
-            state
-        ),
-        selected3DCellStructureName: selectionStateBranch.selectors.getSelected3DCellLabeledStructure(
-            state
-        ),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
+        viewerHeader: getViewerHeader(state),
     };
 }
 
