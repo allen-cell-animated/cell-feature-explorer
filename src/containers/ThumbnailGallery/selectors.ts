@@ -5,7 +5,9 @@ import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
     FOV_ID_KEY,
+    FOV_VOLUME_VIEWER_PATH,
     PROTEIN_NAME_KEY,
+    VOLUME_VIEWER_PATH,
 } from "../../constants";
 import {
     getAllAlbumData,
@@ -92,16 +94,24 @@ export const getThumbnails = createSelector(
                 const mitoticKey = mitoticKeysArray[cellIndex];
                 mitoticStage = mitoticStageNames[mitoticKey].name;
             }
+            
+            let downloadHref = "";
+            if (fileInfoForCell[VOLUME_VIEWER_PATH]) {
+                downloadHref = formatDownloadOfSingleImage(
+                    downloadRoot,
+                    convertSingleImageIdToDownloadId(cellID)
+                );
+            }
 
             const fovId = fileInfoForCell[FOV_ID_KEY];
-            const downloadHref = formatDownloadOfSingleImage(
-                downloadRoot,
-                convertSingleImageIdToDownloadId(cellID)
-            );
-            const fullFieldDownloadHref = formatDownloadOfSingleImage(
-                downloadRoot,
-                convertFullFieldIdToDownloadId(fovId)
-            );
+            let fullFieldDownloadHref = "";
+            if (fileInfoForCell[FOV_VOLUME_VIEWER_PATH]) {
+                fullFieldDownloadHref = formatDownloadOfSingleImage(
+                    downloadRoot,
+                    convertFullFieldIdToDownloadId(fovId)
+                );
+            }
+            
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
             return {
                 cellID,
