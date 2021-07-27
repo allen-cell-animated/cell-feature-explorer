@@ -3,6 +3,7 @@
 .cell-viewer{
     flex: 1;
     width: 100%;
+    background-color: red;
 }
 
 .cell-viewer :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
@@ -23,4 +24,15 @@
 
 .cell-viewer :global(.ant-layout-sider-zero-width-trigger) {
     z-index: 999!important;
+}
+
+.cell-viewer :global(.ant-slider-rail),
+.cell-viewer :global(.ant-slider-track),
+.cell-viewer :global(.ant-slider-step) {
+    height: 2px !important;
+}
+
+.cell-viewer :global(.ant-slider-handle) {
+    width: 13px !important;
+    height: 13px !important;
 }

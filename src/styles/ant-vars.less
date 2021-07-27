@@ -1,6 +1,7 @@
 @dark-gray: #313131;
 @purple: #8048f3;
-@light-gray: #6e6e6e;
+@medium-gray: #6e6e6e;
+@light-gray: #a0a0a0;
 @bright-green: #b2d030;
 
 // -------- Colors -----------
@@ -8,12 +9,12 @@
 @success-color          : @bright-green;
 @highlight-color        : @purple;
 @warning-color          : @gold-6;
-@normal-color           : @light-gray;
+@normal-color           : @medium-gray;
 @background-color       : @dark-gray;
-@disabled-color         : fade(@light-gray, 10%);
+@disabled-color         : fade(@medium-gray, 10%);
 @disabled-bg            : @background-color;
 // Border color
-@border-color-base      :  @light-gray;  // base border outline a component
+@border-color-base      :  @medium-gray;  // base border outline a component
 
 
 
@@ -73,7 +74,7 @@
 @btn-border-radius-sm   : @border-radius-base;
 
 @btn-primary-color      : darken(@dark-gray, 10%);
-@btn-primary-bg         : lighten(@light-gray, 10%);
+@btn-primary-bg         : lighten(@medium-gray, 10%);
 
 @btn-default-color      : @text-color;
 @btn-default-bg         : @background-color;
@@ -133,7 +134,7 @@
 @input-placeholder-color     : hsv(0, 0, 75%);
 @input-color                 : @primary-color;
 @input-border-color          : @border-color-base;
-@input-bg                    : @light-gray;
+@input-bg                    : @medium-gray;
 @input-addon-bg              : @background-color-light;
 @input-hover-border-color    : @primary-color;
 @input-disabled-bg           : @disabled-bg;
@@ -149,16 +150,16 @@
 // Slider
 // ---
 @slider-margin:                       14px 6px 10px;
-@slider-rail-background-color:        @text-color;
-@slider-rail-background-color-hover:  @text-color;
-@slider-track-background-color:       @text-color;
-@slider-track-background-color-hover: @text-color;
-@slider-handle-color:                 @text-color;
-@slider-handle-color-hover:           @text-color;
-@slider-handle-color-focus:           @text-color;
+@slider-rail-background-color:        @light-gray;
+@slider-rail-background-color-hover:  @light-gray;
+@slider-track-background-color:       @light-gray;
+@slider-track-background-color-hover: @light-gray;
+@slider-handle-color:                 @light-gray;
+@slider-handle-color-hover:           @light-gray;
+@slider-handle-color-focus:           @light-gray;
 @slider-handle-color-focus-shadow:    transparent;
 @slider-handle-color-tooltip-open:    @primary-color;
-@slider-dot-border-color:             @text-color;
-@slider-dot-border-color-active:      @text-color;
+@slider-dot-border-color:             @light-gray;
+@slider-dot-border-color-active:      @light-gray;
 @slider-disabled-color:               @disabled-color;
 @slider-disabled-background-color:    @component-background;
