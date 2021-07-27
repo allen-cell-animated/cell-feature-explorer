@@ -29,10 +29,10 @@
 .cell-viewer :global(.ant-slider-rail),
 .cell-viewer :global(.ant-slider-track),
 .cell-viewer :global(.ant-slider-step) {
-    height: 2px !important;
+    height: 2px;
 }
 
 .cell-viewer :global(.ant-slider-handle) {
-    width: 13px !important;
-    height: 13px !important;
+    width: 13px;
+    height: 13px;
 }
