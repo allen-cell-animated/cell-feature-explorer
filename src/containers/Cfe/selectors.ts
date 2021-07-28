@@ -12,7 +12,7 @@ import {
 import {
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
-    formatDownloadOfSingleImage,
+    formatDownloadOfIndividualFile,
 } from "../../state/util";
 
 import { VIEWER_CHANNEL_SETTINGS, NO_SETTINGS } from "../../constants";
@@ -51,13 +51,13 @@ export const getPropsForVolumeViewer = createSelector(
         if (fileInfo.volumeviewerPath) {
 
             mainCellPath = formatPathForViewer(fileInfo.volumeviewerPath);
-            mainDownloadHref = formatDownloadOfSingleImage(
+            mainDownloadHref = formatDownloadOfIndividualFile(
                 downloadRoot,
                 convertSingleImageIdToDownloadId(fileInfo ? fileInfo.CellId : "")
             )
             if (fileInfo.fovVolumeviewerPath) {
                 parentCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
-                parentDownloadHref = formatDownloadOfSingleImage(
+                parentDownloadHref = formatDownloadOfIndividualFile(
                 downloadRoot,
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
@@ -65,7 +65,7 @@ export const getPropsForVolumeViewer = createSelector(
         } else {
             mainCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
             cellId = fileInfo.FOVId;
-            mainDownloadHref = formatDownloadOfSingleImage(
+            mainDownloadHref = formatDownloadOfIndividualFile(
                 downloadRoot,
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
