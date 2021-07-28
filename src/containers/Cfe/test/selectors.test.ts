@@ -1,0 +1,104 @@
+import { expect } from "chai";
+import {
+    CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
+    PROTEIN_NAME_KEY,
+    FOV_THUMBNAIL_PATH,
+    FOV_VOLUME_VIEWER_PATH,
+    THUMBNAIL_PATH,
+    VOLUME_VIEWER_PATH,
+} from "../../../constants";
+import { State } from "../../../state";
+import { FileInfo } from "../../../state/metadata/types";
+import { mockState } from "../../../state/test/mocks";
+import {  getPropsForVolumeViewer } from "../selectors";
+
+const fileInfo: FileInfo[] = [
+    {
+        [CELL_ID_KEY]: "1",
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: "12762",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "fovThumbnailPath",
+        [FOV_VOLUME_VIEWER_PATH]: "fovVolumeviewerPath",
+        [THUMBNAIL_PATH]: "thumbnailPath",
+        [VOLUME_VIEWER_PATH]: "volumeviewerPath",
+    },
+    {
+        [CELL_ID_KEY]: "2",
+        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [FOV_ID_KEY]: "12762",
+        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [FOV_THUMBNAIL_PATH]: "fovThumbnailPath",
+        [FOV_VOLUME_VIEWER_PATH]: "fovVolumeviewerPath",
+        [THUMBNAIL_PATH]: "",
+        [VOLUME_VIEWER_PATH]: "",
+    },
+];
+
+const stateWithSelections: State = {
+    metadata: {
+        ...mockState.metadata,
+    },
+    selection: {
+        ...mockState.selection,
+        cellSelectedFor3D: "1",
+        dataset: "dataset_v2021.1",
+        volumeViewerDataRoot: "url",
+        selectedPoints: fileInfo,
+    },
+};
+describe("Viewer selectors", () => {
+    describe("getPropsForVolumeViewer", () => {
+        it("for a cell with both sc and fov data, returns all the data in a format that can be passed to thee viewer as props ", () => {
+            const result = getPropsForVolumeViewer(stateWithSelections);
+            expect(result).to.deep.equal({
+                cellId: "1",
+                baseUrl: "url",
+                cellDownloadHref: "undefined&id=C1",
+                cellPath: "volumeviewerPath",
+                channelNameMapping: "",
+                fovDownloadHref: "undefined&id=F12762",
+                fovPath: "fovVolumeviewerPath",
+                groupToChannelNameMap: "",
+            });
+        });
+        it("if there is no single cell data, returns fov info as main info", () => {
+            const stateWithCell2Selected = {
+                ...stateWithSelections,
+                selection: {
+                    ...stateWithSelections.selection,
+                    cellSelectedFor3D: "2",
+                },
+            };
+            const result = getPropsForVolumeViewer(stateWithCell2Selected);
+            
+            expect(result).to.deep.equal({
+                cellId: "12762",
+                baseUrl: "url",
+                cellDownloadHref: "undefined&id=F12762",
+                cellPath: "fovVolumeviewerPath",
+                channelNameMapping: "",
+                fovDownloadHref: "",
+                fovPath: "",
+                groupToChannelNameMap: "",
+            });
+        });
+        it("if dataset has channelNameMapping data, it will be included", () => {
+            const stateWithCell2Selected = {
+                ...stateWithSelections,
+                selection: {
+                    ...stateWithSelections.selection,
+                    cellSelectedFor3D: "2",
+                    dataset: "aics_hipsc_v2020",
+                },
+            };
+            const result = getPropsForVolumeViewer(stateWithCell2Selected);
+
+            expect(result.groupToChannelNameMap).to.not.be.empty
+            expect(result.channelNameMapping).to.not.be.empty;
+
+        });
+    });
+});
