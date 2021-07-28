@@ -17,6 +17,7 @@
         "lint": "eslint src/**/*.{ts,tsx}",
         "typeCheck": "tsc -p tsconfig.json --noEmit",
         "test": "BABEL_ENV=commonjs TS_NODE_FILES=true TS_NODE_PROJECT=tsconfig.commonjs.json NODE_ENV=production mocha --opts mocha.opts src/**/*.test.ts",
+        "update-viewer": "npm i @aics/web-3d-viewer@latest",
         "all-checks": "npm run test && npm run typeCheck && npm run lint"
     },
     "author": "",
@@ -86,7 +87,7 @@
     },
     "dependencies": {
         "@aics/browsing-context-messaging": "~1.1",
-        "@aics/web-3d-viewer": "^1.2.1",
+        "@aics/web-3d-viewer": "^1.2.3",
         "@ant-design/icons": "^4.2.2",
         "antd": "^3.20.7",
         "axios": "^0.21.1",
