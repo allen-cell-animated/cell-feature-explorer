@@ -12,7 +12,7 @@ import {
 import {
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
-    formatDownloadOfSingleImage,
+    formatDownloadOfIndividualFile,
 } from "../../state/util";
 
 import { VIEWER_CHANNEL_SETTINGS, NO_SETTINGS } from "../../constants";
@@ -46,14 +46,29 @@ export const getPropsForVolumeViewer = createSelector(
         let cellId = fileInfo.CellId;
         let mainCellPath = "";
         let parentCellPath = "";
+        let mainDownloadHref = "";
+        let parentDownloadHref = "";
         if (fileInfo.volumeviewerPath) {
+
             mainCellPath = formatPathForViewer(fileInfo.volumeviewerPath);
+            mainDownloadHref = formatDownloadOfIndividualFile(
+                downloadRoot,
+                convertSingleImageIdToDownloadId(fileInfo ? fileInfo.CellId : "")
+            )
             if (fileInfo.fovVolumeviewerPath) {
                 parentCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
+                parentDownloadHref = formatDownloadOfIndividualFile(
+                downloadRoot,
+                convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
+            );
             }
         } else {
             mainCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
             cellId = fileInfo.FOVId;
+            mainDownloadHref = formatDownloadOfIndividualFile(
+                downloadRoot,
+                convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
+            );
         }
 
         const props = {
@@ -61,14 +76,8 @@ export const getPropsForVolumeViewer = createSelector(
             baseUrl: dataRoot,
             cellPath: mainCellPath,
             fovPath: parentCellPath,
-            fovDownloadHref: formatDownloadOfSingleImage(
-                downloadRoot,
-                convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
-            ),
-            cellDownloadHref: formatDownloadOfSingleImage(
-                downloadRoot,
-                convertSingleImageIdToDownloadId(fileInfo ? fileInfo.CellId : "")
-            ),
+            cellDownloadHref: mainDownloadHref,
+            fovDownloadHref: parentDownloadHref,
             ...channelSettings,
         };
         return props;

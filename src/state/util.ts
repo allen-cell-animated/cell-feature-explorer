@@ -75,7 +75,7 @@ export function convertSingleImageIdToDownloadId(id: string): string {
     }
 }
 
-export function formatDownloadOfSingleImage(root: string, id: string): string {
+export function formatDownloadOfIndividualFile(root: string, id: string): string {
     return`${root}&id=${id}`;
 }
 

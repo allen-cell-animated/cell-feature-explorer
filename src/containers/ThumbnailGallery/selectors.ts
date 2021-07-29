@@ -30,7 +30,7 @@ import {
 import {
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
-    formatDownloadOfSingleImage,
+    formatDownloadOfIndividualFile,
     formatThumbnailSrc,
 } from "../../state/util";
 
@@ -97,7 +97,7 @@ export const getThumbnails = createSelector(
             
             let downloadHref = "";
             if (fileInfoForCell[VOLUME_VIEWER_PATH]) {
-                downloadHref = formatDownloadOfSingleImage(
+                downloadHref = formatDownloadOfIndividualFile(
                     downloadRoot,
                     convertSingleImageIdToDownloadId(cellID)
                 );
@@ -106,7 +106,7 @@ export const getThumbnails = createSelector(
             const fovId = fileInfoForCell[FOV_ID_KEY];
             let fullFieldDownloadHref = "";
             if (fileInfoForCell[FOV_VOLUME_VIEWER_PATH]) {
-                fullFieldDownloadHref = formatDownloadOfSingleImage(
+                fullFieldDownloadHref = formatDownloadOfIndividualFile(
                     downloadRoot,
                     convertFullFieldIdToDownloadId(fovId)
                 );
