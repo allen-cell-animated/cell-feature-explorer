@@ -22,7 +22,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     const title = (
         <>
             <div>
-                {userData.isNew && <Tag color="purple">new</Tag>}
+                {userData.isNew && <Tag color="purple">beta</Tag>}
                 {name}
             </div>
             <span className={styles.version}>{version}</span>
