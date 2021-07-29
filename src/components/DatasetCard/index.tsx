@@ -17,6 +17,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     link,
     id,
     userData,
+    image,
 }: DatasetCardProps) => {
     const title = (
         <>
@@ -42,7 +43,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 <img
                     className={styles.staticThumbnail}
                     alt={`Snapshot of simulation for ${name}`}
-                    src={imageMapping[id as DatasetId]}
+                    src={image || imageMapping[id as DatasetId]}
                 />
             }
         >
