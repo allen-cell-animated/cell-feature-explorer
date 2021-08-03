@@ -1,4 +1,4 @@
-import { find, findIndex, includes, isEmpty, keys, map, mapValues, reduce, values } from "lodash";
+import { find, includes, isEmpty, keys, map, mapValues, reduce, values } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -11,7 +11,6 @@ import {
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
-    THUMBNAIL_PATH,
 } from "../../constants";
 import {
     getPerCellDataForPlot,
@@ -33,7 +32,7 @@ import {
     MetadataStateBranch,
     PerCellLabels,
 } from "../metadata/types";
-import { Annotation, ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
+import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
 import { getFileInfoDatumFromCellId } from "../util";
 import { CLUSTERING_MAP } from "./constants";
 
