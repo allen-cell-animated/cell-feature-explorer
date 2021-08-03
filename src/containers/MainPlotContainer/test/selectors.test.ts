@@ -37,4 +37,19 @@ describe("Selection selectors", () => {
             expect(result).to.have.lengthOf(0);
         });
     });
+    describe("getAnnotations selector", () => {
+        it("it still shows points whose values are zero", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "apical-proximity",
+                    plotByOnY: "cell-segmentation",
+                    selectedPoints: selectedCellFileInfo,
+                },
+            };
+            const result: Annotation[] = getAnnotations(state);
+            expect(result).to.have.lengthOf(2);
+        });
+    });
 });

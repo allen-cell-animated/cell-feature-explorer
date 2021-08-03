@@ -108,7 +108,7 @@ export const getAnnotations = createSelector(
             const pointIndex = findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
-            if (pointIndex >= 0 && x && y) {
+            if (pointIndex >= 0 && x !== null && y !== null) {
                 acc.push({
                     cellID,
                     cellLine,
