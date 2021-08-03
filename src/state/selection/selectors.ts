@@ -276,46 +276,6 @@ export const getClickedScatterPoints = createSelector(
     (cells: FileInfo[]) => map(cells, CELL_ID_KEY)
 );
 
-export const getAnnotations = createSelector(
-    [getPerCellDataForPlot, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
-    (
-        dataForPlot: DataForPlot,
-        clickedCellsFileInfo: FileInfo[],
-        xAxis,
-        yAxis,
-        currentHoveredCellId
-    ): Annotation[] => {
-        if (isEmpty(dataForPlot.values) || isEmpty(dataForPlot.labels)) {
-            return [];
-        }
-        const initAcc: Annotation[] = [];
-        return clickedCellsFileInfo.reduce((acc, data) => {
-            const cellID = data[CELL_ID_KEY];
-            const fovID = data[FOV_ID_KEY] || "";
-            const cellLine = data[CELL_LINE_NAME_KEY] || "";
-            const thumbnailPath = data[THUMBNAIL_PATH] || "";
-
-            const cellIds = dataForPlot.labels[ARRAY_OF_CELL_IDS_KEY];
-            const pointIndex = findIndex(cellIds, (id) => id === cellID);
-            if (pointIndex >= 0) {
-                const x = dataForPlot.values[xAxis][pointIndex];
-                const y = dataForPlot.values[yAxis][pointIndex];
-
-                acc.push({
-                    cellID,
-                    cellLine,
-                    fovID,
-                    hovered: cellID === currentHoveredCellId,
-                    pointIndex,
-                    x,
-                    y,
-                    thumbnailPath,
-                });
-            }
-            return acc;
-        }, initAcc);
-    }
-);
 
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(

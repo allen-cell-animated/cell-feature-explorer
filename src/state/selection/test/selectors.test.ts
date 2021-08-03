@@ -1,13 +1,11 @@
 import { expect } from "chai";
 
-import { mockState, selectedCellFileInfo } from "../../test/mocks";
+import { mockState } from "../../test/mocks";
 import {
-    Annotation,
     NumberOrString,
     State,
 } from "../../types";
 import {
-    getAnnotations,
     getSelectedGroupKeys,
     getSelectedSetTotals,
     getXValues,
@@ -117,21 +115,4 @@ describe("Selection selectors", () => {
 
     });
 
-    describe("getAnnotations selector", () => {
-        it("it returns an Annotation object for every index in selectedPoints array", () => {
-
-            const state: State = {
-                ...newMockState,
-                selection: {
-                    ...newMockState.selection,
-                    plotByOnX: "apical-proximity",
-                    plotByOnY: "apical-proximity",
-                    selectedPoints: selectedCellFileInfo,
-                },
-            };
-            const result: Annotation[] = getAnnotations(state);
-            expect(result).to.have.lengthOf(2);
-        });
-
-    });
 });
