@@ -1,20 +1,28 @@
-import { includes, map, find, filter } from "lodash";
+import { includes, map, find, filter, findIndex, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
 import {
+    ARRAY_OF_CELL_IDS_KEY,
+    CELL_ID_KEY,
+    CELL_LINE_NAME_KEY,
+    FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
+    THUMBNAIL_PATH,
 } from "../../constants";
 import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
-import { MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
+import { DataForPlot, FileInfo, MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
+    getClickedCellsFileInfo,
     getColorBySelection,
     getColorByValues,
     getColorsForPlot,
+    getFilteredCellData,
+    getHoveredCardId,
     getIds,
     getPlotByOnX,
     getPlotByOnY,
@@ -25,6 +33,7 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import {
+    Annotation,
     ContinuousPlotData,
     GroupedPlotData,
 } from "../../state/types";
@@ -72,6 +81,47 @@ export const getMainPlotData = createSelector(
             y: yValues,
             customdata: thumbnailPaths as string[],
         };
+    }
+);
+
+
+export const getAnnotations = createSelector(
+    [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
+    (
+        filteredCellData: DataForPlot,
+        clickedCellsFileInfo: FileInfo[],
+        xAxis,
+        yAxis,
+        currentHoveredCellId,
+    ): Annotation[] => {
+        if (isEmpty(filteredCellData.values) || isEmpty(filteredCellData.labels)) {
+            return [];
+        }
+        const initAcc: Annotation[] = [];
+        return clickedCellsFileInfo.reduce((acc, data) => {
+            const cellID = data[CELL_ID_KEY];
+            const fovID = data[FOV_ID_KEY] || "";
+            const cellLine = data[CELL_LINE_NAME_KEY] || "";
+            const thumbnailPath = data[THUMBNAIL_PATH] || "";
+
+            const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
+            const pointIndex = findIndex(cellIds, (id) => id === cellID);
+            const x = filteredCellData.values[xAxis][pointIndex];
+            const y = filteredCellData.values[yAxis][pointIndex];
+            if (pointIndex >= 0 && x !== null && y !== null) {
+                acc.push({
+                    cellID,
+                    cellLine,
+                    fovID,
+                    hovered: cellID === currentHoveredCellId,
+                    pointIndex,
+                    x,
+                    y,
+                    thumbnailPath,
+                });
+            }
+            return acc;
+        }, initAcc);
     }
 );
 

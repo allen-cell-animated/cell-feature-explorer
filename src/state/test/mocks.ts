@@ -130,18 +130,25 @@ const measuredFeaturesDefs = [
         key: "cellular-surface-area",
         unit: "µm²",
     },
+    {
+        discrete: false,
+        displayName: "Missing data",
+        key: "missing-data",
+        unit: "µm²",
+    },
 ];
 const featureData = {
     values: {
         "apical-proximity": [-0.25868651080317, -0.1],
         "cell-segmentation": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
+        "missing-data": [null, null],
     },
     labels: {
         [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
         thumbnailPaths: ["path1", "path2"],
-        [PROTEIN_NAME_KEY]: ["protein1", "protein2"]
-    }
+        [PROTEIN_NAME_KEY]: ["protein1", "protein2"],
+    },
 };
 
 export const mockState = {

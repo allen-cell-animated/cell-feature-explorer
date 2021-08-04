@@ -46,6 +46,7 @@ import {
 } from "../../state/types";
 
 import {
+    getAnnotations,
     getScatterPlotDataArray,
     getXDisplayOptions,
     getXTickConversion,
@@ -285,7 +286,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
 function mapStateToProps(state: State): PropsFromState {
     return {
-        annotations: selectionStateBranch.selectors.getAnnotations(state),
+        annotations: getAnnotations(state),
         clickedPoints: selectionStateBranch.selectors.getClickedScatterPoints(state),
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),

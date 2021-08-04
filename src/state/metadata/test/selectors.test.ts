@@ -12,7 +12,7 @@ describe("Metadata branch selectors", () => {
                 ...mockState,
             };
             const result: string[] = getMeasuredFeaturesKeys(state);
-            expect(result).to.deep.equal(["apical-proximity", "cell-segmentation", "cellular-surface-area"]);
+            expect(result).to.deep.equal(["apical-proximity", "cell-segmentation", "cellular-surface-area", "missing-data"]);
         });
     });
 
