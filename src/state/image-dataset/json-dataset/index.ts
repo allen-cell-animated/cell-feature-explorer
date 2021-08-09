@@ -53,7 +53,7 @@ class JsonRequest implements ImageDataset {
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
 
-    private featureDefinitions: any[] = [];
+    private featureDefsPromise?: Promise<any[]>;
 
     private dataPromise?: Promise<DataForPlot>;
 
@@ -130,6 +130,10 @@ class JsonRequest implements ImageDataset {
                 return cellLines;
             })
             .then(() => {
+                this.featureDefsPromise = this.getMeasuredFeatureDefs();
+                return this.featureDefsPromise;
+            })
+            .then(() => {
                 this.dataPromise = this.getFeatureData();
                 return this.dataPromise;
             })
@@ -143,15 +147,17 @@ class JsonRequest implements ImageDataset {
     };
 
     public getMeasuredFeatureDefs = () => {
-        if (this.featureDefinitions && this.featureDefinitions.length > 0) {
-            return Promise.resolve(this.featureDefinitions);
+        if (this.featureDefsPromise) {
+            return this.featureDefsPromise;
         }
 
         // make sure we have the feature defs first.
-        return this.getJson(this.datasetInfo.featureDefsPath).then((featureDefs) => {
-            this.featureDefinitions = featureDefs;
-            return featureDefs;
-        });
+        this.featureDefsPromise = this.getJson(this.datasetInfo.featureDefsPath).then(
+            (featureDefs) => {
+                return featureDefs;
+            }
+        );
+        return this.featureDefsPromise;
     };
 
     public getFeatureData = () => {
@@ -159,96 +165,100 @@ class JsonRequest implements ImageDataset {
             return this.dataPromise;
         }
 
-        // ASSUME cell line defs are already loaded by the time the feature data arrives
+        // ASSUME cell line defs AND feature defs are already loaded by the time the feature data arrives
 
-        const featureKeys = this.featureDefinitions.map((ele) => ele.key);
-        if (
-            !this.datasetInfo.featuresDataOrder ||
-            this.datasetInfo.featuresDataOrder.length === 0
-        ) {
-            this.datasetInfo.featuresDataOrder = featureKeys;
-        }
-
-        // if display order is not provided, then use data order as display order.
-        if (this.datasetInfo.featuresDisplayOrder.length === 0) {
-            this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
-        }
-        const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
-            (acc, featureName: string) => {
-                const initArray: number[] = [];
-                acc[featureName] = initArray;
-                return acc;
-            },
-            {} as MappingOfMeasuredValuesArrays
-        );
-
-        const proteinArray: string[] = [];
-        const thumbnails: string[] = [];
-        const ids: string[] = [];
-        this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
-            (featureDataArray) => {
-                featureDataArray.forEach((el: any) => {
-                    // FILE INFO
-                    // number of file info property names must be same as number of file_info entries in data
-                    if (FILE_INFO_KEYS.length !== el.file_info.length) {
-                        throw new Error("Bad number of file_info entries in data");
-                    }
-                    // convert file_info array to obj
-                    const fileInfo = {} as FileInfo;
-                    el.file_info.forEach((f: string, i: number) => {
-                        const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
-
-                        fileInfo[key] = f as never;
-                    });
-                    this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
-
-                    // FEATURE DATA
-                    // number of feature defs must be same as number of features
-                    if (this.featureDefinitions.length !== el.features.length) {
-                        throw new Error("Bad number of feature entries in data");
-                    }
-
-                    const cellLine = find(this.cellLines, {
-                        [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
-                    });
-                    if (!cellLine) {
-                        throw new Error(`Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`);
-                    }
-                    // augment file info with protein name
-                    fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
-                    // increment count in cell line
-                    if (cellLine[CELL_COUNT_KEY] !== undefined) {
-                        (cellLine[CELL_COUNT_KEY] as number)++;
-                    } else {
-                        cellLine[CELL_COUNT_KEY] = 1;
-                    }
-
-                    el.features.forEach((value: number, index: number) => {
-                        const arrayOfValues = dataMappedByMeasuredFeatures[
-                            this.datasetInfo.featuresDataOrder[index]
-                        ] as (number | null)[];
-                        if (isNaN(value)) {
-                            arrayOfValues.push(null);
-                        } else {
-                            arrayOfValues.push(Number(value));
-                        }
-                    }, {});
-
-                    proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
-                    thumbnails.push(fileInfo.thumbnailPath);
-                    ids.push(fileInfo[CELL_ID_KEY].toString());
-                });
-                return {
-                    values: dataMappedByMeasuredFeatures,
-                    labels: {
-                        [PROTEIN_NAME_KEY]: proteinArray,
-                        thumbnailPaths: thumbnails,
-                        [ARRAY_OF_CELL_IDS_KEY]: ids,
-                    },
-                };
+        let featureKeys = [];
+        return this.getMeasuredFeatureDefs().then((featureDefs) => {
+            featureKeys = featureDefs.map((ele) => ele.key);
+            if (
+                !this.datasetInfo.featuresDataOrder ||
+                this.datasetInfo.featuresDataOrder.length === 0
+            ) {
+                this.datasetInfo.featuresDataOrder = featureKeys;
             }
-        );
-        return this.dataPromise;
+            // if display order is not provided, then use data order as display order.
+            if (this.datasetInfo.featuresDisplayOrder.length === 0) {
+                this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
+            }
+            const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
+                (acc, featureName: string) => {
+                    const initArray: number[] = [];
+                    acc[featureName] = initArray;
+                    return acc;
+                },
+                {} as MappingOfMeasuredValuesArrays
+            );
+
+            const proteinArray: string[] = [];
+            const thumbnails: string[] = [];
+            const ids: string[] = [];
+            this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
+                (featureDataArray) => {
+                    featureDataArray.forEach((el: any) => {
+                        // FILE INFO
+                        // number of file info property names must be same as number of file_info entries in data
+                        if (FILE_INFO_KEYS.length !== el.file_info.length) {
+                            throw new Error("Bad number of file_info entries in data");
+                        }
+                        // convert file_info array to obj
+                        const fileInfo = {} as FileInfo;
+                        el.file_info.forEach((f: string, i: number) => {
+                            const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
+
+                            fileInfo[key] = f as never;
+                        });
+                        this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
+
+                        // FEATURE DATA
+                        // number of feature defs must be same as number of features
+                        if (featureDefs.length !== el.features.length) {
+                            throw new Error("Bad number of feature entries in data");
+                        }
+
+                        const cellLine = find(this.cellLines, {
+                            [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
+                        });
+                        if (!cellLine) {
+                            throw new Error(
+                                `Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`
+                            );
+                        }
+                        // augment file info with protein name
+                        fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
+                        // increment count in cell line
+                        if (cellLine[CELL_COUNT_KEY] !== undefined) {
+                            (cellLine[CELL_COUNT_KEY] as number)++;
+                        } else {
+                            cellLine[CELL_COUNT_KEY] = 1;
+                        }
+
+                        el.features.forEach((value: number, index: number) => {
+                            const arrayOfValues = dataMappedByMeasuredFeatures[
+                                this.datasetInfo.featuresDataOrder[index]
+                            ] as (number | null)[];
+                            if (isNaN(value)) {
+                                arrayOfValues.push(null);
+                            } else {
+                                arrayOfValues.push(Number(value));
+                            }
+                        }, {});
+
+                        proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
+                        thumbnails.push(fileInfo.thumbnailPath);
+                        ids.push(fileInfo[CELL_ID_KEY].toString());
+                    });
+                    return {
+                        values: dataMappedByMeasuredFeatures,
+                        labels: {
+                            [PROTEIN_NAME_KEY]: proteinArray,
+                            thumbnailPaths: thumbnails,
+                            [ARRAY_OF_CELL_IDS_KEY]: ids,
+                        },
+                    };
+                }
+            );
+            return this.dataPromise;
+        });
     };
 
     public getFileInfoByCellId = (cellId: string) => {
