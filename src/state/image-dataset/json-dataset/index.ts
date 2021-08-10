@@ -130,8 +130,7 @@ class JsonRequest implements ImageDataset {
                 return cellLines;
             })
             .then(() => {
-                this.featureDefsPromise = this.getMeasuredFeatureDefs();
-                return this.featureDefsPromise;
+                return this.getMeasuredFeatureDefs();
             })
             .then(() => {
                 this.dataPromise = this.getFeatureData();
