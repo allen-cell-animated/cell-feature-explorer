@@ -17,10 +17,10 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, DataForPlot } from "./types";
+import { CellLineDef, DataForPlot, MappingOfMeasuredValuesArrays } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 import { selectPoint, selectCellFor3DViewer, requestCellFileInfoByArrayOfCellIds } from "../selection/actions";
-import { getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
+import { getPlotByOnX, getPlotByOnY, getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -52,6 +52,42 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
+export const checkForNullValues = (
+    length: number,
+    index: number,
+    plotByOnX: string,
+    plotByOnY: string,
+    alreadyChecked: Map<number, boolean>,
+    values: MappingOfMeasuredValuesArrays
+): number => {
+    if (!alreadyChecked.has(index)) {
+        alreadyChecked.set(index, true);
+        if (values[plotByOnX][index] !== null && values[plotByOnY][index] !== null) {
+            return index;
+        } else {
+            const randomNumber = Math.floor(Math.random() * (length + 1));
+            return checkForNullValues(
+                length,
+                randomNumber,
+                plotByOnX,
+                plotByOnY,
+                alreadyChecked,
+                values
+            );
+        }
+    } else {
+        const randomNumber = Math.floor(Math.random() * (length + 1));
+        return checkForNullValues(
+            length,
+            randomNumber,
+            plotByOnX,
+            plotByOnY,
+            alreadyChecked,
+            values
+        );
+    }
+};
+
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
@@ -80,14 +116,37 @@ const requestFeatureDataLogic = createLogic({
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
                 const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
+                let selectedCellIndex = 0;
                 if (selectedCellIdsFromUrls.length) {
                     dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls))
                 } else {
-                    dispatch(selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
+                    const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
+                    const alreadyChecked = new Map()
+                    const randomNumber = Math.floor(Math.random() * (ids.length + 1));
+                    const plotByOnX = getPlotByOnX(state);
+                    const plotByOnY = getPlotByOnY(state);
+                    if (plotByOnX && plotByOnY) {
+                        selectedCellIndex = checkForNullValues(
+                            ids.length,
+                            randomNumber,
+                            plotByOnX,
+                            plotByOnY,
+                            alreadyChecked,
+                            metaDatum.values
+                        );
+
+                    }
+                    dispatch(
+                        selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
+                    );
                 }
 
                 if (!getSelected3DCell(state)) {
-                    dispatch(selectCellFor3DViewer(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
+                    dispatch(
+                        selectCellFor3DViewer(
+                            metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex]
+                        )
+                    );
                 }
   
                 dispatch(stopLoading());
