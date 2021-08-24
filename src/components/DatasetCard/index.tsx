@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Card, Descriptions, Tag, Divider} from "antd";
+import { Card, Descriptions, Tag, Divider } from "antd";
 import imageMapping, { DatasetId, DatasetMetaData } from "../../constants/datasets";
 const { Meta } = Card;
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface DatasetCardProps extends DatasetMetaData {
     handleSelectDataset: (id: string) => void;
@@ -70,13 +70,8 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
         </Card>
     );
     if (link) {
-        
-        return (
-            <a href={link}>
-                {cardContent}
-            </a>
-        );
-    } 
+        return <a href={link}>{cardContent}</a>;
+    }
     return <div onClick={() => handleSelectDataset(id)}>{cardContent}</div>;
 };
 

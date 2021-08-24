@@ -1,19 +1,9 @@
 import { Popover } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons"
-import {
-    filter,
-    includes,
-    map,
-} from "lodash";
-import {
-    PlotSelectionEvent,
-    PlotDatum
-} from "plotly.js";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { filter, includes, map } from "lodash";
+import { PlotSelectionEvent, PlotDatum } from "plotly.js";
 import * as React from "react";
-import {
-    ActionCreator,
-    connect,
-} from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 
 import AxisDropDown from "../../components/AxisDropDown";
 import MainPlot from "../../components/MainPlot";
@@ -40,10 +30,7 @@ import {
     SelectPointAction,
     TickConversion,
 } from "../../state/selection/types";
-import {
-    Annotation,
-    State,
-} from "../../state/types";
+import { Annotation, State } from "../../state/types";
 
 import {
     getAnnotations,
@@ -51,11 +38,11 @@ import {
     getXDisplayOptions,
     getXTickConversion,
     getYDisplayOptions,
-    getYTickConversion
+    getYTickConversion,
 } from "./selectors";
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface PlotDatumWithId extends PlotDatum {
     id: string;
@@ -99,7 +86,6 @@ interface PropsFromApp {
 type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps> {
-
     constructor(props: MainPlotContainerProps) {
         super(props);
         this.onPointClicked = this.onPointClicked.bind(this);
@@ -109,17 +95,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
     }
-    
+
     private thumbnailTimeout = 0;
 
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
         const { points } = clicked;
-        const {
-            clickedPoints,
-            handleSelectPoint,
-            handleDeselectPoint,
-        } = this.props;
+        const { clickedPoints, handleSelectPoint, handleDeselectPoint } = this.props;
         points.forEach((point: any) => {
             if (point.data.name === SCATTER_PLOT_NAME) {
                 if (includes(clickedPoints, point.id)) {
@@ -134,19 +116,22 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPointHovered(hovered: any) {
         const { points, event } = hovered;
-        const {
-            filtersToExclude,
-            updateMousePosition,
-            changeHoveredCell,
-        } = this.props;
+        const { filtersToExclude, updateMousePosition, changeHoveredCell } = this.props;
         updateMousePosition({
             pageX: event.pageX,
             pageY: event.pageY,
         });
         points.forEach((point: any) => {
-            if (point.data.name === SCATTER_PLOT_NAME && !includes(filtersToExclude, point.fullData.name) ) {
+            if (
+                point.data.name === SCATTER_PLOT_NAME &&
+                !includes(filtersToExclude, point.fullData.name)
+            ) {
                 window.clearTimeout(this.thumbnailTimeout);
-                changeHoveredCell({[CELL_ID_KEY]: point.id, [PROTEIN_NAME_KEY]: point.fullData.name, thumbnailPath: point.customdata});
+                changeHoveredCell({
+                    [CELL_ID_KEY]: point.id,
+                    [PROTEIN_NAME_KEY]: point.fullData.name,
+                    thumbnailPath: point.customdata,
+                });
             } else {
                 changeHoveredCell(null);
             }
@@ -157,10 +142,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredCell(null), 500);
     }
 
-    public onPlotUnhovered({relatedTarget}: any) {
-        const {
-            changeHoveredCell,
-        } = this.props;
+    public onPlotUnhovered({ relatedTarget }: any) {
+        const { changeHoveredCell } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
             changeHoveredCell(null);
@@ -173,10 +156,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         }
         const { points } = eventData;
         const pointsWithIds = points as PlotDatumWithId[];
-        const {
-            handleLassoOrBoxSelect,
-            handleSelectionToolUsed,
-        } = this.props;
+        const { handleLassoOrBoxSelect, handleSelectionToolUsed } = this.props;
         const key = Date.now().valueOf().toString();
         const payload: LassoOrBoxSelectPointData[] = map(
             filter(pointsWithIds, (ele: PlotDatumWithId) => ele.data.name === SCATTER_PLOT_NAME),
@@ -192,7 +172,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
         return (
-            hoveredPointData && 
+            hoveredPointData &&
             galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[PROTEIN_NAME_KEY]}
@@ -201,7 +181,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 />
             )
         );
-    } 
+    }
 
     public render() {
         const {
@@ -316,5 +296,7 @@ const dispatchToPropsMap: DispatchProps = {
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
 };
 
-export default connect<PropsFromState, DispatchProps, PropsFromApp, State>
-    (mapStateToProps, dispatchToPropsMap)(MainPlotContainer);
+export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
+    mapStateToProps,
+    dispatchToPropsMap
+)(MainPlotContainer);

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Loading } from "../Icons";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface ViewerOverlayTargetProps {
     isLoading: boolean;

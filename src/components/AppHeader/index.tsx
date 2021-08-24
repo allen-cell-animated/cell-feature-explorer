@@ -1,9 +1,8 @@
 import * as React from "react";
 
-
 import { AicsLogo } from "../Icons";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface AppHeaderProps {
     selectedDataset: string;

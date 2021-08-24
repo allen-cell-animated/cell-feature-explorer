@@ -5,10 +5,10 @@ import DatasetCard from "../../components/DatasetCard";
 import { DatasetMetaData } from "../../constants/datasets";
 const { Content, Header } = Layout;
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface LandingPageProps {
-    handleSelectDataset: (id: string) =>  void;
+    handleSelectDataset: (id: string) => void;
     datasets: DatasetMetaData[];
 }
 const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (

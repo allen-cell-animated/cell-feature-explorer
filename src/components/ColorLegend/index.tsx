@@ -1,9 +1,7 @@
-import {
-    Badge,
-} from "antd";
+import { Badge } from "antd";
 import React from "react";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface InteractiveRowProps {
     color: string;
@@ -12,22 +10,15 @@ interface InteractiveRowProps {
 }
 
 export default class ColorLegendRow extends React.Component<InteractiveRowProps, {}> {
-
     constructor(props: InteractiveRowProps) {
         super(props);
     }
 
     public render() {
-        const {
-            color,
-            name,
-            total,
-        } = this.props;
+        const { color, name, total } = this.props;
 
         return (
-            <div
-                className={styles.container}
-            >
+            <div className={styles.container}>
                 <div className={styles.firstColumn}>
                     <Badge
                         style={{
@@ -37,7 +28,6 @@ export default class ColorLegendRow extends React.Component<InteractiveRowProps,
                         dot={true}
                     />
                     <span className={styles.label}>{name}</span>
-
                 </div>
                 <div>
                     <span className={styles.label}>{total}</span>

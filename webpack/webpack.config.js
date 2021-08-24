@@ -29,7 +29,10 @@ module.exports = ({ analyze, env } = {}) => ({
         rules: [
             {
                 test: /\.(ts|js|tsx|jsx)$/,
-                include: [path.resolve(__dirname, "../", "src")],
+                include: [
+                    path.resolve(__dirname, "../", "src"),
+                    path.resolve(__dirname, "../", "../", "volume-viewer"),
+                ],
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
@@ -51,13 +54,13 @@ module.exports = ({ analyze, env } = {}) => ({
                     {
                         loader: "css-loader",
                         options: {
-                            importLoaders: 1,
+                            esModule: false,
                             modules: {
-                                mode: "local",
-                                auto: true,
+                                //namedExport: true,
                                 localIdentName: "[name]__[local]--[hash:base64:5]",
                                 exportLocalsConvention: "camelCase",
                             },
+                            importLoaders: 1,
                         },
                     },
                     {
@@ -66,12 +69,14 @@ module.exports = ({ analyze, env } = {}) => ({
                             postcssOptions: {
                                 ident: "postcss",
                                 plugins: [
-                                    require("postcss-flexbugs-fixes"),
-                                    require("postcss-preset-env")({
-                                        autoprefixer: {
-                                            flexbox: "no-2009",
-                                        },
-                                    }),
+                                    require("autoprefixer"),
+                                    // require("postcss-flexbugs-fixes"),
+                                    // require("postcss-preset-env"),
+                                    // {
+                                    //     autoprefixer: {
+                                    //         flexbox: "no-2009",
+                                    //     },
+                                    // },
                                 ],
                             },
                             sourceMap: env !== Env.PRODUCTION,

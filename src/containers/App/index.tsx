@@ -17,8 +17,7 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
-const styles = require("./style.css");
-//import styles from "./style.css";
+import styles from "./style.css";
 
 interface AppProps {
     isLoading: boolean;

@@ -1,11 +1,7 @@
-import {
-    Col,
-    Row,
-    Switch,
-} from "antd";
+import { Col, Row, Switch } from "antd";
 import React from "react";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface ColorBySwitcherProps {
     defaultChecked: boolean;
@@ -18,11 +14,7 @@ interface ColorBySwitcherProps {
 
 const ColorBySwitcher: React.SFC<ColorBySwitcherProps> = (props) => {
     return props.includeCol ? (
-        <Row
-            className={styles.colorByRow}
-            type="flex"
-            align="middle"
-        >
+        <Row className={styles.colorByRow} type="flex" align="middle">
             <Col span={props.includeCol}>
                 <label className={styles.label}>Color by:</label>
                 <Switch
@@ -34,12 +26,9 @@ const ColorBySwitcher: React.SFC<ColorBySwitcherProps> = (props) => {
                 />
             </Col>
             {props.children}
-        </Row>) : (
-        <Row
-            className={styles.colorByRow}
-            type="flex"
-            align="middle"
-        >
+        </Row>
+    ) : (
+        <Row className={styles.colorByRow} type="flex" align="middle">
             <label className={styles.label}>{props.label}</label>
             <Switch
                 className={styles.colorBySwitch}

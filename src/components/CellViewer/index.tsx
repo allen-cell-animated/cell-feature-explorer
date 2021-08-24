@@ -10,7 +10,7 @@ import {
 } from "../../constants/index";
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     if (!props.cellId) {

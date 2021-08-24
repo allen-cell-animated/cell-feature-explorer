@@ -1,20 +1,9 @@
-import {
-    Checkbox,
-    Col,
-    Collapse,
-    Row,
-} from "antd";
+import { Checkbox, Col, Collapse, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 // import { RadioChangeEvent } from "antd/es/radio";
-import {
-    filter,
-    includes,
-} from "lodash";
+import { filter, includes } from "lodash";
 import React from "react";
-import {
-    ActionCreator,
-    connect,
-} from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 
 import AxisDropDown from "../../components/AxisDropDown";
 import BarChart from "../../components/BarChart";
@@ -39,9 +28,7 @@ import {
     DownloadConfig,
     SelectAxisAction,
 } from "../../state/selection/types";
-import {
-    State,
-} from "../../state/types";
+import { State } from "../../state/types";
 import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 
 import {
@@ -52,7 +39,7 @@ import {
 } from "./selectors";
 import { PanelData } from "./types";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 // const initIndex = 2;
 
@@ -90,7 +77,7 @@ interface DispatchProps {
 }
 
 interface PropsFromApp {
-   // props from <App />
+    // props from <App />
     panelKeys: string[];
     openKeys: string[];
     defaultActiveKey: string[];
@@ -113,13 +100,15 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
         this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
-        this.onSelectionSetDownloadButtonClicked = this.onSelectionSetDownloadButtonClicked.bind(this);
+        this.onSelectionSetDownloadButtonClicked =
+            this.onSelectionSetDownloadButtonClicked.bind(this);
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
         const { handleFilterByProteinName, filtersToExclude } = this.props;
-        const newFilterList = includes(filtersToExclude, target.value) ?
-            filter(filtersToExclude, (e) => e !== target.value) : [...filtersToExclude, target.value];
+        const newFilterList = includes(filtersToExclude, target.value)
+            ? filter(filtersToExclude, (e) => e !== target.value)
+            : [...filtersToExclude, target.value];
         handleFilterByProteinName(newFilterList);
     }
 
@@ -171,7 +160,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
         //     showClusters,
         // } = this.props;
         // const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
-
         // return (
         //     <React.Fragment>
         //         <ColorBySwitcher
@@ -213,13 +201,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
             selectionSetsPanelData,
             handleCloseSelectionSet,
         } = this.props;
-        return selectionSetsPanelData.length === 0 ?
-            (
-                <span>No selected sets yet. Make a selection on the plot using the
-                    <strong> Lasso Select</strong> or
-                    <strong> Box Select</strong> tools on the plot, and it will get saved here.
-                </span>
-            ) : (
+        return selectionSetsPanelData.length === 0 ? (
+            <span>
+                No selected sets yet. Make a selection on the plot using the
+                <strong> Lasso Select</strong> or
+                <strong> Box Select</strong> tools on the plot, and it will get saved here.
+            </span>
+        ) : (
             <React.Fragment>
                 <ColorBySwitcher
                     defaultChecked={true}
@@ -275,12 +263,14 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         <Col span={6} />
                         <Col span={18}>
                             {colorForPlot.map((ele, index) => {
-                                return (<ColorLegendRow
+                                return (
+                                    <ColorLegendRow
                                         color={ele.color}
                                         name={ele.label}
                                         key={ele.name}
                                         total={categoryCounts[index]}
-                                    />);
+                                    />
+                                );
                             })}
                         </Col>
                     </Row>
@@ -314,36 +304,26 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
     }
 
     public render() {
-        const {
-            defaultActiveKey,
-            openKeys,
-            panelKeys,
-        } = this.props;
+        const { defaultActiveKey, openKeys, panelKeys } = this.props;
         return (
-                <Collapse
-                    defaultActiveKey={defaultActiveKey}
-                    activeKey={openKeys}
-                    onChange={this.onActivePanelChange}
-                >
-                    <Panel
-                        key={panelKeys[0]}
-                        header="Data grouped by tagged structures"
-                    >
-                        {this.renderTaggedStructuresPanel()}
-                    </Panel>
-                    <Panel
-                        key={panelKeys[1]}
-                        header="Selected sets"
-                    >
-                        {this.renderSelectionPanel()}
-                    </Panel>
-                    {/* <Panel
+            <Collapse
+                defaultActiveKey={defaultActiveKey}
+                activeKey={openKeys}
+                onChange={this.onActivePanelChange}
+            >
+                <Panel key={panelKeys[0]} header="Data grouped by tagged structures">
+                    {this.renderTaggedStructuresPanel()}
+                </Panel>
+                <Panel key={panelKeys[1]} header="Selected sets">
+                    {this.renderSelectionPanel()}
+                </Panel>
+                {/* <Panel
                         key={panelKeys[2]}
                         header="Data group by clustering"
                     >
                         {this.renderClusteringPanel()}
                     </Panel> */}
-                </Collapse>
+            </Collapse>
         );
     }
 }

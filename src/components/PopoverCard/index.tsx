@@ -1,10 +1,8 @@
-import {
-    Card,
-} from "antd";
+import { Card } from "antd";
 import React from "react";
 
 const { Meta } = Card;
-const styles = require("./style.css");
+import styles from "./style.css";
 
 export interface PopoverCardProps {
     description: string;
@@ -13,18 +11,12 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.SFC<PopoverCardProps> = (props) => {
-
     return (
         <Card
             className={styles.container}
-            cover={props.src &&
-            (<img alt="thumbnail of microscopy image" src={props.src} />)
-            }
+            cover={props.src && <img alt="thumbnail of microscopy image" src={props.src} />}
         >
-            <Meta
-                description={props.description}
-                title={props.title}
-            />
+            <Meta description={props.description} title={props.title} />
         </Card>
     );
 };
