@@ -52,7 +52,7 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
-export const checkForNullValues = (
+export const findIndexWithValues = (
     length: number,
     index: number,
     plotByOnX: string,
@@ -60,13 +60,25 @@ export const checkForNullValues = (
     alreadyChecked: Map<number, boolean>,
     values: MappingOfMeasuredValuesArrays
 ): number => {
-    if (!alreadyChecked.has(index)) {
+    if (alreadyChecked.size === length) {
+        return 0;
+    } else if (alreadyChecked.has(index)) {
+        const randomNumber = Math.floor(Math.random() * length);
+        return findIndexWithValues(
+            length,
+            randomNumber,
+            plotByOnX,
+            plotByOnY,
+            alreadyChecked,
+            values
+        );
+    } else {
         alreadyChecked.set(index, true);
         if (values[plotByOnX][index] !== null && values[plotByOnY][index] !== null) {
             return index;
         } else {
-            const randomNumber = Math.floor(Math.random() * (length + 1));
-            return checkForNullValues(
+            const randomNumber = Math.floor(Math.random() * length);
+            return findIndexWithValues(
                 length,
                 randomNumber,
                 plotByOnX,
@@ -75,16 +87,6 @@ export const checkForNullValues = (
                 values
             );
         }
-    } else {
-        const randomNumber = Math.floor(Math.random() * (length + 1));
-        return checkForNullValues(
-            length,
-            randomNumber,
-            plotByOnX,
-            plotByOnY,
-            alreadyChecked,
-            values
-        );
     }
 };
 
@@ -122,11 +124,11 @@ const requestFeatureDataLogic = createLogic({
                 } else {
                     const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
                     const alreadyChecked = new Map()
-                    const randomNumber = Math.floor(Math.random() * (ids.length + 1));
+                    const randomNumber = Math.floor(Math.random() * ids.length);
                     const plotByOnX = getPlotByOnX(state);
                     const plotByOnY = getPlotByOnY(state);
                     if (plotByOnX && plotByOnY) {
-                        selectedCellIndex = checkForNullValues(
+                        selectedCellIndex = findIndexWithValues(
                             ids.length,
                             randomNumber,
                             plotByOnX,
