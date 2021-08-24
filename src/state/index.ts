@@ -9,7 +9,7 @@ export { default as createReduxStore } from "./configure-store";
 
 export { enableBatching } from "./util";
 
-export { State } from "./types";
+export * from "./types";
 
 export const initialState: State = Object.freeze({
     metadata: metadataInitialState,

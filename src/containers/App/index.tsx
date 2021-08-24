@@ -18,6 +18,7 @@ import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
 const styles = require("./style.css");
+//import styles from "./style.css";
 
 interface AppProps {
     isLoading: boolean;
@@ -31,12 +32,11 @@ interface AppProps {
 class App extends React.Component<AppProps, {}> {
     public componentDidMount = () => {
         this.props.requestAvailableDatasets();
-    }
+    };
 
     public handleSelectDataset = (id: string) => {
-
-        this.props.changeDataset(id)
-    }
+        this.props.changeDataset(id);
+    };
 
     public render() {
         const { isLoading, loadingText, selectedDataset, datasets } = this.props;
@@ -54,7 +54,7 @@ class App extends React.Component<AppProps, {}> {
 
                     {!!selectedDataset && <BackToPlot />}
                     <Header className={styles.navBar}>
-                        <AllenCellHeader selectedDataset={selectedDataset}/>
+                        <AllenCellHeader selectedDataset={selectedDataset} />
                     </Header>
                     <Layout>
                         {!!selectedDataset ? (
@@ -70,7 +70,6 @@ class App extends React.Component<AppProps, {}> {
             </div>
         );
     }
-
 }
 
 function mapStateToProps(state: State) {
@@ -78,13 +77,13 @@ function mapStateToProps(state: State) {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
-        datasets: metadataStateBranch.selectors.getDatasets(state)
+        datasets: metadataStateBranch.selectors.getDatasets(state),
     };
 }
 
 const dispatchToPropsMap = {
     changeDataset: selectionStateBranch.actions.changeDataset,
-    requestAvailableDatasets: metadataStateBranch.actions.requestAvailableDatasets
+    requestAvailableDatasets: metadataStateBranch.actions.requestAvailableDatasets,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(App);
