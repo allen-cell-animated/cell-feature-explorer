@@ -7,7 +7,14 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveMeasuredFeatureDefs, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
+import {
+    receiveAvailableDatasets,
+    receiveMeasuredFeatureDefs,
+    receiveCellLineData,
+    receiveMetadata,
+    setLoadingText,
+    stopLoading,
+} from "./actions";
 import { getShowSmallScreenWarning } from "./selectors";
 
 import {
@@ -17,10 +24,19 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, DataForPlot, MappingOfMeasuredValuesArrays } from "./types";
+import { CellLineDef, DataForPlot, MappingOfMeasuredValuesArraysWithNulls } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
-import { selectPoint, selectCellFor3DViewer, requestCellFileInfoByArrayOfCellIds } from "../selection/actions";
-import { getPlotByOnX, getPlotByOnY, getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
+import {
+    selectPoint,
+    selectCellFor3DViewer,
+    requestCellFileInfoByArrayOfCellIds,
+} from "../selection/actions";
+import {
+    getPlotByOnX,
+    getPlotByOnY,
+    getSelected3DCell,
+    getSelectedIdsFromUrl,
+} from "../selection/selectors";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -36,7 +52,6 @@ const requestCellLineDefs = createLogic({
     },
     type: REQUEST_CELL_LINE_DATA,
 });
-
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -58,7 +73,7 @@ export const findIndexWithValues = (
     plotByOnX: string,
     plotByOnY: string,
     alreadyChecked: Map<number, boolean>,
-    values: MappingOfMeasuredValuesArrays
+    values: MappingOfMeasuredValuesArraysWithNulls
 ): number => {
     if (alreadyChecked.size === length) {
         return 0;
@@ -102,7 +117,7 @@ const requestFeatureDataLogic = createLogic({
         const actions: AnyAction[] = [];
         const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
         actions.push(receiveMeasuredFeatureDefs(measuredFeatureDefs));
-        
+
         return imageDataSet
             .getFeatureData()
             .then((data: DataForPlot) => {
@@ -120,10 +135,10 @@ const requestFeatureDataLogic = createLogic({
                 const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
                 let selectedCellIndex = 0;
                 if (selectedCellIdsFromUrls.length) {
-                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls))
+                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls));
                 } else {
                     const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
-                    const alreadyChecked = new Map()
+                    const alreadyChecked = new Map();
                     const randomNumber = Math.floor(Math.random() * ids.length);
                     const plotByOnX = getPlotByOnX(state);
                     const plotByOnY = getPlotByOnY(state);
@@ -136,7 +151,6 @@ const requestFeatureDataLogic = createLogic({
                             alreadyChecked,
                             metaDatum.values
                         );
-
                     }
                     dispatch(
                         selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
@@ -150,7 +164,7 @@ const requestFeatureDataLogic = createLogic({
                         )
                     );
                 }
-  
+
                 dispatch(stopLoading());
             })
             .catch((reason: string) => {

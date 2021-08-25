@@ -58,6 +58,10 @@ export interface MeasuredFeatureDef {
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfMeasuredValuesArrays {
+    [key: string]: number[];
+}
+
+export interface MappingOfMeasuredValuesArraysWithNulls {
     [key: string]: (number | null)[];
 }
 
