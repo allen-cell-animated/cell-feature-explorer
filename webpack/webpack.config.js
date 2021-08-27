@@ -13,6 +13,8 @@ const getPluginsByEnv = require("./plugins");
 module.exports = ({ analyze, env } = {}) => ({
     devtool: env !== Env.PRODUCTION && "source-map",
     devServer: {
+        // devserver fails to get the right hash for the webworker
+        // but running in a static python webserver gets the correct hash after running a manual build
         static: {
             directory: path.join(__dirname, "../", "dist"),
         },
@@ -29,10 +31,7 @@ module.exports = ({ analyze, env } = {}) => ({
         rules: [
             {
                 test: /\.(ts|js|tsx|jsx)$/,
-                include: [
-                    path.resolve(__dirname, "../", "src"),
-                    path.resolve(__dirname, "../", "../", "volume-viewer"),
-                ],
+                include: [path.resolve(__dirname, "../", "src")],
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
@@ -45,16 +44,12 @@ module.exports = ({ analyze, env } = {}) => ({
                 test: /\.css/,
                 include: [path.resolve(__dirname, "../", "src")],
                 use: [
-                    // {
-                    //     loader: "style-loader",
-                    // },
                     {
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
                         loader: "css-loader",
                         options: {
-                            esModule: false,
                             modules: {
                                 //namedExport: true,
                                 localIdentName: "[name]__[local]--[hash:base64:5]",
@@ -68,16 +63,7 @@ module.exports = ({ analyze, env } = {}) => ({
                         options: {
                             postcssOptions: {
                                 ident: "postcss",
-                                plugins: [
-                                    require("autoprefixer"),
-                                    // require("postcss-flexbugs-fixes"),
-                                    // require("postcss-preset-env"),
-                                    // {
-                                    //     autoprefixer: {
-                                    //         flexbox: "no-2009",
-                                    //     },
-                                    // },
-                                ],
+                                plugins: [require("autoprefixer")],
                             },
                             sourceMap: env !== Env.PRODUCTION,
                         },
@@ -90,10 +76,7 @@ module.exports = ({ analyze, env } = {}) => ({
             // e.g., importing antd component css
             {
                 test: /\.css/,
-                include: [
-                    path.resolve(__dirname, "../", "../", "website-3d-cell-viewer"), //for local testing
-                    path.resolve(__dirname, "../", "node_modules"),
-                ],
+                include: [path.resolve(__dirname, "../", "node_modules")],
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
@@ -104,16 +87,18 @@ module.exports = ({ analyze, env } = {}) => ({
                 ],
             },
             {
+                // treat less files from node_modules without any css module mangling
+                // i.e. no options in css-loader because we figure they are already
                 test: /\.less$/,
+                include: [path.resolve(__dirname, "../", "node_modules")],
                 use: [
-                    { loader: MiniCssExtractPlugin.loader },
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
                     {
                         loader: "css-loader",
                         options: {
                             importLoaders: 1,
-                            modules: {
-                                exportLocalsConvention: "camelCase",
-                            },
                         },
                     },
                     {
@@ -154,11 +139,14 @@ module.exports = ({ analyze, env } = {}) => ({
     },
     plugins: getPluginsByEnv(env, analyze),
     resolve: {
+        symlinks: false,
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
         mainFields: ["module", "main", "browser"],
-        alias: {
-            react: path.resolve("./node_modules/react"),
-        },
+        // Removing this works when removing react from node_modules of the deps volume-viewer and website-3d-cell-viewer
+        // do env check? this is needed for local testing of dependencies that have react
+        // alias: {
+        //     react: path.resolve("./node_modules/react"),
+        // },
     },
     stats: analyze ? "none" : stats,
 });
