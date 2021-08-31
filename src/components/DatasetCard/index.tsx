@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Card, Descriptions, Tag, Divider } from "antd";
-import imageMapping, { DatasetId, DatasetMetaData } from "../../constants/datasets";
+import { Card, Descriptions, Tag, Divider} from "antd";
+import { DatasetMetaData } from "../../constants/datasets";
 const { Meta } = Card;
 
 import styles from "./style.css";
@@ -43,7 +43,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 <img
                     className={styles.staticThumbnail}
                     alt={`Snapshot of simulation for ${name}`}
-                    src={image || imageMapping[id as DatasetId]}
+                    src={image}
                 />
             }
         >
