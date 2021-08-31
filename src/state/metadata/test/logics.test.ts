@@ -1,9 +1,8 @@
 import { expect } from "chai";
-import { findIndexWithValues } from "../logics";
+import { findVisibleDataPoint } from "../logics";
 import { MappingOfMeasuredValuesArraysWithNulls } from "../types";
 
 const length = 4;
-const startIndex = 2;
 const plotByOnX = "plotOnX";
 const plotByOnY = "plotOnY";
 
@@ -34,46 +33,30 @@ const testDataNoValues2: MappingOfMeasuredValuesArraysWithNulls = {
     plotOnX: [null, null, 3, 4],
     plotOnY: [0, 1, null, null],
 };
-let alreadyChecked = new Map();
 
 describe("Metadata logic", () => {
-    beforeEach(() => {
-        alreadyChecked = new Map();
-    });
     describe("findIndexWithValues", () => {
         it("returns a number within the given length", () => {
             const result: number[] = [
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataWithValues1
+                    testDataWithValues1[plotByOnX],
+                    testDataWithValues1[plotByOnY]
                 ),
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataWithValues2
+                    testDataWithValues2[plotByOnX],
+                    testDataWithValues2[plotByOnY]
                 ),
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataWithValues3
+                    testDataWithValues3[plotByOnX],
+                    testDataWithValues3[plotByOnY]
                 ),
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataWithValues4
+                    testDataWithValues4[plotByOnX],
+                    testDataWithValues4[plotByOnY]
                 ),
             ];
             const lessThanLength = result.filter((value) => value < length);
@@ -81,50 +64,35 @@ describe("Metadata logic", () => {
             expect(result.length).to.deep.equal(lessThanLength.length);
         });
         it("will return zero if there are no values for the selected set", () => {
-            const alreadyChecked = new Map();
 
             const result = [
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataNoValues1
+                    testDataNoValues1[plotByOnX],
+                    testDataNoValues1[plotByOnY]
                 ),
-                findIndexWithValues(
+                findVisibleDataPoint(
                     length,
-                    startIndex,
-                    plotByOnX,
-                    plotByOnY,
-                    alreadyChecked,
-                    testDataNoValues2
+                    testDataNoValues2[plotByOnX],
+                    testDataNoValues2[plotByOnY]
                 ),
             ];
             expect(result).to.deep.equal([0, 0]);
         });
         it("will return an index that has a value for both x and y", () => {
-            const alreadyChecked1 = new Map();
-            const result1 = findIndexWithValues(
+            const result1 = findVisibleDataPoint(
                 length,
-                startIndex,
-                plotByOnX,
-                plotByOnY,
-                alreadyChecked1,
-                testDataWithValues4
+                testDataWithValues4[plotByOnX],
+                testDataWithValues4[plotByOnY]
             );
 
             expect(testDataWithValues4[plotByOnX][result1]).to.not.be.null;
             expect(testDataWithValues4[plotByOnY][result1]).to.not.be.null;
 
-            const alreadyChecked2 = new Map();
-            const result2 = findIndexWithValues(
+            const result2 = findVisibleDataPoint(
                 length,
-                startIndex,
-                plotByOnX,
-                plotByOnY,
-                alreadyChecked2,
-                testDataWithValues4
+                testDataWithValues4[plotByOnX],
+                testDataWithValues4[plotByOnY]
             );
 
             expect(testDataWithValues4[plotByOnX][result2]).to.not.be.null;

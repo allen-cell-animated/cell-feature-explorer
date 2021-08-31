@@ -24,7 +24,7 @@ import {
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
 } from "./constants";
-import { CellLineDef, DataForPlot, MappingOfMeasuredValuesArraysWithNulls } from "./types";
+import { CellLineDef, DataForPlot } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 import {
     selectPoint,
@@ -67,43 +67,35 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
-export const findIndexWithValues = (
-    length: number,
-    index: number,
-    plotByOnX: string,
-    plotByOnY: string,
-    alreadyChecked: Map<number, boolean>,
-    values: MappingOfMeasuredValuesArraysWithNulls
-): number => {
-    if (alreadyChecked.size === length) {
-        return 0;
-    } else if (alreadyChecked.has(index)) {
-        const randomNumber = Math.floor(Math.random() * length);
-        return findIndexWithValues(
-            length,
-            randomNumber,
-            plotByOnX,
-            plotByOnY,
-            alreadyChecked,
-            values
-        );
-    } else {
-        alreadyChecked.set(index, true);
-        if (values[plotByOnX][index] !== null && values[plotByOnY][index] !== null) {
-            return index;
-        } else {
-            const randomNumber = Math.floor(Math.random() * length);
-            return findIndexWithValues(
-                length,
-                randomNumber,
-                plotByOnX,
-                plotByOnY,
-                alreadyChecked,
-                values
-            );
-        }
-    }
+const getRandomDataPoint = (length: number): number => {
+    return Math.floor(Math.random() * length);
+}
+
+const isVisiblePoint = (
+    xValues: (number | null)[],
+    yValues: (number | null)[],
+    index: number
+): boolean => {
+    return xValues[index] !== null && yValues[index] !== null;
 };
+
+export const findVisibleDataPoint = (
+           length: number,
+           xValues: (number | null)[],
+           yValues: (number | null)[]
+       ): number => {
+           const MAX_ATTEMPTS = length;
+           let numAttempts = 0;
+           while (numAttempts < MAX_ATTEMPTS) {
+               const index = getRandomDataPoint(length);
+               console.log(numAttempts, index);
+               if (isVisiblePoint(xValues, yValues, index)) {
+                   return index;
+               }
+               numAttempts++;
+           }
+           return 0;
+       };
 
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -138,20 +130,18 @@ const requestFeatureDataLogic = createLogic({
                     dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls));
                 } else {
                     const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
-                    const alreadyChecked = new Map();
-                    const randomNumber = Math.floor(Math.random() * ids.length);
                     const plotByOnX = getPlotByOnX(state);
                     const plotByOnY = getPlotByOnY(state);
+                    const xValues = metaDatum.values[plotByOnX];
+                    const yValues = metaDatum.values[plotByOnY];
                     if (plotByOnX && plotByOnY) {
-                        selectedCellIndex = findIndexWithValues(
+                        selectedCellIndex = findVisibleDataPoint(
                             ids.length,
-                            randomNumber,
-                            plotByOnX,
-                            plotByOnY,
-                            alreadyChecked,
-                            metaDatum.values
+                            xValues,
+                            yValues,
                         );
                     }
+                    console.log(selectedCellIndex)
                     dispatch(
                         selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
                     );
