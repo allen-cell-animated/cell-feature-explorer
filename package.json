@@ -11,7 +11,7 @@
         "dev": "webpack serve --hot --public --config ./webpack/webpack.config.js  --env env=development",
         "build": "webpack --config ./webpack/webpack.config.js  --env env=production",
         "build:internal": "USE_JSON_DATASET=true webpack --config ./webpack/webpack.config.js  --env env=development",
-        "start": "webpack serve --config ./webpack/webpack.config.js --env env=development ",
+        "start": "webpack serve --config ./webpack/webpack.config.js --env env=development",
         "start:internal": "USE_JSON_DATASET=true webpack-dev-server --config ./webpack/webpack.config.js --env env=development",
         "start:dev-db": "USE_DEV_DB=true webpack-dev-server --hot --public --config ./webpack/webpack.config.js  --env env=development",
         "lint": "eslint src/**/*.{ts,tsx}",

@@ -135,7 +135,9 @@ module.exports = ({ analyze, env } = {}) => ({
     },
     output: {
         path: path.resolve(__dirname, "../", "dist"),
-        filename: "[name].[contenthash].js",
+        // https://github.com/webpack/webpack/issues/13801 workaround.
+        // we really want to just use name.contenthash all the time here
+        filename: env === Env.PRODUCTION ? "[name].[contenthash].js" : "[name].js",
     },
     plugins: getPluginsByEnv(env, analyze),
     resolve: {
