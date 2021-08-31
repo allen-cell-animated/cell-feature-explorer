@@ -88,7 +88,6 @@ export const findVisibleDataPoint = (
            let numAttempts = 0;
            while (numAttempts < MAX_ATTEMPTS) {
                const index = getRandomDataPoint(length);
-               console.log(numAttempts, index);
                if (isVisiblePoint(xValues, yValues, index)) {
                    return index;
                }
@@ -141,7 +140,6 @@ const requestFeatureDataLogic = createLogic({
                             yValues,
                         );
                     }
-                    console.log(selectedCellIndex)
                     dispatch(
                         selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
                     );
