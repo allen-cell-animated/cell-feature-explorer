@@ -69,7 +69,7 @@ const requestAvailableDatasets = createLogic({
 
 const getRandomDataPoint = (length: number): number => {
     return Math.floor(Math.random() * length);
-}
+};
 
 const isVisiblePoint = (
     xValues: (number | null)[],
@@ -80,21 +80,21 @@ const isVisiblePoint = (
 };
 
 export const findVisibleDataPoint = (
-           length: number,
-           xValues: (number | null)[],
-           yValues: (number | null)[]
-       ): number => {
-           const MAX_ATTEMPTS = length;
-           let numAttempts = 0;
-           while (numAttempts < MAX_ATTEMPTS) {
-               const index = getRandomDataPoint(length);
-               if (isVisiblePoint(xValues, yValues, index)) {
-                   return index;
-               }
-               numAttempts++;
-           }
-           return 0;
-       };
+    length: number,
+    xValues: (number | null)[],
+    yValues: (number | null)[]
+): number => {
+    const MAX_ATTEMPTS = length;
+    let numAttempts = 0;
+    while (numAttempts < MAX_ATTEMPTS) {
+        const index = getRandomDataPoint(length);
+        if (isVisiblePoint(xValues, yValues, index)) {
+            return index;
+        }
+        numAttempts++;
+    }
+    return 0;
+};
 
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -134,11 +134,7 @@ const requestFeatureDataLogic = createLogic({
                     const xValues = metaDatum.values[plotByOnX];
                     const yValues = metaDatum.values[plotByOnY];
                     if (plotByOnX && plotByOnY) {
-                        selectedCellIndex = findVisibleDataPoint(
-                            ids.length,
-                            xValues,
-                            yValues,
-                        );
+                        selectedCellIndex = findVisibleDataPoint(ids.length, xValues, yValues);
                     }
                     dispatch(
                         selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
