@@ -16,7 +16,12 @@ import {
 } from "../../../constants";
 import { DatasetMetaData } from "../../../constants/datasets";
 import { isDevOrStagingSite } from "../../../util";
-import { CellLineDef, FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
+import {
+    CellLineDef,
+    FileInfo,
+    MappingOfMeasuredValuesArrays,
+    MeasuredFeatureDef,
+} from "../../metadata/types";
 import { Album } from "../../types";
 
 import { ImageDataset } from "../types";
@@ -138,7 +143,10 @@ class FirebaseRequest implements ImageDataset {
         });
     };
 
-    private requestSetOfFeatureDefs = async (featuresLeftToRequest: string[], dataset: MeasuredFeatureDef[]) => {
+    private requestSetOfFeatureDefs = async (
+        featuresLeftToRequest: string[],
+        dataset: MeasuredFeatureDef[]
+    ): Promise<void> => {
         // Firebase limits the array to ten items, so will need to make multiple requests for
         // more features
         const batchToRequest = featuresLeftToRequest.splice(0, 10);
@@ -147,6 +155,7 @@ class FirebaseRequest implements ImageDataset {
             .collection(this.featureDefsPath)
             .where("key", "in", batchToRequest)
             .get();
+
         snapshot.forEach((doc: QueryDocumentSnapshot) => {
             const data = doc.data() as MeasuredFeatureDef;
             const key = data.key;
@@ -154,10 +163,9 @@ class FirebaseRequest implements ImageDataset {
             dataset[index] = data;
         });
         if (featuresLeftToRequest.length) {
-            this.requestSetOfFeatureDefs(featuresLeftToRequest, dataset);
+            return this.requestSetOfFeatureDefs(featuresLeftToRequest, dataset);
         }
-
-    }
+    };
 
     public getMeasuredFeatureDefs = async () => {
         const listOfFeatureKeys = [...this.featuresDisplayOrder];
@@ -189,7 +197,7 @@ class FirebaseRequest implements ImageDataset {
                             this.featuresDataOrder[index]
                         ] as (number | null)[];
                         // value actually can be a number or a string, but isNaN
-                        // only accepts a number, so the typing here had to identify 
+                        // only accepts a number, so the typing here had to identify
                         // value as a number until this point
                         if (isNaN(value)) {
                             arrayOfValues.push(null);
