@@ -1,5 +1,6 @@
 export interface DatasetMetaData {
     name: string;
+    title: string;
     version: string;
     id: string;
     description: string;
