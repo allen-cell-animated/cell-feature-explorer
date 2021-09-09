@@ -13,8 +13,6 @@ const getPluginsByEnv = require("./plugins");
 module.exports = ({ analyze, env } = {}) => ({
     devtool: env !== Env.PRODUCTION && "source-map",
     devServer: {
-        // devserver fails to get the right hash for the webworker
-        // but running in a static python webserver gets the correct hash after running a manual build
         static: {
             directory: path.join(__dirname, "../", "dist"),
         },
@@ -144,11 +142,6 @@ module.exports = ({ analyze, env } = {}) => ({
         symlinks: false,
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
         mainFields: ["module", "main", "browser"],
-        // Removing this works when removing react from node_modules of the deps volume-viewer and website-3d-cell-viewer
-        // do env check? this is needed for local testing of dependencies that have react
-        // alias: {
-        //     react: path.resolve("./node_modules/react"),
-        // },
     },
     stats: analyze ? "none" : stats,
 });
