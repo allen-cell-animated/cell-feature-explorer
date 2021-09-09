@@ -7,7 +7,14 @@ import { DatasetMetaData } from "../../constants/datasets";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { receiveAvailableDatasets, receiveMeasuredFeatureDefs, receiveCellLineData, receiveMetadata, setLoadingText, stopLoading } from "./actions";
+import {
+    receiveAvailableDatasets,
+    receiveMeasuredFeatureDefs,
+    receiveCellLineData,
+    receiveMetadata,
+    setLoadingText,
+    stopLoading,
+} from "./actions";
 import { getShowSmallScreenWarning } from "./selectors";
 
 import {
@@ -19,8 +26,17 @@ import {
 } from "./constants";
 import { CellLineDef, DataForPlot } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
-import { selectPoint, selectCellFor3DViewer, requestCellFileInfoByArrayOfCellIds } from "../selection/actions";
-import { getSelected3DCell, getSelectedIdsFromUrl } from "../selection/selectors";
+import {
+    selectPoint,
+    selectCellFor3DViewer,
+    requestCellFileInfoByArrayOfCellIds,
+} from "../selection/actions";
+import {
+    getPlotByOnX,
+    getPlotByOnY,
+    getSelected3DCell,
+    getSelectedIdsFromUrl,
+} from "../selection/selectors";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -37,7 +53,6 @@ const requestCellLineDefs = createLogic({
     type: REQUEST_CELL_LINE_DATA,
 });
 
-
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { imageDataSet } = deps;
@@ -52,6 +67,35 @@ const requestAvailableDatasets = createLogic({
     type: REQUEST_AVAILABLE_DATASETS,
 });
 
+const getRandomDataPoint = (length: number): number => {
+    return Math.floor(Math.random() * length);
+};
+
+const isVisiblePoint = (
+    xValues: (number | null)[],
+    yValues: (number | null)[],
+    index: number
+): boolean => {
+    return xValues[index] !== null && yValues[index] !== null;
+};
+
+export const findVisibleDataPoint = (
+    length: number,
+    xValues: (number | null)[],
+    yValues: (number | null)[]
+): number => {
+    const MAX_ATTEMPTS = length;
+    let numAttempts = 0;
+    while (numAttempts < MAX_ATTEMPTS) {
+        const index = getRandomDataPoint(length);
+        if (isVisiblePoint(xValues, yValues, index)) {
+            return index;
+        }
+        numAttempts++;
+    }
+    return 0;
+};
+
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState, imageDataSet } = deps;
@@ -64,7 +108,7 @@ const requestFeatureDataLogic = createLogic({
         const actions: AnyAction[] = [];
         const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
         actions.push(receiveMeasuredFeatureDefs(measuredFeatureDefs));
-        
+
         return imageDataSet
             .getFeatureData()
             .then((data: DataForPlot) => {
@@ -80,16 +124,31 @@ const requestFeatureDataLogic = createLogic({
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const state = getState();
                 const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
+                let selectedCellIndex = 0;
                 if (selectedCellIdsFromUrls.length) {
-                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls))
+                    dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls));
                 } else {
-                    dispatch(selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
+                    const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
+                    const plotByOnX = getPlotByOnX(state);
+                    const plotByOnY = getPlotByOnY(state);
+                    const xValues = metaDatum.values[plotByOnX];
+                    const yValues = metaDatum.values[plotByOnY];
+                    if (plotByOnX && plotByOnY) {
+                        selectedCellIndex = findVisibleDataPoint(ids.length, xValues, yValues);
+                    }
+                    dispatch(
+                        selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
+                    );
                 }
 
                 if (!getSelected3DCell(state)) {
-                    dispatch(selectCellFor3DViewer(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][0]));
+                    dispatch(
+                        selectCellFor3DViewer(
+                            metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex]
+                        )
+                    );
                 }
-  
+
                 dispatch(stopLoading());
             })
             .catch((reason: string) => {

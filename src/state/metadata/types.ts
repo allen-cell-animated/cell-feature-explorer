@@ -61,6 +61,10 @@ export interface MappingOfMeasuredValuesArrays {
     [key: string]: number[];
 }
 
+export interface MappingOfMeasuredValuesArraysWithNulls {
+    [key: string]: (number | null)[];
+}
+
 export interface MeasuredFeatures {
     [key: string]: number;
 }
