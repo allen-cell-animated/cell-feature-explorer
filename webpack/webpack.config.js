@@ -142,6 +142,14 @@ module.exports = ({ analyze, env } = {}) => ({
         symlinks: false,
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
         mainFields: ["module", "main", "browser"],
+        // When running with local builds of website-3d-cell-viewer
+        // (using "file:../website-3d-cell-viewer"),
+        // we have an extraneous react coming from the viewer's node_modules.
+        // This alias forces it to resolve to the correct one.
+        // This should have no effect in production.
+        alias: {
+            react: path.resolve("./node_modules/react"),
+        },
     },
     stats: analyze ? "none" : stats,
 });
