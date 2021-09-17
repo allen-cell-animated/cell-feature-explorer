@@ -1,15 +1,9 @@
-import {
-    Avatar,
-    List,
-} from "antd";
+import { Avatar, List } from "antd";
 import React from "react";
 
-import {
-    DeselectPointAction,
-    SelectCellIn3DAction,
-} from "../../state/selection/types";
+import { DeselectPointAction, SelectCellIn3DAction } from "../../state/selection/types";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface GalleryCardProps {
     labeledStructure: string;
@@ -25,7 +19,6 @@ interface GalleryCardProps {
 }
 
 const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
-
     const openCellin3D = () => {
         props.handleOpenIn3D(props.cellID);
     };
@@ -34,27 +27,25 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
-            {... {
+            {...{
                 // props not in ant.d component, but do exist
                 id: props.cellID ? props.cellID.toString() : "",
                 onMouseEnter: props.onMouseEnter,
                 onMouseLeave: props.onMouseLeave,
-
             }}
         >
-
             <List.Item.Meta
-                avatar={props.src && (
-                    <div
-                        onClick={openCellin3D}
-                    >
-                    <Avatar
-                        className={props.selected && styles.selected}
-                        alt="thumbnail of microscopy image"
-                        src={props.src}
-                    />
-                    </div>
-                )}
+                avatar={
+                    props.src && (
+                        <div onClick={openCellin3D}>
+                            <Avatar
+                                className={props.selected ? styles.selected : undefined}
+                                alt="thumbnail of microscopy image"
+                                src={props.src}
+                            />
+                        </div>
+                    )
+                }
             />
         </List.Item>
     );

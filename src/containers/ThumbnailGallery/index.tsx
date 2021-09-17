@@ -1,24 +1,8 @@
-import {
-    Button,
-    Col,
-    Form,
-    Icon,
-    Input,
-    List,
-    Popconfirm,
-    Radio,
-    Row,
-} from "antd";
+import { Button, Col, Form, Icon, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
-import {
-    includes,
-    map,
-} from "lodash";
+import { includes, map } from "lodash";
 import * as React from "react";
-import {
-    ActionCreator,
-    connect,
-} from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";
@@ -48,21 +32,14 @@ import {
     SelectPointAction,
     SetHoveredCardAction,
 } from "../../state/selection/types";
-import {
-    Album,
-    State,
-    Thumbnail,
-} from "../../state/types";
+import { Album, State, Thumbnail } from "../../state/types";
 
-import {
-    getSelectedAlbumName,
-    getThumbnails,
-} from "./selectors";
+import { getSelectedAlbumName, getThumbnails } from "./selectors";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface PropsFromState {
     albumData: Album[];
@@ -146,7 +123,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public searchValidate(value: string) {
         const { clickedPoints, ids, addSearchedCell } = this.props;
-        if (includes(map(clickedPoints, (ele) => ele.toString()), value)) {
+        if (
+            includes(
+                map(clickedPoints, (ele) => ele.toString()),
+                value
+            )
+        ) {
             return this.setState({
                 inputStatus: "warning",
                 message: messages.warning,
@@ -172,55 +154,35 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         });
     }
 
-    public selectAlbum({target}: RadioChangeEvent) {
-        const {
-            handleSelectAlbum,
-        } = this.props;
+    public selectAlbum({ target }: RadioChangeEvent) {
+        const { handleSelectAlbum } = this.props;
         if (target) {
             handleSelectAlbum(target.value);
         }
     }
 
     public renderAlbumButtons() {
-        const {
-            albumData,
-            selectedAlbum,
-            clickedPoints,
-        } = this.props;
+        const { albumData, selectedAlbum, clickedPoints } = this.props;
         return (
-            <FormItem
-                label="ALBUMS"
-            >
-                <Radio.Group
-                        defaultValue={selectedAlbum}
-                        onChange={this.selectAlbum}
-                        size="large"
-                >
-                    <Radio.Button
-                        key="my-selections"
-                        value={MY_SELECTIONS_ID}
-                    >
+            <FormItem label="ALBUMS">
+                <Radio.Group defaultValue={selectedAlbum} onChange={this.selectAlbum} size="large">
+                    <Radio.Button key="my-selections" value={MY_SELECTIONS_ID}>
                         {`My Selections (${clickedPoints.length})`}
                     </Radio.Button>
                     {map(albumData, (album) => {
                         if (!album.cell_ids) {
                             return;
                         }
-                        return (album.cell_ids.length > 0 &&
-                            (
-                                <Radio.Button
-                                    key={album.album_id}
-                                    value={album.album_id}
-                                >
+                        return (
+                            album.cell_ids.length > 0 && (
+                                <Radio.Button key={album.album_id} value={album.album_id}>
                                     {album.title} ({album.cell_ids.length})
                                 </Radio.Button>
                             )
                         );
-
                     })}
                 </Radio.Group>
             </FormItem>
-
         );
     }
 
@@ -237,36 +199,34 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     public renderFullView() {
-        const {
-            data,
-            handleClearAllSelectedPoints,
-            selectedAlbum,
-            selectedAlbumName,
-    } = this.props;
+        const { data, handleClearAllSelectedPoints, selectedAlbum, selectedAlbumName } = this.props;
 
         // TypeScript didnt like dataSource having the empty card. Data is already typed, so this seemed fine
-        const dataSource: any = data.length > 0 ? data : [{empty: true}];
+        const dataSource: any = data.length > 0 ? data : [{ empty: true }];
 
         return (
-            <Row id="gallery" className={styles.container} type="flex" gutter={32} justify="space-between">
+            <Row
+                id="gallery"
+                className={styles.container}
+                type="flex"
+                gutter={32}
+                justify="space-between"
+            >
                 <Col className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
-                        {data.length > 0 && !selectedAlbum &&
-                        <Popconfirm
-                            title="Are you sure you want to unselect all?"
-                            onConfirm={handleClearAllSelectedPoints}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <Button
-                                icon="close"
-                                type="primary"
-                            >Clear All
-                            </Button>
-                        </Popconfirm>
-
-                        }
+                        {data.length > 0 && !selectedAlbum && (
+                            <Popconfirm
+                                title="Are you sure you want to unselect all?"
+                                onConfirm={handleClearAllSelectedPoints}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button icon="close" type="primary">
+                                    Clear All
+                                </Button>
+                            </Popconfirm>
+                        )}
                     </div>
                     <List
                         itemLayout="horizontal"
@@ -281,42 +241,39 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 </Col>
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
-                        <h2>Gallery
-                        </h2>
+                        <h2>Gallery</h2>
                         <Icon
                             type="close"
-                            style={{ fontSize: "2em"}}
+                            style={{ fontSize: "2em" }}
                             onClick={this.closeGallery}
                         />
                     </div>
-                        <FormItem
-                            hasFeedback={true}
-                            className={styles.searchForCell}
-                            validateStatus={this.state.inputStatus}
-                            help={this.state.message}
-                        >
-                            <Search
-                                    placeholder="add image by cell id"
-                                    onSearch={this.searchValidate}
-                                    onChange={this.resetSearch}
-                            />
-                        </FormItem>
-                {this.renderAlbumButtons()}
+                    <FormItem
+                        hasFeedback={true}
+                        className={styles.searchForCell}
+                        validateStatus={this.state.inputStatus}
+                        help={this.state.message}
+                    >
+                        <Search
+                            placeholder="add image by cell id"
+                            onSearch={this.searchValidate}
+                            onChange={this.resetSearch}
+                        />
+                    </FormItem>
+                    {this.renderAlbumButtons()}
                 </Col>
-            </Row>);
+            </Row>
+        );
     }
 
     public renderCollapsedView() {
-        const {
-            data,
-        } = this.props;
+        const { data } = this.props;
         // TypeScript didnt like dataSource having the empty card. Data is already typed, so this seemed fine
-        const dataSource: any = data.length > 0 ? data : [{empty: true}];
+        const dataSource: any = data.length > 0 ? data : [{ empty: true }];
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
-                    <h2>Gallery
-                    </h2>
+                    <h2>Gallery</h2>
                 </div>
                 <List
                     itemLayout="horizontal"
@@ -324,18 +281,17 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                     renderItem={this.renderMinGalleryCard}
                     footer={<div ref={this.endOfAlbum} />}
                 />
-            </div>);
+            </div>
+        );
     }
 
     public render() {
-        const {
-            collapsed,
-        } = this.props;
+        const { collapsed } = this.props;
         return collapsed ? this.renderCollapsedView() : this.renderFullView();
     }
 
-    private hoverCard({currentTarget}: React.MouseEvent<HTMLElement>) {
-        const {setHovered} = this.props;
+    private hoverCard({ currentTarget }: React.MouseEvent<HTMLElement>) {
+        const { setHovered } = this.props;
         if (currentTarget.id) {
             return setHovered(currentTarget.id);
         }
@@ -343,9 +299,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 
     private unHover() {
-        const {setHovered} = this.props;
+        const { setHovered } = this.props;
         setHovered(null);
-
     }
 
     private renderMinGalleryCard(item: Thumbnail) {
@@ -397,7 +352,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     }
 }
 
-function mapStateToProps(state: State): PropsFromState{
+function mapStateToProps(state: State): PropsFromState {
     return {
         albumData: getAllAlbumData(state),
         clickedPoints: getClickedScatterPoints(state),
@@ -419,5 +374,7 @@ const dispatchToPropsMap: DispatchProps = {
     setHovered: setHoveredGalleryCard,
 };
 
-export default connect<PropsFromState, DispatchProps, OwnProps, State>
-(mapStateToProps, dispatchToPropsMap)(ThumbnailGallery);
+export default connect<PropsFromState, DispatchProps, OwnProps, State>(
+    mapStateToProps,
+    dispatchToPropsMap
+)(ThumbnailGallery);

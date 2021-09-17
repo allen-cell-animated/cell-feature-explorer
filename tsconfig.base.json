@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "jsx": "React",
+    "jsx": "react",
     "lib": ["DOM", "ES2015", "ES6", "DOM.Iterable", "ScriptHost"],
     "moduleResolution": "Node",
     "noEmit": true,

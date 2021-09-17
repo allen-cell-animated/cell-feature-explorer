@@ -1,16 +1,11 @@
-import {
-    Badge,
-    Button,
-    Checkbox,
-    Tooltip,
-} from "antd";
+import { Badge, Button, Checkbox, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
 import { DownloadConfig } from "../../state/selection/types";
 import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface InteractiveRowProps {
     color: string;
@@ -41,9 +36,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
     }
 
     public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
-        const {
-            handleClose,
-        } = this.props;
+        const { handleClose } = this.props;
         if (currentTarget && currentTarget.id && handleClose) {
             handleClose(currentTarget.id);
         }
@@ -68,24 +61,23 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
 
         const tooltip = (
             <div>
-                Protein: {id}<br/>
+                Protein: {id}
+                <br />
                 Gene: {gene}
             </div>
         );
 
         return (
-            <div
-                className={styles.container}
-            >
+            <div className={styles.container}>
                 <div className={styles.firstColumn}>
-                {hideable &&
-                    <Checkbox
-                        onChange={onBarClicked}
-                        value={id}
-                        defaultChecked={true}
-                        checked={checked}
-                    />
-                }
+                    {hideable && (
+                        <Checkbox
+                            onChange={onBarClicked}
+                            value={id}
+                            defaultChecked={true}
+                            checked={checked}
+                        />
+                    )}
                     <Badge
                         style={{
                             backgroundColor: color,
@@ -112,7 +104,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                         downloadUrls={downloadUrls}
                         handleDownload={handleDownload}
                     />
-                    {closeable &&
+                    {closeable && (
                         <Button
                             icon="close"
                             size="small"
@@ -120,7 +112,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                             ghost={true}
                             onClick={this.onClose}
                         />
-                    }
+                    )}
                 </div>
             </div>
         );

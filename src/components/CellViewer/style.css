@@ -7,7 +7,7 @@
 }
 
 .cell-viewer :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
-    transform: translateY(-250%);
+    transform: translateY(-350%);
 }
 
 .cell-viewer :global(.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-content) {

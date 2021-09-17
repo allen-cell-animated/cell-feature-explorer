@@ -1,6 +1,6 @@
 import React from "react";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface MouseFollowerProps {
     pageX: number;
@@ -10,7 +10,7 @@ const MouseFollower: React.SFC<MouseFollowerProps> = (props) => {
     return (
         <div
             className={styles.follower}
-            style={{left: `${props.pageX + 10}px`, top: `${props.pageY}px`}}
+            style={{ left: `${props.pageX + 10}px`, top: `${props.pageY}px` }}
         />
     );
 };

@@ -2,7 +2,7 @@ import { Button, Checkbox, Modal } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React from "react";
 
-const styles = require("./style.css");
+import styles from "./style.css";
 
 interface SmallScreenWarningProps {
     handleClose: () => void;
@@ -10,8 +10,13 @@ interface SmallScreenWarningProps {
     visible: boolean;
 }
 
-const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handleClose, onDismissCheckboxChecked }) => {
-    const onCheckboxChange = ({ target }: CheckboxChangeEvent) => onDismissCheckboxChecked(target.checked);
+const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({
+    visible,
+    handleClose,
+    onDismissCheckboxChecked,
+}) => {
+    const onCheckboxChange = ({ target }: CheckboxChangeEvent) =>
+        onDismissCheckboxChecked(target.checked);
     return (
         <Modal
             centered={true}
@@ -37,7 +42,9 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({ visible, handl
                 <Checkbox onChange={onCheckboxChange}>Don&apos;t show this message again.</Checkbox>
             </div>
             <div className={styles.buttonContainer}>
-                <Button className={styles.okButton} onClick={handleClose}>OK</Button>
+                <Button className={styles.okButton} onClick={handleClose}>
+                    OK
+                </Button>
             </div>
         </Modal>
     );

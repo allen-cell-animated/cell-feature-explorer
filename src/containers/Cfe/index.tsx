@@ -17,7 +17,7 @@ import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./s
 
 const { Content, Header, Sider } = Layout;
 
-const styles = require("./style.css");
+import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 
 interface CfeProps {
