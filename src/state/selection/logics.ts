@@ -9,7 +9,7 @@ import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
 import { CHANGE_DATASET, CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, SELECT_ARRAY_OF_POINTS, SELECT_POINT, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
-import { X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis } from "./actions";
 import { FileInfo } from "../metadata/types";
 
@@ -48,12 +48,14 @@ const changeDatasetLogic = createLogic({
         imageDataSet
             .selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
-                dispatch(
-                    batchActions([
-                        changeAxis(X_AXIS_ID, selections.defaultXAxis),
-                        changeAxis(Y_AXIS_ID, selections.defaultYAxis),
-                    ])
-                );
+                const actions = [
+                    changeAxis(X_AXIS_ID, selections.defaultXAxis),
+                    changeAxis(Y_AXIS_ID, selections.defaultYAxis)
+                ];
+                if (selections.defaultColorBy) {
+                    actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
+                }
+                dispatch(batchActions(actions));
                 dispatch({
                     type: SET_DATASET,
                     payload: {
