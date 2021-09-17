@@ -50,13 +50,14 @@ const changeDatasetLogic = createLogic({
             .selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
                 console.log("selections:", selections)
-                dispatch(
-                    batchActions([
-                        changeAxis(X_AXIS_ID, selections.defaultXAxis),
-                        changeAxis(Y_AXIS_ID, selections.defaultYAxis),
-                        changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy)
-                    ])
-                );
+                const actions = [
+                    changeAxis(X_AXIS_ID, selections.defaultXAxis),
+                    changeAxis(Y_AXIS_ID, selections.defaultYAxis)
+                ];
+                if (selections.defaultColorBy) {
+                    actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
+                }
+                dispatch(batchActions(actions));
                 dispatch({
                     type: SET_DATASET,
                     payload: {
