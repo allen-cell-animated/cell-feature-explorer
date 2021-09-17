@@ -39,7 +39,6 @@ const changeDatasetLogic = createLogic({
             datasets = await imageDataSet.getAvailableDatasets();
         }
         const selectedDataset = find(datasets, { id: action.payload });
-        console.log(selectedDataset)
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
@@ -49,7 +48,6 @@ const changeDatasetLogic = createLogic({
         imageDataSet
             .selectDataset(selectedDataset.manifest)
             .then((selections: InitialDatasetSelections) => {
-                console.log("selections:", selections)
                 const actions = [
                     changeAxis(X_AXIS_ID, selections.defaultXAxis),
                     changeAxis(Y_AXIS_ID, selections.defaultYAxis)
