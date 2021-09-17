@@ -44,6 +44,7 @@ interface DatasetInfo {
     volumeViewerDataRoot: string;
     defaultXAxis: string;
     defaultYAxis: string;
+    defaultColorBy: string;
     featuresDisplayOrder: string[];
     featuresDataOrder: string[];
 }
@@ -76,6 +77,7 @@ class JsonRequest implements ImageDataset {
             volumeViewerDataRoot: "",
             defaultXAxis: "",
             defaultYAxis: "",
+            defaultColorBy: "",
             featuresDisplayOrder: [],
             featuresDataOrder: [],
         };
@@ -99,6 +101,7 @@ class JsonRequest implements ImageDataset {
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
+                defaultColorBy: data.defaultColorBy,
                 thumbnailRoot: data.thumbnailRoot,
                 downloadRoot: data.downloadRoot,
                 volumeViewerDataRoot: data.volumeViewerDataRoot,

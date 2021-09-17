@@ -117,6 +117,7 @@ class FirebaseRequest implements ImageDataset {
             return {
                 defaultXAxis: data.defaultXAxis,
                 defaultYAxis: data.defaultYAxis,
+                defaultColorBy: data.defaultColorBy,
                 thumbnailRoot: data.thumbnailRoot,
                 downloadRoot: data.downloadRoot,
                 volumeViewerDataRoot: data.volumeViewerDataRoot,

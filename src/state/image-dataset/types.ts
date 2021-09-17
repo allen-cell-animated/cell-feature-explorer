@@ -5,6 +5,7 @@ import { Album } from "../types";
 export interface InitialDatasetSelections {
     defaultXAxis: string;
     defaultYAxis: string;
+    defaultColorBy: string;
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
