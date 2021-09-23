@@ -10,7 +10,7 @@ interface DatasetCardProps extends DatasetMetaData {
 }
 
 const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
-    name,
+    title,
     version,
     description,
     handleSelectDataset,
@@ -19,13 +19,13 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     userData,
     image,
 }: DatasetCardProps) => {
-    const title = (
+    const displayTitle = (
         <>
             <div>
                 {userData.isNew && <Tag color="purple">beta</Tag>}
-                {name}
+                {title}
             </div>
-            <span className={styles.version}>{version}</span>
+            <span className={styles.version}>v{version}</span>
             {userData.inReview && (
                 <>
                     <Divider type="vertical" /> (in review)
@@ -42,13 +42,13 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             cover={
                 <img
                     className={styles.staticThumbnail}
-                    alt={`Snapshot of simulation for ${name}`}
+                    alt={`Snapshot of simulation for ${title}`}
                     src={image}
                 />
             }
         >
             <Meta
-                title={title}
+                title={displayTitle}
                 description={
                     <div
                         className="content"
