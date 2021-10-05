@@ -19,13 +19,16 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     userData,
     image,
 }: DatasetCardProps) => {
+    // Prefix version number with a "v" if necessary
+    const versionPrefixed = version.startsWith("v") ? version : `v${version}`;
+    
     const displayTitle = (
         <>
             <div>
                 {userData.isNew && <Tag color="purple">beta</Tag>}
                 {title}
             </div>
-            <span className={styles.version}>v{version}</span>
+            <span className={styles.version}>{versionPrefixed}</span>
             {userData.inReview && (
                 <>
                     <Divider type="vertical" /> (in review)
