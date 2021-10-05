@@ -5,6 +5,7 @@ import {
     MITOTIC_STAGE_KEY,
     PROTEIN_NAME_KEY,
 } from "../../constants";
+import { DatasetMetaData } from "../../constants/datasets";
 import { State } from "../types";
 
 import {
@@ -27,6 +28,26 @@ export const getFeatureNamesAndData = (state: State) => state.metadata.measuredF
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getClusterData = (state: State) => state.metadata.clusterData;
+
+export const getDatasetsByNewest = createSelector([getDatasets], (datasets) => {
+    return datasets.sort((a: DatasetMetaData, b: DatasetMetaData) => {
+        if (a.name === b.name) {
+            // if it's the same dataset, return the newest version first
+            if (a.version > b.version) {
+                return -1;
+            } else {
+                return 1;
+            }
+        // else sort by "isNew"
+        } else if (a.userData.isNew && !b.userData.isNew) {
+            return -1;
+        } else if (!a.userData.isNew && b.userData.isNew) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+})
 
 export const getMeasuredFeatureArrays = createSelector([getPerCellDataForPlot], (dataForPlot: DataForPlot) => {
     return dataForPlot.values;
