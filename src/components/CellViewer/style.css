@@ -6,10 +6,6 @@
     background-color: red;
 }
 
-.cell-viewer :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
-    transform: translateY(-350%);
-}
-
 .cell-viewer :global(.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-content) {
     background-color: var(--panel-body-background-gray);
 }
