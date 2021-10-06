@@ -31,6 +31,11 @@ export const getClusterData = (state: State) => state.metadata.clusterData;
 
 export const getDatasetsByNewest = createSelector([getDatasets], (datasets) => {
     return datasets.sort((a: DatasetMetaData, b: DatasetMetaData) => {
+        // TODO: We need to sort and group datasets by "megasets"
+        // and then order those megasets by "newness"
+        // plus we have plans to have different versions of the same
+        // dataset contained within one card, so this is a temporary 
+        // sort function to get the newest datasets on top 
         if (a.name === b.name) {
             // if it's the same dataset, return the newest version first
             if (a.version > b.version) {
