@@ -38,13 +38,13 @@ export const getDatasetsByNewest = createSelector([getDatasets], (datasets) => {
             } else {
                 return 1;
             }
-        // else sort by "isNew"
-        } else if (a.userData.isNew && !b.userData.isNew) {
+        // otherwise sort by name
+        } else if (a.name > b.name){
             return -1;
-        } else if (!a.userData.isNew && b.userData.isNew) {
+        } else if (a.name < b.name) {
             return 1;
         } else {
-            return 0;
+            return 0
         }
     });
 })
