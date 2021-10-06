@@ -38,25 +38,41 @@ describe("Metadata branch selectors", () => {
     });
 
     describe("compareVersions", () => {
-        it("returns -1 if the major version of the first item is greater", () => {
+        it("returns a negative if the major version of the first item is greater", () => {
             const result = compareVersions("2021.1", "2020.1");
             const resultNoMinor = compareVersions("2021", "2020");
 
-            expect(result).to.equal(-1);
-            expect(resultNoMinor).to.equal(-1);
+            expect(result).to.be.lessThan(0);
+            expect(resultNoMinor).to.be.lessThan(0);
         })
-        it("returns -1 if the minor version of the first item is greater", () => {
+        it("returns a negative if the first item has a minor version and the second doesn't", () => {
+            const result = compareVersions("2021.1", "2021");
+            
+            expect(result).to.be.lessThan(0);
+        });
+        it("returns negative if the minor version of the first item is greater", () => {
             const result = compareVersions("2020.2", "2020.1");
             const resultDoubleDigit = compareVersions("2020.10", "2020.1");
-
-            expect(result).to.equal(-1);
-            expect(resultDoubleDigit).to.equal(-1);
-
+            
+            expect(result).to.be.lessThan(0);
+            expect(resultDoubleDigit).to.be.lessThan(0);
+        });
+        it("returns negative if the patch version of the first item is greater", () => {
+            const result = compareVersions("2020.2.2", "2020.1.0");
+            const resultDoubleDigit = compareVersions("2020.10", "2020.1");
+            
+            expect(result).to.be.lessThan(0);
+            expect(resultDoubleDigit).to.be.lessThan(0);
         });
         it("returns 0 if versions are the same", () => {
-            const result = compareVersions("2020.1.1", "2020.1.1");
+            const resultMajor = compareVersions("2020", "2020");
+            const resultMinor = compareVersions("2020.1", "2020.1");
+            const resultPatch = compareVersions("2020.1.1", "2020.1.1");
 
-            expect(result).to.equal(0);
+            expect(resultMajor).to.equal(0);
+            expect(resultMinor).to.equal(0);
+            expect(resultPatch).to.equal(0);
+
         });
     })
 
