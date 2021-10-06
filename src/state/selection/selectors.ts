@@ -21,6 +21,7 @@ import {
     getMeasuredFeaturesDefs,
     getClusterData,
     getCellLineDefs,
+    getDatasets,
 } from "../metadata/selectors";
 import {
     CellLineDef,
@@ -68,6 +69,13 @@ export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
 // COMPOSED SELECTORS
 
+export const getSelectedDatasetTitle = createSelector([getSelectedDataset, getDatasets], (selectedId: string, datasetsData): string => {
+    const data =  find(datasetsData, {id: selectedId})
+    if (data) {
+        return data.title
+    }
+    return selectedId;
+});
 // MAIN PLOT SELECTORS
 
 // not truly a selector, it just seemed cleaner to make this one function instead of 3

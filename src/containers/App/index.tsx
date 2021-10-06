@@ -26,6 +26,7 @@ interface AppProps {
     selectedDataset: string;
     requestAvailableDatasets: () => RequestAction;
     datasets: DatasetMetaData[];
+    selectedDatasetTitle: string;
 }
 
 class App extends React.Component<AppProps, {}> {
@@ -38,7 +39,13 @@ class App extends React.Component<AppProps, {}> {
     };
 
     public render() {
-        const { isLoading, loadingText, selectedDataset, datasets } = this.props;
+        const {
+            isLoading,
+            loadingText,
+            selectedDataset,
+            datasets,
+            selectedDatasetTitle,
+        } = this.props;
         const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
             styles.container,
@@ -53,7 +60,7 @@ class App extends React.Component<AppProps, {}> {
 
                     {!!selectedDataset && <BackToPlot />}
                     <Header className={styles.navBar}>
-                        <AllenCellHeader selectedDataset={selectedDataset} />
+                        <AllenCellHeader selectedDataset={selectedDatasetTitle} />
                     </Header>
                     <Layout>
                         {!!selectedDataset ? (
@@ -76,6 +83,7 @@ function mapStateToProps(state: State) {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
+        selectedDatasetTitle: selectionStateBranch.selectors.getSelectedDatasetTitle(state),
         datasets: metadataStateBranch.selectors.getDatasetsByNewest(state),
     };
 }
