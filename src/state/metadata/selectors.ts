@@ -36,7 +36,7 @@ export const compareVersions = (versionA: string, versionB: string): number => {
     const patchBNum = Number(patchB) || 0;
 
     if (majorA === majorB) {
-        // of the major versions are equal, check the minor and patch numbers
+        // if the major versions are equal, check the minor and patch numbers
         if (minorANum === minorBNum) {
             // if minor versions are also equal, check patch number
             if (patchA === patchB) {
