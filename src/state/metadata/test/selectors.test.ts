@@ -58,8 +58,8 @@ describe("Metadata branch selectors", () => {
             expect(resultDoubleDigit).to.be.lessThan(0);
         });
         it("returns negative if the patch version of the first item is greater", () => {
-            const result = compareVersions("2020.2.2", "2020.1.0");
-            const resultDoubleDigit = compareVersions("2020.10", "2020.1");
+            const result = compareVersions("2020.1.2", "2020.1.0");
+            const resultDoubleDigit = compareVersions("2020.1.10", "2020.1.1");
             
             expect(result).to.be.lessThan(0);
             expect(resultDoubleDigit).to.be.lessThan(0);
