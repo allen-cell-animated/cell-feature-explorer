@@ -68,7 +68,7 @@ export const GENERAL_PLOT_SETTINGS = {
         font: {
             color: "rgb(255,255,255)",
         },
-        orientation: "h" as "h",
+        orientation: "h" as const,
         y: 60,
     },
     margin: {
@@ -115,8 +115,8 @@ export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
 };
 
 export const NO_SETTINGS = {
-    channelNameMapping: "" as "", // type to empty string, not any string
-    groupToChannelNameMap: "" as "", // type to empty string, not any string
+    channelNameMapping: "" as const, // type to empty string, not any string
+    groupToChannelNameMap: "" as const, // type to empty string, not any string
 };
 
 export const VIEWER_CHANNEL_SETTINGS: {
@@ -129,13 +129,11 @@ export const VIEWER_CHANNEL_SETTINGS: {
           }
         | undefined;
 } = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     aics_hipsc: {
         channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
         groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
         channelsEnabled: [0, 1, 2],
     },
-    // eslint-disable-next-line @typescript-eslint/camelcase
     cellsystems_fish: {
         channelNameMapping: [],
         groupToChannelNameMap: {},
