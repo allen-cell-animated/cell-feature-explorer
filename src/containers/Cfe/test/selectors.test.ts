@@ -12,7 +12,7 @@ import {
 import { State } from "../../../state";
 import { FileInfo } from "../../../state/metadata/types";
 import { mockState } from "../../../state/test/mocks";
-import {  getPropsForVolumeViewer } from "../selectors";
+import { getPropsForVolumeViewer } from "../selectors";
 
 const fileInfo: FileInfo[] = [
     {
@@ -59,6 +59,8 @@ describe("Viewer selectors", () => {
                 cellDownloadHref: "undefined&id=C1",
                 cellPath: "volumeviewerPath",
                 channelNameMapping: "",
+                channelsEnabled: [],
+                initialChannelSettings: {},
                 fovDownloadHref: "undefined&id=F12762",
                 fovPath: "fovVolumeviewerPath",
                 groupToChannelNameMap: "",
@@ -73,13 +75,15 @@ describe("Viewer selectors", () => {
                 },
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
-            
+
             expect(result).to.deep.equal({
                 cellId: "12762",
                 baseUrl: "url",
                 cellDownloadHref: "undefined&id=F12762",
                 cellPath: "fovVolumeviewerPath",
                 channelNameMapping: "",
+                channelsEnabled: [],
+                initialChannelSettings: {},
                 fovDownloadHref: "",
                 fovPath: "",
                 groupToChannelNameMap: "",
@@ -96,9 +100,8 @@ describe("Viewer selectors", () => {
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
 
-            expect(result.groupToChannelNameMap).to.not.be.empty
+            expect(result.groupToChannelNameMap).to.not.be.empty;
             expect(result.channelNameMapping).to.not.be.empty;
-
         });
     });
 });

@@ -117,19 +117,38 @@ export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
 export const NO_SETTINGS = {
     channelNameMapping: "" as "", // type to empty string, not any string
     groupToChannelNameMap: "" as "", // type to empty string, not any string
+    channelsEnabled: [],
+    initialChannelSettings: {},
 };
 
 export const VIEWER_CHANNEL_SETTINGS: {
-           [key: string]:
-               | {
-                     channelNameMapping: "" | { test: RegExp; label: string }[];
-                     groupToChannelNameMap: "" | { [key: string]: string[] };
-                 }
-               | undefined;
-       } = {
-           // eslint-disable-next-line @typescript-eslint/camelcase
-           aics_hipsc: {
-               channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
-               groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
-           },
-       };
+    [key: string]:
+        | {
+              channelNameMapping: "" | { test: RegExp; label: string }[];
+              groupToChannelNameMap: "" | { [key: string]: string[] };
+              channelsEnabled: number[];
+              initialChannelSettings: { [key: string]: { color: [number, number, number] } };
+          }
+        | undefined;
+} = {
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    aics_hipsc: {
+        channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
+        groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
+        channelsEnabled: [0, 1, 2],
+        initialChannelSettings: {},
+    },
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    cellsystems_fish: {
+        channelNameMapping: [],
+        groupToChannelNameMap: {},
+        channelsEnabled: [0, 1, 3, 4],
+        initialChannelSettings: {
+            "0": { color: [128, 0, 128] },
+            "1": { color: [128, 128, 128] },
+            "2": { color: [0, 128, 128] },
+            "3": { color: [128, 128, 0] },
+            "4": { color: [255, 255, 255] },
+        },
+    },
+};
