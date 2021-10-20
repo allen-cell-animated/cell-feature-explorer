@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import {
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_PROTEIN_KEY,
@@ -17,10 +15,7 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { FileInfo } from "../metadata/types";
-import {
-    INITIAL_COLOR_BY,
-    INITIAL_COLORS,
-} from "../selection/constants";
+import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
     {
@@ -152,24 +147,24 @@ const featureData = {
 };
 
 export const mockState = {
-           metadata: {
-               cellLineDefs: cellLineDefs,
-               cellFileInfo: fileInfo,
-               featureData: featureData,
-               measuredFeaturesDefs: measuredFeaturesDefs,
-           },
-           selection: {
-               colorBy: INITIAL_COLOR_BY,
-               downloadConfig: {
-                   key: "",
-                   type: "",
-               },
-               filterExclude: [],
-               plotByOnX: "INITIAL_PLOT_BY_ON_X",
-               plotByOnY: "INITIAL_PLOT_BY_ON_Y",
-               proteinColors: INITIAL_COLORS,
-               selectedGroupColors: INITIAL_COLORS,
-               selectedGroups: {},
-               selectedPoints: selectedCellFileInfo,
-           },
-       };
+    metadata: {
+        cellLineDefs: cellLineDefs,
+        cellFileInfo: fileInfo,
+        featureData: featureData,
+        measuredFeaturesDefs: measuredFeaturesDefs,
+    },
+    selection: {
+        colorBy: INITIAL_COLOR_BY,
+        downloadConfig: {
+            key: "",
+            type: "",
+        },
+        filterExclude: [],
+        plotByOnX: "INITIAL_PLOT_BY_ON_X",
+        plotByOnY: "INITIAL_PLOT_BY_ON_Y",
+        proteinColors: INITIAL_COLORS,
+        selectedGroupColors: INITIAL_COLORS,
+        selectedGroups: {},
+        selectedPoints: selectedCellFileInfo,
+    },
+};
