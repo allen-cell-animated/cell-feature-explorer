@@ -117,8 +117,6 @@ export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
 export const NO_SETTINGS = {
     channelNameMapping: "" as "", // type to empty string, not any string
     groupToChannelNameMap: "" as "", // type to empty string, not any string
-    channelsEnabled: [],
-    initialChannelSettings: {},
 };
 
 export const VIEWER_CHANNEL_SETTINGS: {
@@ -126,8 +124,8 @@ export const VIEWER_CHANNEL_SETTINGS: {
         | {
               channelNameMapping: "" | { test: RegExp; label: string }[];
               groupToChannelNameMap: "" | { [key: string]: string[] };
-              channelsEnabled: number[];
-              initialChannelSettings: { [key: string]: { color: [number, number, number] } };
+              channelsEnabled?: number[];
+              initialChannelSettings?: { [key: string]: { color: [number, number, number] } };
           }
         | undefined;
 } = {
@@ -136,7 +134,6 @@ export const VIEWER_CHANNEL_SETTINGS: {
         channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
         groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
         channelsEnabled: [0, 1, 2],
-        initialChannelSettings: {},
     },
     // eslint-disable-next-line @typescript-eslint/camelcase
     cellsystems_fish: {
