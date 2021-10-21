@@ -66,7 +66,6 @@ interface PropsFromState {
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
     displayableGroups: string[];
-    xValues: number[];
 }
 
 interface DispatchProps {
@@ -103,10 +102,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
     
     public componentDidUpdate(prevProps: MainPlotContainerProps) {
-        const { xDropDownValue, yDropDownValue, displayableGroups, xValues } = this.props;
-        const hasNewAxis = prevProps.xDropDownValue !== xDropDownValue || prevProps.yDropDownValue !== yDropDownValue;
-        const hasPlotValues = xValues.length > 0;
-        if (hasNewAxis && hasPlotValues) {
+        const { xDropDownValue, yDropDownValue, displayableGroups } = this.props;
+        const isAxisChanged = prevProps.xDropDownValue !== xDropDownValue || prevProps.yDropDownValue !== yDropDownValue;
+        if (isAxisChanged) {
             this.setState({displayableGroups: displayableGroups});
         }
     }
@@ -297,7 +295,6 @@ function mapStateToProps(state: State): PropsFromState {
         yDropDownValue: selectionStateBranch.selectors.getPlotByOnY(state),
         yTickConversion: getYTickConversion(state),
         displayableGroups: getDisplayableGroups(state),
-        xValues: getXValues(state),
     };
 }
 
