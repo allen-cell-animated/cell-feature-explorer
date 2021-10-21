@@ -12,7 +12,7 @@ import {
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
 } from "../../constants";
-import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
+import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs, getProteinLabelsPerCell, getSortedCellLineDefs } from "../../state/metadata/selectors";
 import { DataForPlot, FileInfo, MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
@@ -84,6 +84,25 @@ export const getMainPlotData = createSelector(
     }
 );
 
+export const getDisplayableGroups = createSelector([getXValues, getYValues, getProteinLabelsPerCell, getSortedCellLineDefs], (xValues, yValues, proteinNames, cellLines): string[] => {
+    const notDisplayable = new Set<string>();
+    const displayable = new Set<string>();
+
+    for (let i = 0; i < xValues.length; i++) {
+        if (notDisplayable.size + displayable.size === cellLines.length) {
+            break;
+        }
+        if (xValues[i] === null || yValues[i] === null) {
+            notDisplayable.add(proteinNames[i]);
+        } else {
+            displayable.add(proteinNames[i]);
+        }
+    }
+
+    console.log(displayable)
+
+    return [...displayable];
+});
 
 export const getAnnotations = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
