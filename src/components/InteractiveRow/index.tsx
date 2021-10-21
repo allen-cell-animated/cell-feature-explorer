@@ -15,6 +15,7 @@ interface InteractiveRowProps {
     gene?: string;
     checked?: boolean;
     closeable?: boolean;
+    disabled: boolean;
     showTooltips: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
@@ -47,6 +48,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
             closeable,
             hideable,
             showTooltips,
+            disabled,
             id,
             color,
             name,
@@ -76,6 +78,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps,
                             value={id}
                             defaultChecked={true}
                             checked={checked}
+                            disabled={disabled}
                         />
                     )}
                     <Badge
