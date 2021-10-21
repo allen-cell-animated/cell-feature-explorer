@@ -36,6 +36,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
         }
         return name;
     };
+
     return (
         <div className={styles.cellViewer}>
             <ImageViewerApp
@@ -45,8 +46,9 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 fovDownloadHref={props.fovDownloadHref}
                 cellDownloadHref={props.cellDownloadHref}
                 fovPath={props.fovPath}
-                defaultVolumesOn={[0, 1, 2]}
+                defaultVolumesOn={props.channelsEnabled || [0, 1, 2]}
                 defaultSurfacesOn={[]}
+                initialChannelSettings={props.initialChannelSettings}
                 // TODO see if channelNameClean is redundant with channelNameMapping
                 channelNameClean={standardizeNames}
                 appHeight="90vh"

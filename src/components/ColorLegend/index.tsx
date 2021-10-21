@@ -9,7 +9,7 @@ interface InteractiveRowProps {
     total: number;
 }
 
-export default class ColorLegendRow extends React.Component<InteractiveRowProps, {}> {
+export default class ColorLegendRow extends React.Component<InteractiveRowProps> {
     constructor(props: InteractiveRowProps) {
         super(props);
     }

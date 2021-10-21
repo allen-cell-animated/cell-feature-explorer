@@ -28,7 +28,7 @@ interface AppProps {
     datasets: DatasetMetaData[];
 }
 
-class App extends React.Component<AppProps, {}> {
+class App extends React.Component<AppProps> {
     public componentDidMount = () => {
         this.props.requestAvailableDatasets();
     };

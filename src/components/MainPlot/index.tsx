@@ -1,21 +1,11 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { isEqual } from "lodash";
-import {
-    Annotations,
-    Data,
-    PlotMouseEvent,
-    PlotSelectionEvent,
-} from "plotly.js";
+import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
 
-import {
-    GENERAL_PLOT_SETTINGS,
-} from "../../constants";
+import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
-import {
-    Annotation,
-} from "../../state/types";
+import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     annotations: Annotation[];
@@ -35,7 +25,7 @@ interface MainPlotState {
     showFullAnnotation: boolean;
 }
 
-type PlotlyAnnotation =  Partial<Annotations>;
+type PlotlyAnnotation = Partial<Annotations>;
 
 const histogramAxis = {
     color: GENERAL_PLOT_SETTINGS.textColor,
@@ -48,7 +38,6 @@ const histogramAxis = {
 };
 
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
-
     constructor(props: MainPlotProps) {
         super(props);
         this.makeAnnotations = this.makeAnnotations.bind(this);
@@ -64,9 +53,21 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 margin: GENERAL_PLOT_SETTINGS.margin,
                 paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
                 plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                xaxis: this.makeAxis([0, 0.85], ".1f", false, props.xAxisType, props.xTickConversion ),
+                xaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.xAxisType,
+                    props.xTickConversion
+                ),
                 xaxis2: histogramAxis,
-                yaxis: this.makeAxis([0, 0.85], ".1f", false,  props.yAxisType, props.yTickConversion ),
+                yaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.yAxisType,
+                    props.yTickConversion
+                ),
                 yaxis2: histogramAxis,
             },
             showFullAnnotation: true,
@@ -74,15 +75,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const {
-            annotations,
-            xAxisType,
-            yAxisType,
-            xTickConversion,
-            yTickConversion,
-        } = this.props;
-        if (!isEqual(annotations, prevProps.annotations) ||
-            prevState.showFullAnnotation !== this.state.showFullAnnotation) {
+        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
+        if (
+            !isEqual(annotations, prevProps.annotations) ||
+            prevState.showFullAnnotation !== this.state.showFullAnnotation
+        ) {
             this.setState({
                 layout: {
                     ...this.state.layout,
@@ -90,7 +87,10 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
             });
         }
-        if (xTickConversion !== prevProps.xTickConversion || yTickConversion !== prevProps.yTickConversion) {
+        if (
+            xTickConversion !== prevProps.xTickConversion ||
+            yTickConversion !== prevProps.yTickConversion
+        ) {
             const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
             const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
 
@@ -116,7 +116,13 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.setState({ showFullAnnotation: false });
     }
 
-    public makeAxis(domain: number[], hoverformat: string, zeroline: boolean, type: string, tickConversion: any) {
+    public makeAxis(
+        domain: number[],
+        hoverformat: string,
+        zeroline: boolean,
+        type: string,
+        tickConversion: any
+    ) {
         return {
             color: GENERAL_PLOT_SETTINGS.textColor,
             domain,
@@ -137,14 +143,14 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             if (show) {
                 return `Cell ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
             }
-            if (point.hovered ) {
+            if (point.hovered) {
                 return `Cell ${point.cellID}`;
             }
             return "";
         };
 
         return annotations.map((point, index) => {
-            const lastOne =  index + 1  === annotations.length;
+            const lastOne = index + 1 === annotations.length;
             const show = lastOne && this.state.showFullAnnotation;
             const hasText = !!show || !!point.hovered;
             return {
@@ -155,7 +161,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 ay: show ? -60 : point.hovered ? -20 : 0,
                 bgcolor: "#00000094",
                 bordercolor: point.hovered ? "#7440f1" : "#ffffffab",
-                borderpad:  hasText ? 4 : 0,
+                borderpad: hasText ? 4 : 0,
                 borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
@@ -175,26 +181,20 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public render() {
-        const {
-            onPointClicked,
-            onPointHovered,
-            onPointUnhovered,
-            onGroupSelected,
-            plotDataArray,
-        } = this.props;
+        const { onPointClicked, onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } =
+            this.props;
         const options = {
             displayModeBar: true,
             displaylogo: false,
             modeBarButtonsToRemove: [
                 // literal typing to avoid a widened type inferred
-                "sendDataToCloud" as "sendDataToCloud",
-                "toImage" as "toImage",
-                "resetScale2d" as "resetScale2d",
-                "hoverClosestCartesian" as "hoverClosestCartesian",
-                "hoverCompareCartesian" as "hoverCompareCartesian",
-                "toggleSpikelines" as "toggleSpikelines",
+                "sendDataToCloud" as const,
+                "toImage" as const,
+                "resetScale2d" as const,
+                "hoverClosestCartesian" as const,
+                "hoverCompareCartesian" as const,
+                "toggleSpikelines" as const,
             ],
-
         };
         return (
             <Plot

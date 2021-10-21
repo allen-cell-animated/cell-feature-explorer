@@ -23,10 +23,7 @@ import {
     getSelectedAlbumFileInfo,
     getThumbnailRoot,
 } from "../../state/selection/selectors";
-import {
-    Album,
-    Thumbnail,
-} from "../../state/types";
+import { Album, Thumbnail } from "../../state/types";
 import {
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
@@ -35,23 +32,18 @@ import {
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
-    [
-        getAllAlbumData,
-        getSelectedAlbum,
-    ],
-    (
-        albumData: Album[],
-        selectedAlbum: number
-    ): (Album | undefined ) => {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        return find(albumData, {album_id: selectedAlbum});
-    });
+    [getAllAlbumData, getSelectedAlbum],
+    (albumData: Album[], selectedAlbum: number): Album | undefined => {
+        return find(albumData, { album_id: selectedAlbum });
+    }
+);
 
-export const getSelectedAlbumName = createSelector([getSelectedAlbumData],
+export const getSelectedAlbumName = createSelector(
+    [getSelectedAlbumData],
     (selectedAlbumData: Album | undefined): string => {
-    return selectedAlbumData ? selectedAlbumData.title : "My Selections";
-});
-
+        return selectedAlbumData ? selectedAlbumData.title : "My Selections";
+    }
+);
 
 export const getFileInfoToShow = createSelector(
     [getSelectedAlbumData, getClickedCellsFileInfo, getSelectedAlbumFileInfo],
@@ -94,7 +86,7 @@ export const getThumbnails = createSelector(
                 const mitoticKey = mitoticKeysArray[cellIndex];
                 mitoticStage = mitoticStageNames[mitoticKey].name;
             }
-            
+
             let downloadHref = "";
             if (fileInfoForCell[VOLUME_VIEWER_PATH]) {
                 downloadHref = formatDownloadOfIndividualFile(
@@ -111,7 +103,7 @@ export const getThumbnails = createSelector(
                     convertFullFieldIdToDownloadId(fovId)
                 );
             }
-            
+
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
             return {
                 cellID,

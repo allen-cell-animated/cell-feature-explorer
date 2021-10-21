@@ -18,7 +18,7 @@ interface AxisDropDownProps {
 
 const Option = Select.Option;
 
-export default class AxisDropDown extends React.Component<AxisDropDownProps, {}> {
+export default class AxisDropDown extends React.Component<AxisDropDownProps> {
     constructor(props: AxisDropDownProps) {
         super(props);
         this.handleChange = this.handleChange.bind(this);

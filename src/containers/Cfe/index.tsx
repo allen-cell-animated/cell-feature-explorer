@@ -31,7 +31,7 @@ interface CfeProps {
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
-class Cfe extends React.Component<CfeProps, {}> {
+class Cfe extends React.Component<CfeProps> {
     private static panelKeys = ["proteinNames", "selections", "clusters"];
     public state = {
         defaultActiveKey: [Cfe.panelKeys[0]],
