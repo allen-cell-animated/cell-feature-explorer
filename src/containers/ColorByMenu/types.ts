@@ -5,4 +5,5 @@ export interface PanelData {
     name: string;
     gene?: string;
     total: number;
+    disabled?: boolean;
 }

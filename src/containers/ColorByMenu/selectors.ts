@@ -20,6 +20,7 @@ import {
     getLabelsPerCell,
     getProteinNames,
     getSortedCellLineDefs,
+    getProteinLabelsPerCell,
 } from "../../state/metadata/selectors";
 import { CellLineDef } from "../../state/metadata/types";
 import {
@@ -33,6 +34,8 @@ import {
     getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
+    getXValues,
+    getYValues,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
@@ -75,21 +78,44 @@ export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] =
     return disambiguatedNames;
 };
 
+export const getDisplayableGroups = createSelector([getXValues, getYValues, getProteinLabelsPerCell, getSortedCellLineDefs], (xValues, yValues, proteinNames, cellLines): string[] => {
+    const notDisplayable = new Set<string>();
+    const displayable = new Set<string>();
+
+    for (let i = 0; i < xValues.length; i++) {
+        if (notDisplayable.size + displayable.size === cellLines.length) {
+            break;
+        }
+        if (xValues[i] === null || yValues[i] === null) {
+            notDisplayable.add(proteinNames[i]);
+        } else {
+            displayable.add(proteinNames[i]);
+        }
+    }
+
+    console.log(displayable)
+
+    return [...displayable];
+});
+
 export const getInteractivePanelData = createSelector(
-    [getSortedCellLineDefs, getFiltersToExclude, getColors],
-    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+    [getSortedCellLineDefs, getFiltersToExclude, getColors, getDisplayableGroups],
+    (cellLines, filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
         const structureNames = disambiguateStructureNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
             const proteinName: string = cellLine[PROTEIN_NAME_KEY];
             const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
             const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
+            const disabled = !displayableGroups.includes(proteinName);
+            const color = disabled ? "#6e6e6e" : proteinColors[index];
             return {
                 checked: !includes(filtersToExclude, proteinName),
-                color: proteinColors[index],
+                color: color,
                 id: proteinName,
                 name: structureName,
                 gene: geneName,
+                disabled: disabled,
                 total,
             };
         });

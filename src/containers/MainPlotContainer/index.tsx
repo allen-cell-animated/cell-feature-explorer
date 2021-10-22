@@ -34,14 +34,13 @@ import { Annotation, State } from "../../state/types";
 
 import {
     getAnnotations,
-    getDisplayableGroups,
     getScatterPlotDataArray,
     getXDisplayOptions,
     getXTickConversion,
     getYDisplayOptions,
     getYTickConversion,
 } from "./selectors";
-import { getFeatureDefTooltip, getXValues } from "../../state/selection/selectors";
+import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
 import styles from "./style.css";
 
@@ -65,7 +64,6 @@ interface PropsFromState {
     xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
-    displayableGroups: string[];
 }
 
 interface DispatchProps {
@@ -96,17 +94,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         this.onGroupSelected = this.onGroupSelected.bind(this);
         this.onPlotUnhovered = this.onPlotUnhovered.bind(this);
         this.renderPopover = this.renderPopover.bind(this);
-        this.state = {
-            displayableGroups: []
-        }
-    }
-    
-    public componentDidUpdate(prevProps: MainPlotContainerProps) {
-        const { xDropDownValue, yDropDownValue, displayableGroups } = this.props;
-        const isAxisChanged = prevProps.xDropDownValue !== xDropDownValue || prevProps.yDropDownValue !== yDropDownValue;
-        if (isAxisChanged) {
-            this.setState({displayableGroups: displayableGroups});
-        }
     }
 
     private thumbnailTimeout = 0;
@@ -294,7 +281,6 @@ function mapStateToProps(state: State): PropsFromState {
         yDropDownOptions: getYDisplayOptions(state),
         yDropDownValue: selectionStateBranch.selectors.getPlotByOnY(state),
         yTickConversion: getYTickConversion(state),
-        displayableGroups: getDisplayableGroups(state),
     };
 }
 

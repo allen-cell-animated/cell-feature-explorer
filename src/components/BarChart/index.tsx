@@ -40,7 +40,7 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
                         closeable={closeable}
                         checked={item.checked}
                         hideable={hideable}
-                        disabled={true}
+                        disabled={item.disabled || false}
                         color={item.color as string}
                         name={item.name}
                         total={item.total}
