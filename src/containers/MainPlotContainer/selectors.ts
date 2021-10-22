@@ -84,26 +84,6 @@ export const getMainPlotData = createSelector(
     }
 );
 
-export const getDisplayableGroups = createSelector([getXValues, getYValues, getProteinLabelsPerCell, getSortedCellLineDefs], (xValues, yValues, proteinNames, cellLines): string[] => {
-    const notDisplayable = new Set<string>();
-    const displayable = new Set<string>();
-
-    for (let i = 0; i < xValues.length; i++) {
-        if (notDisplayable.size + displayable.size === cellLines.length) {
-            break;
-        }
-        if (xValues[i] === null || yValues[i] === null) {
-            notDisplayable.add(proteinNames[i]);
-        } else {
-            displayable.add(proteinNames[i]);
-        }
-    }
-
-    console.log(displayable)
-
-    return [...displayable];
-});
-
 export const getAnnotations = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
     (
