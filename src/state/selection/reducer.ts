@@ -36,6 +36,7 @@ import {
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
     CLEAR_DATASET,
+    SET_DISPLAYABLE_GROUPS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -57,6 +58,7 @@ import {
     SelectCellIn3DAction,
     SelectionStateBranch,
     SelectPointAction,
+    SetDisplayableGroupsAction,
 } from "./types";
 
 export const initialState = {
@@ -85,6 +87,7 @@ export const initialState = {
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},
     selectedGroups: {},
+    displayableGroups: [],
     selectedPoints: [],
     initSelectedPoints: [],
     showClusters: false,
@@ -285,6 +288,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
             selectedAlbumFileInfo: action.payload,
+        }),
+    },
+    [SET_DISPLAYABLE_GROUPS]: {
+        accepts: (action: AnyAction): action is SetDisplayableGroupsAction =>
+            action.type === SET_DISPLAYABLE_GROUPS,
+        perform: (state: SelectionStateBranch, action: SetDisplayableGroupsAction) => ({
+            ...state,
+            displayableGroups: action.payload,
         }),
     },
 };

@@ -17,7 +17,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
+import { CellLineDef, FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     ChangeHoveredPointAction,
@@ -29,6 +29,7 @@ import {
     LassoOrBoxSelectPointData,
     SelectPointAction,
     TickConversion,
+    SetDisplayableGroupsAction,
 } from "../../state/selection/types";
 import { Annotation, State } from "../../state/types";
 
@@ -64,6 +65,10 @@ interface PropsFromState {
     xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
+    xValues: number[];
+    yValues: number[];
+    proteinNames: string[];
+    cellLines: CellLineDef[];
 }
 
 interface DispatchProps {
@@ -76,6 +81,7 @@ interface DispatchProps {
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     requestCellFileInfoData: ActionCreator<RequestAction>;
+    setDisplayableGroups: ActionCreator<SetDisplayableGroupsAction>;
 }
 
 interface PropsFromApp {
@@ -97,6 +103,35 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     private thumbnailTimeout = 0;
+
+    public componentDidUpdate(prevProps: MainPlotContainerProps) {
+        const { xDropDownValue, yDropDownValue, xValues } = this.props;
+        const isPlotPopulated = prevProps.xValues.length === 0 && xValues.length > 0;
+        const isAxisChanged = prevProps.xDropDownValue !== xDropDownValue || prevProps.yDropDownValue !== yDropDownValue;
+        if (isPlotPopulated || isAxisChanged) {
+            this.updateChecklistItems();
+        }
+    }
+
+    private updateChecklistItems() {
+        const { xValues, yValues, cellLines, proteinNames } = this.props;
+        const notDisplayable = new Set<string>();
+        const displayable = new Set<string>();
+
+        for (let i = 0; i < xValues.length; i++) {
+            if (notDisplayable.size + displayable.size === cellLines.length) {
+                console.log(i)
+                break;
+            }
+            if (xValues[i] === null || yValues[i] === null) {
+                notDisplayable.add(proteinNames[i]);
+            } else {
+                displayable.add(proteinNames[i]);
+            }
+        }
+
+        this.props.setDisplayableGroups([...displayable]);
+    }
 
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
@@ -281,6 +316,10 @@ function mapStateToProps(state: State): PropsFromState {
         yDropDownOptions: getYDisplayOptions(state),
         yDropDownValue: selectionStateBranch.selectors.getPlotByOnY(state),
         yTickConversion: getYTickConversion(state),
+        xValues: selectionStateBranch.selectors.getXValues(state),
+        yValues: selectionStateBranch.selectors.getYValues(state),
+        proteinNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
+        cellLines: metadataStateBranch.selectors.getSortedCellLineDefs(state),
     };
 }
 
@@ -294,6 +333,7 @@ const dispatchToPropsMap: DispatchProps = {
     requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
+    setDisplayableGroups: selectionStateBranch.actions.setDisplayableGroups,
 };
 
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(

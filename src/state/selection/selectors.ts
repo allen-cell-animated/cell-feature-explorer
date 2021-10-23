@@ -66,6 +66,9 @@ export const getSelectedIdsFromUrl = (state: State) => state.selection.initSelec
 export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
 export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
+export const getDisplayableGroups = (state: State) => state.selection.displayableGroups;
+
+
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
