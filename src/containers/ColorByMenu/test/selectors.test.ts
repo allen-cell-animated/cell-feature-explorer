@@ -48,6 +48,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#bbcd22",
+                    disabled: false,
                     gene: "ABC-2",
                     id: "Alpha-actinin-1",
                     name: "Actin filaments (Alpha-actinin-1)",
@@ -56,6 +57,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#ff9900",
+                    disabled: false,
                     gene: "ABC-3",
                     id: "Beta-actin",
                     name: "Actin filaments (Beta-actin)",
@@ -64,6 +66,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#FFEE1E",
+                    disabled: false,
                     gene: "ABC-5",
                     id: "Beta-catenin",
                     name: "Adherens junctions",
@@ -72,6 +75,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#FD92B6",
+                    disabled: false,
                     gene: "ABC-4",
                     id: "Delta-actin",
                     name: "Actin filaments (Delta-actin)",
@@ -80,6 +84,7 @@ describe("ColorByMenu selectors", () => {
                 {
                     checked: true,
                     color: "#33a02c",
+                    disabled: false,
                     gene: "ABC-1",
                     id: "Nucleophosmin",
                     name: "Nucleolus (Granular Component)",
