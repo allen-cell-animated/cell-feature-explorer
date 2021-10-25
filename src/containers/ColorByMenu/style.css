@@ -13,7 +13,7 @@
   color: var(--background-dark-gray);
 }
 
-.bar-chart-header{
+.interactive-legend-header{
   border-bottom: 0.5px solid var(--dimgray);
   display: flex;
   justify-content: space-between;

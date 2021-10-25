@@ -6,7 +6,7 @@ import React from "react";
 import { ActionCreator, connect } from "react-redux";
 
 import AxisDropDown from "../../components/AxisDropDown";
-import BarChart from "../../components/BarChart";
+import InteractiveLegend from "../../components/InteractiveLegend";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
 import {
@@ -215,7 +215,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                     label="Show selections: "
                 />
                 <div>
-                    <BarChart
+                    <InteractiveLegend
                         closeable={true}
                         hideable={false}
                         showTooltips={false}
@@ -277,7 +277,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                 )}
 
                 <div>
-                    <div className={styles.barChartHeader}>
+                    <div className={styles.interactiveLegendHeader}>
                         <Checkbox
                             indeterminate={someProteinsOff}
                             checked={filtersToExclude.length === 0}
@@ -288,7 +288,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
                         <span className={styles.label}># of cells</span>
                     </div>
 
-                    <BarChart
+                    <InteractiveLegend
                         closeable={false}
                         showTooltips={true}
                         panelData={proteinPanelData}

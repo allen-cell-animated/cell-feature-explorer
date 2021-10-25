@@ -6,7 +6,7 @@ import { PanelData } from "../../containers/ColorByMenu/types";
 import { DownloadConfig } from "../../state/selection/types";
 import InteractiveRow from "../InteractiveRow";
 
-interface BarChartProps {
+interface InteractiveLegendProps {
     showTooltips: boolean;
     closeable: boolean;
     hideable: boolean;
@@ -18,7 +18,7 @@ interface BarChartProps {
     handleCloseSelectionSet?: (id: number | string) => void;
 }
 
-const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
+const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (props) => {
     const {
         showTooltips,
         closeable,
@@ -60,4 +60,4 @@ const BarChart: React.FunctionComponent<BarChartProps> = (props) => {
     );
 };
 
-export default BarChart;
+export default InteractiveLegend;
