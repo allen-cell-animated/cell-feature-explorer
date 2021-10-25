@@ -120,6 +120,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 displayable.add(proteinNames[i]);
             }
         }
+        console.log(displayable)
         this.props.setDisplayableGroups([...displayable]);
     }
 
