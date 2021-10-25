@@ -17,7 +17,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { CellLineDef, FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
+import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     ChangeHoveredPointAction,
@@ -68,7 +68,6 @@ interface PropsFromState {
     xValues: number[];
     yValues: number[];
     proteinNames: string[];
-    cellLines: CellLineDef[];
 }
 
 interface DispatchProps {
@@ -116,13 +115,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     private updateChecklistItems() {
         const { xValues, yValues, proteinNames } = this.props;
         const displayable = new Set<string>();
-
         for (let i = 0; i < xValues.length; i++) {
             if (xValues[i] !== null && yValues[i] !== null) {
                 displayable.add(proteinNames[i]);
             }
         }
-        console.log(displayable)
         this.props.setDisplayableGroups([...displayable]);
     }
 
@@ -312,7 +309,6 @@ function mapStateToProps(state: State): PropsFromState {
         xValues: selectionStateBranch.selectors.getXValues(state),
         yValues: selectionStateBranch.selectors.getYValues(state),
         proteinNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
-        cellLines: metadataStateBranch.selectors.getSortedCellLineDefs(state),
     };
 }
 

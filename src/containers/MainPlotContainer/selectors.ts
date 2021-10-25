@@ -12,7 +12,7 @@ import {
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
 } from "../../constants";
-import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs, getProteinLabelsPerCell, getSortedCellLineDefs } from "../../state/metadata/selectors";
+import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
 import { DataForPlot, FileInfo, MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
@@ -83,6 +83,7 @@ export const getMainPlotData = createSelector(
         };
     }
 );
+
 
 export const getAnnotations = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
