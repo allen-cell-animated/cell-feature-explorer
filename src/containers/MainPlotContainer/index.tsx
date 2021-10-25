@@ -114,22 +114,15 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     private updateChecklistItems() {
-        const { xValues, yValues, cellLines, proteinNames } = this.props;
-        const notDisplayable = new Set<string>();
+        const { xValues, yValues, proteinNames } = this.props;
         const displayable = new Set<string>();
 
         for (let i = 0; i < xValues.length; i++) {
-            if (notDisplayable.size + displayable.size === cellLines.length) {
-                console.log(i)
-                break;
-            }
-            if (xValues[i] === null || yValues[i] === null) {
-                notDisplayable.add(proteinNames[i]);
-            } else {
+            if (xValues[i] !== null && yValues[i] !== null) {
                 displayable.add(proteinNames[i]);
             }
         }
-
+        console.log(displayable)
         this.props.setDisplayableGroups([...displayable]);
     }
 
