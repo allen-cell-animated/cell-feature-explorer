@@ -196,7 +196,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             ],
 
         };
-        console.log(plotDataArray)
         return (
             <Plot
                 data={plotDataArray}

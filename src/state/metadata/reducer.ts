@@ -46,12 +46,10 @@ export const initialState = {
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_METADATA]: {
         accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_METADATA,
-        perform: (state: MetadataStateBranch, action: ReceiveAction) => {
-        console.log(action.payload)
-        return {
+        perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,
-        }},
+        }),
     },
     [CLEAR_DATASET_VALUES]: {
         accepts: (action: AnyAction): action is ClearAction => action.type === CLEAR_DATASET_VALUES,
