@@ -86,7 +86,7 @@ export const getInteractivePanelData = createSelector(
             const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
             const disabled = !displayableGroups.includes(proteinName);
-            const color = disabled ? "#6e6e6e" : proteinColors[index];
+            const color = disabled ? DISABLE_COLOR : proteinColors[index];
             return {
                 checked: !includes(filtersToExclude, proteinName),
                 color: color,

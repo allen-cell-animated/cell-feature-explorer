@@ -40,9 +40,7 @@ describe("ColorByMenu selectors", () => {
     });
     
     describe("getInteractivePanelData", () => {
-
         it("returns an set of props for each protein in state", () => {
-
             const result: PanelData[] = getInteractivePanelData(newMockState);
             const data = [
                 {
@@ -83,8 +81,8 @@ describe("ColorByMenu selectors", () => {
                 },
                 {
                     checked: true,
-                    color: "#33a02c",
-                    disabled: false,
+                    color: "#6e6e6e",
+                    disabled: true,
                     gene: "ABC-1",
                     id: "Nucleophosmin",
                     name: "Nucleolus (Granular Component)",
