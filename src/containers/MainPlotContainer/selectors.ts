@@ -13,7 +13,12 @@ import {
     THUMBNAIL_PATH,
 } from "../../constants";
 import { getCategoricalFeatureKeys, getMeasuredFeaturesDefs } from "../../state/metadata/selectors";
-import { DataForPlot, FileInfo, MeasuredFeatureDef, MeasuredFeaturesOptions } from "../../state/metadata/types";
+import {
+    DataForPlot,
+    FileInfo,
+    MeasuredFeatureDef,
+    MeasuredFeaturesOptions,
+} from "../../state/metadata/types";
 import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
@@ -32,11 +37,7 @@ import {
     getFilteredYValues,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
-import {
-    Annotation,
-    ContinuousPlotData,
-    GroupedPlotData,
-} from "../../state/types";
+import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
@@ -51,7 +52,7 @@ export const getMainPlotData = createSelector(
         getColorByValues,
         getColorBySelection,
         getColorsForPlot,
-        getCategoricalFeatureKeys
+        getCategoricalFeatureKeys,
     ],
     (
         xValues,
@@ -63,7 +64,7 @@ export const getMainPlotData = createSelector(
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
-        // for datasets that have a lot of null values, 
+        // for datasets that have a lot of null values,
         // if the whole array is null it throws an error
         if (!filter(xValues).length) {
             xValues = [];
@@ -84,7 +85,6 @@ export const getMainPlotData = createSelector(
     }
 );
 
-
 export const getAnnotations = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
     (
@@ -92,7 +92,7 @@ export const getAnnotations = createSelector(
         clickedCellsFileInfo: FileInfo[],
         xAxis,
         yAxis,
-        currentHoveredCellId,
+        currentHoveredCellId
     ): Annotation[] => {
         if (isEmpty(filteredCellData.values) || isEmpty(filteredCellData.labels)) {
             return [];
@@ -125,59 +125,60 @@ export const getAnnotations = createSelector(
     }
 );
 
-export const composePlotlyData = createSelector([
-        getMainPlotData,
-        getApplyColorToSelections,
-        getSelectedGroupsData,
-    ], (
-        mainPlotDataValues,
-        applyColorToSelections,
-        selectedGroups,
-): any => {
-    const mainPlotData = {
-        ...mainPlotDataValues,
-        groupSettings : isGrouped(mainPlotDataValues) ? {
-            ...mainPlotDataValues.groupSettings,
-        } : null,
-        plotName: SCATTER_PLOT_NAME,
-    };
+export const composePlotlyData = createSelector(
+    [getMainPlotData, getApplyColorToSelections, getSelectedGroupsData],
+    (mainPlotDataValues, applyColorToSelections, selectedGroups): any => {
+        const mainPlotData = {
+            ...mainPlotDataValues,
+            groupSettings: isGrouped(mainPlotDataValues)
+                ? {
+                      ...mainPlotDataValues.groupSettings,
+                  }
+                : null,
+            plotName: SCATTER_PLOT_NAME,
+        };
 
-    const selectedGroupPlotData = applyColorToSelections ? {
-        ...selectedGroups,
-        groupBy: false,
-        plotName: SELECTIONS_PLOT_NAME,
-    } : null;
+        const selectedGroupPlotData = applyColorToSelections
+            ? {
+                  ...selectedGroups,
+                  groupBy: false,
+                  plotName: SELECTIONS_PLOT_NAME,
+              }
+            : null;
 
-    return {
-        clusteringPlotData: null,
-        mainPlotData,
-        selectedGroupPlotData,
-    };
-});
+        return {
+            clusteringPlotData: null,
+            mainPlotData,
+            selectedGroupPlotData,
+        };
+    }
+);
 
 function colorSettings(
     plotSettings: Partial<PlotData>,
-    plotData: GroupedPlotData| ContinuousPlotData): Partial<PlotData> {
+    plotData: GroupedPlotData | ContinuousPlotData
+): Partial<PlotData> {
     if (isGrouped(plotData)) {
         return {
             ...plotSettings,
-            transforms: [ {
-                groups: plotData.groups,
-                nameformat: `%{group}`,
-                styles: map(plotData.groupSettings, (ele) => {
-                    return {
-                        target: ele.name,
-                        value: {
-                            marker:
-                                {
+            transforms: [
+                {
+                    groups: plotData.groups,
+                    nameformat: `%{group}`,
+                    styles: map(plotData.groupSettings, (ele) => {
+                        return {
+                            target: ele.name,
+                            value: {
+                                marker: {
                                     color: ele.color,
                                     opacity: GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
-                                }},
-                    };
-                }),
-                // literal typing to avoid a widened type inferred
-                type: "groupby" as "groupby",
-            },
+                                },
+                            },
+                        };
+                    }),
+                    // literal typing to avoid a widened type inferred
+                    type: "groupby" as const,
+                },
             ],
         };
     }
@@ -187,14 +188,14 @@ function colorSettings(
         marker: {
             ...plotSettings.marker,
             color: plotData.color,
-            opacity: plotData.opacity  || GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
+            opacity: plotData.opacity || GENERAL_PLOT_SETTINGS.unselectedCircleOpacity,
         },
     };
 }
 
 function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Partial<PlotData> {
-    const plotSettings =  {
-        hoverinfo: "none" as "none",
+    const plotSettings = {
+        hoverinfo: "none" as const,
         ids: plotData.ids,
         customdata: plotData.customdata,
         marker: {
@@ -202,11 +203,11 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
             symbol: "circle",
         },
         // literal typing to avoid a widened type inferred
-        mode: "markers" as "markers",
+        mode: "markers" as const,
         name: plotData.plotName,
         showlegend: false,
         // literal typing to avoid a widened type inferred
-        type: "scattergl" as "scattergl",
+        type: "scattergl" as const,
         x: plotData.x,
         y: plotData.y,
         z: [],
@@ -227,10 +228,9 @@ function makeHistogramPlotX(data: number[]) {
         nbinsx: 60,
         showlegend: false,
         // literal typing to avoid a widened type inferred
-        type: "histogram" as "histogram",
+        type: "histogram" as const,
         x: data,
         yaxis: "y2",
-
     };
 }
 function makeHistogramPlotY(data: number[]) {
@@ -246,19 +246,14 @@ function makeHistogramPlotY(data: number[]) {
         nbinsy: 60,
         showlegend: false,
         // literal typing to avoid a widened type inferred
-        type: "histogram" as "histogram",
+        type: "histogram" as const,
         xaxis: "x2",
         y: data,
-
     };
 }
 
 export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
-    const {
-        mainPlotData,
-        selectedGroupPlotData,
-        clusteringPlotData,
-    } = allPlotData;
+    const { mainPlotData, selectedGroupPlotData, clusteringPlotData } = allPlotData;
     const data = [
         makeHistogramPlotX(mainPlotData.x),
         makeHistogramPlotY(mainPlotData.y),
@@ -274,39 +269,43 @@ export const getScatterPlotDataArray = createSelector([composePlotlyData], (allP
 });
 
 export const getXDisplayOptions = createSelector(
-           [getMeasuredFeaturesDefs],
-           (featureNames): MeasuredFeatureDef[] => {
-               return featureNames;
-           }
-       );
+    [getMeasuredFeaturesDefs],
+    (featureNames): MeasuredFeatureDef[] => {
+        return featureNames;
+    }
+);
 
 export const getYDisplayOptions = createSelector(
-           [getMeasuredFeaturesDefs],
-           (featureNames): MeasuredFeatureDef[] => {
-               return featureNames;
-           }
-       );
-
-export const getColorByDisplayOptions = createSelector([getMeasuredFeaturesDefs], (featureDefs): MeasuredFeatureDef[] => {
-    if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
-        return [
-            {
-                key: PROTEIN_NAME_KEY,
-                displayName: "Labeled structure name",
-                discrete: true,
-                unit: null,
-                tooltip: "Name of the cellular structure that has been fluorescently labeled in each cell line",
-            },
-            ...featureDefs,
-        ];
+    [getMeasuredFeaturesDefs],
+    (featureNames): MeasuredFeatureDef[] => {
+        return featureNames;
     }
-    return featureDefs;
-});
+);
+
+export const getColorByDisplayOptions = createSelector(
+    [getMeasuredFeaturesDefs],
+    (featureDefs): MeasuredFeatureDef[] => {
+        if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+            return [
+                {
+                    key: PROTEIN_NAME_KEY,
+                    displayName: "Labeled structure name",
+                    discrete: true,
+                    unit: null,
+                    tooltip:
+                        "Name of the cellular structure that has been fluorescently labeled in each cell line",
+                },
+                ...featureDefs,
+            ];
+        }
+        return featureDefs;
+    }
+);
 
 const makeNumberToTextConversion = (options: MeasuredFeaturesOptions) => {
     return {
-        tickText:  map(options, "name"),
-        tickValues:  map(options, (_, key) => Number(key)),
+        tickText: map(options, "name"),
+        tickValues: map(options, (_, key) => Number(key)),
     };
 };
 

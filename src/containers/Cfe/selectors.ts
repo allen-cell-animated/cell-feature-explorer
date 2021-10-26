@@ -26,6 +26,8 @@ export interface VolumeViewerProps {
     cellDownloadHref: string;
     channelNameMapping?: { label: string; test: RegExp }[] | "";
     groupToChannelNameMap?: { [key: string]: string[] } | "";
+    channelsEnabled?: number[];
+    initialChannelSettings?: { [key: string]: { color: [number, number, number] } };
 }
 
 export const getPropsForVolumeViewer = createSelector(
@@ -49,18 +51,17 @@ export const getPropsForVolumeViewer = createSelector(
         let mainDownloadHref = "";
         let parentDownloadHref = "";
         if (fileInfo.volumeviewerPath) {
-
             mainCellPath = formatPathForViewer(fileInfo.volumeviewerPath);
             mainDownloadHref = formatDownloadOfIndividualFile(
                 downloadRoot,
                 convertSingleImageIdToDownloadId(fileInfo ? fileInfo.CellId : "")
-            )
+            );
             if (fileInfo.fovVolumeviewerPath) {
                 parentCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);
                 parentDownloadHref = formatDownloadOfIndividualFile(
-                downloadRoot,
-                convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
-            );
+                    downloadRoot,
+                    convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
+                );
             }
         } else {
             mainCellPath = formatPathForViewer(fileInfo.fovVolumeviewerPath);

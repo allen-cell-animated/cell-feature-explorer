@@ -25,7 +25,7 @@ interface InteractiveRowProps {
     handleDownload: (id: string) => void;
 }
 
-export default class InteractiveRow extends React.Component<InteractiveRowProps, {}> {
+export default class InteractiveRow extends React.Component<InteractiveRowProps> {
     private static defaultProps = {
         closeable: false,
         downloadUrls: [],

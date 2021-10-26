@@ -12,7 +12,7 @@ import {
 import { State } from "../../../state";
 import { FileInfo } from "../../../state/metadata/types";
 import { mockState } from "../../../state/test/mocks";
-import {  getPropsForVolumeViewer } from "../selectors";
+import { getPropsForVolumeViewer } from "../selectors";
 
 const fileInfo: FileInfo[] = [
     {
@@ -73,7 +73,7 @@ describe("Viewer selectors", () => {
                 },
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
-            
+
             expect(result).to.deep.equal({
                 cellId: "12762",
                 baseUrl: "url",
@@ -96,9 +96,8 @@ describe("Viewer selectors", () => {
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
 
-            expect(result.groupToChannelNameMap).to.not.be.empty
+            expect(result.groupToChannelNameMap).to.not.be.empty;
             expect(result.channelNameMapping).to.not.be.empty;
-
         });
     });
 });

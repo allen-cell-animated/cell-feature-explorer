@@ -7,7 +7,7 @@ import {
     Label,
     ScatterLine,
     ScatterMarkerLine,
-    TypedArray
+    TypedArray,
 } from "plotly.js";
 
 /**
@@ -22,7 +22,18 @@ export interface TransformStyle {
 
 export interface TransformAggregation {
     target: string;
-    func?: "count" | "sum" | "avg" | "median" | "mode" | "rms" | "stddev" | "min" | "max" | "first" | "last";
+    func?:
+        | "count"
+        | "sum"
+        | "avg"
+        | "median"
+        | "mode"
+        | "rms"
+        | "stddev"
+        | "min"
+        | "max"
+        | "first"
+        | "last";
     funcmode?: "sample" | "population";
     enabled?: boolean;
 }
@@ -43,7 +54,7 @@ export interface Transform {
 
 export interface PlotMarker {
     color: Color | Color[] | number | number[];
-    colorscale: string | string[] | Array<Array<(string | number)>>;
+    colorscale: string | string[] | Array<Array<string | number>>;
     cauto: boolean;
     cmax: number;
     cmin: number;
@@ -62,10 +73,10 @@ export interface PlotMarker {
     width: number;
     colorbar: Partial<ColorBar>;
     gradient: {
-        type: "radial" | "horizontal" | "vertical" | "none",
-        color: Color,
-        typesrc: any,
-        colorsrc: any,
+        type: "radial" | "horizontal" | "vertical" | "none";
+        color: Color;
+        typesrc: any;
+        colorsrc: any;
     };
 }
 
@@ -101,20 +112,50 @@ export interface PlotData {
     "marker.sizemode": "diameter" | "area";
     "marker.showscale": boolean;
     "marker.line": Partial<ScatterMarkerLine>;
-    "marker.colorbar": {}; // TODO
-    mode: "lines" | "markers" | "text" | "lines+markers" | "text+markers" | "text+lines" | "text+lines+markers" |
-"none";
+    "marker.colorbar": unknown; // TODO
+    mode:
+        | "lines"
+        | "markers"
+        | "text"
+        | "lines+markers"
+        | "text+markers"
+        | "text+lines"
+        | "text+lines+markers"
+        | "none";
     hoveron: "points" | "fills";
-    hoverinfo: "all" | "name" | "none" | "skip" | "text" |
-        "x" | "x+text" | "x+name" |
-        "x+y" | "x+y+text" | "x+y+name" |
-        "x+y+z" | "x+y+z+text" | "x+y+z+name" |
-        "y+x" | "y+x+text" | "y+x+name" |
-        "y+z" | "y+z+text" | "y+z+name" |
-        "y+x+z" | "y+x+z+text" | "y+x+z+name" |
-        "z+x" | "z+x+text" | "z+x+name" |
-        "z+y+x" | "z+y+x+text" | "z+y+x+name" |
-        "z+x+y" | "z+x+y+text" | "z+x+y+name";
+    hoverinfo:
+        | "all"
+        | "name"
+        | "none"
+        | "skip"
+        | "text"
+        | "x"
+        | "x+text"
+        | "x+name"
+        | "x+y"
+        | "x+y+text"
+        | "x+y+name"
+        | "x+y+z"
+        | "x+y+z+text"
+        | "x+y+z+name"
+        | "y+x"
+        | "y+x+text"
+        | "y+x+name"
+        | "y+z"
+        | "y+z+text"
+        | "y+z+name"
+        | "y+x+z"
+        | "y+x+z+text"
+        | "y+x+z+name"
+        | "z+x"
+        | "z+x+text"
+        | "z+x+name"
+        | "z+y+x"
+        | "z+y+x+text"
+        | "z+y+x+name"
+        | "z+x+y"
+        | "z+x+y+text"
+        | "z+x+y+name";
     hoverlabel: Partial<Label>;
     fill: "none" | "tozeroy" | "tozerox" | "tonexty" | "tonextx" | "toself" | "tonext";
     fillcolor: string;

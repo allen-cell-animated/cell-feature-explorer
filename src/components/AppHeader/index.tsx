@@ -8,7 +8,7 @@ interface AppHeaderProps {
     selectedDataset: string;
 }
 
-class AppHeader extends React.Component<AppHeaderProps, {}> {
+class AppHeader extends React.Component<AppHeaderProps> {
     public render(): JSX.Element {
         const { selectedDataset } = this.props;
 

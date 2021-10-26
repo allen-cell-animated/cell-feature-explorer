@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { createLogic } from "redux-logic";
 import { AnyAction } from "redux";
 

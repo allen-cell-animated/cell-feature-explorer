@@ -86,7 +86,7 @@ interface PropsFromApp {
 
 type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 
-class ColorByMenu extends React.Component<ColorByMenuProps, {}> {
+class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
     constructor(props: ColorByMenuProps) {
