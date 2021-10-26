@@ -156,25 +156,25 @@ const featureData = {
 const displayableGroups = cellLineDefs.slice(1).map(cellLine => cellLine[CELL_LINE_DEF_PROTEIN_KEY]);
 
 export const mockState = {
-           metadata: {
-               cellLineDefs: cellLineDefs,
-               cellFileInfo: fileInfo,
-               featureData: featureData,
-               measuredFeaturesDefs: measuredFeaturesDefs,
-           },
-           selection: {
-               colorBy: INITIAL_COLOR_BY,
-               downloadConfig: {
-                   key: "",
-                   type: "",
-               },
-               filterExclude: [],
-               plotByOnX: "INITIAL_PLOT_BY_ON_X",
-               plotByOnY: "INITIAL_PLOT_BY_ON_Y",
-               proteinColors: INITIAL_COLORS,
-               selectedGroupColors: INITIAL_COLORS,
-               selectedGroups: {},
-               selectedPoints: selectedCellFileInfo,
-               displayableGroups: displayableGroups,
-           },
-       };
+    metadata: {
+        cellLineDefs: cellLineDefs,
+        cellFileInfo: fileInfo,
+        featureData: featureData,
+        measuredFeaturesDefs: measuredFeaturesDefs,
+    },
+    selection: {
+        colorBy: INITIAL_COLOR_BY,
+        downloadConfig: {
+            key: "",
+            type: "",
+        },
+        filterExclude: [],
+        plotByOnX: "INITIAL_PLOT_BY_ON_X",
+        plotByOnY: "INITIAL_PLOT_BY_ON_Y",
+        proteinColors: INITIAL_COLORS,
+        selectedGroupColors: INITIAL_COLORS,
+        selectedGroups: {},
+        selectedPoints: selectedCellFileInfo,
+        displayableGroups: displayableGroups,
+    },
+};
