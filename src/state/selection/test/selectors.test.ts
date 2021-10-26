@@ -8,15 +8,15 @@ import {
 import {
     getSelectedGroupKeys,
     getSelectedSetTotals,
-    getXValues,
-    getYValues,
+    getFilteredXValues,
+    getFilteredYValues,
 } from "../selectors";
 
 describe("Selection selectors", () => {
 
 
     const newMockState = mockState;
-    describe("getXValues selector", () => {
+    describe("getFilteredXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
 
                 const state: State = {
@@ -26,7 +26,7 @@ describe("Selection selectors", () => {
                         plotByOnX: "apical-proximity",
                     },
                 };
-                const result: number[] = getXValues(state);
+                const result: number[] = getFilteredXValues(state);
                 const newState = {
                     ...state,
                     selection: {
@@ -37,13 +37,13 @@ describe("Selection selectors", () => {
                 const feature1Values = [-0.25868651080317, -0.1];
                 const feature2Values = [1, 0];
 
-                const newResult: number[] = getXValues(newState);
+                const newResult: number[] = getFilteredXValues(newState);
                 expect(result).to.deep.equal(feature1Values);
                 expect(newResult).to.deep.equal(feature2Values);
                 expect(result.length).to.equal(newResult.length);
         });
     });
-    describe("getYValues selector", () => {
+    describe("getFilteredYValues selector", () => {
         it("returns an array of values that correspond to the currently selected y value", () => {
 
             const state: State = {
@@ -53,7 +53,7 @@ describe("Selection selectors", () => {
                     plotByOnY: "apical-proximity",
                 },
             };
-            const result: number[] = getYValues(state);
+            const result: number[] = getFilteredYValues(state);
             const newState = {
                 ...state,
                 selection: {
@@ -61,7 +61,7 @@ describe("Selection selectors", () => {
                     plotByOnY: "cell-segmentation",
                 },
             };
-            const newResult: number[] = getYValues(newState);
+            const newResult: number[] = getFilteredYValues(newState);
             expect(result).to.not.deep.equal(newResult);
             expect(result.length).to.equal(newResult.length);
         });

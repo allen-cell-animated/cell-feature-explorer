@@ -15,6 +15,7 @@ interface InteractiveRowProps {
     gene?: string;
     checked?: boolean;
     closeable?: boolean;
+    disabled: boolean;
     showTooltips: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
@@ -47,6 +48,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             closeable,
             hideable,
             showTooltips,
+            disabled,
             id,
             color,
             name,
@@ -67,6 +69,8 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             </div>
         );
 
+        const labelClassName = disabled ? styles.labelDisabled : styles.label;
+
         return (
             <div className={styles.container}>
                 <div className={styles.firstColumn}>
@@ -76,6 +80,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                             value={id}
                             defaultChecked={true}
                             checked={checked}
+                            disabled={disabled}
                         />
                     )}
                     <Badge
@@ -87,14 +92,14 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                     />
                     {showTooltips ? (
                         <Tooltip placement="right" title={tooltip}>
-                            <span className={styles.label}>{name}</span>
+                            <span className={labelClassName}>{name}</span>
                         </Tooltip>
                     ) : (
-                        <span className={styles.label}>{name}</span>
+                        <span className={labelClassName}>{name}</span>
                     )}
                 </div>
                 <div>
-                    <span className={styles.label}>{total}</span>
+                    <span className={labelClassName}>{total}</span>
                     <DownloadDropDownMenu
                         color={color}
                         id={id}

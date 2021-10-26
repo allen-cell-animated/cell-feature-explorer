@@ -33,8 +33,8 @@ import {
     getPlotByOnY,
     getSelectedGroupsData,
     getThumbnailPaths,
-    getXValues,
-    getYValues,
+    getFilteredXValues,
+    getFilteredYValues,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
@@ -45,8 +45,8 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
 
 export const getMainPlotData = createSelector(
     [
-        getXValues,
-        getYValues,
+        getFilteredXValues,
+        getFilteredYValues,
         getIds,
         getThumbnailPaths,
         getColorByValues,

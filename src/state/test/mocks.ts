@@ -146,6 +146,10 @@ const featureData = {
     },
 };
 
+// The protein name for the first cell line should be disabled in the
+// left panel
+const displayableGroups = cellLineDefs.slice(1).map(cellLine => cellLine[CELL_LINE_DEF_PROTEIN_KEY]);
+
 export const mockState = {
     metadata: {
         cellLineDefs: cellLineDefs,
@@ -166,5 +170,6 @@ export const mockState = {
         selectedGroupColors: INITIAL_COLORS,
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,
+        displayableGroups: displayableGroups,
     },
 };

@@ -174,3 +174,8 @@ export interface SetHoveredCardAction {
 export interface ClearDatasetAction {
     type: string;
 }
+
+export interface SetDisplayableGroupsAction {
+    payload: string[];
+    type: string;
+}

@@ -26,6 +26,7 @@ import {
     REQUEST_CELL_FILE_INFO_BY_CELL_ID,
     SELECT_ARRAY_OF_POINTS,
     CLEAR_DATASET,
+    SET_DISPLAYABLE_GROUPS,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -46,6 +47,7 @@ import {
     SelectAxisAction,
     SelectedPointData,
     SelectPointAction,
+    SetDisplayableGroupsAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -215,4 +217,11 @@ export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
         payload,
         type: SELECT_ARRAY_OF_POINTS,
     };
+}
+
+export function setDisplayableGroups(payload: string[]): SetDisplayableGroupsAction {
+    return {
+        payload,
+        type: SET_DISPLAYABLE_GROUPS,
+    }
 }

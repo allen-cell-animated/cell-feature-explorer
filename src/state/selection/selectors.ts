@@ -66,6 +66,9 @@ export const getSelectedIdsFromUrl = (state: State) => state.selection.initSelec
 export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
 export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
+export const getDisplayableGroups = (state: State) => state.selection.displayableGroups;
+
+
 // COMPOSED SELECTORS
 
 // MAIN PLOT SELECTORS
@@ -128,8 +131,12 @@ export const getFilteredPerCellLabels = createSelector([getFilteredCellData], (p
     return plotForData.labels || {};
 });
 
+export const getMeasuredValues = createSelector([getPerCellDataForPlot], (plotForData) => {
+    return plotForData.values || {};
+});
+
 export const getXValues = createSelector(
-    [getFilteredMeasuredValues, getPlotByOnX],
+    [getMeasuredValues, getPlotByOnX],
     (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): number[] => {
         if (measuredData[plotByOnX]) {
             return measuredData[plotByOnX];
@@ -139,6 +146,26 @@ export const getXValues = createSelector(
 );
 
 export const getYValues = createSelector(
+    [getMeasuredValues, getPlotByOnY],
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): number[] => {
+        if (measuredData[plotByOnY]) {
+            return measuredData[plotByOnY];
+        }
+        return [];
+    }
+);
+
+export const getFilteredXValues = createSelector(
+    [getFilteredMeasuredValues, getPlotByOnX],
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): number[] => {
+        if (measuredData[plotByOnX]) {
+            return measuredData[plotByOnX];
+        }
+        return [];
+    }
+);
+
+export const getFilteredYValues = createSelector(
     [getFilteredMeasuredValues, getPlotByOnY],
     (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): number[] =>
         measuredData[plotByOnY] || []
@@ -390,8 +417,8 @@ export const getClusteringResult = createSelector(
         getFilteredClusteringData,
         getClusteringAlgorithm,
         getClusteringSetting,
-        getXValues,
-        getYValues,
+        getFilteredXValues,
+        getFilteredYValues,
         getFilteredOpacity,
     ],
     (

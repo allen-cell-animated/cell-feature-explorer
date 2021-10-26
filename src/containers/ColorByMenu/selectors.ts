@@ -33,6 +33,7 @@ import {
     getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
+    getDisplayableGroups,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
@@ -76,20 +77,23 @@ export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] =
 };
 
 export const getInteractivePanelData = createSelector(
-    [getSortedCellLineDefs, getFiltersToExclude, getColors],
-    (cellLines, filtersToExclude, proteinColors: string[]): PanelData[] => {
+    [getSortedCellLineDefs, getFiltersToExclude, getColors, getDisplayableGroups],
+    (cellLines, filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
         const structureNames = disambiguateStructureNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
             const proteinName: string = cellLine[PROTEIN_NAME_KEY];
             const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
             const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
+            const disabled = !displayableGroups.includes(proteinName);
+            const color = disabled ? DISABLE_COLOR : proteinColors[index];
             return {
                 checked: !includes(filtersToExclude, proteinName),
-                color: proteinColors[index],
+                color: color,
                 id: proteinName,
                 name: structureName,
                 gene: geneName,
+                disabled: disabled,
                 total,
             };
         });
