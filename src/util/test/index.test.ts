@@ -2,7 +2,7 @@
 
 import { expect } from "chai";
 
-import { bindAll, isDevOrStagingSite } from "../";
+import { bindAll, isDevOrStagingSite, syncNullValues } from "../";
 
 describe("General utilities", () => {
     describe("bindAll", () => {
@@ -69,6 +69,16 @@ describe("General utilities", () => {
             ];
             const result = productionSite.map(isDevOrStagingSite);
             expect(result).to.deep.equal(Array(productionSite.length).fill(false));
+        });
+    });
+    describe("syncNullValues", () => {
+        it("syncs null values between two arrays", () => {
+            const array1 = [null, 3, 5, null];
+            const array2 = [2, 4, null, null];
+            syncNullValues(array1, array2);
+
+            expect(array1).to.deep.equal([null, 3, null, null]);
+            expect(array2).to.deep.equal([null, 4, null, null]);
         });
     });
 });

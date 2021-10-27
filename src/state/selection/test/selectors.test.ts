@@ -15,11 +15,6 @@ import {
 describe("Selection selectors", () => {
     const newMockState = mockState;
 
-    describe("getMainPlotData selector", () => {
-        it("only preserves x and y values when neither value is null", () => {
-            
-        });
-    });
     describe("getFilteredXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
             const state: State = {

@@ -38,6 +38,7 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import { syncNullValues } from "../../util";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
@@ -64,16 +65,10 @@ export const getMainPlotData = createSelector(
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
-        // Only preserve values at indices where both x and values are not null,
+        // Only preserve values at indices where both x and y values are not null,
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
-        for (let i = 0; i < xValues.length; i++) {
-            if (xValues[i] === null) {
-                yValues[i] = null;
-            } else if (yValues[i] === null) {
-                xValues[i] = null;
-            }
-        }
+        syncNullValues(xValues, yValues);
         // for datasets that have a lot of null values,
         // if the whole array is null it throws an error
         if (!filter(xValues).length) {
