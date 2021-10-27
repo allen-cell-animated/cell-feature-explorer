@@ -64,6 +64,16 @@ export const getMainPlotData = createSelector(
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
+        // Only preserve values at indices where both x and values are not null,
+        // because a coordinate like (3, null) won't be plotted anyway and produces
+        // inaccurate histograms.
+        for (let i = 0; i < xValues.length; i++) {
+            if (xValues[i] === null) {
+                yValues[i] = null;
+            } else if (yValues[i] === null) {
+                xValues[i] = null;
+            }
+        }
         // for datasets that have a lot of null values,
         // if the whole array is null it throws an error
         if (!filter(xValues).length) {
