@@ -26,7 +26,7 @@ describe("Selection selectors", () => {
                         plotByOnX: "apical-proximity",
                     },
                 };
-                const result: number[] = getFilteredXValues(state);
+                const result: (number | null)[] = getFilteredXValues(state);
                 const newState = {
                     ...state,
                     selection: {
@@ -37,7 +37,7 @@ describe("Selection selectors", () => {
                 const feature1Values = [-0.25868651080317, -0.1];
                 const feature2Values = [1, 0];
 
-                const newResult: number[] = getFilteredXValues(newState);
+                const newResult: (number | null)[] = getFilteredXValues(newState);
                 expect(result).to.deep.equal(feature1Values);
                 expect(newResult).to.deep.equal(feature2Values);
                 expect(result.length).to.equal(newResult.length);
@@ -53,7 +53,7 @@ describe("Selection selectors", () => {
                     plotByOnY: "apical-proximity",
                 },
             };
-            const result: number[] = getFilteredYValues(state);
+            const result: (number | null)[] = getFilteredYValues(state);
             const newState = {
                 ...state,
                 selection: {
@@ -61,7 +61,7 @@ describe("Selection selectors", () => {
                     plotByOnY: "cell-segmentation",
                 },
             };
-            const newResult: number[] = getFilteredYValues(newState);
+            const newResult: (number | null)[] = getFilteredYValues(newState);
             expect(result).to.not.deep.equal(newResult);
             expect(result.length).to.equal(newResult.length);
         });
