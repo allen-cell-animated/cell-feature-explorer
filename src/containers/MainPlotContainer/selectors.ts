@@ -1,4 +1,4 @@
-import { includes, map, find, filter, findIndex, isEmpty } from "lodash";
+import { includes, map, find, findIndex, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -43,7 +43,9 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
     return plotData.groupBy === true;
 }
 
-export const handleNullValues = (inputXValues: (number | null)[], inputYValues: (number | null)[]): { xValues: (number | null)[]; yValues: (number | null)[] } => {
+export const handleNullValues = (
+    inputXValues: (number | null)[], inputYValues: (number | null)[]
+): { xValues: (number | null)[]; yValues: (number | null)[] } => {
     let canPlot = false;
     let xValues = inputXValues.slice();
     let yValues = inputYValues.slice();
