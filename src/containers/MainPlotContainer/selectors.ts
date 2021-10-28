@@ -38,10 +38,47 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
-import { syncNullValues } from "../../util";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
+}
+
+export const handleNullValues = (inputXValues: (number | null)[], inputYValues: (number | null)[]): { xValues: (number | null)[]; yValues: (number | null)[] } => {
+    let canPlot = false;
+    let xValues = inputXValues.slice();
+    let yValues = inputYValues.slice();
+
+    if (xValues.length !== yValues.length) {
+        console.error("Cannot handleNullValues between two arrays because they have unequal length")
+        return {
+            xValues: xValues,
+            yValues: yValues
+        }
+    }
+
+    // At every index where one array has a null value, the other array must
+    // also have a null value
+    for (let i = 0; i < xValues.length; i++) {
+        if (xValues[i] === null) {
+            yValues[i] = null;
+        } else if (yValues[i] === null) {
+            xValues[i] = null;
+        } else {
+            canPlot = true;
+        }
+    }
+
+    // If both xValues and yValues only contain nulls, then set them to
+    // empty arrays to avoid plotting errors
+    if (!canPlot) {
+        xValues = [];
+        yValues = [];
+    }
+
+    return {
+        xValues: xValues,
+        yValues: yValues
+    }
 }
 
 export const getMainPlotData = createSelector(
@@ -68,23 +105,15 @@ export const getMainPlotData = createSelector(
         // Only preserve values at indices where both x and y values are not null,
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
-        syncNullValues(xValues, yValues);
-        // for datasets that have a lot of null values,
-        // if the whole array is null it throws an error
-        if (!filter(xValues).length) {
-            xValues = [];
-        }
-        if (!filter(yValues).length) {
-            yValues = [];
-        }
+        const newXAndYValues = handleNullValues(xValues, yValues);
         return {
             color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
             groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
-            x: xValues,
-            y: yValues,
+            x: newXAndYValues.xValues,
+            y: newXAndYValues.yValues,
             customdata: thumbnailPaths as string[],
         };
     }
