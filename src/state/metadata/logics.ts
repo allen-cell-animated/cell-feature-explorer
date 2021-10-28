@@ -167,7 +167,8 @@ const requestAlbumData = createLogic({
             .then(done)
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
-            });
+            })
+            .then(() => done());
     },
     processOptions: {
         successType: RECEIVE_ALBUM_DATA,
