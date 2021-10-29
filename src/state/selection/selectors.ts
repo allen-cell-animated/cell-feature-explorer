@@ -137,7 +137,7 @@ export const getMeasuredValues = createSelector([getPerCellDataForPlot], (plotFo
 
 export const getXValues = createSelector(
     [getMeasuredValues, getPlotByOnX],
-    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): number[] => {
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): (number | null)[] => {
         if (measuredData[plotByOnX]) {
             return measuredData[plotByOnX];
         }
@@ -147,7 +147,7 @@ export const getXValues = createSelector(
 
 export const getYValues = createSelector(
     [getMeasuredValues, getPlotByOnY],
-    (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): number[] => {
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): (number | null)[] => {
         if (measuredData[plotByOnY]) {
             return measuredData[plotByOnY];
         }
@@ -157,7 +157,7 @@ export const getYValues = createSelector(
 
 export const getFilteredXValues = createSelector(
     [getFilteredMeasuredValues, getPlotByOnX],
-    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): number[] => {
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): (number | null)[] => {
         if (measuredData[plotByOnX]) {
             return measuredData[plotByOnX];
         }
@@ -167,7 +167,7 @@ export const getFilteredXValues = createSelector(
 
 export const getFilteredYValues = createSelector(
     [getFilteredMeasuredValues, getPlotByOnY],
-    (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): number[] =>
+    (measuredData: MappingOfMeasuredValuesArrays, plotByOnY: string): (number | null)[] =>
         measuredData[plotByOnY] || []
 );
 

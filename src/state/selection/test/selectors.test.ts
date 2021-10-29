@@ -13,39 +13,36 @@ import {
 } from "../selectors";
 
 describe("Selection selectors", () => {
-
-
     const newMockState = mockState;
+
     describe("getFilteredXValues selector", () => {
         it("returns an array of values that correspond to the currently selected x value", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "apical-proximity",
+                },
+            };
+            const result: (number | null)[] = getFilteredXValues(state);
+            const newState = {
+                ...state,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "cell-segmentation",
+                },
+            };
+            const feature1Values = [-0.25868651080317, -0.1];
+            const feature2Values = [1, 0];
 
-                const state: State = {
-                    ...newMockState,
-                    selection: {
-                        ...newMockState.selection,
-                        plotByOnX: "apical-proximity",
-                    },
-                };
-                const result: number[] = getFilteredXValues(state);
-                const newState = {
-                    ...state,
-                    selection: {
-                        ...newMockState.selection,
-                        plotByOnX: "cell-segmentation",
-                    },
-                };
-                const feature1Values = [-0.25868651080317, -0.1];
-                const feature2Values = [1, 0];
-
-                const newResult: number[] = getFilteredXValues(newState);
-                expect(result).to.deep.equal(feature1Values);
-                expect(newResult).to.deep.equal(feature2Values);
-                expect(result.length).to.equal(newResult.length);
+            const newResult: (number | null)[] = getFilteredXValues(newState);
+            expect(result).to.deep.equal(feature1Values);
+            expect(newResult).to.deep.equal(feature2Values);
+            expect(result.length).to.equal(newResult.length);
         });
     });
     describe("getFilteredYValues selector", () => {
         it("returns an array of values that correspond to the currently selected y value", () => {
-
             const state: State = {
                 ...newMockState,
                 selection: {
@@ -53,7 +50,7 @@ describe("Selection selectors", () => {
                     plotByOnY: "apical-proximity",
                 },
             };
-            const result: number[] = getFilteredYValues(state);
+            const result: (number | null)[] = getFilteredYValues(state);
             const newState = {
                 ...state,
                 selection: {
@@ -61,14 +58,13 @@ describe("Selection selectors", () => {
                     plotByOnY: "cell-segmentation",
                 },
             };
-            const newResult: number[] = getFilteredYValues(newState);
+            const newResult: (number | null)[] = getFilteredYValues(newState);
             expect(result).to.not.deep.equal(newResult);
             expect(result.length).to.equal(newResult.length);
         });
     });
     describe("getSelectedGroupKeys selector", () => {
         it("it returns the keys of the selected groups, may be strings or numbers", () => {
-
             const state: State = {
                 ...newMockState,
                 selection: {
@@ -84,7 +80,6 @@ describe("Selection selectors", () => {
             expect(result).to.deep.equal(["id1", "id2"]);
         });
         it("it returns an empty array if no selected groups", () => {
-
             const state: State = {
                 ...newMockState,
             };
@@ -95,7 +90,6 @@ describe("Selection selectors", () => {
     });
     describe("getSelectedSetTotals selector", () => {
         it("it returns an array where each value is the total number of points in that group", () => {
-
             const state: State = {
                 ...newMockState,
                 selection: {
@@ -112,7 +106,5 @@ describe("Selection selectors", () => {
             const result: number[] = getSelectedSetTotals(state);
             expect(result).to.deep.equal([total1, total2]);
         });
-
     });
-
 });

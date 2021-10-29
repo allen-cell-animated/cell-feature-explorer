@@ -65,8 +65,8 @@ interface PropsFromState {
     xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
-    xValues: number[];
-    yValues: number[];
+    xValues: (number | null)[];
+    yValues: (number | null)[];
     proteinNames: string[];
 }
 

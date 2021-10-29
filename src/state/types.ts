@@ -68,8 +68,8 @@ export interface SelectedGroupDatum {
 export interface ContinuousPlotData {
     color: Color | Color[] | number | number[];
     ids?: string[];
-    x: number[];
-    y: number[];
+    x: (number | null)[];
+    y: (number | null)[];
     customdata?: string[];
     opacity?: number[];
     groupBy?: boolean;
@@ -83,8 +83,8 @@ interface GroupSettings {
 }
 export interface GroupedPlotData {
     ids?: string[];
-    x: number[];
-    y: number[];
+    x: (number | null)[];
+    y: (number | null)[];
     customdata?: string[];
     groupBy: boolean;
     groups: number[] | string[];
