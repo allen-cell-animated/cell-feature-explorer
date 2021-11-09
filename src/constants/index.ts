@@ -125,7 +125,7 @@ export const VIEWER_CHANNEL_SETTINGS: {
               channelNameMapping: "" | { test: RegExp; label: string }[];
               groupToChannelNameMap: "" | { [key: string]: string[] };
               channelsEnabled?: number[];
-              initialChannelSettings?: { [key: string]: { color: [number, number, number] } };
+              initialChannelSettings?: { [key: string]: { color: string } };
           }
         | undefined;
 } = {
@@ -139,11 +139,11 @@ export const VIEWER_CHANNEL_SETTINGS: {
         groupToChannelNameMap: {},
         channelsEnabled: [0, 1, 3, 4],
         initialChannelSettings: {
-            "0": { color: [255, 255, 255] },
-            "1": { color: [0, 255, 255] },
-            "2": { color: [128, 128, 128] },
-            "3": { color: [255, 0, 255] },
-            "4": { color: [0, 255, 0] },
+            "0": { color: "ffffff" },
+            "1": { color: "00ffff" },
+            "2": { color: "808080" },
+            "3": { color: "ff00ff" },
+            "4": { color: "00ff00" },
         },
     },
     cellsystems_live: {
@@ -151,10 +151,10 @@ export const VIEWER_CHANNEL_SETTINGS: {
         groupToChannelNameMap: {},
         channelsEnabled: [1, 2],
         initialChannelSettings: {
-            "0": { color: [255, 0, 255] },
-            "1": { color: [255, 255, 255] },
-            "2": { color: [0, 255, 255] },
-            "3": { color: [128, 128, 128] },
+            "0": { color: "ff00ff" },
+            "1": { color: "ffffff" },
+            "2": { color: "00ffff" },
+            "3": { color: "808080" },
         },
     },
 };
