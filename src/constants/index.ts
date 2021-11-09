@@ -139,11 +139,22 @@ export const VIEWER_CHANNEL_SETTINGS: {
         groupToChannelNameMap: {},
         channelsEnabled: [0, 1, 3, 4],
         initialChannelSettings: {
-            "0": { color: [128, 0, 128] },
-            "1": { color: [128, 128, 128] },
-            "2": { color: [0, 128, 128] },
-            "3": { color: [128, 128, 0] },
-            "4": { color: [255, 255, 255] },
+            "0": { color: [255, 255, 255] },
+            "1": { color: [0, 255, 255] },
+            "2": { color: [128, 128, 128] },
+            "3": { color: [255, 0, 255] },
+            "4": { color: [0, 255, 0] },
+        },
+    },
+    cellsystems_live: {
+        channelNameMapping: [],
+        groupToChannelNameMap: {},
+        channelsEnabled: [1, 2],
+        initialChannelSettings: {
+            "0": { color: [255, 0, 255] },
+            "1": { color: [255, 255, 255] },
+            "2": { color: [0, 255, 255] },
+            "3": { color: [128, 128, 128] },
         },
     },
 };
