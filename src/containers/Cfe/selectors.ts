@@ -27,7 +27,7 @@ export interface VolumeViewerProps {
     channelNameMapping?: { label: string; test: RegExp }[] | "";
     groupToChannelNameMap?: { [key: string]: string[] } | "";
     channelsEnabled?: number[];
-    initialChannelSettings?: { [key: string]: { color: [number, number, number] } };
+    initialChannelSettings?: { [key: string]: { color: string } };
 }
 
 export const getPropsForVolumeViewer = createSelector(
