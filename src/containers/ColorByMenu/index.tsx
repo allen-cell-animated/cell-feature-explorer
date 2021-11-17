@@ -47,9 +47,6 @@ const { Panel } = Collapse;
 
 interface PropsFromState {
     // selector props
-    // clusteringAlgorithm: ClusteringTypeChoices;
-    // clusteringOptions: string[];
-    // clusteringSetting: string;
     colorBy: string;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
@@ -57,7 +54,6 @@ interface PropsFromState {
     proteinPanelData: PanelData[];
     proteinNames: string[];
     selectionSetsPanelData: PanelData[];
-    showClusters: boolean;
     someProteinsOff: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
@@ -68,10 +64,7 @@ interface PropsFromState {
 interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
-    // handleChangeClusteringAlgorithm: ActionCreator<ChangeSelectionAction>;
-    // handleChangeClusteringNumber: ActionCreator<ChangeClusterNumberAction>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
-    // handleClusteringToggle: ActionCreator<BoolToggleAction>;
     handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
 }
@@ -93,11 +86,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
         this.onActivePanelChange = this.onActivePanelChange.bind(this);
-        // this.changeClusteringAlgorithm = this.changeClusteringAlgorithm.bind(this);
-        // this.changeClusteringNumber = this.changeClusteringNumber.bind(this);
         this.renderTaggedStructuresPanel = this.renderTaggedStructuresPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
-        this.renderClusteringPanel = this.renderClusteringPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
         this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
         this.onSelectionSetDownloadButtonClicked =
@@ -139,58 +129,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public onActivePanelChange(value: string | string[]) {
         const { onPanelClicked } = this.props;
         onPanelClicked(value as string[]);
-    }
-
-    public changeClusteringAlgorithm() {
-        // const { handleChangeClusteringAlgorithm } = this.props;
-        // handleChangeClusteringAlgorithm(target.value);
-    }
-
-    public changeClusteringNumber() {
-        // const { handleChangeClusteringNumber, clusteringAlgorithm } = this.props;
-        // handleChangeClusteringNumber(CLUSTERING_MAP(clusteringAlgorithm), value);
-    }
-
-    public renderClusteringPanel() {
-        // const {
-        //     clusteringAlgorithm,
-        //     clusteringSetting,
-        //     handleClusteringToggle,
-        //     clusteringOptions,
-        //     showClusters,
-        // } = this.props;
-        // const initSliderSetting: number = indexOf(clusteringOptions, clusteringSetting) || initIndex;
-        // return (
-        //     <React.Fragment>
-        //         <ColorBySwitcher
-        //             defaultChecked={false}
-        //             handleChange={handleClusteringToggle}
-        //             label="Show clusters:"
-        //         />
-        //         <Row
-        //             className={styles.colorByRow}
-        //             type="flex"
-        //             align="middle"
-        //         >
-        //             <RadioGroup
-        //                 onChange={this.changeClusteringAlgorithm}
-        //                 defaultValue={KMEANS_KEY}
-        //                 disabled={!showClusters}
-        //             >
-        //                 <RadioButton value={KMEANS_KEY}>KMeans</RadioButton>
-        //                 <RadioButton value={AGGLOMERATIVE_KEY}>Agglomerative</RadioButton>
-        //                 <RadioButton value={SPECTRAL_KEY}>Spectral</RadioButton>
-        //             </RadioGroup>
-        //         </Row>
-        //             <SliderWithCustomMarks
-        //                 disabled={!showClusters}
-        //                 label={CLUSTERING_LABEL[CLUSTERING_MAP(clusteringAlgorithm)]}
-        //                 onValueChange={this.changeClusteringNumber}
-        //                 valueOptions={clusteringOptions}
-        //                 initIndex={initSliderSetting}
-        //             />
-        //     </React.Fragment>
-        // );
     }
 
     public renderSelectionPanel() {
@@ -317,12 +255,6 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                 <Panel key={panelKeys[1]} header="Selected sets">
                     {this.renderSelectionPanel()}
                 </Panel>
-                {/* <Panel
-                        key={panelKeys[2]}
-                        header="Data group by clustering"
-                    >
-                        {this.renderClusteringPanel()}
-                    </Panel> */}
             </Collapse>
         );
     }
@@ -341,7 +273,6 @@ function mapStateToProps(state: State): PropsFromState {
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
         proteinPanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
-        showClusters: selectionStateBranch.selectors.getClustersOn(state),
         someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
     };
 }
@@ -349,11 +280,8 @@ function mapStateToProps(state: State): PropsFromState {
 const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
-    // handleChangeClusteringAlgorithm: selectionStateBranch.actions.changeClusteringAlgorithm,
-    // handleChangeClusteringNumber: selectionStateBranch.actions.changeClusteringNumber,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
-    // handleClusteringToggle: selectionStateBranch.actions.toggleShowClusters,
     handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(

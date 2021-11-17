@@ -183,7 +183,6 @@ export const composePlotlyData = createSelector(
             : null;
 
         return {
-            clusteringPlotData: null,
             mainPlotData,
             selectedGroupPlotData,
         };
@@ -289,15 +288,12 @@ function makeHistogramPlotY(data: number[]) {
 }
 
 export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
-    const { mainPlotData, selectedGroupPlotData, clusteringPlotData } = allPlotData;
+    const { mainPlotData, selectedGroupPlotData } = allPlotData;
     const data = [
         makeHistogramPlotX(mainPlotData.x),
         makeHistogramPlotY(mainPlotData.y),
         makeScatterPlotData(mainPlotData),
     ];
-    if (clusteringPlotData) {
-        data.push(makeScatterPlotData(clusteringPlotData));
-    }
     if (selectedGroupPlotData) {
         data.push(makeScatterPlotData(selectedGroupPlotData));
     }

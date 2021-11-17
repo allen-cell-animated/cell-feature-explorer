@@ -3,8 +3,6 @@ import { FileInfo } from "../metadata/types";
 
 import {
     CHANGE_AXIS,
-    CHANGE_CLUSTER_NUMBER,
-    CHANGE_CLUSTERING_ALGORITHM,
     CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
     CHANGE_SELECTED_ALBUM,
@@ -18,7 +16,6 @@ import {
     SET_MOUSE_POSITION,
     SYNC_STATE_WITH_URL,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
-    TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     CHANGE_DATASET,
@@ -30,7 +27,6 @@ import {
 } from "./constants";
 import {
     BoolToggleAction,
-    ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
@@ -118,28 +114,6 @@ export function toggleApplySelectionSetColors(payload: boolean): BoolToggleActio
     return {
         payload,
         type: TOGGLE_APPLY_SELECTION_SET_COLOR,
-    };
-}
-
-export function changeClusteringAlgorithm(payload: string): ChangeSelectionAction {
-    return {
-        payload,
-        type: CHANGE_CLUSTERING_ALGORITHM,
-    };
-}
-
-export function changeClusteringNumber(clusteringKey: string, payload: string): ChangeClusterNumberAction {
-    return {
-        clusteringKey,
-        payload,
-        type: CHANGE_CLUSTER_NUMBER,
-    };
-}
-
-export function toggleShowClusters(payload: boolean): BoolToggleAction {
-    return {
-        payload,
-        type: TOGGLE_CLUSTERS_VISIBLE,
     };
 }
 

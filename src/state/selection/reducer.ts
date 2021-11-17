@@ -5,14 +5,12 @@ import {
 } from "lodash";
 import { AnyAction } from "redux";
 
-import { CELL_ID_KEY, KMEANS_KEY } from "../../constants";
+import { CELL_ID_KEY } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
     CHANGE_AXIS,
-    CHANGE_CLUSTER_NUMBER,
-    CHANGE_CLUSTERING_ALGORITHM,
     CHANGE_HOVERED_GALLERY_CARD,
     CHANGE_HOVERED_POINT_ID,
     CHANGE_SELECTED_ALBUM,
@@ -28,7 +26,6 @@ import {
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
-    TOGGLE_CLUSTERS_VISIBLE,
     TOGGLE_FILTER_BY_PROTEIN_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     SET_DATASET,
@@ -40,7 +37,6 @@ import {
 } from "./constants";
 import {
     BoolToggleAction,
-    ChangeClusterNumberAction,
     ChangeDownloadConfigAction,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
@@ -64,8 +60,6 @@ import {
 export const initialState = {
     applySelectionSetColoring: true,
     cellSelectedFor3D: null,
-    clusteringAlgorithm: KMEANS_KEY,
-    clusteringDistance: "",
     colorBy: INITIAL_COLOR_BY,
     dataset: "",
     downloadConfig: {
@@ -80,7 +74,6 @@ export const initialState = {
         pageX: 0,
         pageY: 0,
     },
-    numberOfClusters: "",
     plotByOnX: "",
     plotByOnY: "",
     proteinColors: INITIAL_COLORS,
@@ -90,7 +83,6 @@ export const initialState = {
     displayableGroups: [],
     selectedPoints: [],
     initSelectedPoints: [],
-    showClusters: false,
     thumbnailRoot: "",
     downloadRoot: "",
     volumeViewerDataRoot: "",
@@ -192,30 +184,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             applySelectionSetColoring: action.payload,
-        }),
-    },
-    [CHANGE_CLUSTERING_ALGORITHM]: {
-        accepts: (action: AnyAction): action is ChangeSelectionAction =>
-            action.type === CHANGE_CLUSTERING_ALGORITHM,
-        perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
-            ...state,
-            clusteringAlgorithm: action.payload,
-        }),
-    },
-    [CHANGE_CLUSTER_NUMBER]: {
-        accepts: (action: AnyAction): action is ChangeClusterNumberAction =>
-            action.type === CHANGE_CLUSTER_NUMBER,
-        perform: (state: SelectionStateBranch, action: ChangeClusterNumberAction) => ({
-            ...state,
-            [action.clusteringKey]: action.payload,
-        }),
-    },
-    [TOGGLE_CLUSTERS_VISIBLE]: {
-        accepts: (action: AnyAction): action is BoolToggleAction =>
-            action.type === TOGGLE_CLUSTERS_VISIBLE,
-        perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
-            ...state,
-            showClusters: action.payload,
         }),
     },
     [SET_DOWNLOAD_CONFIG]: {

@@ -6,7 +6,6 @@ export const ARRAY_OF_CELL_IDS_KEY = "cellIds";
 export const ARRAY_OF_FILE_INFO_KEY = "fileInfo";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
-export const CLUSTERS_PLOT_NAME = "clusters-plot-name";
 export const COLOR_BY_SELECTOR = "colorBy";
 export const PROTEIN_NAME_KEY = "structureProteinName";
 export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
@@ -45,13 +44,6 @@ export const CELL_COUNT_KEY = "cellCount";
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end
-
-export const AGGLOMERATIVE_KEY = "Agglomerative";
-export const KMEANS_KEY = "KMeans";
-export const SPECTRAL_KEY = "Spectral";
-
-export const CLUSTER_NUMBER_KEY = "numberOfClusters";
-export const CLUSTER_DISTANCE_KEY = "clusteringDistance";
 
 export const MY_SELECTIONS_ID = 0;
 

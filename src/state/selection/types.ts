@@ -1,23 +1,10 @@
 import {
-    AGGLOMERATIVE_KEY,
     CELL_ID_KEY,
-    CLUSTER_DISTANCE_KEY,
-    CLUSTER_NUMBER_KEY,
-    KMEANS_KEY,
     PROTEIN_NAME_KEY,
-    SPECTRAL_KEY,
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
 
-type AGGLOMERATIVE_KEY = typeof AGGLOMERATIVE_KEY;
-type KMEANS_KEY = typeof KMEANS_KEY;
-type SPECTRAL_KEY = typeof SPECTRAL_KEY;
-type CLUSTER_DISTANCE_KEY = typeof CLUSTER_DISTANCE_KEY;
-type CLUSTER_NUMBER_KEY = typeof CLUSTER_NUMBER_KEY;
-
-export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures" |  "clusters";
-export type ClusteringTypeChoices = KMEANS_KEY | SPECTRAL_KEY | AGGLOMERATIVE_KEY;
-export type ClusteringNumberChoices = CLUSTER_DISTANCE_KEY | CLUSTER_NUMBER_KEY;
+export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures"
 
 export interface CellDataArrays {
     [key: string]: number[] | FileInfo[] | string[];
@@ -35,13 +22,6 @@ export interface MousePosition {
 
 export interface SelectionStateBranch {
     [key: string]: any;
-}
-
-interface OneCluster {
-    [key: string]: number;
-}
-export interface ClusteringDatum {
-    [key: string]: OneCluster;
 }
 
 export interface LassoOrBoxSelectPointData {
@@ -95,12 +75,6 @@ export interface ChangeDownloadConfigAction {
 }
 export interface BoolToggleAction {
     payload: boolean;
-    type: string;
-}
-
-export interface ChangeClusterNumberAction {
-    payload: string;
-    clusteringKey: string;
     type: string;
 }
 

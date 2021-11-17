@@ -7,7 +7,6 @@ import {
     CELL_LINE_DEF_NAME_KEY,
     CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
-    CLUSTER_DISTANCE_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     PROTEIN_NAME_KEY,
@@ -19,7 +18,6 @@ import {
     getMeasuredFeaturesKeys,
     getCategoricalFeatureKeys,
     getMeasuredFeaturesDefs,
-    getClusterData,
     getCellLineDefs,
 } from "../metadata/selectors";
 import {
@@ -34,7 +32,6 @@ import {
 } from "../metadata/types";
 import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
 import { getFileInfoDatumFromCellId } from "../util";
-import { CLUSTERING_MAP } from "./constants";
 
 import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types";
 
@@ -50,10 +47,6 @@ export const getFiltersToExclude = (state: State) => state.selection.filterExclu
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
 export const getApplyColorToSelections = (state: State) =>
     state.selection.applySelectionSetColoring;
-export const getClustersOn = (state: State) => state.selection.showClusters;
-export const getClusteringAlgorithm = (state: State) => state.selection.clusteringAlgorithm;
-export const getNumberOfClusters = (state: State) => state.selection.numberOfClusters;
-export const getClusteringDistance = (state: State) => state.selection.clusteringDistance;
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
 export const getMousePosition = (state: State) => state.selection.mousePosition;
 export const getHoveredPointData = (state: State) => state.selection.hoveredPointData;
@@ -385,55 +378,5 @@ export const getSelectedSetTotals = createSelector(
     [getSelectedGroups],
     (selectedGroups): number[] => {
         return map(selectedGroups, (group) => group.length);
-    }
-);
-
-// CLUSTERING SELECTORS
-// TODO: get these to work with dataset v1
-export const getClusteringRange = createSelector(
-    [getClusterData, getClusteringAlgorithm],
-    (clusterData: any[], clusteringAlgorithm): string[] => {
-        if (clusterData[0]) {
-            return keys(clusterData[0][clusteringAlgorithm]);
-        }
-        return [];
-    }
-);
-
-export const getFilteredClusteringData = createSelector([getFilteredCellData], (): any[] => {
-    return [];
-});
-
-export const getClusteringSetting = createSelector(
-    [getClusteringAlgorithm, getClusteringDistance, getNumberOfClusters],
-    (clusteringAlgorithm, distance, numberOfClusters): string => {
-        const clusteringType = CLUSTERING_MAP(clusteringAlgorithm);
-        return clusteringType === CLUSTER_DISTANCE_KEY ? distance : numberOfClusters;
-    }
-);
-
-export const getClusteringResult = createSelector(
-    [
-        getFilteredClusteringData,
-        getClusteringAlgorithm,
-        getClusteringSetting,
-        getFilteredXValues,
-        getFilteredYValues,
-        getFilteredOpacity,
-    ],
-    (
-        clusteringData,
-        clusteringAlgorithm,
-        clusterSetting,
-        xValues,
-        yValues,
-        opacity
-    ): ContinuousPlotData => {
-        return {
-            color: map(clusteringData, (ele) => ele[clusteringAlgorithm][clusterSetting]),
-            opacity,
-            x: xValues,
-            y: yValues,
-        };
     }
 );

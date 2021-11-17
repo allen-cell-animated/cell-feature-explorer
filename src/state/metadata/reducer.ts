@@ -40,7 +40,6 @@ export const initialState = {
         labels: {},
     },
     measuredFeaturesDefs: [],
-    clusterData: [],
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
