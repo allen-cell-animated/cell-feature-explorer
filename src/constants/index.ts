@@ -90,11 +90,11 @@ export const VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS = [
     { test: /(100)|(Bright)/, label: "Bright field" },
 ];
 
-export const DEFAULT_GROUP_BY: {[key: string]: string}= {
-           aics_hipsc: "labeled structure",
-           cellsystems_fish: "RNA FISH targets",
-           cellsystems_live: "labeled structure",
-       };
+export const DEFAULT_GROUP_BY: { [key: string]: string } = {
+    aics_hipsc: "labeled structure",
+    cellsystems_fish: "RNA FISH targets",
+    cellsystems_live: "labeled structure",
+};
 
 export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
     "Observed channels": [
