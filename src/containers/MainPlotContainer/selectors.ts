@@ -321,7 +321,10 @@ export const getColorByDisplayOptions = createSelector(
         if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
             // TODO: this should be in the data already, not added here
             // need to have what drop downs each feature def should be included in. 
-            const tooltip = groupByTitle === "RNA FISH targets" ? "": "Name of the cellular structure that has been fluorescently labeled in each cell line";
+            const tooltip =
+                groupByTitle === "RNA FISH targets"
+                    ? "Pair of gene transcripts assayed by RNA fluorescence in situ hybridization (RNA FISH)"
+                    : "Name of the cellular structure that has been fluorescently labeled in each cell line";
             return [
                 {
                     key: PROTEIN_NAME_KEY,
