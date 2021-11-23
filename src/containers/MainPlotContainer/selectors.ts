@@ -319,14 +319,16 @@ export const getColorByDisplayOptions = createSelector(
     [getMeasuredFeaturesDefs, getGroupByTitle],
     (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
         if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+            // TODO: this should be in the data already, not added here
+            // need to have what drop downs each feature def should be included in. 
+            const tooltip = groupByTitle === "RNA FISH targets" ? "": "Name of the cellular structure that has been fluorescently labeled in each cell line";
             return [
                 {
                     key: PROTEIN_NAME_KEY,
                     displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
                     discrete: true,
                     unit: null,
-                    tooltip:
-                        "Name of the cellular structure that has been fluorescently labeled in each cell line",
+                    tooltip: tooltip,
                 },
                 ...featureDefs,
             ];
