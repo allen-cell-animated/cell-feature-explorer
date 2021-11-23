@@ -85,36 +85,36 @@ export const getPropsForVolumeViewer = createSelector(
 );
 
 export const getViewerHeader = createSelector(
-           [
-               getSelectedDatasetName,
-               getSelected3DCellFileInfo,
-               getSelected3DCellLabeledStructure,
-               getSelected3DCellLabeledProtein,
-           ],
-           (
-               selectedDatasetName,
-               fileInfo,
-               structureName,
-               protein
-           ): { cellId: string; label: string; value: string } => {
-               let label = "";
-               let value = "";
-               if (isEmpty(fileInfo) || !structureName) {
-                   return { cellId: "", label, value };
-               }
-               const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
-               // TODO: figure out a data driven solution for this.
-               if (selectedDatasetName === "cellsystems_fish") {
-                   label = "Gene pair";
-                   value = protein;
-               } else {
-                   label = "Labeled structure (protein)";
-                   value = `${structureName} (${protein})`;
-               }
-               return {
-                   cellId,
-                   label,
-                   value,
-               };
-           }
-       );
+    [
+        getSelectedDatasetName,
+        getSelected3DCellFileInfo,
+        getSelected3DCellLabeledStructure,
+        getSelected3DCellLabeledProtein,
+    ],
+    (
+        selectedDatasetName,
+        fileInfo,
+        structureName,
+        protein
+    ): { cellId: string; label: string; value: string } => {
+        let label = "";
+        let value = "";
+        if (isEmpty(fileInfo) || !structureName) {
+            return { cellId: "", label, value };
+        }
+        const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
+        // TODO: figure out a data driven solution for this.
+        if (selectedDatasetName === "cellsystems_fish") {
+            label = "Gene pair";
+            value = protein;
+        } else {
+            label = "Labeled structure (protein)";
+            value = `${structureName} (${protein})`;
+        }
+        return {
+            cellId,
+            label,
+            value,
+        };
+    }
+);
