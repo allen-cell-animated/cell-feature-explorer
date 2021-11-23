@@ -34,6 +34,7 @@ import {
 export const getSelectedAlbumData = createSelector(
     [getAllAlbumData, getSelectedAlbum],
     (albumData: Album[], selectedAlbum: number): Album | undefined => {
+        // eslint-disable-next-line @typescript-eslint/camelcase
         return find(albumData, { album_id: selectedAlbum });
     }
 );
