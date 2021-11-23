@@ -38,6 +38,7 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
@@ -315,17 +316,22 @@ export const getYDisplayOptions = createSelector(
 );
 
 export const getColorByDisplayOptions = createSelector(
-    [getMeasuredFeaturesDefs],
-    (featureDefs): MeasuredFeatureDef[] => {
+    [getMeasuredFeaturesDefs, getGroupByTitle],
+    (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
         if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+            // TODO: this should be in the data already, not added here
+            // need to have what drop downs each feature def should be included in. 
+            const tooltip =
+                groupByTitle === "RNA FISH targets"
+                    ? "Pair of gene transcripts assayed by RNA fluorescence in situ hybridization (RNA FISH)"
+                    : "Name of the cellular structure that has been fluorescently labeled in each cell line";
             return [
                 {
                     key: PROTEIN_NAME_KEY,
-                    displayName: "Labeled structure name",
+                    displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
                     discrete: true,
                     unit: null,
-                    tooltip:
-                        "Name of the cellular structure that has been fluorescently labeled in each cell line",
+                    tooltip: tooltip,
                 },
                 ...featureDefs,
             ];
