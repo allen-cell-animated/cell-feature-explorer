@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 export const APP_ID = "cell-feature-explorer";
 export const API_VERSION = "v1";
 export const X_AXIS_ID = "plotByOnX";
