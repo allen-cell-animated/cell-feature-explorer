@@ -38,6 +38,7 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
     return plotData.groupBy === true;
@@ -315,13 +316,13 @@ export const getYDisplayOptions = createSelector(
 );
 
 export const getColorByDisplayOptions = createSelector(
-    [getMeasuredFeaturesDefs],
-    (featureDefs): MeasuredFeatureDef[] => {
+    [getMeasuredFeaturesDefs, getGroupByTitle],
+    (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
         if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
             return [
                 {
                     key: PROTEIN_NAME_KEY,
-                    displayName: "Labeled structure name",
+                    displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
                     discrete: true,
                     unit: null,
                     tooltip:
