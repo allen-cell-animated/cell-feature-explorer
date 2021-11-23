@@ -34,6 +34,7 @@ import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 import {
     createUrlFromListOfIds,
     getCheckAllCheckboxIsIntermediate,
+    getGroupByTitle,
     getInteractivePanelData,
     getSelectionPanelData,
 } from "./selectors";
@@ -59,6 +60,7 @@ interface PropsFromState {
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
     categoricalFeatures: string[];
+    groupByTitle: string;
 }
 
 interface DispatchProps {
@@ -242,14 +244,14 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     }
 
     public render() {
-        const { defaultActiveKey, openKeys, panelKeys } = this.props;
+        const { defaultActiveKey, openKeys, panelKeys, groupByTitle } = this.props;
         return (
             <Collapse
                 defaultActiveKey={defaultActiveKey}
                 activeKey={openKeys}
                 onChange={this.onActivePanelChange}
             >
-                <Panel key={panelKeys[0]} header="Data grouped by tagged structures">
+                <Panel key={panelKeys[0]} header={`Data grouped by ${groupByTitle}`}>
                     {this.renderTaggedStructuresPanel()}
                 </Panel>
                 <Panel key={panelKeys[1]} header="Selected sets">
@@ -270,6 +272,7 @@ function mapStateToProps(state: State): PropsFromState {
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
+        groupByTitle: getGroupByTitle(state),
         proteinNames: metadataStateBranch.selectors.getProteinNames(state),
         proteinPanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),

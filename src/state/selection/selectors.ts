@@ -63,6 +63,9 @@ export const getDisplayableGroups = (state: State) => state.selection.displayabl
 
 
 // COMPOSED SELECTORS
+export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
+    return selectedDataset.split("_v")[0];
+});
 
 // MAIN PLOT SELECTORS
 

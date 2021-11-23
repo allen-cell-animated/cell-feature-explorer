@@ -6,7 +6,7 @@ import {
     getSelected3DCellFileInfo,
     getSelected3DCellLabeledProtein,
     getSelected3DCellLabeledStructure,
-    getSelectedDataset,
+    getSelectedDatasetName,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
 import {
@@ -31,12 +31,11 @@ export interface VolumeViewerProps {
 }
 
 export const getPropsForVolumeViewer = createSelector(
-    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getSelectedDataset],
-    (fileInfo: FileInfo, dataRoot, downloadRoot, selectedDataset): VolumeViewerProps => {
+    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getSelectedDatasetName],
+    (fileInfo: FileInfo, dataRoot, downloadRoot, selectedDatasetName): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
-        const selectedDatasetName = selectedDataset.split("_v")[0];
         const channelSettings = VIEWER_CHANNEL_SETTINGS[selectedDatasetName] || { ...NO_SETTINGS };
 
         const formatPathForViewer = (path: string) => path.split("_atlas.json")[0];
@@ -86,37 +85,37 @@ export const getPropsForVolumeViewer = createSelector(
 );
 
 export const getViewerHeader = createSelector(
-    [
-        getSelectedDataset,
-        getSelected3DCellFileInfo,
-        getSelected3DCellLabeledStructure,
-        getSelected3DCellLabeledProtein,
-    ],
-    (
-        selectedDataset,
-        fileInfo,
-        structureName,
-        protein
-    ): { cellId: string; label: string; value: string } => {
-        let label = "";
-        let value = "";
-        if (isEmpty(fileInfo) || !structureName) {
-            return { cellId: "", label, value };
-        }
-        const selectedDatasetName = selectedDataset.split("_v")[0];
-        const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
-        // TODO: figure out a data driven solution for this.
-        if (selectedDatasetName === "cellsystems_fish") {
-            label = "Gene pair";
-            value = protein;
-        } else {
-            label = "Labeled structure (protein)";
-            value = `${structureName} (${protein})`;
-        }
-        return {
-            cellId,
-            label,
-            value,
-        };
-    }
-);
+           [
+               getSelectedDatasetName,
+               getSelected3DCellFileInfo,
+               getSelected3DCellLabeledStructure,
+               getSelected3DCellLabeledProtein,
+           ],
+           (
+               selectedDatasetName,
+               fileInfo,
+               structureName,
+               protein
+           ): { cellId: string; label: string; value: string } => {
+               let label = "";
+               let value = "";
+               if (isEmpty(fileInfo) || !structureName) {
+                   return { cellId: "", label, value };
+               }
+               const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
+               // TODO: figure out a data driven solution for this.
+               console.log(selectedDatasetName);
+               if (selectedDatasetName === "cellsystems_fish") {
+                   label = "Gene pair";
+                   value = protein;
+               } else {
+                   label = "Labeled structure (protein)";
+                   value = `${structureName} (${protein})`;
+               }
+               return {
+                   cellId,
+                   label,
+                   value,
+               };
+           }
+       );

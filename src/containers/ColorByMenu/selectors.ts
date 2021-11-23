@@ -10,6 +10,7 @@ import { createSelector } from "reselect";
 import {
     CELL_COUNT_KEY,
     CELL_LINE_DEF_GENE_KEY,
+    DEFAULT_GROUP_BY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
@@ -34,12 +35,17 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
     getDisplayableGroups,
+    getSelectedDatasetName,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
+
+export const getGroupByTitle = createSelector([getSelectedDatasetName], (selectedDatasetName: string): string => {
+    return DEFAULT_GROUP_BY[selectedDatasetName] || "labeled structure";
+})
 
 export const getCheckAllCheckboxIsIntermediate = createSelector(
     [getFiltersToExclude, getProteinNames] ,
