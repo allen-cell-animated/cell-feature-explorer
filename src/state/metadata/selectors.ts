@@ -24,7 +24,6 @@ export const getDatasets = (state: State) => state.metadata.datasets;
 export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
-export const getClusterData = (state: State) => state.metadata.clusterData;
 
 export const compareVersions = (versionA: string, versionB: string): number => {
     const [majorA, minorA , patchA] = versionA.split(".");

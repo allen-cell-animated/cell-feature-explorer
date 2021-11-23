@@ -32,7 +32,7 @@ interface CfeProps {
 }
 
 class Cfe extends React.Component<CfeProps> {
-    private static panelKeys = ["proteinNames", "selections", "clusters"];
+    private static panelKeys = ["proteinNames", "selections"];
     public state = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,

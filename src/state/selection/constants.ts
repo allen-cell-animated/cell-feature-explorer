@@ -1,17 +1,9 @@
 import {
-    AGGLOMERATIVE_KEY,
-    CLUSTER_DISTANCE_KEY,
-    CLUSTER_NUMBER_KEY,
-    KMEANS_KEY,
     MY_SELECTIONS_ID,
     PROTEIN_NAME_KEY,
-    SPECTRAL_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
 
-import {
-    ClusteringNumberChoices,
-} from "./types";
 const makeSelectionConstant = (constant: string) => makeConstant("selection", constant);
 
 export const CHANGE_AXIS = makeSelectionConstant("deselect-file");
@@ -23,9 +15,6 @@ export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeSelectionConstant("toggle-filte
 export const OPEN_CELL_IN_3D = makeSelectionConstant("open-cell-in-3d");
 export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeSelectionConstant("apply-selection-set-color");
 export const DESELECT_GROUP_OF_POINTS = makeSelectionConstant("deselect-group");
-export const CHANGE_CLUSTER_NUMBER = makeSelectionConstant("change-cluster-number");
-export const CHANGE_CLUSTERING_ALGORITHM = makeSelectionConstant("change-clustering-algorithm");
-export const TOGGLE_CLUSTERS_VISIBLE = makeSelectionConstant("toggle-clusters-on");
 export const SET_DOWNLOAD_CONFIG = makeSelectionConstant("set-download-config");
 export const SET_MOUSE_POSITION = makeSelectionConstant("set-mouse-position");
 export const SYNC_STATE_WITH_URL = makeSelectionConstant("sync-with-url");
@@ -113,17 +102,3 @@ export const INITIAL_SELECTION_COLORS = [
     "#ccebc5",
     "#ffed6f",
 ];
-
-export const CLUSTERING_MAP = (key: string): ClusteringNumberChoices => {
-    const map: {[key: string]: ClusteringNumberChoices} = {
-        [AGGLOMERATIVE_KEY]: CLUSTER_NUMBER_KEY,
-        [SPECTRAL_KEY]: CLUSTER_NUMBER_KEY,
-        [KMEANS_KEY]: CLUSTER_NUMBER_KEY,
-    };
-    return map[key] || CLUSTER_NUMBER_KEY;
-};
-
-export const CLUSTERING_LABEL = {
-    [CLUSTER_NUMBER_KEY] : "number of clusters",
-    [CLUSTER_DISTANCE_KEY] : "distance between clusters",
-};
