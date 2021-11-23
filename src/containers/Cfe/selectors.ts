@@ -104,7 +104,6 @@ export const getViewerHeader = createSelector(
                }
                const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
                // TODO: figure out a data driven solution for this.
-               console.log(selectedDatasetName);
                if (selectedDatasetName === "cellsystems_fish") {
                    label = "Gene pair";
                    value = protein;
