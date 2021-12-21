@@ -32,3 +32,11 @@
     width: 13px;
     height: 13px;
 }
+
+.cell-viewer :global(.ant-drawer-title .ant-btn) {
+    background-color: #222222;
+}
+
+.cell-viewer :global(.drawer.ant-drawer-open .ant-drawer-body) {
+    background-color: #222222;
+}
