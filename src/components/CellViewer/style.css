@@ -34,9 +34,18 @@
 }
 
 .cell-viewer :global(.ant-drawer-title .ant-btn) {
-    background-color: #222222;
+    background-color: #4b4b4b;
+    color: #b9b9b9;
+}
+
+.cell-viewer :global(.ant-drawer-title .ant-btn:focus) {
+    color: #b9b9b9;
 }
 
 .cell-viewer :global(.drawer.ant-drawer-open .ant-drawer-body) {
+    background-color: #222222;
+}
+
+.cell-viewer :global(.drawer.ant-drawer-open .ant-drawer-title .ant-btn) {
     background-color: #222222;
 }
