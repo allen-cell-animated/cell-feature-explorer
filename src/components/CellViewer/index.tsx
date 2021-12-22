@@ -53,7 +53,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 // TODO see if channelNameClean is redundant with channelNameMapping
                 channelNameClean={standardizeNames}
                 appHeight="90vh"
-                marginRight="120px"
+                canvasMargin="0 120px 0 0"
                 channelNameMapping={props.channelNameMapping}
                 groupToChannelNameMap={props.groupToChannelNameMap}
             />
