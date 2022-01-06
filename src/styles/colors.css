@@ -1,5 +1,6 @@
 :root {
     --background-dark-gray: #131313;
+    --background-black-purple: #222222;
     --background-dim-gray: #383838;
     --purple: #8048f3;
     --dimgray: #6e6e6e;
@@ -11,5 +12,7 @@
     --off-white: #f8f8f8;
     --border-gray: var(--dimgray);
     --dark-theme-text-color: var(--off-white);
-
+    --bottom-panel: var(--background-black-purple);
+    --bottom-panel-trigger: var(--header-gray);
+    --bottom-panel-trigger-label: var(--light-gray);
 }

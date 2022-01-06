@@ -1,6 +1,9 @@
 import { ImageViewerApp } from "@aics/web-3d-viewer";
 import { includes } from "lodash";
 import React from "react";
+// Need to import this stylesheet for the Drawer component used by the viewer
+// TODO: Fix viewer so this is unnecessary?
+import "antd/lib/drawer/style/index.less";
 
 import {
     BRIGHT_FIELD_NAMES,
@@ -52,6 +55,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 // TODO see if channelNameClean is redundant with channelNameMapping
                 channelNameClean={standardizeNames}
                 appHeight="90vh"
+                canvasMargin="0 120px 0 0"
                 channelNameMapping={props.channelNameMapping}
                 groupToChannelNameMap={props.groupToChannelNameMap}
             />

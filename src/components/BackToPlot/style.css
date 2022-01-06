@@ -1,8 +1,8 @@
 @import "../../styles/colors.css";
 
 .container {
-    right: 136px;
-    bottom: 14px;
+    right: 132px;
+    bottom: 42px;
     height: 60px;
     width: 60px;
     transition: all 0.2s;
