@@ -2,7 +2,7 @@ import { ImageViewerApp } from "@aics/web-3d-viewer";
 import { includes } from "lodash";
 import React from "react";
 // Need to import this stylesheet for the Drawer component used by the viewer
-// TODO: Fix viewer so this is unnecessary
+// TODO: Fix viewer so this is unnecessary?
 import "antd/lib/drawer/style/index.less";
 
 import {
