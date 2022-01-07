@@ -9,7 +9,7 @@ import MinGalleryCard from "../../components/MinGalleryCard";
 import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData, requestViewerChannelSettings } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
-import { RequestAction, RequestViewerSettingsAction } from "../../state/metadata/types";
+import { RequestAction } from "../../state/metadata/types";
 import {
     clearAllSelectedPoints,
     deselectPoint,
@@ -53,7 +53,6 @@ interface PropsFromState {
 
 interface DispatchProps {
     getAlbumData: ActionCreator<RequestAction>;
-    getViewerChannelSettings: ActionCreator<RequestViewerSettingsAction>;
     addSearchedCell: ActionCreator<SelectPointAction>;
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
     handleSelectAlbum: ActionCreator<SelectAlbumAction>;
@@ -368,7 +367,6 @@ function mapStateToProps(state: State): PropsFromState {
 const dispatchToPropsMap: DispatchProps = {
     addSearchedCell: selectPoint,
     getAlbumData: requestAlbumData,
-    getViewerChannelSettings: requestViewerChannelSettings,
     handleClearAllSelectedPoints: clearAllSelectedPoints,
     handleDeselectPoint: deselectPoint,
     handleOpenIn3D: selectCellFor3DViewer,
