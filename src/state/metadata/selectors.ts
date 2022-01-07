@@ -24,9 +24,10 @@ export const getDatasets = (state: State) => state.metadata.datasets;
 export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
+export const getViewerChannelSettings = (state: State) => state.metadata.viewerChannelSettings;
 
 export const compareVersions = (versionA: string, versionB: string): number => {
-    const [majorA, minorA , patchA] = versionA.split(".");
+    const [majorA, minorA, patchA] = versionA.split(".");
     const [majorB, minorB, patchB] = versionB.split(".");
     // may not exist (or actually be 0), either way, set to zero for comparison
     const minorANum = Number(minorA) || 0;
@@ -43,9 +44,8 @@ export const compareVersions = (versionA: string, versionB: string): number => {
             return minorBNum - minorANum;
         }
     } else {
-        return Number(majorB) - Number(majorA)
+        return Number(majorB) - Number(majorA);
     }
-
 };
 
 export const getDatasetsByNewest = createSelector([getDatasets], (datasets) => {

@@ -58,10 +58,9 @@ describe("Viewer selectors", () => {
                 baseUrl: "url",
                 cellDownloadHref: "undefined&id=C1",
                 cellPath: "volumeviewerPath",
-                channelNameMapping: "",
                 fovDownloadHref: "undefined&id=F12762",
                 fovPath: "fovVolumeviewerPath",
-                groupToChannelNameMap: "",
+                viewerChannelSettings: {},
             });
         });
         it("if there is no single cell data, returns fov info as main info", () => {
@@ -79,10 +78,9 @@ describe("Viewer selectors", () => {
                 baseUrl: "url",
                 cellDownloadHref: "undefined&id=F12762",
                 cellPath: "fovVolumeviewerPath",
-                channelNameMapping: "",
                 fovDownloadHref: "",
                 fovPath: "",
-                groupToChannelNameMap: "",
+                viewerChannelSettings: {},
             });
         });
         it("if dataset has channelNameMapping data, it will be included", () => {
@@ -95,9 +93,7 @@ describe("Viewer selectors", () => {
                 },
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
-
-            expect(result.groupToChannelNameMap).to.not.be.empty;
-            expect(result.channelNameMapping).to.not.be.empty;
+            expect(result.viewerChannelSettings).to.not.be.empty;
         });
     });
 });

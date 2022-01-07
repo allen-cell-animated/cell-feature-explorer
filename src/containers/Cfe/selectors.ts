@@ -15,7 +15,8 @@ import {
     formatDownloadOfIndividualFile,
 } from "../../state/util";
 
-import { VIEWER_CHANNEL_SETTINGS, NO_SETTINGS } from "../../constants";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { getViewerChannelSettings } from "../../state/metadata/selectors";
 
 export interface VolumeViewerProps {
     cellId: string;
@@ -24,19 +25,27 @@ export interface VolumeViewerProps {
     fovPath: string;
     fovDownloadHref: string;
     cellDownloadHref: string;
-    channelNameMapping?: { label: string; test: RegExp }[] | "";
-    groupToChannelNameMap?: { [key: string]: string[] } | "";
-    channelsEnabled?: number[];
-    initialChannelSettings?: { [key: string]: { color: string } };
+    viewerChannelSettings?: typeof ViewerChannelSettings;
 }
 
 export const getPropsForVolumeViewer = createSelector(
-    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getSelectedDatasetName],
-    (fileInfo: FileInfo, dataRoot, downloadRoot, selectedDatasetName): VolumeViewerProps => {
+    [
+        getSelected3DCellFileInfo,
+        getVolumeViewerDataRoot,
+        getDownloadRoot,
+        getSelectedDatasetName,
+        getViewerChannelSettings,
+    ],
+    (
+        fileInfo: FileInfo,
+        dataRoot,
+        downloadRoot,
+        selectedDatasetName,
+        viewerChannelSettings
+    ): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
-        const channelSettings = VIEWER_CHANNEL_SETTINGS[selectedDatasetName] || { ...NO_SETTINGS };
 
         const formatPathForViewer = (path: string) => path.split("_atlas.json")[0];
 
@@ -78,7 +87,7 @@ export const getPropsForVolumeViewer = createSelector(
             fovPath: parentCellPath,
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
-            ...channelSettings,
+            viewerChannelSettings,
         };
         return props;
     }

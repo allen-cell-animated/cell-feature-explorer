@@ -4,6 +4,7 @@ import {
     QuerySnapshot,
     DocumentData,
 } from "@firebase/firestore-types";
+import { StringGradients } from "antd/lib/progress/progress";
 import axios, { AxiosResponse } from "axios";
 
 import {
@@ -28,10 +29,13 @@ import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 
+import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     private featuresDataPath: string;
     private cellLineDataPath: string;
+    private viewerSettingsPath: string;
     private thumbnailRoot: string;
     private downloadRoot: string;
     private volumeViewerDataRoot: string;
@@ -41,8 +45,10 @@ class FirebaseRequest implements ImageDataset {
     private featuresDataOrder: string[];
     private albumPath: string;
     private featureDefsPath: string;
+    private viewerChannelSettings?: typeof ViewerChannelSettings;
     constructor() {
         this.featuresDataPath = "";
+        this.viewerSettingsPath = "";
         this.cellLineDataPath = "";
         this.thumbnailRoot = "";
         this.downloadRoot = "";
@@ -105,6 +111,7 @@ class FirebaseRequest implements ImageDataset {
     public selectDataset = (ref: string) => {
         return this.getManifest(ref).then((data) => {
             this.featuresDataPath = data.featuresDataPath;
+            this.viewerSettingsPath = data.viewerSettingsPath;
             this.thumbnailRoot = data.thumbnailRoot;
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
@@ -123,6 +130,20 @@ class FirebaseRequest implements ImageDataset {
                 volumeViewerDataRoot: data.volumeViewerDataRoot,
             };
         });
+    };
+
+    public getViewerChannelSettings = () => {
+        if (this.viewerChannelSettings) {
+            return Promise.resolve(this.viewerChannelSettings);
+        }
+
+        return axios
+            .get(this.viewerSettingsPath)
+            .then((metadata: AxiosResponse) => metadata.data)
+            .then((viewerSettingsData) => {
+                this.viewerChannelSettings = viewerSettingsData as typeof ViewerChannelSettings;
+                return this.viewerChannelSettings;
+            });
     };
 
     public getCellLineDefs = () => {
