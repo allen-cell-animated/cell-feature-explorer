@@ -29,20 +29,8 @@ export interface VolumeViewerProps {
 }
 
 export const getPropsForVolumeViewer = createSelector(
-    [
-        getSelected3DCellFileInfo,
-        getVolumeViewerDataRoot,
-        getDownloadRoot,
-        getSelectedDatasetName,
-        getViewerChannelSettings,
-    ],
-    (
-        fileInfo: FileInfo,
-        dataRoot,
-        downloadRoot,
-        selectedDatasetName,
-        viewerChannelSettings
-    ): VolumeViewerProps => {
+    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getViewerChannelSettings],
+    (fileInfo: FileInfo, dataRoot, downloadRoot, viewerChannelSettings): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
