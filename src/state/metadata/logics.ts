@@ -181,7 +181,6 @@ const requestAlbumData = createLogic({
 const requestViewerChannelSettings = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { imageDataSet } = deps;
-        dispatch(setLoadingText("Loading viewer settings..."));
         return imageDataSet
             .getViewerChannelSettings()
             .then(done)
