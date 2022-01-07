@@ -93,7 +93,7 @@ describe("Viewer selectors", () => {
                 },
             };
             const result = getPropsForVolumeViewer(stateWithCell2Selected);
-            expect(result.viewerChannelSettings).to.not.be.empty;
+            expect(result.viewerChannelSettings).to.be.an("object");
         });
     });
 });
