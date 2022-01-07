@@ -4,7 +4,6 @@ import {
     QuerySnapshot,
     DocumentData,
 } from "@firebase/firestore-types";
-import { StringGradients } from "antd/lib/progress/progress";
 import axios, { AxiosResponse } from "axios";
 
 import {
