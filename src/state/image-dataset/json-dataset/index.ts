@@ -27,7 +27,7 @@ import {
 } from "../../metadata/types";
 
 import { ImageDataset } from "../types";
-import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 interface DatasetInfo {
     name: string;
@@ -55,7 +55,7 @@ class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private cellLines: CellLineDef[] = [];
-    private viewerChannelSettings?: typeof ViewerChannelSettings;
+    private viewerChannelSettings?: ViewerChannelSettings;
 
     private featureDefsPromise?: Promise<any[]>;
 
@@ -122,7 +122,7 @@ class JsonRequest implements ImageDataset {
             return Promise.resolve(this.viewerChannelSettings);
         }
         return this.getJson(this.datasetInfo.viewerSettingsPath).then((data) => {
-            this.viewerChannelSettings = data as typeof ViewerChannelSettings;
+            this.viewerChannelSettings = data as ViewerChannelSettings;
             return this.viewerChannelSettings;
         });
     };

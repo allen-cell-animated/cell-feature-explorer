@@ -18,10 +18,12 @@ import { getShowSmallScreenWarning } from "./selectors";
 
 import {
     RECEIVE_ALBUM_DATA,
+    RECEIVE_VIEWER_CHANNEL_SETTINGS,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_ALBUM_DATA,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
+    REQUEST_VIEWER_CHANNEL_SETTINGS,
 } from "./constants";
 import { CellLineDef, DataForPlot } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
@@ -176,9 +178,28 @@ const requestAlbumData = createLogic({
     type: REQUEST_ALBUM_DATA,
 });
 
+const requestViewerChannelSettings = createLogic({
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+        const { imageDataSet } = deps;
+        dispatch(setLoadingText("Loading viewer settings..."));
+        return imageDataSet
+            .getViewerChannelSettings()
+            .then(done)
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            })
+            .then(() => done());
+    },
+    processOptions: {
+        successType: RECEIVE_VIEWER_CHANNEL_SETTINGS,
+    },
+    type: REQUEST_VIEWER_CHANNEL_SETTINGS,
+});
+
 export default [
     requestCellLineDefs,
     requestAlbumData,
     requestFeatureDataLogic,
     requestAvailableDatasets,
+    requestViewerChannelSettings,
 ];

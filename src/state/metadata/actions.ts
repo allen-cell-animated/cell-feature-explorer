@@ -1,3 +1,4 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
 
@@ -9,11 +10,13 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
+    RECEIVE_VIEWER_CHANNEL_SETTINGS,
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_CELL_FILE_INFO,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
+    REQUEST_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
@@ -28,6 +31,7 @@ import {
     ReceiveCellFileInfoAction,
     ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
+    ReceiveViewerChannelSettingsAction,
     RequestAction,
     SetLoadingAction,
     SetSmallScreenWarningAction,
@@ -109,6 +113,21 @@ export function receiveAlbumData(payload: Album[]): ReceiveAlbumDataAction {
     return {
         payload,
         type: RECEIVE_ALBUM_DATA,
+    };
+}
+
+export function requestViewerChannelSettings(): RequestAction {
+    return {
+        type: REQUEST_VIEWER_CHANNEL_SETTINGS,
+    };
+}
+
+export function receiveViewerChannelSettings(
+    payload: ViewerChannelSettings
+): ReceiveViewerChannelSettingsAction {
+    return {
+        payload,
+        type: RECEIVE_VIEWER_CHANNEL_SETTINGS,
     };
 }
 

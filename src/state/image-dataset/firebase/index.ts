@@ -28,7 +28,7 @@ import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 
-import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
@@ -44,7 +44,7 @@ class FirebaseRequest implements ImageDataset {
     private featuresDataOrder: string[];
     private albumPath: string;
     private featureDefsPath: string;
-    private viewerChannelSettings?: typeof ViewerChannelSettings;
+    private viewerChannelSettings?: ViewerChannelSettings;
     constructor() {
         this.featuresDataPath = "";
         this.viewerSettingsPath = "";
@@ -140,7 +140,7 @@ class FirebaseRequest implements ImageDataset {
             .get(this.viewerSettingsPath)
             .then((metadata: AxiosResponse) => metadata.data)
             .then((viewerSettingsData) => {
-                this.viewerChannelSettings = viewerSettingsData as typeof ViewerChannelSettings;
+                this.viewerChannelSettings = viewerSettingsData as ViewerChannelSettings;
                 return this.viewerChannelSettings;
             });
     };

@@ -15,7 +15,7 @@ import {
     formatDownloadOfIndividualFile,
 } from "../../state/util";
 
-import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { getViewerChannelSettings } from "../../state/metadata/selectors";
 
 export interface VolumeViewerProps {
@@ -25,7 +25,7 @@ export interface VolumeViewerProps {
     fovPath: string;
     fovDownloadHref: string;
     cellDownloadHref: string;
-    viewerChannelSettings?: typeof ViewerChannelSettings;
+    viewerChannelSettings?: ViewerChannelSettings;
 }
 
 export const getPropsForVolumeViewer = createSelector(

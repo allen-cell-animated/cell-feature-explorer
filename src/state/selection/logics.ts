@@ -3,12 +3,26 @@ import { filter, find, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
-import { requestCellLineData, requestFeatureData } from "../metadata/actions";
+import {
+    requestCellLineData,
+    requestFeatureData,
+    requestViewerChannelSettings,
+} from "../metadata/actions";
 import { getDatasets } from "../metadata/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
-import { CHANGE_DATASET, CHANGE_SELECTED_ALBUM, RECEIVE_FILE_INFO_FOR_ALBUM_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS, RECEIVE_FILE_INFO_FOR_SELECTED_CELL, SELECT_ARRAY_OF_POINTS, SELECT_POINT, SET_DATASET, SYNC_STATE_WITH_URL } from "./constants";
+import {
+    CHANGE_DATASET,
+    CHANGE_SELECTED_ALBUM,
+    RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
+    RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
+    RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
+    SELECT_ARRAY_OF_POINTS,
+    SELECT_POINT,
+    SET_DATASET,
+    SYNC_STATE_WITH_URL,
+} from "./constants";
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis } from "./actions";
 import { FileInfo } from "../metadata/types";
@@ -50,7 +64,7 @@ const changeDatasetLogic = createLogic({
             .then((selections: InitialDatasetSelections) => {
                 const actions = [
                     changeAxis(X_AXIS_ID, selections.defaultXAxis),
-                    changeAxis(Y_AXIS_ID, selections.defaultYAxis)
+                    changeAxis(Y_AXIS_ID, selections.defaultYAxis),
                 ];
                 if (selections.defaultColorBy) {
                     actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
@@ -67,6 +81,7 @@ const changeDatasetLogic = createLogic({
                 });
                 dispatch(requestCellLineData());
                 dispatch(requestFeatureData());
+                dispatch(requestViewerChannelSettings());
                 done();
             });
     },
@@ -80,7 +95,7 @@ const requestCellFileInfoForSelectedPoint = createLogic({
             .getFileInfoByCellId(action.payload.toString())
             .then((data?: FileInfo) => {
                 if (!data) {
-                    return {}
+                    return {};
                 }
                 return data;
             })
