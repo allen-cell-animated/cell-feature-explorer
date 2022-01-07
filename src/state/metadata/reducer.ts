@@ -43,7 +43,7 @@ export const initialState = {
         labels: {},
     },
     measuredFeaturesDefs: [],
-    viewerChannelSettings: {},
+    viewerChannelSettings: undefined,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
