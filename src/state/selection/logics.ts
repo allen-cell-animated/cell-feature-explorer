@@ -81,7 +81,7 @@ const changeDatasetLogic = createLogic({
                 });
                 dispatch(requestCellLineData());
                 dispatch(requestFeatureData());
-                dispatch(requestViewerChannelSettings());
+                //dispatch(requestViewerChannelSettings());
                 done();
             });
     },
