@@ -122,7 +122,7 @@ class JsonRequest implements ImageDataset {
             return Promise.resolve(this.viewerChannelSettings);
         }
         return this.getJson(this.datasetInfo.viewerSettingsPath).then((data) => {
-            this.viewerChannelSettings = data as ViewerChannelSettings;
+            this.viewerChannelSettings = JSON.parse(data) as ViewerChannelSettings;
             return this.viewerChannelSettings;
         });
     };
