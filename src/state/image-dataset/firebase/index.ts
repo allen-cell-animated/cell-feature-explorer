@@ -108,6 +108,9 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public selectDataset = (ref: string) => {
+        // clear locally cached data.
+        this.viewerChannelSettings = undefined;
+
         return this.getManifest(ref).then((data) => {
             this.featuresDataPath = data.featuresDataPath;
             this.viewerSettingsPath = data.viewerSettingsPath;
