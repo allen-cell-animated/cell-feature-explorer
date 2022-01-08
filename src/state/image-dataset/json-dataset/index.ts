@@ -99,6 +99,10 @@ class JsonRequest implements ImageDataset {
     };
 
     public selectDataset = (manifestPath: string) => {
+        // clear locally cached data.
+        this.viewerChannelSettings = undefined;
+        this.cellLines = [];
+
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
