@@ -26,6 +26,7 @@ import {
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis } from "./actions";
 import { FileInfo } from "../metadata/types";
+import { DatasetMetaData } from "../../constants/datasets";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -46,21 +47,31 @@ const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
-        let datasets = getDatasets(getState());
-        if (!datasets.length) {
-            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
-            // the datasets may not have been saved in state yet
-            await imageDataSet.getAvailableDatasets();
-            datasets = getDatasets(getState());
-        }
-        const selectedDataset = find(datasets, { id: action.payload });
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
                 payload: action.payload,
             });
         }
+        let selectedDataset: DatasetMetaData | undefined;
+        const datasets = getDatasets(getState());
+        if (!datasets.length) {
+            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
+            // the datasets may not have been saved in state yet
+            const megasets = await imageDataSet.getAvailableDatasets();
+            megasets.every(megaset => {
+                selectedDataset = find(megaset.datasets, { id: action.payload });
+                if (selectedDataset) {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
+        } else {
+            selectedDataset = find(datasets, { id: action.payload });
+        }
         if (selectedDataset === undefined) {
+            console.log("no selected dataset. action.payload:", action.payload)
             return done();
         }
         imageDataSet
