@@ -91,6 +91,7 @@ class FirebaseRequest implements ImageDataset {
                          * this is based on hostname instead of a build time variable so we don't
                          * need a separate build for staging and production
                          */
+                        dataset.id = key;
                         if (isDevOrStagingSite(location.hostname)) {
                             acc[key] = dataset
                         } else if (dataset.production) {

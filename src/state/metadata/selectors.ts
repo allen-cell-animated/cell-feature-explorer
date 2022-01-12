@@ -1,8 +1,8 @@
-import { map, filter, sortBy, find } from "lodash";
+import { map, filter, sortBy, find, forEach } from "lodash";
 import { createSelector } from "reselect";
 
 import { MITOTIC_STAGE_KEY, PROTEIN_NAME_KEY } from "../../constants";
-import { DatasetMetaData } from "../../constants/datasets";
+import { DatasetMetaData, Megaset } from "../../constants/datasets";
 import { State } from "../types";
 
 import {
@@ -20,11 +20,21 @@ export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
 export const getShowSmallScreenWarning = (state: State) => state.metadata.showSmallScreenWarning;
-export const getDatasets = (state: State) => state.metadata.datasets;
+export const getMegasets = (state: State) => state.metadata.datasets;
 export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getViewerChannelSettings = (state: State) => state.metadata.viewerChannelSettings;
+
+export const getDatasets = createSelector([getMegasets], (megasets): DatasetMetaData[] => {
+    const datasets: DatasetMetaData[] = []
+    megasets.forEach((megaset: Megaset) => {
+        forEach(megaset.datasets, (dataset) => {
+            datasets.push(dataset)
+        })
+    })
+    return datasets;
+})
 
 export const compareVersions = (versionA: string, versionB: string): number => {
     const [majorA, minorA, patchA] = versionA.split(".");
@@ -48,7 +58,7 @@ export const compareVersions = (versionA: string, versionB: string): number => {
     }
 };
 
-export const getDatasetsByNewest = createSelector([getDatasets], (datasets) => {
+export const getDatasetsByNewest = createSelector([getDatasets], (datasets): DatasetMetaData[] => {
     return datasets.sort((a: DatasetMetaData, b: DatasetMetaData) => {
         // TODO: We need to sort and group datasets by "megasets"
         // and then order those megasets by "newness"

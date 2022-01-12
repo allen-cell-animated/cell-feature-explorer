@@ -50,7 +50,8 @@ const changeDatasetLogic = createLogic({
         if (!datasets.length) {
             // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
             // the datasets may not have been saved in state yet
-            datasets = await imageDataSet.getAvailableDatasets();
+            await imageDataSet.getAvailableDatasets();
+            datasets = getDatasets(getState());
         }
         const selectedDataset = find(datasets, { id: action.payload });
         if (!action.payload) {
@@ -58,6 +59,9 @@ const changeDatasetLogic = createLogic({
                 type: SET_DATASET,
                 payload: action.payload,
             });
+        }
+        if (selectedDataset === undefined) {
+            return done();
         }
         imageDataSet
             .selectDataset(selectedDataset.manifest)

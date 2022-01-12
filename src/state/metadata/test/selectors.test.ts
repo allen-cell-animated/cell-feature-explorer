@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { DatasetMetaData } from "../../../constants/datasets";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
@@ -92,7 +93,7 @@ describe("Metadata branch selectors", () => {
                     datasets: [dataset1, dataset2],
                 },
             };
-            const result: string[] = getDatasetsByNewest(state);
+            const result: DatasetMetaData[] = getDatasetsByNewest(state);
             expect(result).to.deep.equal([dataset2, dataset1]);
         });
         it("returns the dataset card data in the order of newest to oldest", () => {
@@ -110,7 +111,7 @@ describe("Metadata branch selectors", () => {
                     datasets: [dataset1, dataset2],
                 },
             };
-            const result: string[] = getDatasetsByNewest(state);
+            const result: DatasetMetaData[] = getDatasetsByNewest(state);
             expect(result).to.deep.equal([dataset2, dataset1]);
         });
         it("returns the dataset card data with datasets grouped by name", () => {
@@ -132,7 +133,7 @@ describe("Metadata branch selectors", () => {
                     datasets: [newerName1, dataset2, olderName1],
                 },
             };
-            const result: string[] = getDatasetsByNewest(state);
+            const result: DatasetMetaData[] = getDatasetsByNewest(state);
             expect(result).to.deep.equal([dataset2, newerName1, olderName1]);
         });
     });
