@@ -13,7 +13,7 @@ import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
-import { DatasetMetaData } from "../../constants/datasets";
+import { Megaset } from "../../constants/datasets";
 import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
@@ -25,7 +25,7 @@ interface AppProps {
     changeDataset: (id: string) => ChangeSelectionAction;
     selectedDataset: string;
     requestAvailableDatasets: () => RequestAction;
-    datasets: DatasetMetaData[];
+    megasets: Megaset[];
 }
 
 class App extends React.Component<AppProps> {
@@ -38,7 +38,7 @@ class App extends React.Component<AppProps> {
     };
 
     public render() {
-        const { isLoading, loadingText, selectedDataset, datasets } = this.props;
+        const { isLoading, loadingText, selectedDataset, megasets } = this.props;
         const showLoadingOverlay = isLoading && !!selectedDataset;
         const layoutClassnames = classNames([
             styles.container,
@@ -60,7 +60,7 @@ class App extends React.Component<AppProps> {
                             <Cfe />
                         ) : (
                             <LandingPage
-                                datasets={datasets}
+                                megasets={megasets}
                                 handleSelectDataset={this.handleSelectDataset}
                             />
                         )}
@@ -76,7 +76,7 @@ function mapStateToProps(state: State) {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
-        datasets: metadataStateBranch.selectors.getDatasetsByNewest(state),
+        megasets: metadataStateBranch.selectors.getDatasetsByNewest(state),
     };
 }
 

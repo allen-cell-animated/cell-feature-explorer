@@ -1,4 +1,4 @@
-import { DatasetMetaData } from "../../constants/datasets";
+import { Megaset } from "../../constants/datasets";
 import { CellLineDef, DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
@@ -15,7 +15,7 @@ export interface InitialDatasetSelections {
 
 export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
-    getAvailableDatasets(): Promise<DatasetMetaData[]>;
+    getAvailableDatasets(): Promise<Megaset[]>;
     getCellLineDefs(): Promise<CellLineDef[]>;
     getViewerChannelSettings(): Promise<ViewerChannelSettings>;
     getFeatureData(): Promise<DataForPlot>;

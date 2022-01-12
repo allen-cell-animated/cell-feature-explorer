@@ -5,7 +5,7 @@ import {
     DocumentData,
 } from "@firebase/firestore-types";
 import axios, { AxiosResponse } from "axios";
-import { forEach } from "lodash";
+import { reduce } from "lodash";
 
 import {
     CELL_COUNT_KEY,
@@ -76,24 +76,30 @@ class FirebaseRequest implements ImageDataset {
             .get()
             .then((snapShot: QuerySnapshot) => {
                 const megasets: Megaset[] = [];
-                const datasets: DatasetMetaData[] = [];
-
+                
                 snapShot.forEach((megasetDoc) => {
-                    const megasetData = megasetDoc.data() as Megaset;
-                    forEach(megasetData.datasets, ((dataset: DatasetMetaData) => {
+                    const megaset = megasetDoc.data() as Megaset;
+                    if (isDevOrStagingSite(location.hostname)) {
+                        megasets.push(megaset);
+                    } else if (megaset.production) {
+                        megasets.push(megaset);
+                    }
+                    const initDatasetObject: {[key: string]: DatasetMetaData} = {};
+                    megaset.datasets = reduce(megaset.datasets, (acc, dataset: DatasetMetaData, key) => {
                         /** if running the site in a local development env or on staging.cfe.allencell.org
                          * include all cards, otherwise, only include cards with a production flag.
                          * this is based on hostname instead of a build time variable so we don't
                          * need a separate build for staging and production
                          */
                         if (isDevOrStagingSite(location.hostname)) {
-                            datasets.push(dataset);
+                            acc[key] = dataset
                         } else if (dataset.production) {
-                            datasets.push(dataset);
+                            acc[key] = dataset
                         }
-                    }))
+                        return acc;
+                    }, initDatasetObject)
                 });
-                return datasets;
+                return megasets;
             });
     };
 

@@ -1,17 +1,30 @@
 import React from "react";
 import { Row, Col, Layout } from "antd";
+import { map } from "lodash";
 
 import DatasetCard from "../../components/DatasetCard";
-import { DatasetMetaData } from "../../constants/datasets";
+import { Megaset } from "../../constants/datasets";
 const { Content, Header } = Layout;
 
 import styles from "./style.css";
 
 interface LandingPageProps {
     handleSelectDataset: (id: string) => void;
-    datasets: DatasetMetaData[];
+    megasets: Megaset[];
 }
-const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
+
+const renderCards = (megasets: Megaset[], handleSelectDataset: (id: string) => void) => {
+    console.log(megasets)
+    return megasets.map((megaset) => (
+        map(megaset.datasets, (dataset) => (
+            <Col key={`${dataset.name}-${dataset.version}`}>
+                <DatasetCard {...dataset} handleSelectDataset={handleSelectDataset} />
+            </Col>
+        ))
+    ))
+}
+
+const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
     <Layout>
         <Header className={styles.headerMain}>
             <div>
@@ -23,11 +36,7 @@ const LandingPage = ({ handleSelectDataset, datasets }: LandingPageProps) => (
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset</h2>
                 <Row type="flex" justify="space-around" className={styles.section}>
-                    {datasets.map((dataset) => (
-                        <Col key={`${dataset.name}-${dataset.version}`}>
-                            <DatasetCard {...dataset} handleSelectDataset={handleSelectDataset} />
-                        </Col>
-                    ))}
+                    {renderCards(megasets, handleSelectDataset)}
                     <Col className={styles.caption}>
                         The Cell Feature Explorer is an online tool to access our complete database
                         of segmented and processed cells as curated datasets. We have annotated each
