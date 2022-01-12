@@ -5,6 +5,7 @@ import {
     DocumentData,
 } from "@firebase/firestore-types";
 import axios, { AxiosResponse } from "axios";
+import { forEach } from "lodash";
 
 import {
     CELL_COUNT_KEY,
@@ -14,7 +15,7 @@ import {
     PROTEIN_NAME_KEY,
     CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
-import { DatasetMetaData } from "../../../constants/datasets";
+import { DatasetMetaData, Megaset } from "../../../constants/datasets";
 import { isDevOrStagingSite } from "../../../util";
 import {
     CellLineDef,
@@ -74,21 +75,23 @@ class FirebaseRequest implements ImageDataset {
             .collection("dataset-descriptions")
             .get()
             .then((snapShot: QuerySnapshot) => {
+                const megasets: Megaset[] = [];
                 const datasets: DatasetMetaData[] = [];
 
-                snapShot.forEach((doc) => {
-                    const metadata = doc.data() as DatasetMetaData;
-                    /** if running the site in a local development env or on staging.cfe.allencell.org
-                     * include all cards, otherwise, only include cards with a production flag.
-                     * this is based on hostname instead of a build time variable so we don't
-                     * need a separate build for staging and production
-                     */
-
-                    if (isDevOrStagingSite(location.hostname)) {
-                        datasets.push(metadata);
-                    } else if (metadata.production) {
-                        datasets.push(metadata);
-                    }
+                snapShot.forEach((megasetDoc) => {
+                    const megasetData = megasetDoc.data() as Megaset;
+                    forEach(megasetData.datasets, ((dataset: DatasetMetaData) => {
+                        /** if running the site in a local development env or on staging.cfe.allencell.org
+                         * include all cards, otherwise, only include cards with a production flag.
+                         * this is based on hostname instead of a build time variable so we don't
+                         * need a separate build for staging and production
+                         */
+                        if (isDevOrStagingSite(location.hostname)) {
+                            datasets.push(dataset);
+                        } else if (dataset.production) {
+                            datasets.push(dataset);
+                        }
+                    }))
                 });
                 return datasets;
             });

@@ -16,3 +16,19 @@ export interface DatasetMetaData {
         totalFOVs: number;
     };
 }
+
+interface Publication {
+    citation: string;
+    title: string;
+    url: string;
+}
+
+export interface Megaset {
+    name: string;
+    title: string;
+    production: boolean;
+    datasets: {
+        [key: string]: DatasetMetaData
+    };
+    publications?: Publication[];
+}
