@@ -57,21 +57,21 @@ const changeDatasetLogic = createLogic({
         const datasets = getDatasets(getState());
         if (!datasets.length) {
             // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
-            // the datasets may not have been saved in state yet
+            // the datasets may not have been saved in state yet. So we need to fetch
+            // all available dataset descriptions again and find the dataset we need.
             const megasets = await imageDataSet.getAvailableDatasets();
-            megasets.every(megaset => {
-                selectedDataset = find(megaset.datasets, { id: action.payload });
-                if (selectedDataset) {
-                    return false;
-                } else {
-                    return true;
+            for (let i = 0; i < megasets.length; i++) {
+                const matchingDataset = find(megasets[i].datasets, { id: action.payload });
+                if (matchingDataset) {
+                    selectedDataset = matchingDataset;
+                    break;
                 }
-            })
+            }
         } else {
             selectedDataset = find(datasets, { id: action.payload });
         }
         if (selectedDataset === undefined) {
-            console.log("no selected dataset. action.payload:", action.payload)
+            console.error(`A dataset matching ${action.payload} is not available.`)
             return done();
         }
         imageDataSet
