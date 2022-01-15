@@ -2,7 +2,7 @@ import { map, filter, sortBy, find, forEach } from "lodash";
 import { createSelector } from "reselect";
 
 import { MITOTIC_STAGE_KEY, PROTEIN_NAME_KEY } from "../../constants";
-import { DatasetMetaData, Megaset } from "../../constants/datasets";
+import { DatasetMetaData, Megaset } from "../../types";
 import { State } from "../types";
 
 import {

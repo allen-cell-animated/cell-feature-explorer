@@ -15,7 +15,7 @@ import {
     PROTEIN_NAME_KEY,
     CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
-import { DatasetMetaData, Megaset } from "../../../constants/datasets";
+import { DatasetMetaData, Megaset } from "../../../types";
 import { isDevOrStagingSite } from "../../../util";
 import {
     CellLineDef,

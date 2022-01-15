@@ -1,4 +1,4 @@
-import { Megaset } from "../../constants/datasets";
+import { Megaset } from "../../types";
 import { CellLineDef, DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 

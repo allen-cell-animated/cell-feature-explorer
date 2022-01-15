@@ -12,7 +12,7 @@ import {
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { Megaset } from "../../constants/datasets";
+import { Megaset } from "../../types";
 import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 

@@ -13,7 +13,7 @@ import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
-import { Megaset } from "../../constants/datasets";
+import { Megaset } from "../../types";
 import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
