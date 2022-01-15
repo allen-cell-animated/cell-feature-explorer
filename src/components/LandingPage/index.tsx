@@ -14,7 +14,7 @@ interface LandingPageProps {
 }
 
 const renderCards = (megasets: Megaset[], handleSelectDataset: (id: string) => void) => {
-    console.log(megasets)
+    // TODO: Display megasets differently (grouped together) from standalone datasets
     return megasets.map((megaset) => (
         map(megaset.datasets, (dataset) => (
             <Col key={`${dataset.name}-${dataset.version}`}>

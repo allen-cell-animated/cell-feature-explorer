@@ -26,6 +26,7 @@ export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measured
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
 export const getViewerChannelSettings = (state: State) => state.metadata.viewerChannelSettings;
 
+// Return individual datasets (unpack any megasets)
 export const getDatasets = createSelector([getMegasets], (megasets): DatasetMetaData[] => {
     const datasets: DatasetMetaData[] = []
     megasets.forEach((megaset: Megaset) => {

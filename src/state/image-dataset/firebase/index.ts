@@ -76,29 +76,28 @@ class FirebaseRequest implements ImageDataset {
             .get()
             .then((snapShot: QuerySnapshot) => {
                 const megasets: Megaset[] = [];
-                
                 snapShot.forEach((megasetDoc) => {
                     const megaset = megasetDoc.data() as Megaset;
-                    if (isDevOrStagingSite(location.hostname)) {
-                        megasets.push(megaset);
-                    } else if (megaset.production) {
-                        megasets.push(megaset);
-                    }
-                    const initDatasetObject: {[key: string]: DatasetMetaData} = {};
+                    const initialDatasetObj: {[key: string]: DatasetMetaData} = {};
                     megaset.datasets = reduce(megaset.datasets, (acc, dataset: DatasetMetaData, key) => {
+                        dataset.id = key;
                         /** if running the site in a local development env or on staging.cfe.allencell.org
                          * include all cards, otherwise, only include cards with a production flag.
                          * this is based on hostname instead of a build time variable so we don't
                          * need a separate build for staging and production
                          */
-                        dataset.id = key;
                         if (isDevOrStagingSite(location.hostname)) {
                             acc[key] = dataset
                         } else if (dataset.production) {
                             acc[key] = dataset
                         }
                         return acc;
-                    }, initDatasetObject)
+                    }, initialDatasetObj)
+                    if (isDevOrStagingSite(location.hostname)) {
+                        megasets.push(megaset);
+                    } else if (megaset.production) {
+                        megasets.push(megaset);
+                    }
                 });
                 return megasets;
             });
