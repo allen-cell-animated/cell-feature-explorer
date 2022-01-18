@@ -14,6 +14,7 @@ import {
 } from "../../constants";
 import { DatasetMetaData } from "../../constants/datasets";
 import { Album } from "../types";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 export interface MetadataStateBranch {
     [key: string]: any;
@@ -112,6 +113,11 @@ export interface ReceiveCellFileInfoAction {
 
 export interface ReceiveAlbumDataAction {
     payload: Album[];
+    type: string;
+}
+
+export interface ReceiveViewerChannelSettingsAction {
+    payload: ViewerChannelSettings;
     type: string;
 }
 

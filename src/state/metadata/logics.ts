@@ -11,6 +11,7 @@ import {
     receiveMeasuredFeatureDefs,
     receiveCellLineData,
     receiveMetadata,
+    receiveViewerChannelSettings,
     setLoadingText,
     stopLoading,
 } from "./actions";
@@ -22,6 +23,7 @@ import {
     REQUEST_ALBUM_DATA,
     REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
+    REQUEST_VIEWER_CHANNEL_SETTINGS,
 } from "./constants";
 import { CellLineDef, DataForPlot } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
@@ -36,6 +38,7 @@ import {
     getSelected3DCell,
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 const requestCellLineDefs = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -176,9 +179,28 @@ const requestAlbumData = createLogic({
     type: REQUEST_ALBUM_DATA,
 });
 
+const requestViewerChannelSettings = createLogic({
+    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+        const { imageDataSet } = deps;
+        return imageDataSet
+            .getViewerChannelSettings()
+            .then((data: ViewerChannelSettings) => {
+                dispatch(receiveViewerChannelSettings(data));
+                return data;
+            })
+            .then(done)
+            .catch((reason: string) => {
+                console.log(reason); // tslint:disable-line:no-console
+            })
+            .then(() => done());
+    },
+    type: REQUEST_VIEWER_CHANNEL_SETTINGS,
+});
+
 export default [
     requestCellLineDefs,
     requestAlbumData,
     requestFeatureDataLogic,
     requestAvailableDatasets,
+    requestViewerChannelSettings,
 ];

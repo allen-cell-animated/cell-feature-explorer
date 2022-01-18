@@ -11,15 +11,18 @@ import {
     RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
+    RECEIVE_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
     MetadataStateBranch,
-    ReceiveAction, ReceiveAlbumDataAction,
+    ReceiveAction,
+    ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
     ReceiveCellLineAction,
+    ReceiveViewerChannelSettingsAction,
     SetLoadingAction,
     SetSmallScreenWarningAction,
     ReceiveMeasuredFeaturesAction,
@@ -40,6 +43,7 @@ export const initialState = {
         labels: {},
     },
     measuredFeaturesDefs: [],
+    viewerChannelSettings: undefined,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -60,6 +64,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             measuredFeatureNames: initialState.measuredFeatureNames,
             featureData: initialState.featureData,
             measuredFeaturesDefs: initialState.measuredFeaturesDefs,
+            viewerChannelSettings: initialState.viewerChannelSettings,
         }),
     },
     [RECEIVE_AVAILABLE_DATASETS]: {
@@ -94,6 +99,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
             albums: action.payload,
         }),
     },
+    [RECEIVE_VIEWER_CHANNEL_SETTINGS]: {
+        accepts: (action: AnyAction): action is ReceiveViewerChannelSettingsAction =>
+            action.type === RECEIVE_VIEWER_CHANNEL_SETTINGS,
+        perform: (state: MetadataStateBranch, action: ReceiveViewerChannelSettingsAction) => ({
+            ...state,
+            viewerChannelSettings: action.payload,
+        }),
+    },
     [SET_IS_LOADING]: {
         accepts: (action: AnyAction): action is SetLoadingAction => action.type === SET_IS_LOADING,
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
@@ -111,7 +124,8 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_SHOW_SMALL_SCREEN_WARNING]: {
-        accepts: (action: AnyAction): action is SetSmallScreenWarningAction => action.type === SET_SHOW_SMALL_SCREEN_WARNING,
+        accepts: (action: AnyAction): action is SetSmallScreenWarningAction =>
+            action.type === SET_SHOW_SMALL_SCREEN_WARNING,
         perform: (state: MetadataStateBranch, action: SetSmallScreenWarningAction) => ({
             ...state,
             showSmallScreenWarning: action.payload,

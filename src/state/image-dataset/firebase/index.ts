@@ -28,10 +28,13 @@ import { ImageDataset } from "../types";
 
 import { firestore } from "./configure-firebase";
 
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
     private featuresDataPath: string;
     private cellLineDataPath: string;
+    private viewerSettingsPath: string;
     private thumbnailRoot: string;
     private downloadRoot: string;
     private volumeViewerDataRoot: string;
@@ -41,8 +44,10 @@ class FirebaseRequest implements ImageDataset {
     private featuresDataOrder: string[];
     private albumPath: string;
     private featureDefsPath: string;
+    private viewerChannelSettings?: ViewerChannelSettings;
     constructor() {
         this.featuresDataPath = "";
+        this.viewerSettingsPath = "";
         this.cellLineDataPath = "";
         this.thumbnailRoot = "";
         this.downloadRoot = "";
@@ -103,8 +108,12 @@ class FirebaseRequest implements ImageDataset {
     };
 
     public selectDataset = (ref: string) => {
+        // clear locally cached data.
+        this.viewerChannelSettings = undefined;
+
         return this.getManifest(ref).then((data) => {
             this.featuresDataPath = data.featuresDataPath;
+            this.viewerSettingsPath = data.viewerSettingsPath;
             this.thumbnailRoot = data.thumbnailRoot;
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
@@ -123,6 +132,20 @@ class FirebaseRequest implements ImageDataset {
                 volumeViewerDataRoot: data.volumeViewerDataRoot,
             };
         });
+    };
+
+    public getViewerChannelSettings = () => {
+        if (this.viewerChannelSettings) {
+            return Promise.resolve(this.viewerChannelSettings);
+        }
+
+        return axios
+            .get(this.viewerSettingsPath)
+            .then((metadata: AxiosResponse) => metadata.data)
+            .then((viewerSettingsData) => {
+                this.viewerChannelSettings = viewerSettingsData as ViewerChannelSettings;
+                return this.viewerChannelSettings;
+            });
     };
 
     public getCellLineDefs = () => {

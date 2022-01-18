@@ -77,83 +77,8 @@ export const GENERAL_PLOT_SETTINGS = {
     unselectedCircleOpacity: 0.5,
 };
 
-// TODO these are literally only used in one single place; maybe they could be moved into that one place?
-// TODO move these to the dataset data
-export const BRIGHT_FIELD_NAMES = ["Bright_100", "Bright_100X", "TL 100x", "Bright_2"];
-export const OBS_MEMBRANE_NAMES = ["CMDRP"];
-export const OBS_STRUCTURE_NAMES = ["EGFP", "mtagRFPT"];
-export const OBS_DNA_NAMES = ["H3342_3", "H3342"];
-export const VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS = [
-    { test: /(CMDRP)|(Memb)/, label: "Membrane" },
-    { test: /(EGFP)|(RFPT)|(STRUCT)/, label: "Labeled structure" },
-    { test: /(H3342)|(DNA)/, label: "DNA" },
-    { test: /(100)|(Bright)/, label: "Bright field" },
-];
-
 export const DEFAULT_GROUP_BY: { [key: string]: string } = {
     aics_hipsc: "labeled structure",
     cellsystems_fish: "RNA FISH targets",
     cellsystems_live: "labeled structure",
-};
-
-export const VARIANCE_DATASET_CHANNEL_GROUPINGS = {
-    "Observed channels": [
-        "CMDRP",
-        "EGFP",
-        "mtagRFPT",
-        "H3342",
-        "H3342_3",
-        "Bright_100",
-        "Bright_100X",
-        "TL 100x",
-        "TL_100x",
-        "Bright_2",
-    ],
-    "Segmentation channels": ["SEG_STRUCT", "SEG_Memb", "SEG_DNA"],
-    "Contour channels": ["CON_Memb", "CON_DNA"],
-};
-
-export const NO_SETTINGS = {
-    channelNameMapping: "" as const, // type to empty string, not any string
-    groupToChannelNameMap: "" as const, // type to empty string, not any string
-};
-
-export const VIEWER_CHANNEL_SETTINGS: {
-    [key: string]:
-        | {
-              channelNameMapping: "" | { test: RegExp; label: string }[];
-              groupToChannelNameMap: "" | { [key: string]: string[] };
-              channelsEnabled?: number[];
-              initialChannelSettings?: { [key: string]: { color: string } };
-          }
-        | undefined;
-} = {
-    aics_hipsc: {
-        channelNameMapping: VARIANCE_DATASET_CHANNEL_NAME_MAPPINGS,
-        groupToChannelNameMap: VARIANCE_DATASET_CHANNEL_GROUPINGS,
-        channelsEnabled: [0, 1, 2],
-    },
-    cellsystems_fish: {
-        channelNameMapping: [],
-        groupToChannelNameMap: {},
-        channelsEnabled: [0, 1, 3, 4],
-        initialChannelSettings: {
-            "0": { color: "ffffff" },
-            "1": { color: "00ffff" },
-            "2": { color: "808080" },
-            "3": { color: "ff00ff" },
-            "4": { color: "00ff00" },
-        },
-    },
-    cellsystems_live: {
-        channelNameMapping: [],
-        groupToChannelNameMap: {},
-        channelsEnabled: [1, 2],
-        initialChannelSettings: {
-            "0": { color: "ff00ff" },
-            "1": { color: "ffffff" },
-            "2": { color: "00ffff" },
-            "3": { color: "808080" },
-        },
-    },
 };
