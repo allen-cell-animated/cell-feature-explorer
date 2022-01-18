@@ -59,28 +59,6 @@ export const compareVersions = (versionA: string, versionB: string): number => {
     }
 };
 
-// TODO: Replace this obsolete function. 
-// We need to sort and group datasets by "megasets"
-// and then order those megasets by "newness"
-// plus we have plans to have different versions of the same
-// dataset contained within one card
-//
-// export const getDatasetsByNewest = createSelector([getDatasets], (datasets): DatasetMetaData[] => {
-//     return datasets.sort((a: DatasetMetaData, b: DatasetMetaData) => {
-//         if (a.name === b.name) {
-//             // if it's the same dataset, return the newest version first
-//             return compareVersions(a.version, b.version);
-//             // otherwise sort by name
-//         } else if (a.name > b.name) {
-//             return -1;
-//         } else if (a.name < b.name) {
-//             return 1;
-//         } else {
-//             return 0;
-//         }
-//     });
-// });
-
 export const getMeasuredFeatureArrays = createSelector(
     [getPerCellDataForPlot],
     (dataForPlot: DataForPlot) => {
