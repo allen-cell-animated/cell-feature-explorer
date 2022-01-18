@@ -3,7 +3,7 @@ import { Row, Col, Layout } from "antd";
 import { map } from "lodash";
 
 import DatasetCard from "../../components/DatasetCard";
-import { Megaset } from "../../types";
+import { Megaset } from "../../state/image-dataset/types";
 const { Content, Header } = Layout;
 
 import styles from "./style.css";

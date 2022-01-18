@@ -1,7 +1,7 @@
 import { createLogic } from "redux-logic";
 import { AnyAction } from "redux";
 
-import { Megaset } from "../../types";
+import { Megaset } from "../image-dataset/types";
 
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";

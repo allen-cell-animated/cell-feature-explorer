@@ -15,7 +15,6 @@ import {
     PROTEIN_NAME_KEY,
     CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
-import { DatasetMetaData, Megaset } from "../../../types";
 import { isDevOrStagingSite } from "../../../util";
 import {
     CellLineDef,
@@ -25,7 +24,7 @@ import {
 } from "../../metadata/types";
 import { Album } from "../../types";
 
-import { ImageDataset } from "../types";
+import { ImageDataset, DatasetMetaData, Megaset } from "../types";
 
 import { firestore } from "./configure-firebase";
 

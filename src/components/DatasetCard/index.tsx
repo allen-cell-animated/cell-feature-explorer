@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, Descriptions, Tag, Divider} from "antd";
-import { DatasetMetaData } from "../../types";
+import { DatasetMetaData } from "../../state/image-dataset/types";
 const { Meta } = Card;
 
 import styles from "./style.css";

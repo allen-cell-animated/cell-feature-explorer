@@ -26,7 +26,7 @@ import {
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis } from "./actions";
 import { FileInfo } from "../metadata/types";
-import { DatasetMetaData } from "../../types";
+import { DatasetMetaData } from "../image-dataset/types";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
