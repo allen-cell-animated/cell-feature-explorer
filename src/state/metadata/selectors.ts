@@ -20,7 +20,7 @@ export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
 export const getShowSmallScreenWarning = (state: State) => state.metadata.showSmallScreenWarning;
-export const getMegasets = (state: State) => state.metadata.datasets;
+export const getMegasets = (state: State) => state.metadata.megasets;
 export const getFeatureNamesAndData = (state: State) => state.metadata.measuredFeatureNames;
 export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
 export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
