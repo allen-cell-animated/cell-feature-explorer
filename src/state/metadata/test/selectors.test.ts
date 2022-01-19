@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
-import { compareVersions, getDatasetsByNewest, getMeasuredFeaturesKeys, getProteinNames } from "../selectors";
+import { compareVersions, getMeasuredFeaturesKeys, getProteinNames } from "../selectors";
 
 describe("Metadata branch selectors", () => {
     describe("getMeasuredFeaturesKeys", () => {
@@ -75,65 +75,4 @@ describe("Metadata branch selectors", () => {
 
         });
     })
-
-    describe("getDatasetsByNewest", () => {
-        it("returns the dataset card data in the order of newest to oldest", () => {
-            const dataset1 = {
-                name: "name1",
-                version: "2020.1",
-            };
-            const dataset2 = {
-                name: "name1",
-                version: "2021.1",
-            };
-            const state: State = {
-                ...mockState,
-                metadata: {
-                    datasets: [dataset1, dataset2],
-                },
-            };
-            const result: string[] = getDatasetsByNewest(state);
-            expect(result).to.deep.equal([dataset2, dataset1]);
-        });
-        it("returns the dataset card data in the order of newest to oldest", () => {
-            const dataset1 = {
-                name: "name1",
-                version: "2021.1",
-            };
-            const dataset2 = {
-                name: "name1",
-                version: "2021.2",
-            };
-            const state: State = {
-                ...mockState,
-                metadata: {
-                    datasets: [dataset1, dataset2],
-                },
-            };
-            const result: string[] = getDatasetsByNewest(state);
-            expect(result).to.deep.equal([dataset2, dataset1]);
-        });
-        it("returns the dataset card data with datasets grouped by name", () => {
-            const newerName1 = {
-                name: "name1",
-                version: "2021.2",
-            };
-            const dataset2 = {
-                name: "name2",
-                version: "2021.2",
-            };
-            const olderName1 = {
-                name: "name1",
-                version: "2021.1",
-            };
-            const state: State = {
-                ...mockState,
-                metadata: {
-                    datasets: [newerName1, dataset2, olderName1],
-                },
-            };
-            const result: string[] = getDatasetsByNewest(state);
-            expect(result).to.deep.equal([dataset2, newerName1, olderName1]);
-        });
-    });
 });

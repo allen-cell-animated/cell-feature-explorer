@@ -1,7 +1,7 @@
 import { createLogic } from "redux-logic";
 import { AnyAction } from "redux";
 
-import { DatasetMetaData } from "../../constants/datasets";
+import { Megaset } from "../image-dataset/types";
 
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
@@ -60,7 +60,7 @@ const requestAvailableDatasets = createLogic({
         const { imageDataSet } = deps;
         return imageDataSet
             .getAvailableDatasets()
-            .then((data: DatasetMetaData[]) => dispatch(receiveAvailableDatasets(data)))
+            .then((data: Megaset[]) => dispatch(receiveAvailableDatasets(data)))
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
             })

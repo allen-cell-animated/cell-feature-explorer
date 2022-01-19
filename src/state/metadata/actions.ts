@@ -1,5 +1,6 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { DatasetMetaData } from "../../constants/datasets";
+
+import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 
 import {
@@ -41,7 +42,7 @@ export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };
 }
 export function receiveAvailableDatasets(
-    payload: DatasetMetaData[]
+    payload: Megaset[]
 ): ReceiveAvailableDatasetsAction {
     return {
         payload,

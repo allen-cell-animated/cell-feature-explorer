@@ -36,7 +36,7 @@ export const initialState = {
     isLoading: true,
     loadingText: "",
     showSmallScreenWarning: false,
-    datasets: [],
+    megasets: [],
     measuredFeatureNames: [],
     featureData: {
         values: {},
@@ -72,7 +72,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === RECEIVE_AVAILABLE_DATASETS,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
-            datasets: action.payload,
+            megasets: action.payload,
         }),
     },
     [RECEIVE_CELL_LINE_DATA]: {

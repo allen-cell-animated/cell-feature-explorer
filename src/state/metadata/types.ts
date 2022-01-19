@@ -12,7 +12,7 @@ import {
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { DatasetMetaData } from "../../constants/datasets";
+import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
@@ -98,7 +98,7 @@ export interface ReceiveAction {
 }
 
 export interface ReceiveAvailableDatasetsAction {
-    payload: DatasetMetaData[];
+    payload: Megaset[];
     type: string;
 }
 export interface ReceiveCellLineAction {

@@ -26,6 +26,7 @@ import {
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis } from "./actions";
 import { FileInfo } from "../metadata/types";
+import { DatasetMetaData } from "../image-dataset/types";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -46,18 +47,32 @@ const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, imageDataSet, getState } = deps;
-        let datasets = getDatasets(getState());
-        if (!datasets.length) {
-            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
-            // the datasets may not have been saved in state yet
-            datasets = await imageDataSet.getAvailableDatasets();
-        }
-        const selectedDataset = find(datasets, { id: action.payload });
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
                 payload: action.payload,
             });
+        }
+        let selectedDataset: DatasetMetaData | undefined;
+        const datasets = getDatasets(getState());
+        if (!datasets.length) {
+            // if user goes directly to a dataset ie cfe.allencell.org/?dataset=[DATASET],
+            // the datasets may not have been saved in state yet. So we need to fetch
+            // all available dataset descriptions again and find the dataset we need.
+            const megasets = await imageDataSet.getAvailableDatasets();
+            for (let i = 0; i < megasets.length; i++) {
+                const matchingDataset = find(megasets[i].datasets, { id: action.payload });
+                if (matchingDataset) {
+                    selectedDataset = matchingDataset;
+                    break;
+                }
+            }
+        } else {
+            selectedDataset = find(datasets, { id: action.payload });
+        }
+        if (selectedDataset === undefined) {
+            console.error(`A dataset matching ${action.payload} is not available.`)
+            return done();
         }
         imageDataSet
             .selectDataset(selectedDataset.manifest)
