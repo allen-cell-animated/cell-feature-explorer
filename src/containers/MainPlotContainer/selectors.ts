@@ -7,7 +7,7 @@ import {
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
@@ -110,8 +110,8 @@ export const getMainPlotData = createSelector(
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
         return {
-            color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
+            color: colorBy === GROUP_BY_KEY ? undefined : colorByValues,
+            groupBy: colorBy === GROUP_BY_KEY || includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
@@ -318,7 +318,7 @@ export const getYDisplayOptions = createSelector(
 export const getColorByDisplayOptions = createSelector(
     [getMeasuredFeaturesDefs, getGroupByTitle],
     (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
-        if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
+        if (!find(featureDefs, { key: GROUP_BY_KEY })) {
             // TODO: this should be in the data already, not added here
             // need to have what drop downs each feature def should be included in. 
             const tooltip =
@@ -327,7 +327,7 @@ export const getColorByDisplayOptions = createSelector(
                     : "Name of the cellular structure that has been fluorescently labeled in each cell line";
             return [
                 {
-                    key: PROTEIN_NAME_KEY,
+                    key: GROUP_BY_KEY,
                     displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
                     discrete: true,
                     unit: null,

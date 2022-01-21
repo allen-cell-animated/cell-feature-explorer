@@ -7,11 +7,7 @@ export const ARRAY_OF_FILE_INFO_KEY = "fileInfo";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
 export const COLOR_BY_SELECTOR = "colorBy";
-export const PROTEIN_NAME_KEY = "structureProteinName";
-export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
-export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId_Name";
-export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
-export const CELL_LINE_DEF_GENE_KEY = "GeneId_Name";
+export const GROUP_BY_KEY = "groupBy";
 
 export const CELL_ID_KEY = "CellId";
 export const FOV_ID_KEY = "FOVId";

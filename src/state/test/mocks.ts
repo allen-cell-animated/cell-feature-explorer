@@ -1,9 +1,5 @@
 import {
-    CELL_LINE_DEF_NAME_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
-    CELL_LINE_DEF_GENE_KEY,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
@@ -22,7 +18,7 @@ export const selectedCellFileInfo: FileInfo[] = [
         [CELL_ID_KEY]: "1",
         [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -32,54 +28,11 @@ export const selectedCellFileInfo: FileInfo[] = [
         [CELL_ID_KEY]: "2",
         [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
         [VOLUME_VIEWER_PATH]: "path",
-    },
-];
-
-const cellLineDefs = [
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-57",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-1",
-        [CELL_COUNT_KEY]: 3470,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-7",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Alpha-actinin-1",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Alpha-actinin-1",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-2",
-        [CELL_COUNT_KEY]: 1809,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-16",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-actin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Beta-actin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-3",
-        [CELL_COUNT_KEY]: 1039,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-999",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Delta-actin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Delta-actin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-4",
-        [CELL_COUNT_KEY]: 2003,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-58",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-catenin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Adherens junctions",
-        [PROTEIN_NAME_KEY]: "Beta-catenin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-5",
-        [CELL_COUNT_KEY]: 2343,
     },
 ];
 
@@ -88,7 +41,7 @@ const fileInfo: FileInfo[] = [
         [CELL_ID_KEY]: "1",
         [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -98,7 +51,7 @@ const fileInfo: FileInfo[] = [
         [CELL_ID_KEY]: "2",
         [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
+        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -142,7 +95,7 @@ const featureData = {
     labels: {
         [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
         thumbnailPaths: ["path1", "path2"],
-        [PROTEIN_NAME_KEY]: ["protein1", "protein2"],
+        [GROUP_BY_KEY]: ["protein1", "protein2"],
     },
 };
 
@@ -154,7 +107,6 @@ const displayableGroups = cellLineDefs
 
 export const mockState = {
     metadata: {
-        cellLineDefs: cellLineDefs,
         cellFileInfo: fileInfo,
         featureData: featureData,
         measuredFeaturesDefs: measuredFeaturesDefs,

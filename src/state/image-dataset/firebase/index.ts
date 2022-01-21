@@ -8,16 +8,10 @@ import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
 
 import {
-    CELL_COUNT_KEY,
-    CELL_LINE_DEF_NAME_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
-    PROTEIN_NAME_KEY,
-    CELL_LINE_DEF_GENE_KEY,
+    GROUP_BY_KEY,
 } from "../../../constants";
 import { isDevOrStagingSite } from "../../../util";
 import {
-    CellLineDef,
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
@@ -126,15 +120,15 @@ class FirebaseRequest implements ImageDataset {
             this.downloadRoot = data.downloadRoot;
             this.volumeViewerDataRoot = data.volumeViewerDataRoot;
             this.featuresDisplayOrder = data.featuresDisplayOrder;
-            this.cellLineDataPath = data.cellLineDataPath;
             this.fileInfoPath = data.fileInfoPath;
             this.featuresDataOrder = data.featuresDataOrder;
             this.featureDefsPath = data.featureDefsPath;
             this.albumPath = data.albumPath;
             return {
-                defaultXAxis: data.defaultXAxis,
-                defaultYAxis: data.defaultYAxis,
-                defaultColorBy: data.defaultColorBy,
+                defaultXAxis: data.xAxis.default,
+                defaultYAxis: data.yAxis.default,
+                defaultColorBy: data.colorBy.default,
+                defaultGroupBy: data.groupBy.default,
                 thumbnailRoot: data.thumbnailRoot,
                 downloadRoot: data.downloadRoot,
                 volumeViewerDataRoot: data.volumeViewerDataRoot,
@@ -154,25 +148,6 @@ class FirebaseRequest implements ImageDataset {
                 this.viewerChannelSettings = viewerSettingsData as ViewerChannelSettings;
                 return this.viewerChannelSettings;
             });
-    };
-
-    public getCellLineDefs = () => {
-        return this.getCollection(this.cellLineDataPath).then((snapshot: QuerySnapshot) => {
-            const dataset: CellLineDef[] = [];
-            snapshot.forEach((doc: QueryDocumentSnapshot) => {
-                const datum = doc.data();
-                if (datum[CELL_COUNT_KEY] > 0) {
-                    dataset.push({
-                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_KEY],
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_KEY],
-                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_KEY],
-                        [CELL_LINE_DEF_GENE_KEY]: datum[CELL_LINE_DEF_GENE_KEY],
-                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY],
-                    });
-                }
-            });
-            return dataset;
-        });
     };
 
     private requestSetOfFeatureDefs = async (
@@ -219,7 +194,7 @@ class FirebaseRequest implements ImageDataset {
                     },
                     {} as MappingOfMeasuredValuesArrays
                 );
-                const proteinArray: string[] = [];
+                const groupByArray: string[] = [];
                 const thumbnails: string[] = [];
                 const ids: string[] = [];
                 for (let index = 0; index < featureData.length; index++) {
@@ -237,14 +212,14 @@ class FirebaseRequest implements ImageDataset {
                             arrayOfValues.push(Number(value));
                         }
                     }, {});
-                    proteinArray.push(datum.p);
+                    groupByArray.push(datum.p);
                     thumbnails.push(datum.t);
                     ids.push(datum.i.toString());
                 }
                 return {
                     values: dataMappedByMeasuredFeatures,
                     labels: {
-                        [PROTEIN_NAME_KEY]: proteinArray,
+                        [GROUP_BY_KEY]: groupByArray,
                         thumbnailPaths: thumbnails,
                         cellIds: ids,
                     },

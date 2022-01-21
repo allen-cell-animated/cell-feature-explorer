@@ -1,4 +1,5 @@
 import { AnyAction } from "redux";
+import { ReceiveCellFileInfoAction } from "../selection/types";
 
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
@@ -8,7 +9,6 @@ import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
-    RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
     RECEIVE_VIEWER_CHANNEL_SETTINGS,
@@ -21,7 +21,6 @@ import {
     ReceiveAction,
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
-    ReceiveCellLineAction,
     ReceiveViewerChannelSettingsAction,
     SetLoadingAction,
     SetSmallScreenWarningAction,
@@ -32,7 +31,6 @@ import {
 export const initialState = {
     albums: [],
     cellFileInfo: [],
-    cellLineDefs: {},
     isLoading: true,
     loadingText: "",
     showSmallScreenWarning: false,
@@ -59,7 +57,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: MetadataStateBranch) => ({
             ...state,
             cellFileInfo: initialState.cellFileInfo,
-            cellLineDefs: initialState.cellLineDefs,
             isLoading: initialState.isLoading,
             measuredFeatureNames: initialState.measuredFeatureNames,
             featureData: initialState.featureData,
@@ -75,18 +72,10 @@ const actionToConfigMap: TypeToDescriptionMap = {
             megasets: action.payload,
         }),
     },
-    [RECEIVE_CELL_LINE_DATA]: {
-        accepts: (action: AnyAction): action is ReceiveCellLineAction =>
-            action.type === RECEIVE_CELL_LINE_DATA,
-        perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
-            ...state,
-            cellLineDefs: action.payload,
-        }),
-    },
     [RECEIVE_CELL_FILE_INFO]: {
-        accepts: (action: AnyAction): action is ReceiveCellLineAction =>
+        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction =>
             action.type === RECEIVE_CELL_FILE_INFO,
-        perform: (state: MetadataStateBranch, action: ReceiveCellLineAction) => ({
+        perform: (state: MetadataStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
             cellFileInfo: action.payload,
         }),

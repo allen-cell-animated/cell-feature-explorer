@@ -1,6 +1,6 @@
 import {
     CELL_ID_KEY,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
 
@@ -85,7 +85,7 @@ export interface ChangeMousePositionAction {
 
 export interface SelectedPointData {
     [CELL_ID_KEY]: string;
-    [PROTEIN_NAME_KEY]: string;
+    [GROUP_BY_KEY]: string;
     thumbnailPath: string;
 }
 

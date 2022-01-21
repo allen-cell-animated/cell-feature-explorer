@@ -23,14 +23,12 @@ import {
     SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
-    CellLineDef,
     FileInfo,
     MetadataStateBranch,
     ReceiveAction,
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
     ReceiveCellFileInfoAction,
-    ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
     ReceiveViewerChannelSettingsAction,
     RequestAction,
@@ -53,13 +51,6 @@ export function receiveAvailableDatasets(
 export function clearDatasetValues() {
     return {
         type: CLEAR_DATASET_VALUES,
-    };
-}
-
-export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
-    return {
-        payload,
-        type: RECEIVE_CELL_LINE_DATA,
     };
 }
 

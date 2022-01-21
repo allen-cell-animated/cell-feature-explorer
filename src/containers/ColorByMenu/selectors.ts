@@ -9,20 +9,19 @@ import { createSelector } from "reselect";
 
 import {
     CELL_COUNT_KEY,
-    CELL_LINE_DEF_GENE_KEY,
     DEFAULT_GROUP_BY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
 } from "../../constants/index";
 import {
     getLabelsPerCell,
     getProteinNames,
-    getSortedCellLineDefs,
+    getGroupByFeatureInfo,
 } from "../../state/metadata/selectors";
-import { CellLineDef } from "../../state/metadata/types";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -56,7 +55,7 @@ export const getCheckAllCheckboxIsIntermediate = createSelector(
 const getColors = createSelector(
     [getColorBySelection, getProteinColors, getProteinNames, getFiltersToExclude],
     (colorBy, proteinColors, proteinNames, filtersToExclude) => {
-        return colorBy === PROTEIN_NAME_KEY ?
+        return colorBy === GROUP_BY_KEY ?
             proteinNames
                 .map((ele: NumberOrString, index: number) =>
                     includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
@@ -65,16 +64,16 @@ const getColors = createSelector(
                     includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR);
     });
 
-export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] => {
-    const proteinNames: string[] = cellLines.map(cellLine => cellLine.structureProteinName);
-    const structureNames: string[] = cellLines.map(cellLine => cellLine.StructureId_Name);
+export const disambiguateCategoryNames = (feature: MeasuredFeatureDef): string[] => {
+    const categoryNames: string[] = map(feature.options, option => option.name);
+    const keys: string[] = map(feature.options, (option) => option.key || "");
     
-    const repeatedNames: string[] = structureNames.filter((name, i) => {
-        return structureNames.indexOf(name) !== i;
+    const repeatedNames: string[] = categoryNames.filter((name, i) => {
+        return categoryNames.indexOf(name) !== i;
     });
-    const disambiguatedNames: string[] = structureNames.map((name, i) => {
+    const disambiguatedNames: string[] = categoryNames.map((name, i) => {
         if (repeatedNames.includes(name)) {
-            return `${name} (${proteinNames[i]})`;
+            return `${name} (${keys[i]})`;
         }
         return name;
     });
@@ -83,11 +82,11 @@ export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] =
 };
 
 export const getInteractivePanelData = createSelector(
-    [getSortedCellLineDefs, getFiltersToExclude, getColors, getDisplayableGroups],
+    [getGroupByFeatureInfo, getFiltersToExclude, getColors, getDisplayableGroups],
     (cellLines, filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
-        const structureNames = disambiguateStructureNames(cellLines);
+        const structureNames = disambiguateCategoryNames(cellLines);
         return map(cellLines, (cellLine: CellLineDef, index: number) => {
-            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
+            const proteinName: string = cellLine[GROUP_BY_KEY];
             const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
             const structureName: string = structureNames[index];
             const total: number = cellLine[CELL_COUNT_KEY] || 0;
@@ -134,7 +133,7 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
         const returnArray: string[] = [];
         if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
             return reduce(
-                labelsPerCell.structureProteinName,
+                labelsPerCell.groupBy,
                 (acc, proteinName: string, index) => {
                     if (proteinName === downloadConfig.key) {
                         acc.push(convertSingleImageIdToDownloadId(labelsPerCell.cellIds[index]));

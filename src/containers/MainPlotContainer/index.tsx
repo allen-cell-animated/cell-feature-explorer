@@ -11,7 +11,7 @@ import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
     CELL_ID_KEY,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     SCATTER_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
@@ -155,7 +155,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 window.clearTimeout(this.thumbnailTimeout);
                 changeHoveredCell({
                     [CELL_ID_KEY]: point.id,
-                    [PROTEIN_NAME_KEY]: point.fullData.name,
+                    [GROUP_BY_KEY]: point.fullData.name,
                     thumbnailPath: point.customdata,
                 });
             } else {
@@ -201,7 +201,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             hoveredPointData &&
             galleryCollapsed && (
                 <PopoverCard
-                    title={hoveredPointData[PROTEIN_NAME_KEY]}
+                    title={hoveredPointData[GROUP_BY_KEY]}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
                 />

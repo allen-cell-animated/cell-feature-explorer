@@ -4,12 +4,10 @@ import { createSelector } from "reselect";
 import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
-    CELL_LINE_DEF_NAME_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
 } from "../../constants";
 import {
     getPerCellDataForPlot,
@@ -18,15 +16,13 @@ import {
     getMeasuredFeaturesKeys,
     getCategoricalFeatureKeys,
     getMeasuredFeaturesDefs,
-    getCellLineDefs,
 } from "../metadata/selectors";
 import {
-    CellLineDef,
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
-    MeasuredFeaturesWithProteinNames,
+    MeasuredFeaturesWithCategoryNames,
     MetadataStateBranch,
     PerCellLabels,
 } from "../metadata/types";
@@ -85,17 +81,17 @@ export const getFilteredCellData = createSelector(
         if (!filtersToExclude.length) {
             return perCellDataForPlot;
         }
-        const proteinNameArray: string[] = [];
+        const categoryNameArray: string[] = [];
         const dataToReturn: MappingOfMeasuredValuesArrays = {};
         const cellIds: string[] = [];
         const thumbnails: string[] = [];
 
-        for (let i = 0; i < perCellDataForPlot.labels.structureProteinName.length; i++) {
-            const proteinName: string = perCellDataForPlot.labels.structureProteinName[i];
-            if (!includes(filtersToExclude, proteinName)) {
+        for (let i = 0; i < perCellDataForPlot.labels.groupBy.length; i++) {
+            const categoryName: string = perCellDataForPlot.labels.groupBy[i];
+            if (!includes(filtersToExclude, categoryName)) {
                 const cellId = perCellDataForPlot.labels.cellIds[i];
                 cellIds.push(cellId);
-                proteinNameArray.push(proteinName);
+                categoryNameArray.push(categoryName);
                 thumbnails.push(perCellDataForPlot.labels.thumbnailPaths[i]);
                 measuredFeatureKeys.forEach((featureKey) => {
                     if (!dataToReturn[featureKey]) {
@@ -111,7 +107,7 @@ export const getFilteredCellData = createSelector(
         return {
             values: dataToReturn,
             labels: {
-                [PROTEIN_NAME_KEY]: proteinNameArray,
+                [GROUP_BY_KEY]: categoryNameArray,
                 [ARRAY_OF_CELL_IDS_KEY]: cellIds,
                 thumbnailPaths: thumbnails,
             },
@@ -187,9 +183,9 @@ export const getColorByValues = createSelector(
         if (!metaData.labels) {
             return [];
         }
-        const options: MeasuredFeaturesWithProteinNames = {
+        const options: MeasuredFeaturesWithCategoryNames = {
             ...metaData.values,
-            structureProteinName: metaData.labels.structureProteinName,
+            categoryName: metaData.labels.groupBy,
         };
 
         return options[colorBy] || [];
@@ -211,7 +207,7 @@ export const getColorsForPlot = createSelector(
         measuredFeaturesDefs,
         categoricalFeatureKeys
     ): ColorForPlot[] => {
-        if (colorBy === PROTEIN_NAME_KEY) {
+        if (colorBy === GROUP_BY_KEY) {
             return map(proteinNames, (name: string, index) => {
                 return {
                     color: proteinColors[index],
@@ -280,7 +276,7 @@ export const getOpacity = createSelector(
     [getColorBySelection, getFiltersToExclude, getProteinNames, getProteinLabelsPerCell],
     (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels): number[] => {
         let arrayToMap;
-        if (colorBySelection === PROTEIN_NAME_KEY) {
+        if (colorBySelection === GROUP_BY_KEY) {
             arrayToMap = proteinNameArray;
         } else {
             arrayToMap = proteinLabels;
@@ -324,17 +320,17 @@ export const getSelected3DCellCellLine = createSelector(
 export const getSelected3DCellLabeledProtein = createSelector(
     [getSelected3DCellFileInfo],
     (fileInfo: FileInfo): string => {
-        return !isEmpty(fileInfo) ? fileInfo[PROTEIN_NAME_KEY] : "";
+        return !isEmpty(fileInfo) ? fileInfo[GROUP_BY_KEY] : "";
     }
 );
 
 export const getSelected3DCellLabeledStructure = createSelector(
-    [getCellLineDefs, getSelected3DCellCellLine],
-    (cellLineDefs: CellLineDef[], cellLineId: string): string => {
-        const cellLineData = find(cellLineDefs, { [CELL_LINE_DEF_NAME_KEY]: cellLineId });
-        if (cellLineData) {
-            return cellLineData[CELL_LINE_DEF_STRUCTURE_KEY];
-        }
+    [getMeasuredFeaturesDefs, getSelected3DCellCellLine],
+    (featureDefs: MeasuredFeatureDef, cellLineId: string): string => {
+        // const cellLineData = find(featureDefs, { [CELL_LINE_DEF_NAME_KEY]: cellLineId });
+        // if (cellLineData) {
+        //     return cellLineData[CELL_LINE_DEF_STRUCTURE_KEY];
+        // }
         return "";
     }
 );

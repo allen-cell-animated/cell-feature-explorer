@@ -6,7 +6,7 @@ import {
     CELL_ID_KEY,
     FOV_ID_KEY,
     FOV_VOLUME_VIEWER_PATH,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import {
@@ -109,7 +109,7 @@ export const getThumbnails = createSelector(
                 cellID,
                 downloadHref,
                 fullFieldDownloadHref,
-                labeledStructure: fileInfoForCell[PROTEIN_NAME_KEY],
+                labeledStructure: fileInfoForCell[GROUP_BY_KEY],
                 mitoticStage,
                 src: thumbnailSrc,
             };

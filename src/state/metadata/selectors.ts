@@ -1,12 +1,11 @@
 import { map, filter, sortBy, find, forEach } from "lodash";
 import { createSelector } from "reselect";
 
-import { MITOTIC_STAGE_KEY, PROTEIN_NAME_KEY } from "../../constants";
+import { MITOTIC_STAGE_KEY, GROUP_BY_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
 import { State } from "../types";
 
 import {
-    CellLineDef,
     DataForPlot,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
@@ -15,7 +14,6 @@ import {
 
 // BASIC SELECTORS
 export const getPerCellDataForPlot = (state: State) => state.metadata.featureData;
-export const getCellLineDefs = (state: State) => state.metadata.cellLineDefs;
 export const getAllAlbumData = (state: State) => state.metadata.albums;
 export const getIsLoading = (state: State) => state.metadata.isLoading;
 export const getLoadingText = (state: State) => state.metadata.loadingText;
@@ -73,15 +71,15 @@ export const getLabelsPerCell = createSelector(
     }
 );
 
-export const getSortedCellLineDefs = createSelector(
-    [getCellLineDefs],
-    (cellLineDefs: CellLineDef[]): CellLineDef[] => sortBy(cellLineDefs, [PROTEIN_NAME_KEY])
+export const getGroupByFeatureInfo = createSelector(
+    [getCellLineDefs, getGroupBy],
+    (cellLineDefs: CellLineDef[]): CellLineDef[] => sortBy(cellLineDefs, [GROUP_BY_KEY])
 );
 
 export const getProteinNames = createSelector(
-    [getSortedCellLineDefs],
+    [getGroupByFeatureInfo],
     (cellLineDef: CellLineDef[]): string[] => {
-        return map(cellLineDef, PROTEIN_NAME_KEY);
+        return map(cellLineDef, GROUP_BY_KEY);
     }
 );
 
@@ -102,7 +100,7 @@ export const getCategoricalFeatureKeys = createSelector(
 export const getProteinLabelsPerCell = createSelector(
     [getLabelsPerCell],
     (labels: PerCellLabels): string[] => {
-        return labels[PROTEIN_NAME_KEY] || [];
+        return labels[GROUP_BY_KEY] || [];
     }
 );
 

@@ -1,29 +1,18 @@
 import axios, { AxiosResponse } from "axios";
-import { find, map } from "lodash";
 
 import {
-    CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
-    CELL_LINE_DEF_NAME_KEY,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_LINE_NAME_KEY,
-    CELL_COUNT_KEY,
-    CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
+
 import {
-    CELL_LINE_DEF_NAME_JSON_KEY,
-    CELL_LINE_DEF_PROTEIN_JSON_KEY,
-    CELL_LINE_DEF_STRUCTURE_JSON_KEY,
-} from "./constants";
-import {
-    CellLineDef,
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
-    MetadataStateBranch,
+    MeasuredFeatureDef,
 } from "../../metadata/types";
 
 import { ImageDataset } from "../types";
@@ -38,7 +27,6 @@ interface DatasetInfo {
     userData: { [propName: string]: any };
     featureDefsPath: string;
     featuresDataPath: string;
-    cellLineDataPath: string;
     viewerSettingsPath: string;
     albumPath: string;
     thumbnailRoot: string;
@@ -54,7 +42,7 @@ interface DatasetInfo {
 class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
-    private cellLines: CellLineDef[] = [];
+    private groupBy: MeasuredFeatureDef = {};
     private viewerChannelSettings?: ViewerChannelSettings;
 
     private featureDefsPromise?: Promise<any[]>;
@@ -73,7 +61,6 @@ class JsonRequest implements ImageDataset {
             userData: {},
             featureDefsPath: "",
             featuresDataPath: "",
-            cellLineDataPath: "",
             viewerSettingsPath: "",
             albumPath: "",
             thumbnailRoot: "",
@@ -101,15 +88,16 @@ class JsonRequest implements ImageDataset {
     public selectDataset = (manifestPath: string) => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
-        this.cellLines = [];
+        this.groupBy = {} as MeasuredFeatureDef;
 
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
             return {
-                defaultXAxis: data.defaultXAxis,
-                defaultYAxis: data.defaultYAxis,
-                defaultColorBy: data.defaultColorBy,
+                defaultXAxis: data.xAxis.default,
+                defaultYAxis: data.yAxis.default,
+                defaultColorBy: data.colorBy.default,
+                defaultGroupBy: data.groupBy.default,
                 thumbnailRoot: data.thumbnailRoot,
                 downloadRoot: data.downloadRoot,
                 volumeViewerDataRoot: data.volumeViewerDataRoot,
@@ -129,41 +117,6 @@ class JsonRequest implements ImageDataset {
             this.viewerChannelSettings = data as ViewerChannelSettings;
             return this.viewerChannelSettings;
         });
-    };
-
-    public getCellLineDefs = () => {
-        if (this.cellLines && this.cellLines.length > 0) {
-            return Promise.resolve(this.cellLines);
-        }
-
-        return this.getJson(this.datasetInfo.cellLineDataPath)
-            .then((data) => {
-                const cellLines = map(data, (datum: MetadataStateBranch) => {
-                    return {
-                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
-                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
-                        [CELL_LINE_DEF_GENE_KEY]: datum[CELL_LINE_DEF_GENE_KEY],
-                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
-                    };
-                });
-                this.cellLines = cellLines;
-                return cellLines;
-            })
-            .then(() => {
-                return this.getMeasuredFeatureDefs();
-            })
-            .then(() => {
-                this.dataPromise = this.getFeatureData();
-                return this.dataPromise;
-            })
-            .then(() => {
-                // filter cell lines and return subset
-                this.cellLines = this.cellLines.filter(
-                    (cellLine) => (cellLine[CELL_COUNT_KEY] as number) > 0
-                );
-                return this.cellLines;
-            });
     };
 
     public getMeasuredFeatureDefs = () => {
@@ -235,22 +188,22 @@ class JsonRequest implements ImageDataset {
                             throw new Error("Bad number of feature entries in data");
                         }
 
-                        const cellLine = find(this.cellLines, {
-                            [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
-                        });
-                        if (!cellLine) {
-                            throw new Error(
-                                `Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`
-                            );
-                        }
-                        // augment file info with protein name
-                        fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
-                        // increment count in cell line
-                        if (cellLine[CELL_COUNT_KEY] !== undefined) {
-                            (cellLine[CELL_COUNT_KEY] as number)++;
-                        } else {
-                            cellLine[CELL_COUNT_KEY] = 1;
-                        }
+                        // const groupBy = find(this.groupBy, {
+                        //     [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
+                        // });
+                        // if (!cellLine) {
+                        //     throw new Error(
+                        //         `Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`
+                        //     );
+                        // }
+                        // // augment file info with protein name
+                        // fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
+                        // // increment count in cell line
+                        // if (cellLine[CELL_COUNT_KEY] !== undefined) {
+                        //     (cellLine[CELL_COUNT_KEY] as number)++;
+                        // } else {
+                        //     cellLine[CELL_COUNT_KEY] = 1;
+                        // }
 
                         el.features.forEach((value: number, index: number) => {
                             const arrayOfValues = dataMappedByMeasuredFeatures[
@@ -263,14 +216,14 @@ class JsonRequest implements ImageDataset {
                             }
                         }, {});
 
-                        proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
+                        // proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
                         thumbnails.push(fileInfo.thumbnailPath);
                         ids.push(fileInfo[CELL_ID_KEY].toString());
                     });
                     return {
                         values: dataMappedByMeasuredFeatures,
                         labels: {
-                            [PROTEIN_NAME_KEY]: proteinArray,
+                            [GROUP_BY_KEY]: proteinArray,
                             thumbnailPaths: thumbnails,
                             [ARRAY_OF_CELL_IDS_KEY]: ids,
                         },

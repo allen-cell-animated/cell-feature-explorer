@@ -76,6 +76,7 @@ export const initialState = {
     },
     plotByOnX: "",
     plotByOnY: "",
+    groupBy: "",
     proteinColors: INITIAL_COLORS,
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},

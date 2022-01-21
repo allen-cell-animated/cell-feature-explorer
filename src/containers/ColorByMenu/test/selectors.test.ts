@@ -4,7 +4,7 @@ import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
 import { State } from "../../../state/types";
 import {
-    disambiguateStructureNames,
+    disambiguateCategoryNames,
     getInteractivePanelData,
     getListOfCellIdsByDownloadConfig,
     getSelectionPanelData
@@ -17,7 +17,7 @@ describe("ColorByMenu selectors", () => {
 
     describe("disambiguateStructureNames", () => {
         it("attaches the protein name to each non-unique structure name", () => {
-            const result = disambiguateStructureNames(newMockState.metadata.cellLineDefs);
+            const result = disambiguateCategoryNames(newMockState.metadata.cellLineDefs);
             
             /* Without disambiguation, structure names would be:
             [
