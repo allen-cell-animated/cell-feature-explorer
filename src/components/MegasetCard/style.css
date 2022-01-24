@@ -1,0 +1,7 @@
+@import "../../styles/colors.css";
+
+.megacard {
+    background-color: var(--megacard-background);
+    padding: 8px;
+    box-shadow: 0px 1px 19px 5px rgb(0 0 0 / 25%);
+}

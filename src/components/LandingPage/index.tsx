@@ -3,7 +3,8 @@ import { Row, Col, Layout } from "antd";
 import { map } from "lodash";
 
 import DatasetCard from "../../components/DatasetCard";
-import { Megaset } from "../../state/image-dataset/types";
+import MegasetCard from "../../components/MegasetCard";
+import { DatasetMetaData, Megaset } from "../../state/image-dataset/types";
 const { Content, Header } = Layout;
 
 import styles from "./style.css";
@@ -11,17 +12,6 @@ import styles from "./style.css";
 interface LandingPageProps {
     handleSelectDataset: (id: string) => void;
     megasets: Megaset[];
-}
-
-const renderCards = (megasets: Megaset[], handleSelectDataset: (id: string) => void) => {
-    // TODO: Display megasets differently (grouped together) from standalone datasets
-    return megasets.map((megaset) => (
-        map(megaset.datasets, (dataset) => (
-            <Col key={`${dataset.name}-${dataset.version}`}>
-                <DatasetCard {...dataset} handleSelectDataset={handleSelectDataset} />
-            </Col>
-        ))
-    ))
 }
 
 const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
@@ -36,7 +26,9 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset</h2>
                 <Row type="flex" justify="space-around" className={styles.section}>
-                    {renderCards(megasets, handleSelectDataset)}
+                    {megasets.map((megaset) => (
+                        <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />
+                    ))}
                     <Col className={styles.caption}>
                         The Cell Feature Explorer is an online tool to access our complete database
                         of segmented and processed cells as curated datasets. We have annotated each

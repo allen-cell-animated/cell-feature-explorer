@@ -15,4 +15,5 @@
     --bottom-panel: var(--background-black-purple);
     --bottom-panel-trigger: var(--header-gray);
     --bottom-panel-trigger-label: var(--light-gray);
+    --megacard-background: var(--background-dim-gray);
 }
