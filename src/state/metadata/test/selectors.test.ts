@@ -1,8 +1,9 @@
 import { expect } from "chai";
+import { getGroupingCategoryNames } from "../../selection/selectors";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
-import { compareVersions, getMeasuredFeaturesKeys, getProteinNames } from "../selectors";
+import { compareVersions, getMeasuredFeaturesKeys } from "../selectors";
 
 describe("Metadata branch selectors", () => {
     describe("getMeasuredFeaturesKeys", () => {
@@ -24,7 +25,7 @@ describe("Metadata branch selectors", () => {
             const state: State = {
                 ...mockState,
             };
-            const result: string[] = getProteinNames(state).sort((a: string, b: string) => {
+            const result: string[] = getGroupingCategoryNames(state).sort((a: string, b: string) => {
                 return b > a ? 1 : -1;
             });
             expect(result).to.deep.equal([

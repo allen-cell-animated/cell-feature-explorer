@@ -24,10 +24,12 @@ import {
     SELECT_ARRAY_OF_POINTS,
     CLEAR_DATASET,
     SET_DISPLAYABLE_GROUPS,
+    CHANGE_GROUP_BY_CATEGORY,
 } from "./constants";
 import {
     BoolToggleAction,
     ChangeDownloadConfigAction,
+    ChangeGroupByCategory,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     ChangeSelectionAction,
@@ -51,6 +53,13 @@ export function changeAxis(axisId: string, payload: string): SelectAxisAction {
         axisId,
         payload,
         type: CHANGE_AXIS,
+    };
+}
+
+export function changeGroupByCategory(payload: string): ChangeGroupByCategory {
+    return {
+        payload,
+        type: CHANGE_GROUP_BY_CATEGORY,
     };
 }
 

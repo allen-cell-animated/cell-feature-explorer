@@ -34,10 +34,12 @@ import {
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
     CLEAR_DATASET,
     SET_DISPLAYABLE_GROUPS,
+    CHANGE_GROUP_BY_CATEGORY,
 } from "./constants";
 import {
     BoolToggleAction,
     ChangeDownloadConfigAction,
+    ChangeGroupByCategory,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     ChangeSelectedDatasetAction,
@@ -106,8 +108,8 @@ const actionToConfigMap: TypeToDescriptionMap = {
     [CLEAR_DATASET]: {
         accepts: (action: AnyAction): action is ClearDatasetAction => action.type === CLEAR_DATASET,
         perform: () => {
-            return { ...initialState }
-        }
+            return { ...initialState };
+        },
     },
 
     [CHANGE_AXIS]: {
@@ -115,6 +117,15 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: SelectAxisAction) => ({
             ...state,
             [action.axisId]: action.payload,
+        }),
+    },
+
+    [CHANGE_GROUP_BY_CATEGORY]: {
+        accepts: (action: AnyAction): action is ChangeGroupByCategory =>
+            action.type === CHANGE_GROUP_BY_CATEGORY,
+        perform: (state: SelectionStateBranch, action: ChangeGroupByCategory) => ({
+            ...state,
+            groupBy: action.payload,
         }),
     },
     [OPEN_CELL_IN_3D]: {

@@ -153,3 +153,8 @@ export interface SetDisplayableGroupsAction {
     payload: string[];
     type: string;
 }
+
+export interface ChangeGroupByCategory {
+    payload: string;
+    type: string;
+}

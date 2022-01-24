@@ -273,7 +273,7 @@ function mapStateToProps(state: State): PropsFromState {
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         groupByTitle: getGroupByTitle(state),
-        proteinNames: metadataStateBranch.selectors.getProteinNames(state),
+        proteinNames: selectionStateBranch.selectors.getGroupingCategoryNames(state),
         proteinPanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
         someProteinsOff: getCheckAllCheckboxIsIntermediate(state),

@@ -24,7 +24,7 @@ import {
     SYNC_STATE_WITH_URL,
 } from "./constants";
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
-import { changeAxis } from "./actions";
+import { changeAxis, changeGroupByCategory } from "./actions";
 import { FileInfo } from "../metadata/types";
 import { DatasetMetaData } from "../image-dataset/types";
 
@@ -80,6 +80,7 @@ const changeDatasetLogic = createLogic({
                 const actions = [
                     changeAxis(X_AXIS_ID, selections.defaultXAxis),
                     changeAxis(Y_AXIS_ID, selections.defaultYAxis),
+                    changeGroupByCategory(selections.defaultGroupBy),
                 ];
                 if (selections.defaultColorBy) {
                     actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));

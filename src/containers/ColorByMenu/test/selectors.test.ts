@@ -15,29 +15,29 @@ describe("ColorByMenu selectors", () => {
 
     const newMockState = mockState;
 
-    describe("disambiguateStructureNames", () => {
-        it("attaches the protein name to each non-unique structure name", () => {
-            const result = disambiguateCategoryNames(newMockState.metadata.cellLineDefs);
+    // describe("disambiguateStructureNames", () => {
+    //     it("attaches the protein name to each non-unique structure name", () => {
+    //         const result = disambiguateCategoryNames(newMockState.metadata.cellLineDefs);
             
-            /* Without disambiguation, structure names would be:
-            [
-                "Nucleolus (Granular Component)",
-                "Actin filaments",
-                "Actin filaments",
-                "Actin filaments",
-                "Adherens junctions",
-            ]
-            */
-            const expected = [
-                "Nucleolus (Granular Component)",
-                "Actin filaments (Alpha-actinin-1)",
-                "Actin filaments (Beta-actin)",
-                "Actin filaments (Delta-actin)",
-                "Adherens junctions",
-            ];
-            expect(result).to.deep.equal(expected);
-        });
-    });
+    //         /* Without disambiguation, structure names would be:
+    //         [
+    //             "Nucleolus (Granular Component)",
+    //             "Actin filaments",
+    //             "Actin filaments",
+    //             "Actin filaments",
+    //             "Adherens junctions",
+    //         ]
+    //         */
+    //         const expected = [
+    //             "Nucleolus (Granular Component)",
+    //             "Actin filaments (Alpha-actinin-1)",
+    //             "Actin filaments (Beta-actin)",
+    //             "Actin filaments (Delta-actin)",
+    //             "Adherens junctions",
+    //         ];
+    //         expect(result).to.deep.equal(expected);
+    //     });
+    // });
     
     describe("getInteractivePanelData", () => {
         it("returns an set of props for each protein in state", () => {

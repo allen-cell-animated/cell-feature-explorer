@@ -8,7 +8,6 @@ import {
 import { createSelector } from "reselect";
 
 import {
-    CELL_COUNT_KEY,
     DEFAULT_GROUP_BY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
@@ -18,10 +17,8 @@ import {
 } from "../../constants/index";
 import {
     getLabelsPerCell,
-    getProteinNames,
-    getGroupByFeatureInfo,
 } from "../../state/metadata/selectors";
-import { MeasuredFeatureDef } from "../../state/metadata/types";
+import { MeasuredFeaturesOption, MeasuredFeaturesOptions } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -35,6 +32,8 @@ import {
     getSelectionSetColors,
     getDisplayableGroups,
     getSelectedDatasetName,
+    getGroupingCategoryNames,
+    getGroupByFeatureInfo,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { NumberOrString } from "../../state/types";
@@ -47,26 +46,26 @@ export const getGroupByTitle = createSelector([getSelectedDatasetName], (selecte
 })
 
 export const getCheckAllCheckboxIsIntermediate = createSelector(
-    [getFiltersToExclude, getProteinNames] ,
-    (filtersToExclude, allProteinNames): boolean => {
-        return filtersToExclude.length > 0 && filtersToExclude.length !== allProteinNames.length;
+    [getFiltersToExclude, getGroupingCategoryNames] ,
+    (filtersToExclude, categoryNames: string[]): boolean => {
+        return filtersToExclude.length > 0 && filtersToExclude.length !== categoryNames.length;
 } );
 
 const getColors = createSelector(
-    [getColorBySelection, getProteinColors, getProteinNames, getFiltersToExclude],
-    (colorBy, proteinColors, proteinNames, filtersToExclude) => {
+    [getColorBySelection, getProteinColors, getGroupingCategoryNames, getFiltersToExclude],
+    (colorBy, proteinColors, categoryNames: string[], filtersToExclude) => {
         return colorBy === GROUP_BY_KEY ?
-            proteinNames
+            categoryNames
                 .map((ele: NumberOrString, index: number) =>
                     includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
-            proteinNames
+            categoryNames
                 .map((ele: NumberOrString) =>
                     includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR);
     });
 
-export const disambiguateCategoryNames = (feature: MeasuredFeatureDef): string[] => {
-    const categoryNames: string[] = map(feature.options, option => option.name);
-    const keys: string[] = map(feature.options, (option) => option.key || "");
+export const disambiguateCategoryNames = (options: MeasuredFeaturesOptions): string[] => {
+    const categoryNames: string[] = map(options, option => option.name);
+    const keys: string[] = map(options, (option) => option.key || "");
     
     const repeatedNames: string[] = categoryNames.filter((name, i) => {
         return categoryNames.indexOf(name) !== i;
@@ -83,21 +82,20 @@ export const disambiguateCategoryNames = (feature: MeasuredFeatureDef): string[]
 
 export const getInteractivePanelData = createSelector(
     [getGroupByFeatureInfo, getFiltersToExclude, getColors, getDisplayableGroups],
-    (cellLines, filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
-        const structureNames = disambiguateCategoryNames(cellLines);
-        return map(cellLines, (cellLine: CellLineDef, index: number) => {
-            const proteinName: string = cellLine[GROUP_BY_KEY];
-            const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
-            const structureName: string = structureNames[index];
-            const total: number = cellLine[CELL_COUNT_KEY] || 0;
-            const disabled = !displayableGroups.includes(proteinName);
-            const color = disabled ? DISABLE_COLOR : proteinColors[index];
+    (categories: MeasuredFeaturesOption[], filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
+        // const names = disambiguateCategoryNames(categories);
+        return map(categories, (category: MeasuredFeaturesOption, index: number) => {
+            const name: string = category.name;
+            const key: string = category.key || "";
+            const total: number = category.count || 0;
+            const disabled = !displayableGroups.includes(name);
+            const color = disabled ? DISABLE_COLOR : (category.color || proteinColors[index]);
             return {
-                checked: !includes(filtersToExclude, proteinName),
+                checked: !includes(filtersToExclude, name),
                 color: color,
-                id: proteinName,
-                name: structureName,
-                gene: geneName,
+                id: key || name,
+                name: name,
+                gene: key,
                 disabled: disabled,
                 total,
             };

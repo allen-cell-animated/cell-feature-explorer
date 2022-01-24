@@ -42,7 +42,6 @@ interface DatasetInfo {
 class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
-    private groupBy: MeasuredFeatureDef = {};
     private viewerChannelSettings?: ViewerChannelSettings;
 
     private featureDefsPromise?: Promise<any[]>;
@@ -88,7 +87,6 @@ class JsonRequest implements ImageDataset {
     public selectDataset = (manifestPath: string) => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
-        this.groupBy = {} as MeasuredFeatureDef;
 
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;

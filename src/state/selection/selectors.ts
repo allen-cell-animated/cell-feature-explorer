@@ -1,4 +1,4 @@
-import { find, includes, isEmpty, keys, map, mapValues, reduce, values } from "lodash";
+import { find, includes, isEmpty, keys, map, mapValues, reduce, sortBy, values } from "lodash";
 import { createSelector } from "reselect";
 
 import {
@@ -12,7 +12,6 @@ import {
 import {
     getPerCellDataForPlot,
     getProteinLabelsPerCell,
-    getProteinNames,
     getMeasuredFeaturesKeys,
     getCategoricalFeatureKeys,
     getMeasuredFeaturesDefs,
@@ -22,6 +21,7 @@ import {
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
+    MeasuredFeaturesOption,
     MeasuredFeaturesWithCategoryNames,
     MetadataStateBranch,
     PerCellLabels,
@@ -34,6 +34,7 @@ import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
 export const getPlotByOnY = (state: State) => state.selection.plotByOnY;
+export const getGroupByCategory = (state: State) => state.selection.groupBy;
 export const getClickedCellsFileInfo = (state: State) => state.selection.selectedPoints;
 export const getSelectedGroups = (state: State) => state.selection.selectedGroups;
 export const getColorBySelection = (state: State) => state.selection.colorBy;
@@ -62,7 +63,24 @@ export const getDisplayableGroups = (state: State) => state.selection.displayabl
 export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
     return selectedDataset.split("_v")[0];
 });
+export const getGroupByFeatureInfo = createSelector(
+    [getMeasuredFeaturesDefs, getGroupByCategory],
+    (features: MeasuredFeatureDef[], category): MeasuredFeaturesOption[] => {
+        const feature = find(map(features), { key: category });
+        console.log(feature);
+        if (!feature) {
+            return [] as MeasuredFeaturesOption[];
+        }
+        return sortBy(feature.options, "name");
+    }
+);
 
+export const getGroupingCategoryNames = createSelector(
+    [getGroupByFeatureInfo],
+    (feature: MeasuredFeaturesOption[]): string[] => {
+        return map(feature, "name");
+    }
+);
 // MAIN PLOT SELECTORS
 
 // not truly a selector, it just seemed cleaner to make this one function instead of 3
@@ -74,6 +92,8 @@ export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[])
         }
         return ""
     }  
+
+
     
 export const getFilteredCellData = createSelector(
     [getMeasuredFeaturesKeys, getFiltersToExclude, getPerCellDataForPlot],
@@ -195,7 +215,7 @@ export const getColorByValues = createSelector(
 export const getColorsForPlot = createSelector(
     [
         getColorBySelection,
-        getProteinNames,
+        getGroupingCategoryNames,
         getProteinColors,
         getMeasuredFeaturesDefs,
         getCategoricalFeatureKeys,
@@ -273,7 +293,7 @@ export const getFilteredOpacity = createSelector(
 );
 
 export const getOpacity = createSelector(
-    [getColorBySelection, getFiltersToExclude, getProteinNames, getProteinLabelsPerCell],
+    [getColorBySelection, getFiltersToExclude, getGroupingCategoryNames, getProteinLabelsPerCell],
     (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels): number[] => {
         let arrayToMap;
         if (colorBySelection === GROUP_BY_KEY) {

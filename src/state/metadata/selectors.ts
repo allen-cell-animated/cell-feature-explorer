@@ -3,12 +3,14 @@ import { createSelector } from "reselect";
 
 import { MITOTIC_STAGE_KEY, GROUP_BY_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
+import { getGroupByCategory } from "../selection/selectors";
 import { State } from "../types";
 
 import {
     DataForPlot,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
+    MeasuredFeaturesOption,
     PerCellLabels,
 } from "./types";
 
@@ -68,18 +70,6 @@ export const getLabelsPerCell = createSelector(
     [getPerCellDataForPlot],
     (dataForPlot: DataForPlot) => {
         return dataForPlot.labels;
-    }
-);
-
-export const getGroupByFeatureInfo = createSelector(
-    [getCellLineDefs, getGroupBy],
-    (cellLineDefs: CellLineDef[]): CellLineDef[] => sortBy(cellLineDefs, [GROUP_BY_KEY])
-);
-
-export const getProteinNames = createSelector(
-    [getGroupByFeatureInfo],
-    (cellLineDef: CellLineDef[]): string[] => {
-        return map(cellLineDef, GROUP_BY_KEY);
     }
 );
 

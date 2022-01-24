@@ -4,7 +4,6 @@ import {
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_COUNT_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
     THUMBNAIL_PATH,
@@ -101,9 +100,7 @@ const featureData = {
 
 // The protein name for the first cell line should be disabled in the
 // left panel
-const displayableGroups = cellLineDefs
-    .slice(1)
-    .map((cellLine) => cellLine[CELL_LINE_DEF_PROTEIN_KEY]);
+const displayableGroups: any = []
 
 export const mockState = {
     metadata: {

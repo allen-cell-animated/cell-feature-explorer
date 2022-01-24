@@ -33,6 +33,7 @@ export interface MeasuredFeaturesOption {
     color: string;
     name: string;
     key?: string;
+    count?: number;
 }
 
 export type MeasuredFeaturesOptions = { [key: string]: MeasuredFeaturesOption };
