@@ -35,6 +35,7 @@ import {
     getThumbnailPaths,
     getFilteredXValues,
     getFilteredYValues,
+    getGroupByCategory,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
@@ -92,6 +93,7 @@ export const getMainPlotData = createSelector(
         getThumbnailPaths,
         getColorByValues,
         getColorBySelection,
+        getGroupByCategory,
         getColorsForPlot,
         getCategoricalFeatureKeys,
     ],
@@ -102,6 +104,7 @@ export const getMainPlotData = createSelector(
         thumbnailPaths,
         colorByValues,
         colorBy,
+        groupBy,
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
@@ -109,9 +112,10 @@ export const getMainPlotData = createSelector(
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
+        console.log("colorsForPlot", colorsForPlot)
         return {
-            color: colorBy === GROUP_BY_KEY ? undefined : colorByValues,
-            groupBy: colorBy === GROUP_BY_KEY || includes(categoricalFeatures, colorBy),
+            color: colorBy === groupBy ? undefined : colorByValues,
+            groupBy: includes(categoricalFeatures, colorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
@@ -194,7 +198,9 @@ function colorSettings(
     plotSettings: Partial<PlotData>,
     plotData: GroupedPlotData | ContinuousPlotData
 ): Partial<PlotData> {
+
     if (isGrouped(plotData)) {
+        console.log("IS GROUPED", plotData.groupSettings);
         return {
             ...plotSettings,
             transforms: [
@@ -290,6 +296,7 @@ function makeHistogramPlotY(data: number[]) {
 
 export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
     const { mainPlotData, selectedGroupPlotData } = allPlotData;
+    console.log("mainPlotData", mainPlotData);
     const data = [
         makeHistogramPlotX(mainPlotData.x),
         makeHistogramPlotY(mainPlotData.y),

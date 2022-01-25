@@ -58,7 +58,6 @@ export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
 export const getDisplayableGroups = (state: State) => state.selection.displayableGroups;
 
-
 // COMPOSED SELECTORS
 export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
     return selectedDataset.split("_v")[0];
@@ -67,7 +66,6 @@ export const getGroupByFeatureInfo = createSelector(
     [getMeasuredFeaturesDefs, getGroupByCategory],
     (features: MeasuredFeatureDef[], category): MeasuredFeaturesOption[] => {
         const feature = find(map(features), { key: category });
-        console.log(feature);
         if (!feature) {
             return [] as MeasuredFeaturesOption[];
         }
@@ -86,15 +84,13 @@ export const getGroupingCategoryNames = createSelector(
 // not truly a selector, it just seemed cleaner to make this one function instead of 3
 // (2 for each axis and one for the color by)
 export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[]): string {
-        const data = find(options, {key: key})
-        if (data) {
-            return data.tooltip
-        }
-        return ""
-    }  
+    const data = find(options, { key: key });
+    if (data) {
+        return data.tooltip;
+    }
+    return "";
+}
 
-
-    
 export const getFilteredCellData = createSelector(
     [getMeasuredFeaturesKeys, getFiltersToExclude, getPerCellDataForPlot],
     (measuredFeatureKeys, filtersToExclude, perCellDataForPlot: DataForPlot): DataForPlot => {
@@ -198,8 +194,8 @@ export const getThumbnailPaths = createSelector(
 );
 
 export const getColorByValues = createSelector(
-    [getFilteredCellData, getColorBySelection],
-    (metaData: DataForPlot, colorBy: string): string[] | number[] => {
+    [getFilteredCellData, getColorBySelection, getGroupByCategory],
+    (metaData: DataForPlot, colorBy: string, groupBy: string): string[] | number[] => {
         if (!metaData.labels) {
             return [];
         }
@@ -207,42 +203,37 @@ export const getColorByValues = createSelector(
             ...metaData.values,
             categoryName: metaData.labels.groupBy,
         };
-
+        if (groupBy === colorBy) {
+            return options.categoryName;
+        }
         return options[colorBy] || [];
     }
 );
 
 export const getColorsForPlot = createSelector(
-    [
-        getColorBySelection,
-        getGroupingCategoryNames,
-        getProteinColors,
-        getMeasuredFeaturesDefs,
-        getCategoricalFeatureKeys,
-    ],
+    [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
     (
         colorBy: string,
-        proteinNames: string[],
-        proteinColors: string[],
+        groupBy: string,
         measuredFeaturesDefs,
-        categoricalFeatureKeys
+        categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
-        if (colorBy === GROUP_BY_KEY) {
-            return map(proteinNames, (name: string, index) => {
-                return {
-                    color: proteinColors[index],
-                    name,
-                    label: name,
-                };
-            });
-        } else if (includes(categoricalFeatureKeys, colorBy)) {
+        if (includes(categoricalFeatureKeys, colorBy)) {
             const feature = find(measuredFeaturesDefs, { key: colorBy });
             if (feature) {
                 const { options } = feature;
                 return map(options, (value, key) => {
+                    // for the groupby feature we're using the string name as the key instead 
+                    // of a numeral value. We might want to change this to remove complexity. 
+                    let name;
+                    if (groupBy === colorBy) {
+                        name = value.key || value.name;
+                    } else {
+                        name = key;
+                    }
                     return {
                         color: value.color,
-                        name: key,
+                        name: name,
                         label: value.name,
                     };
                 });
@@ -313,7 +304,6 @@ export const getClickedScatterPoints = createSelector(
     [getClickedCellsFileInfo],
     (cells: FileInfo[]) => map(cells, CELL_ID_KEY)
 );
-
 
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(

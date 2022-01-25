@@ -34,6 +34,7 @@ import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 import {
     createUrlFromListOfIds,
     getCheckAllCheckboxIsIntermediate,
+    getColorByLegend,
     getGroupByTitle,
     getInteractivePanelData,
     getSelectionPanelData,
@@ -267,7 +268,7 @@ function mapStateToProps(state: State): PropsFromState {
         categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
-        colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
+        colorForPlot: getColorByLegend(state),
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
