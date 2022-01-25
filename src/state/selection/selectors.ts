@@ -62,11 +62,22 @@ export const getDisplayableGroups = (state: State) => state.selection.displayabl
 export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
     return selectedDataset.split("_v")[0];
 });
-export const getGroupByFeatureInfo = createSelector(
+
+export const getGroupByFeatureDef = createSelector(
     [getMeasuredFeaturesDefs, getGroupByCategory],
-    (features: MeasuredFeatureDef[], category): MeasuredFeaturesOption[] => {
+    (features: MeasuredFeatureDef[], category):MeasuredFeatureDef => {
         const feature = find(map(features), { key: category });
         if (!feature) {
+            return {} as MeasuredFeatureDef;
+        }
+        return feature;
+    }
+);
+
+export const getGroupByFeatureInfo = createSelector(
+    [getGroupByFeatureDef],
+    (feature: MeasuredFeatureDef): MeasuredFeaturesOption[] => {
+        if (isEmpty(feature)) {
             return [] as MeasuredFeaturesOption[];
         }
         return sortBy(feature.options, "name");
