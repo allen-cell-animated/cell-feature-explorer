@@ -21,7 +21,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     return (
         // <Col key={megaset.name}>
         <div key={megaset.name} className={styles.megacard}>
-            {Object.keys(megaset.datasets).length > 1 && megaset.name}
+            {Object.keys(megaset.datasets).length > 1 && megaset.title}
             {map(megaset.datasets, (dataset) => (
                 <DatasetCard key={dataset.id} {...dataset} handleSelectDataset={handleSelectDataset} />
             ))}
