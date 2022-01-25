@@ -112,7 +112,6 @@ export const getMainPlotData = createSelector(
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
-        console.log("colorsForPlot", colorsForPlot)
         return {
             color: colorBy === groupBy ? undefined : colorByValues,
             groupBy: includes(categoricalFeatures, colorBy),
@@ -200,7 +199,6 @@ function colorSettings(
 ): Partial<PlotData> {
 
     if (isGrouped(plotData)) {
-        console.log("IS GROUPED", plotData.groupSettings);
         return {
             ...plotSettings,
             transforms: [
@@ -296,7 +294,6 @@ function makeHistogramPlotY(data: number[]) {
 
 export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
     const { mainPlotData, selectedGroupPlotData } = allPlotData;
-    console.log("mainPlotData", mainPlotData);
     const data = [
         makeHistogramPlotX(mainPlotData.x),
         makeHistogramPlotY(mainPlotData.y),
