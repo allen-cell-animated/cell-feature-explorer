@@ -75,7 +75,6 @@ interface DispatchProps {
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     handleSelectPoint: ActionCreator<SelectPointAction>;
-    requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
@@ -320,7 +319,6 @@ const dispatchToPropsMap: DispatchProps = {
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
-    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
     setDisplayableGroups: selectionStateBranch.actions.setDisplayableGroups,

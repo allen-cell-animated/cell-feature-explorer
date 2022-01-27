@@ -1,6 +1,5 @@
 import {
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
@@ -20,7 +19,7 @@ export interface MetadataStateBranch {
 
 export interface FileInfo {
     [CELL_ID_KEY]: string;
-    [CELL_LINE_NAME_KEY]: string;
+    [GROUP_BY_KEY]: string; //
     [FOV_ID_KEY]: string;
     [GROUP_BY_KEY]: string;
     [FOV_THUMBNAIL_PATH]: string;

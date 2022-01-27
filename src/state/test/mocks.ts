@@ -1,7 +1,6 @@
 import {
     GROUP_BY_KEY,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     ARRAY_OF_CELL_IDS_KEY,
     FOV_THUMBNAIL_PATH,
@@ -15,7 +14,6 @@ import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
 export const selectedCellFileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
@@ -25,7 +23,6 @@ export const selectedCellFileInfo: FileInfo[] = [
     },
     {
         [CELL_ID_KEY]: "2",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
@@ -38,7 +35,6 @@ export const selectedCellFileInfo: FileInfo[] = [
 const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
@@ -48,7 +44,6 @@ const fileInfo: FileInfo[] = [
     },
     {
         [CELL_ID_KEY]: "2",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",

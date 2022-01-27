@@ -14,7 +14,6 @@ import {
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_CELL_FILE_INFO,
-    REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     REQUEST_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
@@ -73,12 +72,6 @@ export function receiveMeasuredFeatureDefs(
     return {
         payload,
         type: RECEIVE_MEASURED_FEATURE_DEFS,
-    };
-}
-
-export function requestCellLineData(): RequestAction {
-    return {
-        type: REQUEST_CELL_LINE_DATA,
     };
 }
 

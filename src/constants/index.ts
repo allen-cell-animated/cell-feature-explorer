@@ -11,7 +11,6 @@ export const GROUP_BY_KEY = "groupBy";
 
 export const CELL_ID_KEY = "CellId";
 export const FOV_ID_KEY = "FOVId";
-export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
 export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
 export const THUMBNAIL_PATH = "thumbnailPath";
@@ -20,7 +19,6 @@ export const VOLUME_VIEWER_PATH = "volumeviewerPath";
 export type FILE_INFO_KEY =
     | typeof CELL_ID_KEY
     | typeof FOV_ID_KEY
-    | typeof CELL_LINE_NAME_KEY
     | typeof THUMBNAIL_PATH
     | typeof VOLUME_VIEWER_PATH
     | typeof FOV_THUMBNAIL_PATH
@@ -29,7 +27,7 @@ export type FILE_INFO_KEY =
 export const FILE_INFO_KEYS = Object.freeze([
     CELL_ID_KEY,
     FOV_ID_KEY,
-    CELL_LINE_NAME_KEY,
+    GROUP_BY_KEY,
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
     FOV_THUMBNAIL_PATH,

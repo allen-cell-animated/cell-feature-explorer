@@ -4,7 +4,6 @@ import { createSelector } from "reselect";
 import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     SCATTER_PLOT_NAME,

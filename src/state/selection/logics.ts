@@ -4,7 +4,6 @@ import { filter, find, remove } from "lodash";
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
 import {
-    requestCellLineData,
     requestFeatureData,
     requestViewerChannelSettings,
 } from "../metadata/actions";
@@ -95,7 +94,6 @@ const changeDatasetLogic = createLogic({
                         volumeViewerDataRoot: selections.volumeViewerDataRoot,
                     },
                 });
-                dispatch(requestCellLineData());
                 dispatch(requestFeatureData());
                 dispatch(requestViewerChannelSettings());
                 done();

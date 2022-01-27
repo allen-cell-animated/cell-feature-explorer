@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import {
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     GROUP_BY_KEY,
     FOV_THUMBNAIL_PATH,
@@ -17,7 +16,7 @@ import { getPropsForVolumeViewer } from "../selectors";
 const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [GROUP_BY_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "fovThumbnailPath",
@@ -27,7 +26,7 @@ const fileInfo: FileInfo[] = [
     },
     {
         [CELL_ID_KEY]: "2",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
+        [GROUP_BY_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
         [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "fovThumbnailPath",
