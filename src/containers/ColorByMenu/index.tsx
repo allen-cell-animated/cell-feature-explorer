@@ -53,8 +53,8 @@ interface PropsFromState {
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     filtersToExclude: string[];
-    proteinPanelData: PanelData[];
-    proteinNames: string[];
+    interactivePanelData: PanelData[];
+    categoryNames: string[];
     selectionSetsPanelData: PanelData[];
     someProteinsOff: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
@@ -122,11 +122,11 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     }
 
     public allOnOff({ target }: CheckboxChangeEvent) {
-        const { handleFilterByProteinName, proteinNames } = this.props;
+        const { handleFilterByProteinName, categoryNames } = this.props;
         if (target.checked) {
             return handleFilterByProteinName([]);
         }
-        handleFilterByProteinName(proteinNames);
+        handleFilterByProteinName(categoryNames);
     }
 
     public onActivePanelChange(value: string | string[]) {
@@ -175,7 +175,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const {
             filtersToExclude,
             someProteinsOff,
-            proteinPanelData,
+            interactivePanelData,
             downloadUrls,
             downloadConfig,
             colorBy,
@@ -232,7 +232,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     <InteractiveLegend
                         closeable={false}
                         showTooltips={true}
-                        panelData={proteinPanelData}
+                        panelData={interactivePanelData}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
                         hideable={true}
@@ -274,8 +274,8 @@ function mapStateToProps(state: State): PropsFromState {
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         groupByTitle: getGroupByTitle(state),
-        proteinNames: selectionStateBranch.selectors.getGroupingCategoryNames(state),
-        proteinPanelData: getInteractivePanelData(state),
+        categoryNames: selectionStateBranch.selectors.getGroupingCategoryNames(state),
+        interactivePanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
         someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
     };
@@ -286,7 +286,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
-    handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
+    handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByCategoryName,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
     mapStateToProps,

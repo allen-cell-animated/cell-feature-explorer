@@ -118,7 +118,7 @@ export const mockState = {
         filterExclude: [],
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",
-        proteinColors: INITIAL_COLORS,
+        defaultColors: INITIAL_COLORS,
         selectedGroupColors: INITIAL_COLORS,
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,

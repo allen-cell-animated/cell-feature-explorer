@@ -26,7 +26,7 @@ import {
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
-    TOGGLE_FILTER_BY_PROTEIN_NAME,
+    TOGGLE_FILTER_BY_CATEGORY_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     SET_DATASET,
     RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
@@ -79,7 +79,7 @@ export const initialState = {
     plotByOnX: "",
     plotByOnY: "",
     groupBy: "",
-    proteinColors: INITIAL_COLORS,
+    defaultColors: INITIAL_COLORS,
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},
     selectedGroups: {},
@@ -182,9 +182,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
             selectedPoints: [...initialState.selectedPoints],
         }),
     },
-    [TOGGLE_FILTER_BY_PROTEIN_NAME]: {
+    [TOGGLE_FILTER_BY_CATEGORY_NAME]: {
         accepts: (action: AnyAction): action is ChangeSelectionAction =>
-            action.type === TOGGLE_FILTER_BY_PROTEIN_NAME,
+            action.type === TOGGLE_FILTER_BY_CATEGORY_NAME,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
             ...state,
             filterExclude: action.payload,

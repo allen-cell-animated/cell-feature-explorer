@@ -6,12 +6,10 @@ import {
     CELL_ID_KEY,
     CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
-    GENERAL_PLOT_SETTINGS,
     GROUP_BY_KEY,
 } from "../../constants";
 import {
     getPerCellDataForPlot,
-    getProteinLabelsPerCell,
     getMeasuredFeaturesKeys,
     getCategoricalFeatureKeys,
     getMeasuredFeaturesDefs,
@@ -38,7 +36,7 @@ export const getGroupByCategory = (state: State) => state.selection.groupBy;
 export const getClickedCellsFileInfo = (state: State) => state.selection.selectedPoints;
 export const getSelectedGroups = (state: State) => state.selection.selectedGroups;
 export const getColorBySelection = (state: State) => state.selection.colorBy;
-export const getProteinColors = (state: State) => state.selection.proteinColors;
+export const getDefaultColors = (state: State) => state.selection.defaultColors;
 export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
 export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
 export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
@@ -283,34 +281,6 @@ export const getCategoryCounts = createSelector(
     }
 );
 
-export const getFilteredOpacity = createSelector(
-    [getColorBySelection, getFiltersToExclude, getProteinLabelsPerCell],
-    (colorBySelection, filtersToExclude, proteinLabels): number[] => {
-        return map(proteinLabels, (proteinName) =>
-            includes(filtersToExclude, proteinName)
-                ? 0
-                : GENERAL_PLOT_SETTINGS.unselectedCircleOpacity
-        );
-    }
-);
-
-export const getOpacity = createSelector(
-    [getColorBySelection, getFiltersToExclude, getGroupingCategoryNames, getProteinLabelsPerCell],
-    (colorBySelection, filtersToExclude, proteinNameArray, proteinLabels): number[] => {
-        let arrayToMap;
-        if (colorBySelection === GROUP_BY_KEY) {
-            arrayToMap = proteinNameArray;
-        } else {
-            arrayToMap = proteinLabels;
-        }
-        return map(arrayToMap, (proteinName) =>
-            includes(filtersToExclude, proteinName)
-                ? 0
-                : GENERAL_PLOT_SETTINGS.unselectedCircleOpacity
-        );
-    }
-);
-
 export const getClickedScatterPoints = createSelector(
     [getClickedCellsFileInfo],
     (cells: FileInfo[]) => map(cells, CELL_ID_KEY)
@@ -331,28 +301,13 @@ export const getSelected3DCellFOV = createSelector(
     }
 );
 
-export const getSelected3DCellCellLine = createSelector(
-    [getSelected3DCellFileInfo],
-    (fileInfo: FileInfo): string => {
-        return !isEmpty(fileInfo) ? fileInfo[CELL_LINE_NAME_KEY] : "";
-    }
-);
 
-export const getSelected3DCellLabeledProtein = createSelector(
-    [getSelected3DCellFileInfo],
-    (fileInfo: FileInfo): string => {
-        return !isEmpty(fileInfo) ? fileInfo[GROUP_BY_KEY] : "";
-    }
-);
-
-export const getSelected3DCellLabeledStructure = createSelector(
-    [getMeasuredFeaturesDefs, getSelected3DCellCellLine],
-    (featureDefs: MeasuredFeatureDef, cellLineId: string): string => {
-        // const cellLineData = find(featureDefs, { [CELL_LINE_DEF_NAME_KEY]: cellLineId });
-        // if (cellLineData) {
-        //     return cellLineData[CELL_LINE_DEF_STRUCTURE_KEY];
-        // }
-        return "";
+export const getSelected3DCellGroupByCategoryName = createSelector(
+    [getSelected3DCellFileInfo, getGroupByCategory],
+    (fileInfo, category: string): string => {
+        console.log(fileInfo);
+        return category
+        // return !isEmpty(fileInfo) ? fileInfo[category] : "";
     }
 );
 

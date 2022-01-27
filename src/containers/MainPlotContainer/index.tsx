@@ -67,7 +67,7 @@ interface PropsFromState {
     yTickConversion: TickConversion;
     xValues: (number | null)[];
     yValues: (number | null)[];
-    proteinNames: string[];
+    categoryNames: string[];
 }
 
 interface DispatchProps {
@@ -113,12 +113,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     private updateChecklistItems() {
-        const { xValues, yValues, proteinNames } = this.props;
+        const { xValues, yValues, categoryNames } = this.props;
         // Could memoize this if performance becomes an issue
         const displayable = new Set<string>();
         for (let i = 0; i < xValues.length; i++) {
             if (xValues[i] !== null && yValues[i] !== null) {
-                displayable.add(proteinNames[i]);
+                displayable.add(categoryNames[i]);
             }
         }
         this.props.setDisplayableGroups([...displayable]);
@@ -309,7 +309,7 @@ function mapStateToProps(state: State): PropsFromState {
         yTickConversion: getYTickConversion(state),
         xValues: selectionStateBranch.selectors.getXValues(state),
         yValues: selectionStateBranch.selectors.getYValues(state),
-        proteinNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
+        categoryNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
     };
 }
 

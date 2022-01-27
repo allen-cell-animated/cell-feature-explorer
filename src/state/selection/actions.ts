@@ -16,7 +16,7 @@ import {
     SET_MOUSE_POSITION,
     SYNC_STATE_WITH_URL,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
-    TOGGLE_FILTER_BY_PROTEIN_NAME,
+    TOGGLE_FILTER_BY_CATEGORY_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     CHANGE_DATASET,
     RECEIVE_FILE_INFO,
@@ -98,10 +98,10 @@ export function clearAllSelectedPoints(): ResetSelectionAction {
     };
 }
 
-export function toggleFilterByProteinName(payload: string): ChangeSelectionAction {
+export function toggleFilterByCategoryName(payload: string): ChangeSelectionAction {
     return {
         payload,
-        type: TOGGLE_FILTER_BY_PROTEIN_NAME,
+        type: TOGGLE_FILTER_BY_CATEGORY_NAME,
     };
 }
 

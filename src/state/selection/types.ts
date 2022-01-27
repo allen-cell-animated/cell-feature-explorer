@@ -4,8 +4,6 @@ import {
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
 
-export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures"
-
 export interface CellDataArrays {
     [key: string]: number[] | FileInfo[] | string[];
 }
