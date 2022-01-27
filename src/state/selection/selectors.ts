@@ -306,8 +306,7 @@ export const getSelected3DCellGroupByCategoryName = createSelector(
     [getSelected3DCellFileInfo, getGroupByCategory],
     (fileInfo, category: string): string => {
         console.log(fileInfo);
-        return category
-        // return !isEmpty(fileInfo) ? fileInfo[category] : "";
+        return !isEmpty(fileInfo) ? fileInfo[GROUP_BY_KEY] : "";
     }
 );
 

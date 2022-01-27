@@ -59,6 +59,41 @@ const fileInfo: FileInfo[] = [
 ];
 
 const measuredFeaturesDefs = [
+      {
+        "key": "cell-line",
+        "displayName": "Labeled Structure",
+        "unit": "",
+        "description": "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        "tooltip": "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        "discrete": true,
+        "options": {
+            "5": {
+                "color": "#77207C",
+                "name": "Matrix adhesions",
+                "key": "Paxillin"
+            },
+            "7": {
+                "color": "#FF96FF",
+                "name": "Actin filaments",
+                "key": "Alpha-actinin-1"
+            },
+            "10": {
+                "color": "#FFFFB5",
+                "name": "Endoplasmic reticulum",
+                "key": "Sec61 beta"
+            },
+            "11": {
+                "color": "#FFD184",
+                "name": "Mitochondria",
+                "key": "Tom20"
+            },
+            "12": {
+                "color": "#6B4500",
+                "name": "Microtubules",
+                "key": "Alpha-tubulin"
+            },
+        },
+    },
     {
         discrete: false,
         displayName: "Apical Proximity",
@@ -66,10 +101,28 @@ const measuredFeaturesDefs = [
         unit: "unitless",
     },
     {
+        displayName: "Anaphase segmentation complete",
+        description:
+            "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+        tooltip:
+            "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+        unit: "unitless",
+        key: "anaphase-segmentation-complete",
         discrete: true,
-        displayName: "Cell Segmentation",
-        key: "cell-segmentation",
-        unit: "complete",
+        options: {
+            "0": {
+                color: "#fed98e",
+                name: "Incomplete",
+            },
+            "1": {
+                color: "#7f48f3",
+                name: "Complete",
+            },
+            "-1": {
+                color: "#838383",
+                name: "Not determined",
+            },
+        },
     },
     {
         discrete: false,
@@ -98,9 +151,7 @@ const featureData = {
     },
 };
 
-// The protein name for the first cell line should be disabled in the
-// left panel
-const displayableGroups: any = []
+const displayableGroups: any = ["Paxillin", "Alpha-actinin-1"];
 
 export const mockState = {
     metadata: {
@@ -115,6 +166,7 @@ export const mockState = {
             key: "",
             type: "",
         },
+        groupBy: INITIAL_COLOR_BY,
         filterExclude: [],
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",

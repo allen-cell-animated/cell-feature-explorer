@@ -7,86 +7,94 @@ import {
     disambiguateCategoryNames,
     getInteractivePanelData,
     getListOfCellIdsByDownloadConfig,
-    getSelectionPanelData
+    getSelectionPanelData,
 } from "../selectors";
 import { PanelData } from "../types";
 
 describe("ColorByMenu selectors", () => {
-
     const newMockState = mockState;
 
-    // describe("disambiguateStructureNames", () => {
-    //     it("attaches the protein name to each non-unique structure name", () => {
-    //         const result = disambiguateCategoryNames(newMockState.metadata.cellLineDefs);
-            
-    //         /* Without disambiguation, structure names would be:
-    //         [
-    //             "Nucleolus (Granular Component)",
-    //             "Actin filaments",
-    //             "Actin filaments",
-    //             "Actin filaments",
-    //             "Adherens junctions",
-    //         ]
-    //         */
-    //         const expected = [
-    //             "Nucleolus (Granular Component)",
-    //             "Actin filaments (Alpha-actinin-1)",
-    //             "Actin filaments (Beta-actin)",
-    //             "Actin filaments (Delta-actin)",
-    //             "Adherens junctions",
-    //         ];
-    //         expect(result).to.deep.equal(expected);
-    //     });
-    // });
-    
+    describe("disambiguateCategoryNames", () => {
+        it("attaches the protein name to each non-unique structure name", () => {
+            const mockData = [
+                {
+                    name: "same name",
+                    key: "1",
+                    color: "#ffffff",
+                },
+                {
+                    name: "same name",
+                    key: "2",
+                    color: "#ffffff",
+                },
+                {
+                    name: "diff name",
+                    key: "3",
+                    color: "#ffffff",
+                },
+            ];
+            const result = disambiguateCategoryNames(mockData);
+
+            /* Without disambiguation, names would be:
+            [
+                "same name",
+                "same nam",
+                "diff name",
+            ]
+            */
+            const expected = ["same name (1)", "same name (2)", "diff name"];
+            expect(result).to.deep.equal(expected);
+        });
+    });
+
     describe("getInteractivePanelData", () => {
         it("returns an set of props for each protein in state", () => {
             const result: PanelData[] = getInteractivePanelData(newMockState);
             const data = [
                 {
                     checked: true,
-                    color: "#bbcd22",
+                    color: "#FF96FF",
                     disabled: false,
-                    gene: "ABC-2",
+                    gene: "Alpha-actinin-1",
                     id: "Alpha-actinin-1",
-                    name: "Actin filaments (Alpha-actinin-1)",
-                    total: 1809,
-                },
-                {
-                    checked: true,
-                    color: "#ff9900",
-                    disabled: false,
-                    gene: "ABC-3",
-                    id: "Beta-actin",
-                    name: "Actin filaments (Beta-actin)",
-                    total: 1039,
-                },
-                {
-                    checked: true,
-                    color: "#FFEE1E",
-                    disabled: false,
-                    gene: "ABC-5",
-                    id: "Beta-catenin",
-                    name: "Adherens junctions",
-                    total: 2343,
-                },
-                {
-                    checked: true,
-                    color: "#FD92B6",
-                    disabled: false,
-                    gene: "ABC-4",
-                    id: "Delta-actin",
-                    name: "Actin filaments (Delta-actin)",
-                    total: 2003,
+                    name: "Actin filaments",
+                    total: 0,
                 },
                 {
                     checked: true,
                     color: "#6e6e6e",
                     disabled: true,
-                    gene: "ABC-1",
-                    id: "Nucleophosmin",
-                    name: "Nucleolus (Granular Component)",
-                    total: 3470,
+                    gene: "Sec61 beta",
+                    id: "Sec61 beta",
+                    name: "Endoplasmic reticulum",
+                    total: 0,
+                },
+                {
+                    checked: true,
+                    color: "#77207C",
+                    disabled: false,
+                    gene: "Paxillin",
+                    id: "Paxillin",
+                    name: "Matrix adhesions",
+                    total: 0,
+                },
+                {
+                    checked: true,
+                    color: "#6e6e6e",
+                    disabled: true,
+                    gene: "Alpha-tubulin",
+                    id: "Alpha-tubulin",
+                    name: "Microtubules",
+                    total: 0,
+                },
+                {
+                    checked: true,
+                    color: "#6e6e6e",
+                    disabled: true,
+                    gene: "Tom20",
+                    id: "Tom20",
+                    name: "Mitochondria",
+                    total: 0,
                 },
             ];
             expect(result).to.deep.equal(data);
@@ -112,13 +120,10 @@ describe("ColorByMenu selectors", () => {
             };
             const result: PanelData[] = getSelectionPanelData(state);
             expect(result.length).to.deep.equal(2);
-
         });
-
     });
 
     describe("getListOfCellIdsByDownloadConfig", () => {
-
         it("returns an empty array if there is no download config", () => {
             const result: string[] = getListOfCellIdsByDownloadConfig(newMockState);
             expect(result.length).to.deep.equal(0);
@@ -138,8 +143,6 @@ describe("ColorByMenu selectors", () => {
 
             const result: string[] = getListOfCellIdsByDownloadConfig(state);
             expect(result).to.deep.equal(["C1"]);
-
         });
     });
-
 });
