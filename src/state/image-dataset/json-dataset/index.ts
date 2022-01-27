@@ -6,17 +6,18 @@ import {
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
+    CELL_COUNT_KEY,
 } from "../../../constants";
 
 import {
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
-    MeasuredFeatureDef,
 } from "../../metadata/types";
 
 import { ImageDataset } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { find, indexOf } from "lodash";
 
 interface DatasetInfo {
     name: string;
@@ -32,9 +33,18 @@ interface DatasetInfo {
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
-    defaultXAxis: string;
-    defaultYAxis: string;
-    defaultColorBy: string;
+    xAxis: {
+        default: string;
+    }
+    yAxis: {
+        default: string;
+    }
+    colorBy: {
+        default: string;
+    }
+    groupBy: {
+        default: string;
+    }
     featuresDisplayOrder: string[];
     featuresDataOrder: string[];
 }
@@ -65,9 +75,18 @@ class JsonRequest implements ImageDataset {
             thumbnailRoot: "",
             downloadRoot: "",
             volumeViewerDataRoot: "",
-            defaultXAxis: "",
-            defaultYAxis: "",
-            defaultColorBy: "",
+            xAxis: {
+                default: "",
+            },
+            yAxis: {
+                default: "",
+            },
+            colorBy: {
+                default: "",
+            },
+            groupBy: {
+                default: "",
+            },
             featuresDisplayOrder: [],
             featuresDataOrder: [],
         };
@@ -160,7 +179,7 @@ class JsonRequest implements ImageDataset {
                 {} as MappingOfMeasuredValuesArrays
             );
 
-            const proteinArray: string[] = [];
+            const categoryArray: string[] = [];
             const thumbnails: string[] = [];
             const ids: string[] = [];
             this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
@@ -186,22 +205,17 @@ class JsonRequest implements ImageDataset {
                             throw new Error("Bad number of feature entries in data");
                         }
 
-                        // const groupBy = find(this.groupBy, {
-                        //     [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
-                        // });
-                        // if (!cellLine) {
-                        //     throw new Error(
-                        //         `Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`
-                        //     );
-                        // }
-                        // // augment file info with protein name
-                        // fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
-                        // // increment count in cell line
-                        // if (cellLine[CELL_COUNT_KEY] !== undefined) {
-                        //     (cellLine[CELL_COUNT_KEY] as number)++;
-                        // } else {
-                        //     cellLine[CELL_COUNT_KEY] = 1;
-                        // }
+                        const groupByFeatureDef = find(featureDefs, {
+                            key: this.datasetInfo.groupBy.default,
+                        });
+
+            
+                        // increment count in feature def
+                        if (groupByFeatureDef[CELL_COUNT_KEY] !== undefined) {
+                            (groupByFeatureDef[CELL_COUNT_KEY] as number)++;
+                        } else {
+                            groupByFeatureDef[CELL_COUNT_KEY] = 1;
+                        }
 
                         el.features.forEach((value: number, index: number) => {
                             const arrayOfValues = dataMappedByMeasuredFeatures[
@@ -214,14 +228,21 @@ class JsonRequest implements ImageDataset {
                             }
                         }, {});
 
-                        // proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
+                        const groupByValueIndex = indexOf(this.datasetInfo.featuresDataOrder, this.datasetInfo.groupBy.default)
+
+                        const categoryValue = el.features[groupByValueIndex];
+                        // augment file info with category value
+                        this.fileInfo[this.datasetInfo.groupBy.default] = categoryValue;
+                        const categoryInfo = groupByFeatureDef.options[categoryValue];
+
+                        categoryArray.push(categoryInfo ? categoryInfo.key || categoryInfo.name : "");
                         thumbnails.push(fileInfo.thumbnailPath);
                         ids.push(fileInfo[CELL_ID_KEY].toString());
                     });
                     return {
                         values: dataMappedByMeasuredFeatures,
                         labels: {
-                            [GROUP_BY_KEY]: proteinArray,
+                            [GROUP_BY_KEY]: categoryArray,
                             thumbnailPaths: thumbnails,
                             [ARRAY_OF_CELL_IDS_KEY]: ids,
                         },

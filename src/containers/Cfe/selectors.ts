@@ -5,8 +5,6 @@ import {
     getDownloadRoot,
     getGroupByFeatureDef,
     getSelected3DCellFileInfo,
-    getSelected3DCellGroupByCategoryName,
-    getSelectedDatasetName,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
 import {
