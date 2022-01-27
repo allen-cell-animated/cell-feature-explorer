@@ -22,7 +22,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
         </Header>
         <Layout>
             <Content className={styles.content}>
-                <h2 className={styles.subtitle}>Load a dataset</h2>
+                <h2 className={styles.subtitle}>Load a dataset to get started</h2>
                 <Row type="flex" justify="space-around" className={styles.section}>
                     {megasets.map((megaset) => (
                         <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />
