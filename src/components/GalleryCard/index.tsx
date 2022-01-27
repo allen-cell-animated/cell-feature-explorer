@@ -1,7 +1,7 @@
 import { Avatar, Button, Card, Dropdown, Icon, List, Menu } from "antd";
 import React from "react";
 
-import { DeselectPointAction, SelectCellIn3DAction } from "../../state/selection/types";
+import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
 import styles from "./style.css";
 
@@ -13,7 +13,7 @@ interface GalleryCardProps {
     cellID: string;
     mitoticStage?: string;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
+    handleOpenIn3D: (payload: {id: string}) => SelectPointAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -26,7 +26,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
     };
 
     const openCellIn3D = () => {
-        props.handleOpenIn3D(props.cellID);
+        props.handleOpenIn3D({id: props.cellID});
     };
     const menu = (
         <Menu className="download-dropdown">

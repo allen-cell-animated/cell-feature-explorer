@@ -53,7 +53,6 @@ import {
     SelectAlbumAction,
     SelectArrayOfPointsAction,
     SelectAxisAction,
-    SelectCellIn3DAction,
     SelectionStateBranch,
     SelectPointAction,
     SetDisplayableGroupsAction,
@@ -129,7 +128,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [OPEN_CELL_IN_3D]: {
-        accepts: (action: AnyAction): action is SelectCellIn3DAction =>
+        accepts: (action: AnyAction): action is SelectPointAction =>
             action.type === OPEN_CELL_IN_3D,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
             ...state,

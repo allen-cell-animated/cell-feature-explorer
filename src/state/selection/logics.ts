@@ -104,9 +104,9 @@ const changeDatasetLogic = createLogic({
 const requestCellFileInfoForSelectedPoint = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet } = deps;
-
+        console.log(action.payload)
         return imageDataSet
-            .getFileInfoByCellId(action.payload.toString())
+            .getFileInfoByCellId(action.payload.id.toString())
             .then((data?: FileInfo) => {
                 if (!data) {
                     return {};

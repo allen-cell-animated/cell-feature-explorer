@@ -122,14 +122,17 @@ const requestFeatureDataLogic = createLogic({
                         selectedCellIndex = findVisibleDataPoint(ids.length, xValues, yValues);
                     }
                     dispatch(
-                        selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
+                        selectPoint({
+                            id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex],
+                            index: selectedCellIndex,
+                        })
                     );
                 }
 
                 if (!getSelected3DCell(state)) {
                     dispatch(
                         selectCellFor3DViewer(
-                            metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex]
+                            { id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex] }
                         )
                     );
                 }

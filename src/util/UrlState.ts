@@ -121,11 +121,11 @@ export default class UrlState {
 
     private static urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
         [URLSearchParam.cellSelectedFor3D]: (cellId, params) => {
-            const selectCellFor3DAction = selectCellFor3DViewer(String(cellId));
+            const selectCellFor3DAction = selectCellFor3DViewer({ id: String(cellId)});
 
             // add this cell to the list of selected points if it does not already exist
             if (!includes(castArray(params[URLSearchParam.selectedPoint]), cellId)) {
-                return [selectPoint(String(cellId)), selectCellFor3DAction];
+                return [selectPoint({id: String(cellId)}), selectCellFor3DAction];
             }
 
             return selectCellFor3DAction;
@@ -138,9 +138,9 @@ export default class UrlState {
         [URLSearchParam.selectedAlbum]: (album) => selectAlbum(Number(album)),
         [URLSearchParam.selectedPoint]: (selection) => {
             if (Array.isArray(selection)) {
-                return map<number | string, AnyAction>(selection, (point) => selectPoint(String(point)));
+                return map<number | string, AnyAction>(selection, (point) => selectPoint({ id: String(point)} ));
             }
-            return selectPoint(String(selection));
+            return selectPoint({id: String(selection)});
         },
     };
 

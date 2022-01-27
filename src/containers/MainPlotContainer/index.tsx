@@ -71,7 +71,7 @@ interface PropsFromState {
 }
 
 interface DispatchProps {
-    changeHoveredCell: ActionCreator<ChangeHoveredPointAction>;
+    changeHoveredPoint: ActionCreator<ChangeHoveredPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     handleSelectPoint: ActionCreator<SelectPointAction>;
@@ -132,7 +132,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 if (includes(clickedPoints, point.id)) {
                     handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint(point.id);
+                    handleSelectPoint({id: point.id, index: point.pointIndex});
                 }
             }
         });
@@ -141,20 +141,22 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPointHovered(hovered: any) {
         const { points, event } = hovered;
-        const { filtersToExclude, updateMousePosition, changeHoveredCell } = this.props;
+        const { filtersToExclude, updateMousePosition, changeHoveredPoint: changeHoveredCell } = this.props;
         updateMousePosition({
             pageX: event.pageX,
             pageY: event.pageY,
         });
+
         points.forEach((point: any) => {
             if (
                 point.data.name === SCATTER_PLOT_NAME &&
                 !includes(filtersToExclude, point.fullData.name)
-            ) {
+                ) {
+                console.log(point)
                 window.clearTimeout(this.thumbnailTimeout);
                 changeHoveredCell({
                     [CELL_ID_KEY]: point.id,
-                    [GROUP_BY_KEY]: point.fullData.name,
+                    index: point.pointIndex,
                     thumbnailPath: point.customdata,
                 });
             } else {
@@ -164,11 +166,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public onPointUnhovered() {
-        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredCell(null), 500);
+        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredPoint(null), 500);
     }
 
     public onPlotUnhovered({ relatedTarget }: any) {
-        const { changeHoveredCell } = this.props;
+        const { changeHoveredPoint: changeHoveredCell } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
             changeHoveredCell(null);
@@ -313,7 +315,7 @@ function mapStateToProps(state: State): PropsFromState {
 }
 
 const dispatchToPropsMap: DispatchProps = {
-    changeHoveredCell: selectionStateBranch.actions.changeHoveredPoint,
+    changeHoveredPoint: selectionStateBranch.actions.changeHoveredPoint,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,

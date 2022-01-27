@@ -85,7 +85,7 @@ export function deselectPoint(payload: string): DeselectPointAction {
            };
        }
 
-export function selectPoint(payload: string): SelectPointAction {
+export function selectPoint(payload: {id: string, index?: number}): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
@@ -105,7 +105,7 @@ export function toggleFilterByCategoryName(payload: string): ChangeSelectionActi
     };
 }
 
-export function selectCellFor3DViewer(payload: string): SelectPointAction {
+export function selectCellFor3DViewer(payload: {id: string}): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,

@@ -49,12 +49,10 @@ export interface DeselectGroupOfPointsAction {
 }
 
 export interface  SelectPointAction {
-    payload: string;
-    type: string;
-}
-
-export interface  SelectCellIn3DAction {
-    payload: string;
+    payload: {
+        id: string;
+        index?: number;
+    };
     type: string;
 }
 
@@ -83,7 +81,7 @@ export interface ChangeMousePositionAction {
 
 export interface SelectedPointData {
     [CELL_ID_KEY]: string;
-    [GROUP_BY_KEY]: string;
+    index: number;
     thumbnailPath: string;
 }
 

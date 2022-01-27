@@ -28,7 +28,6 @@ import {
     DeselectPointAction,
     ResetSelectionAction,
     SelectAlbumAction,
-    SelectCellIn3DAction,
     SelectPointAction,
     SetHoveredCardAction,
 } from "../../state/selection/types";
@@ -57,7 +56,7 @@ interface DispatchProps {
     handleClearAllSelectedPoints: ActionCreator<ResetSelectionAction>;
     handleSelectAlbum: ActionCreator<SelectAlbumAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
-    handleOpenIn3D: ActionCreator<SelectCellIn3DAction>;
+    handleOpenIn3D: ActionCreator<SelectPointAction>;
     setHovered: ActionCreator<SetHoveredCardAction>;
 }
 interface OwnProps {
@@ -135,7 +134,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             });
         }
         if (includes(ids, value)) {
-            addSearchedCell(value);
+            addSearchedCell({id: value});
             return this.setState({
                 inputStatus: "success",
                 message: messages.success,
@@ -191,7 +190,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
-    public selectCell(cellId: string): SelectCellIn3DAction {
+    public selectCell(cellId: {id: string}) {
         const { handleOpenIn3D } = this.props;
         window.setTimeout(this.scrollGallery, 3000);
         this.closeGallery();
