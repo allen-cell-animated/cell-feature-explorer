@@ -5,6 +5,12 @@
     background-color: #4b4b4b;
 }
 
+.loadButton {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+}
+
 .card :global(.ant-card-body) {
     padding: 0px;
 }

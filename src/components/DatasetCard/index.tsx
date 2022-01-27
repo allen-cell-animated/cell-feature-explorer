@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Descriptions, Tag, Divider} from "antd";
+import { Button, Card, Descriptions, Tag, Divider } from "antd";
 import { DatasetMetaData } from "../../state/image-dataset/types";
 const { Meta } = Card;
 
@@ -71,6 +71,9 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     {userData.totalTaggedStructures}
                 </Descriptions.Item>
             </Descriptions>
+            <Button type="primary" className={styles.loadButton}>
+                Load
+            </Button>
         </Card>
     );
     if (link) {
