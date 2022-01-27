@@ -72,9 +72,3 @@ export const GENERAL_PLOT_SETTINGS = {
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
 };
-
-export const DEFAULT_GROUP_BY: { [key: string]: string } = {
-    aics_hipsc: "labeled structure",
-    cellsystems_fish: "RNA FISH targets",
-    cellsystems_live: "labeled structure",
-};

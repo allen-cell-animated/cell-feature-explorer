@@ -321,25 +321,8 @@ export const getYDisplayOptions = createSelector(
 
 export const getColorByDisplayOptions = createSelector(
     [getMeasuredFeaturesDefs, getGroupByTitle],
-    (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
-        if (!find(featureDefs, { key: GROUP_BY_KEY })) {
-            // TODO: this should be in the data already, not added here
-            // need to have what drop downs each feature def should be included in. 
-            const tooltip =
-                groupByTitle === "RNA FISH targets"
-                    ? "Pair of gene transcripts assayed by RNA fluorescence in situ hybridization (RNA FISH)"
-                    : "Name of the cellular structure that has been fluorescently labeled in each cell line";
-            return [
-                {
-                    key: GROUP_BY_KEY,
-                    displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
-                    discrete: true,
-                    unit: null,
-                    tooltip: tooltip,
-                },
-                ...featureDefs,
-            ];
-        }
+    (featureDefs): MeasuredFeatureDef[] => {
+        // TODO: use "exclude" in database to filter measured features
         return featureDefs;
     }
 );

@@ -15,7 +15,7 @@ describe("ColorByMenu selectors", () => {
     const newMockState = mockState;
 
     describe("disambiguateCategoryNames", () => {
-        it("attaches the protein name to each non-unique structure name", () => {
+        it("attaches the key to each non-unique name", () => {
             const mockData = [
                 {
                     name: "same name",
@@ -48,14 +48,13 @@ describe("ColorByMenu selectors", () => {
     });
 
     describe("getInteractivePanelData", () => {
-        it("returns an set of props for each protein in state", () => {
+        it("returns an set of props for each category in state", () => {
             const result: PanelData[] = getInteractivePanelData(newMockState);
             const data = [
                 {
                     checked: true,
                     color: "#FF96FF",
                     disabled: false,
-                    gene: "Alpha-actinin-1",
                     id: "Alpha-actinin-1",
                     name: "Actin filaments",
                     total: 0,
@@ -64,7 +63,6 @@ describe("ColorByMenu selectors", () => {
                     checked: true,
                     color: "#6e6e6e",
                     disabled: true,
-                    gene: "Sec61 beta",
                     id: "Sec61 beta",
                     name: "Endoplasmic reticulum",
                     total: 0,
@@ -73,7 +71,6 @@ describe("ColorByMenu selectors", () => {
                     checked: true,
                     color: "#77207C",
                     disabled: false,
-                    gene: "Paxillin",
                     id: "Paxillin",
                     name: "Matrix adhesions",
                     total: 0,
@@ -82,7 +79,6 @@ describe("ColorByMenu selectors", () => {
                     checked: true,
                     color: "#6e6e6e",
                     disabled: true,
-                    gene: "Alpha-tubulin",
                     id: "Alpha-tubulin",
                     name: "Microtubules",
                     total: 0,
@@ -91,7 +87,6 @@ describe("ColorByMenu selectors", () => {
                     checked: true,
                     color: "#6e6e6e",
                     disabled: true,
-                    gene: "Tom20",
                     id: "Tom20",
                     name: "Mitochondria",
                     total: 0,
@@ -129,7 +124,7 @@ describe("ColorByMenu selectors", () => {
             expect(result.length).to.deep.equal(0);
         });
 
-        it("returns an array of cell ids that match the protein name if that is the download config type", () => {
+        it("returns an array of cell ids that match the category name if that is the download config type", () => {
             const state: State = {
                 ...newMockState,
                 selection: {

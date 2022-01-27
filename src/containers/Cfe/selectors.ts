@@ -1,8 +1,9 @@
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
-import { FileInfo } from "../../state/metadata/types";
+import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getDownloadRoot,
+    getGroupByFeatureDef,
     getSelected3DCellFileInfo,
     getSelected3DCellGroupByCategoryName,
     getSelectedDatasetName,
@@ -16,6 +17,7 @@ import {
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { getViewerChannelSettings } from "../../state/metadata/selectors";
+import { GROUP_BY_KEY } from "../../constants";
 
 export interface VolumeViewerProps {
     cellId: string;
@@ -82,14 +84,12 @@ export const getPropsForVolumeViewer = createSelector(
 
 export const getViewerHeader = createSelector(
     [
-        getSelectedDatasetName,
         getSelected3DCellFileInfo,
-        getSelected3DCellGroupByCategoryName,
+        getGroupByFeatureDef,
     ],
     (
-        selectedDatasetName,
         fileInfo,
-        categoryName
+        groupByFeatureDef: MeasuredFeatureDef,
     ): { cellId: string; label: string; value: string } => {
         let label = "";
         let value = "";
@@ -97,14 +97,8 @@ export const getViewerHeader = createSelector(
             return { cellId: "", label, value };
         }
         const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
-        // TODO: figure out a data driven solution for this.
-        if (selectedDatasetName === "cellsystems_fish") {
-            label = "Gene pair";
-            value = categoryName;
-        } else {
-            label = "Protein";
-            value = categoryName;
-        }
+        label = groupByFeatureDef.displayName;
+        value = fileInfo[GROUP_BY_KEY];
         return {
             cellId,
             label,

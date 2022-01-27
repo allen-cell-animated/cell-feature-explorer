@@ -2,14 +2,13 @@ import { chunk, includes, map, reduce, values } from "lodash";
 import { createSelector } from "reselect";
 
 import {
-    DEFAULT_GROUP_BY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
 } from "../../constants/index";
 import { getLabelsPerCell } from "../../state/metadata/selectors";
-import { MeasuredFeaturesOption } from "../../state/metadata/types";
+import { MeasuredFeatureDef, MeasuredFeaturesOption } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -21,11 +20,11 @@ import {
     getSelectedSetTotals,
     getSelectionSetColors,
     getDisplayableGroups,
-    getSelectedDatasetName,
     getGroupingCategoryNames,
-    getGroupByFeatureInfo,
+    getGroupByFeatureOptionsAsList,
     getGroupByCategory,
     getColorsForPlot,
+    getGroupByFeatureDef,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
@@ -33,9 +32,9 @@ import { convertSingleImageIdToDownloadId } from "../../state/util";
 import { PanelData } from "./types";
 
 export const getGroupByTitle = createSelector(
-    [getSelectedDatasetName],
-    (selectedDatasetName: string): string => {
-        return DEFAULT_GROUP_BY[selectedDatasetName] || "labeled structure";
+    [getGroupByFeatureDef],
+    (groupByFeatureDef: MeasuredFeatureDef): string => {
+        return groupByFeatureDef.displayName;
     }
 );
 
@@ -79,7 +78,7 @@ export const getInteractivePanelData = createSelector(
     [
         getGroupByCategory,
         getColorBySelection,
-        getGroupByFeatureInfo,
+        getGroupByFeatureOptionsAsList,
         getFiltersToExclude,
         getDisplayableGroups,
     ],
@@ -123,7 +122,6 @@ export const getInteractivePanelData = createSelector(
                 color: color,
                 id: id,
                 name: names[index],
-                gene: key,
                 disabled: disabled,
                 total,
             };

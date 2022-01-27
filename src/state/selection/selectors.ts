@@ -72,7 +72,7 @@ export const getGroupByFeatureDef = createSelector(
     }
 );
 
-export const getGroupByFeatureInfo = createSelector(
+export const getGroupByFeatureOptionsAsList = createSelector(
     [getGroupByFeatureDef],
     (feature: MeasuredFeatureDef): MeasuredFeaturesOption[] => {
         if (isEmpty(feature)) {
@@ -83,7 +83,7 @@ export const getGroupByFeatureInfo = createSelector(
 );
 
 export const getGroupingCategoryNames = createSelector(
-    [getGroupByFeatureInfo],
+    [getGroupByFeatureOptionsAsList],
     (feature: MeasuredFeaturesOption[]): string[] => {
         return map(feature, "name");
     }
