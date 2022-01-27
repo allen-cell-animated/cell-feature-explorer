@@ -1,10 +1,8 @@
 import React from "react";
 import { Row, Col, Layout } from "antd";
-import { map } from "lodash";
 
-import DatasetCard from "../../components/DatasetCard";
 import MegasetCard from "../../components/MegasetCard";
-import { DatasetMetaData, Megaset } from "../../state/image-dataset/types";
+import { Megaset } from "../../state/image-dataset/types";
 const { Content, Header } = Layout;
 
 import styles from "./style.css";
