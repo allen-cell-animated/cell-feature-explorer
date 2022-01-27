@@ -165,7 +165,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
-                cellLine: point.cellLine,
                 font: {
                     color: "#ffffff",
                     family: "tahoma, arial, verdana, sans-serif",

@@ -39,7 +39,6 @@ export interface TypeToDescriptionMap {
 }
 
 export interface Annotation {
-    cellLine: string;
     cellID: string;
     hovered: boolean;
     fovID: string;

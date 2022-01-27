@@ -140,7 +140,6 @@ export const getAnnotations = createSelector(
         return clickedCellsFileInfo.reduce((acc, data) => {
             const cellID = data[CELL_ID_KEY];
             const fovID = data[FOV_ID_KEY] || "";
-            const cellLine = data[CELL_LINE_NAME_KEY] || "";
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
@@ -150,7 +149,6 @@ export const getAnnotations = createSelector(
             if (pointIndex >= 0 && x !== null && y !== null) {
                 acc.push({
                     cellID,
-                    cellLine,
                     fovID,
                     hovered: cellID === currentHoveredCellId,
                     pointIndex,
