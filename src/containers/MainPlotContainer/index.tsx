@@ -152,7 +152,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 point.data.name === SCATTER_PLOT_NAME &&
                 !includes(filtersToExclude, point.fullData.name)
                 ) {
-                console.log(point)
                 window.clearTimeout(this.thumbnailTimeout);
                 changeHoveredCell({
                     [CELL_ID_KEY]: point.id,
@@ -310,7 +309,7 @@ function mapStateToProps(state: State): PropsFromState {
         yTickConversion: getYTickConversion(state),
         xValues: selectionStateBranch.selectors.getXValues(state),
         yValues: selectionStateBranch.selectors.getYValues(state),
-        categoryNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
+        categoryNames: selectionStateBranch.selectors.getGroupingCategoryNamesAsArray(state),
     };
 }
 

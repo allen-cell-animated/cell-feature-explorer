@@ -1,16 +1,14 @@
-import { map, filter, find, forEach, isEmpty } from "lodash";
+import { map, filter, find, forEach } from "lodash";
 import { createSelector } from "reselect";
 
 import { MITOTIC_STAGE_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
-import { getGroupByCategory } from "../selection/selectors";
 import { State } from "../types";
 
 import {
     DataForPlot,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
-    PerCellLabels,
 } from "./types";
 
 // BASIC SELECTORS
