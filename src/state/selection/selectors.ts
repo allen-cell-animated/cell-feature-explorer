@@ -317,9 +317,17 @@ export const getClickedScatterPoints = createSelector(
 
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(
-    [getSelected3DCell, getClickedCellsFileInfo],
-    (selected3DCellId: string, fileInfoArray: FileInfo[]): FileInfo => {
-        return getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || ({} as FileInfo);
+    [getSelected3DCell, getClickedCellsFileInfo, getGroupingCategoryNamesAsArray],
+    (selected3DCellId: string, fileInfoArray: FileInfo[], arrayOfCategoryNames): FileInfo => {
+        const fileInfo = getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || ({} as FileInfo);
+        if (fileInfo.index) {
+            return {
+                ...fileInfo,
+                [GROUP_BY_KEY]: arrayOfCategoryNames[fileInfo.index]
+            }
+        } else {
+            return fileInfo
+        }
     }
 );
 
@@ -330,14 +338,6 @@ export const getSelected3DCellFOV = createSelector(
     }
 );
 
-
-export const getSelected3DCellGroupByCategoryName = createSelector(
-    [getSelected3DCellFileInfo, getGroupByCategory],
-    (fileInfo, category: string): string => {
-        console.log(fileInfo);
-        return !isEmpty(fileInfo) ? fileInfo[GROUP_BY_KEY] : "";
-    }
-);
 
 // SELECTED GROUPS SELECTORS
 export const getSelectedGroupsData = createSelector(

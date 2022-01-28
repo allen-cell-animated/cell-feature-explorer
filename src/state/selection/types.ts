@@ -1,6 +1,5 @@
 import {
     CELL_ID_KEY,
-    GROUP_BY_KEY,
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
 

@@ -130,9 +130,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
     [OPEN_CELL_IN_3D]: {
         accepts: (action: AnyAction): action is SelectPointAction =>
             action.type === OPEN_CELL_IN_3D,
-        perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
+        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
             ...state,
-            cellSelectedFor3D: action.payload,
+            cellSelectedFor3D: action.payload.id,
         }),
     },
     [SELECT_GROUP_VIA_PLOT]: {
