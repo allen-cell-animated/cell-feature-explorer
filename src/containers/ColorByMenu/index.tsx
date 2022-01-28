@@ -54,7 +54,6 @@ interface PropsFromState {
     downloadConfig: DownloadConfig;
     filtersToExclude: string[];
     interactivePanelData: PanelData[];
-    categoryNames: string[];
     selectionSetsPanelData: PanelData[];
     someProteinsOff: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
@@ -122,11 +121,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     }
 
     public allOnOff({ target }: CheckboxChangeEvent) {
-        const { handleFilterByProteinName, categoryNames } = this.props;
+        const { handleFilterByProteinName, interactivePanelData } = this.props;
         if (target.checked) {
             return handleFilterByProteinName([]);
         }
-        handleFilterByProteinName(categoryNames);
+        const keys = interactivePanelData.map((ele: PanelData) => ele.id);
+        handleFilterByProteinName(keys);
     }
 
     public onActivePanelChange(value: string | string[]) {
@@ -274,7 +274,6 @@ function mapStateToProps(state: State): PropsFromState {
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         groupByTitle: getGroupByTitle(state),
-        categoryNames: selectionStateBranch.selectors.getGroupingCategoryNames(state),
         interactivePanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
         someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
