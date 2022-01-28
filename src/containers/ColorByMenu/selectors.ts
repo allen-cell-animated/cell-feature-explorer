@@ -74,6 +74,22 @@ export const getColorByLegend = createSelector(
     }
 );
 
+const getColorForCategory = (
+    showGroupByColors: boolean,
+    isExcluded: boolean,
+    isDisabled: boolean,
+    categoryColor: string
+) => {
+    if (isDisabled) {
+        return DISABLE_COLOR;
+    }
+    if (showGroupByColors) {
+        return isExcluded ? OFF_COLOR : categoryColor;
+    } else {
+        return isExcluded ? OFF_COLOR : DISABLE_COLOR;
+    }
+};
+
 export const getInteractivePanelData = createSelector(
     [
         getGroupByCategory,
@@ -89,21 +105,6 @@ export const getInteractivePanelData = createSelector(
         filtersToExclude: string[],
         displayableGroups: string[]
     ): PanelData[] => {
-        const getColorForCategory = (
-            showGroupByColors: boolean,
-            isExcluded: boolean,
-            isDisabled: boolean,
-            categoryColor: string
-        ) => {
-            if (isDisabled) {
-                return DISABLE_COLOR;
-            }
-            if (showGroupByColors) {
-                return isExcluded ? OFF_COLOR : categoryColor;
-            } else {
-                return isExcluded ? OFF_COLOR : DISABLE_COLOR;
-            }
-        };
         const names = disambiguateCategoryNames(categories);
         return map(categories, (category: MeasuredFeaturesOption, index: number) => {
             const name: string = category.name;
