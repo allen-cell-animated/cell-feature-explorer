@@ -6,6 +6,7 @@ import {
     CELL_ID_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
+    GROUP_BY_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
@@ -34,6 +35,8 @@ import {
     getFilteredXValues,
     getFilteredYValues,
     getGroupByCategory,
+    getGroupingCategoryNamesAsArray,
+    getHoveredPointData,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
@@ -359,3 +362,14 @@ export const getYTickConversion = createSelector(
         return makeNumberAxis();
     }
 );
+
+
+export const getDataForOverlayCard = createSelector([getHoveredPointData, getGroupingCategoryNamesAsArray], (pointData, categoryNames) => {
+    if (!pointData || !categoryNames.length) {
+        return pointData;
+    }
+    return {
+        ...pointData,
+        [GROUP_BY_KEY]: categoryNames[pointData.index]
+    }
+});

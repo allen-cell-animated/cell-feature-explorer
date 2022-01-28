@@ -35,6 +35,7 @@ import { Annotation, State } from "../../state/types";
 
 import {
     getAnnotations,
+    getDataForOverlayCard,
     getScatterPlotDataArray,
     getXDisplayOptions,
     getXTickConversion,
@@ -197,6 +198,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        console.log(hoveredPointData)
         return (
             hoveredPointData &&
             galleryCollapsed && (
@@ -297,7 +299,7 @@ function mapStateToProps(state: State): PropsFromState {
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
-        hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
+        hoveredPointData: getDataForOverlayCard(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
