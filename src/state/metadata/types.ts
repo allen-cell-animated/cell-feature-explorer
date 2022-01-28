@@ -26,7 +26,7 @@ export interface FileInfo {
     [FOV_VOLUME_VIEWER_PATH]: string;
     [THUMBNAIL_PATH]: string;
     [VOLUME_VIEWER_PATH]: string;
-    index?: number;
+    index?: number; // added to the data after it's loaded for fast lookup into other array
 }
 
 export interface MeasuredFeaturesOption {

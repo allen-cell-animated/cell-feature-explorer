@@ -317,16 +317,21 @@ export const getClickedScatterPoints = createSelector(
 
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(
-    [getSelected3DCell, getClickedCellsFileInfo, getGroupingCategoryNamesAsArray],
-    (selected3DCellId: string, fileInfoArray: FileInfo[], arrayOfCategoryNames): FileInfo => {
+    [getSelected3DCell, getClickedCellsFileInfo, getGroupingCategoryNamesAsArray, getPerCellDataForPlot],
+    (selected3DCellId: string, fileInfoArray: FileInfo[], arrayOfCategoryNames, plotData): FileInfo => {
         const fileInfo = getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || ({} as FileInfo);
+        let index = -1;
+        if (isEmpty(fileInfo)) {
+            return fileInfo;
+        }
         if (fileInfo.index) {
-            return {
-                ...fileInfo,
-                [GROUP_BY_KEY]: arrayOfCategoryNames[fileInfo.index]
-            }
+            index = fileInfo.index;
         } else {
-            return fileInfo
+            index = plotData.labels.cellIds.indexOf(selected3DCellId);
+        }
+        return {
+            ...fileInfo,
+            [GROUP_BY_KEY]: arrayOfCategoryNames[index]
         }
     }
 );

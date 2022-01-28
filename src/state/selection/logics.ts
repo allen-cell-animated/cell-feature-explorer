@@ -1,13 +1,10 @@
 import { createLogic } from "redux-logic";
-import { filter, find, remove } from "lodash";
+import { filter, find, indexOf, map, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
-import {
-    requestFeatureData,
-    requestViewerChannelSettings,
-} from "../metadata/actions";
-import { getDatasets } from "../metadata/selectors";
+import { requestFeatureData, requestViewerChannelSettings } from "../metadata/actions";
+import { getDatasets, getPerCellDataForPlot } from "../metadata/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -70,7 +67,7 @@ const changeDatasetLogic = createLogic({
             selectedDataset = find(datasets, { id: action.payload });
         }
         if (selectedDataset === undefined) {
-            console.error(`A dataset matching ${action.payload} is not available.`)
+            console.error(`A dataset matching ${action.payload} is not available.`);
             return done();
         }
         imageDataSet
@@ -104,7 +101,7 @@ const changeDatasetLogic = createLogic({
 const requestCellFileInfoForSelectedPoint = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet } = deps;
-        console.log("request file info", action.payload)
+        console.log("request file info", action.payload);
         return imageDataSet
             .getFileInfoByCellId(action.payload.id.toString())
             .then((data?: FileInfo) => {
@@ -123,14 +120,41 @@ const requestCellFileInfoForSelectedPoint = createLogic({
     type: SELECT_POINT,
 });
 
+const getIndicesForCellIds = (cellIds: string[], fullArrayOfCelIds: string[]) => {
+    /**
+     * This will be called when there is an array of selected cells coming from the url.
+     * All that is stored in the url is the cell id, so we need to find the index for each of these
+     * ids, but we only need to do this once.
+     */
+    const indices: { [key: string]: number } = {};
+    const idsInOrder = cellIds.sort((a: string, b: string) => Number(a) - Number(b));
+    let lastFound = 0;
+    idsInOrder.forEach((id: string) => {
+        const index = indexOf(fullArrayOfCelIds, id, lastFound);
+        indices[id] = index;
+        lastFound = index;
+    });
+    return indices;
+};
+
 const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
     process(deps: ReduxLogicDeps) {
-        const { action, imageDataSet } = deps;
+        const { action, imageDataSet, getState } = deps;
+        const state = getState();
+        const plotData = getPerCellDataForPlot(state);
+        const indices = getIndicesForCellIds(action.payload, plotData.labels.cellIds);
 
         return imageDataSet
             .getFileInfoByArrayOfCellIds(action.payload)
             .then((data: (FileInfo | undefined)[]) => {
-                return filter(data);
+                return filter(
+                    map(data, (data) => {
+                        return {
+                            ...data,
+                            index: data ? indices[data.CellId] : -1,
+                        };
+                    })
+                );
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
