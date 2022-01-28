@@ -327,6 +327,7 @@ export const getSelected3DCellFileInfo = createSelector(
         if (fileInfo.index) {
             index = fileInfo.index;
         } else {
+            // only won't be present if this cell was selected via the url
             index = plotData.labels.cellIds.indexOf(selected3DCellId);
         }
         return {

@@ -145,7 +145,7 @@ export const getAnnotations = createSelector(
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
-            const pointIndex = findIndex(cellIds, (id) => id === cellID);
+            const pointIndex = data.index || findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
             if (pointIndex >= 0 && x !== null && y !== null) {
