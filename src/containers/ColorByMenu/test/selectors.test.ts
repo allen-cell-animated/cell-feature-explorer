@@ -38,7 +38,7 @@ describe("ColorByMenu selectors", () => {
             /* Without disambiguation, names would be:
             [
                 "same name",
-                "same nam",
+                "same name",
                 "diff name",
             ]
             */
