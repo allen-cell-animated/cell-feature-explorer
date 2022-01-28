@@ -25,6 +25,7 @@ import {
     getGroupByCategory,
     getColorsForPlot,
     getGroupByFeatureDef,
+    getGroupingCategoryNamesAsArray,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
@@ -152,14 +153,14 @@ export const getSelectionPanelData = createSelector(
 );
 
 export const getListOfCellIdsByDownloadConfig = createSelector(
-    [getLabelsPerCell, getDownloadConfig, getSelectedGroups],
-    (labelsPerCell, downloadConfig, selectedGroups): string[] => {
+    [getLabelsPerCell, getGroupingCategoryNamesAsArray, getDownloadConfig, getSelectedGroups],
+    (labelsPerCell, namePerCell: string[], downloadConfig, selectedGroups): string[] => {
         const returnArray: string[] = [];
         if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
             return reduce(
-                labelsPerCell.groupBy,
-                (acc, proteinName: string, index) => {
-                    if (proteinName === downloadConfig.key) {
+                namePerCell,
+                (acc, categoryName: string, index) => {
+                    if (categoryName === downloadConfig.key) {
                         acc.push(convertSingleImageIdToDownloadId(labelsPerCell.cellIds[index]));
                     }
                     return acc;
