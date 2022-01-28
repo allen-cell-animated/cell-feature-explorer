@@ -1,8 +1,9 @@
-import { map, filter, find, forEach } from "lodash";
+import { map, filter, find, forEach, isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
-import { MITOTIC_STAGE_KEY, GROUP_BY_KEY } from "../../constants";
+import { MITOTIC_STAGE_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
+import { getGroupByCategory } from "../selection/selectors";
 import { State } from "../types";
 
 import {
@@ -82,13 +83,6 @@ export const getCategoricalFeatureKeys = createSelector(
     [getMeasuredFeaturesDefs],
     (measuredFeatureDefs): string[] => {
         return map(filter(measuredFeatureDefs, "discrete"), "key");
-    }
-);
-
-export const getProteinLabelsPerCell = createSelector(
-    [getLabelsPerCell],
-    (labels: PerCellLabels): string[] => {
-        return labels[GROUP_BY_KEY] || [];
     }
 );
 

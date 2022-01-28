@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from "axios";
 
 import {
     FILE_INFO_KEYS,
-    GROUP_BY_KEY,
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
@@ -182,9 +181,11 @@ class JsonRequest implements ImageDataset {
             const categoryArray: string[] = [];
             const thumbnails: string[] = [];
             const ids: string[] = [];
+            const indices: number[] = [];
             this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
                 (featureDataArray) => {
-                    featureDataArray.forEach((el: any) => {
+                    featureDataArray.forEach((el: any, index: number) => {
+                        indices.push(index);
                         // FILE INFO
                         // number of file info property names must be same as number of file_info entries in data
                         if (FILE_INFO_KEYS.length !== el.file_info.length) {
@@ -240,9 +241,9 @@ class JsonRequest implements ImageDataset {
                         ids.push(fileInfo[CELL_ID_KEY].toString());
                     });
                     return {
+                        indices: indices,
                         values: dataMappedByMeasuredFeatures,
                         labels: {
-                            [GROUP_BY_KEY]: categoryArray,
                             thumbnailPaths: thumbnails,
                             [ARRAY_OF_CELL_IDS_KEY]: ids,
                         },

@@ -37,6 +37,7 @@ export const initialState = {
     megasets: [],
     measuredFeatureNames: [],
     featureData: {
+        indices: [],
         values: {},
         labels: {},
     },

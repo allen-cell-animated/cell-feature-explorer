@@ -66,10 +66,11 @@ export interface MeasuredFeaturesWithCategoryNames {
 export interface PerCellLabels {
     thumbnailPaths: string[];
     cellIds: string[];
-    groupBy: string[];
+    [key: string]: string[];
 }
 
 export interface DataForPlot {
+    indices: number[];
     values: MappingOfMeasuredValuesArrays;
     labels: PerCellLabels;
 }

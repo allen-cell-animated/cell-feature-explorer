@@ -99,24 +99,56 @@ export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[])
     return "";
 }
 
+export const getGroupingCategoryNamesAsArray = createSelector(
+    [getPerCellDataForPlot, getGroupByFeatureDef],
+    (perCellDataForPlot, groupByCategoryFeatureDef): string[] => {
+        const categoryKey = groupByCategoryFeatureDef.key;
+
+        return map(perCellDataForPlot.values[categoryKey], (ele) => {
+            const categoryInfo = groupByCategoryFeatureDef.options[ele];
+            return categoryInfo.key || categoryInfo.name;
+
+        });
+    }
+);
+
 export const getFilteredCellData = createSelector(
-    [getMeasuredFeaturesKeys, getFiltersToExclude, getPerCellDataForPlot],
-    (measuredFeatureKeys, filtersToExclude, perCellDataForPlot: DataForPlot): DataForPlot => {
+    [
+        getMeasuredFeaturesKeys,
+        getFiltersToExclude,
+        getPerCellDataForPlot,
+        getGroupByCategory,
+        getGroupingCategoryNamesAsArray,
+    ],
+    (
+        measuredFeatureKeys,
+        filtersToExclude,
+        perCellDataForPlot: DataForPlot,
+        categoryKey: string,
+        groupingNames,
+    ): DataForPlot => {
         if (!filtersToExclude.length) {
-            return perCellDataForPlot;
+            return {
+                ...perCellDataForPlot,
+                labels: {
+                    ...perCellDataForPlot.labels,
+                    [categoryKey]: groupingNames
+                }
+            };
         }
         const categoryNameArray: string[] = [];
         const dataToReturn: MappingOfMeasuredValuesArrays = {};
         const cellIds: string[] = [];
         const thumbnails: string[] = [];
-
-        for (let i = 0; i < perCellDataForPlot.labels.groupBy.length; i++) {
-            const categoryName: string = perCellDataForPlot.labels.groupBy[i];
+        const indices: number[] = [];
+        for (let i = 0; i < perCellDataForPlot.labels.cellIds.length; i++) {
+            const categoryName: string = groupingNames[i];
             if (!includes(filtersToExclude, categoryName)) {
                 const cellId = perCellDataForPlot.labels.cellIds[i];
                 cellIds.push(cellId);
                 categoryNameArray.push(categoryName);
                 thumbnails.push(perCellDataForPlot.labels.thumbnailPaths[i]);
+                indices.push(perCellDataForPlot.indices[i]);
                 measuredFeatureKeys.forEach((featureKey) => {
                     if (!dataToReturn[featureKey]) {
                         dataToReturn[featureKey] = [];
@@ -129,9 +161,10 @@ export const getFilteredCellData = createSelector(
             }
         }
         return {
+            indices: indices,
             values: dataToReturn,
             labels: {
-                [GROUP_BY_KEY]: categoryNameArray,
+                [categoryKey]: categoryNameArray,
                 [ARRAY_OF_CELL_IDS_KEY]: cellIds,
                 thumbnailPaths: thumbnails,
             },
@@ -209,11 +242,8 @@ export const getColorByValues = createSelector(
         }
         const options: MeasuredFeaturesWithCategoryNames = {
             ...metaData.values,
-            categoryName: metaData.labels.groupBy,
+            [groupBy]: metaData.labels[groupBy],
         };
-        if (groupBy === colorBy) {
-            return options.categoryName;
-        }
         return options[colorBy] || [];
     }
 );

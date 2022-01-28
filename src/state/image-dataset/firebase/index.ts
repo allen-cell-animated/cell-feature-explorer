@@ -7,9 +7,6 @@ import {
 import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
 
-import {
-    GROUP_BY_KEY,
-} from "../../../constants";
 import { isDevOrStagingSite } from "../../../util";
 import {
     FileInfo,
@@ -17,11 +14,8 @@ import {
     MeasuredFeatureDef,
 } from "../../metadata/types";
 import { Album } from "../../types";
-
 import { ImageDataset, DatasetMetaData, Megaset } from "../types";
-
 import { firestore } from "./configure-firebase";
-
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 class FirebaseRequest implements ImageDataset {
@@ -196,8 +190,10 @@ class FirebaseRequest implements ImageDataset {
                 );
                 const groupByArray: string[] = [];
                 const thumbnails: string[] = [];
+                const indices: number[] = [];
                 const ids: string[] = [];
                 for (let index = 0; index < featureData.length; index++) {
+                    indices.push(index);
                     const datum = featureData[index];
                     datum.f.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
@@ -217,9 +213,9 @@ class FirebaseRequest implements ImageDataset {
                     ids.push(datum.i.toString());
                 }
                 return {
+                    indices: indices,
                     values: dataMappedByMeasuredFeatures,
                     labels: {
-                        [GROUP_BY_KEY]: groupByArray,
                         thumbnailPaths: thumbnails,
                         cellIds: ids,
                     },
