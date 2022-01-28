@@ -96,7 +96,7 @@ export const getViewerHeader = createSelector(
         }
         const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
         label = groupByFeatureDef.displayName;
-        value = fileInfo[GROUP_BY_KEY];
+        value = fileInfo[GROUP_BY_KEY] || "";
         return {
             cellId,
             label,

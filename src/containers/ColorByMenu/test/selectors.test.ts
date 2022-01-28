@@ -57,7 +57,7 @@ describe("ColorByMenu selectors", () => {
                     disabled: false,
                     id: "Alpha-actinin-1",
                     name: "Actin filaments",
-                    total: 0,
+                    total: 1,
                 },
                 {
                     checked: true,
@@ -73,7 +73,7 @@ describe("ColorByMenu selectors", () => {
                     disabled: false,
                     id: "Paxillin",
                     name: "Matrix adhesions",
-                    total: 0,
+                    total: 1,
                 },
                 {
                     checked: true,
@@ -130,7 +130,7 @@ describe("ColorByMenu selectors", () => {
                 selection: {
                     ...newMockState.selection,
                     downloadConfig: {
-                        key: "protein1",
+                        key: "Paxillin",
                         type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
                     },
                 },

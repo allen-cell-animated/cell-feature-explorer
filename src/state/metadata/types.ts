@@ -19,13 +19,12 @@ export interface MetadataStateBranch {
 
 export interface FileInfo {
     [CELL_ID_KEY]: string;
-    [GROUP_BY_KEY]: string; //
     [FOV_ID_KEY]: string;
-    [GROUP_BY_KEY]: string;
     [FOV_THUMBNAIL_PATH]: string;
     [FOV_VOLUME_VIEWER_PATH]: string;
     [THUMBNAIL_PATH]: string;
     [VOLUME_VIEWER_PATH]: string;
+    [GROUP_BY_KEY]?: string;
     index?: number; // added to the data after it's loaded for fast lookup into other array
 }
 

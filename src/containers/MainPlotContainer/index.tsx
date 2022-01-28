@@ -203,7 +203,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             hoveredPointData &&
             galleryCollapsed && (
                 <PopoverCard
-                    title={hoveredPointData[GROUP_BY_KEY]}
+                    title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
                 />

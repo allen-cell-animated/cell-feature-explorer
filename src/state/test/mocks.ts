@@ -1,5 +1,4 @@
 import {
-    GROUP_BY_KEY,
     CELL_ID_KEY,
     FOV_ID_KEY,
     ARRAY_OF_CELL_IDS_KEY,
@@ -15,7 +14,6 @@ export const selectedCellFileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
         [FOV_ID_KEY]: "12762",
-        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -24,7 +22,6 @@ export const selectedCellFileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "2",
         [FOV_ID_KEY]: "12762",
-        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -36,7 +33,6 @@ const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
         [FOV_ID_KEY]: "12762",
-        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -45,7 +41,6 @@ const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "2",
         [FOV_ID_KEY]: "12762",
-        [GROUP_BY_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -54,38 +49,42 @@ const fileInfo: FileInfo[] = [
 ];
 
 const measuredFeaturesDefs = [
-      {
-        "key": "cell-line",
-        "displayName": "Labeled Structure",
-        "unit": "",
-        "description": "Name of the cellular structure that has been fluorescently labeled in each cell line",
-        "tooltip": "Name of the cellular structure that has been fluorescently labeled in each cell line",
-        "discrete": true,
-        "options": {
+    {
+        key: "cell-line",
+        displayName: "Labeled Structure",
+        unit: "",
+        description:
+            "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        tooltip:
+            "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        discrete: true,
+        options: {
             "5": {
-                "color": "#77207C",
-                "name": "Matrix adhesions",
-                "key": "Paxillin"
+                color: "#77207C",
+                name: "Matrix adhesions",
+                key: "Paxillin",
+                count: 1,
             },
             "7": {
-                "color": "#FF96FF",
-                "name": "Actin filaments",
-                "key": "Alpha-actinin-1"
+                color: "#FF96FF",
+                name: "Actin filaments",
+                key: "Alpha-actinin-1",
+                count: 1,
             },
             "10": {
-                "color": "#FFFFB5",
-                "name": "Endoplasmic reticulum",
-                "key": "Sec61 beta"
+                color: "#FFFFB5",
+                name: "Endoplasmic reticulum",
+                key: "Sec61 beta",
             },
             "11": {
-                "color": "#FFD184",
-                "name": "Mitochondria",
-                "key": "Tom20"
+                color: "#FFD184",
+                name: "Mitochondria",
+                key: "Tom20",
             },
             "12": {
-                "color": "#6B4500",
-                "name": "Microtubules",
-                "key": "Alpha-tubulin"
+                color: "#6B4500",
+                name: "Microtubules",
+                key: "Alpha-tubulin",
             },
         },
     },
@@ -133,7 +132,9 @@ const measuredFeaturesDefs = [
     },
 ];
 const featureData = {
+    indices: [0, 1],
     values: {
+        "cell-line": [5, 7],
         "apical-proximity": [-0.25868651080317, -0.1],
         "cell-segmentation": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
@@ -142,7 +143,6 @@ const featureData = {
     labels: {
         [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
         thumbnailPaths: ["path1", "path2"],
-        [GROUP_BY_KEY]: ["protein1", "protein2"],
     },
 };
 
