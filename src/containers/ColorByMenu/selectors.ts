@@ -63,7 +63,7 @@ export const disambiguateCategoryNames = (options: MeasuredFeaturesOption[]): st
     return disambiguatedNames;
 };
 
-export const getColorByLegend = createSelector(
+export const getLegendColors = createSelector(
     [getColorsForPlot, getGroupByCategory, getColorBySelection],
     (colors, groupBy, colorBy) => {
         // if color by and group by are the same, the legend 
