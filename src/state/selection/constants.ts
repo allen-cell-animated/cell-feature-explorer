@@ -1,6 +1,5 @@
 import {
     MY_SELECTIONS_ID,
-    GROUP_BY_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
 
