@@ -17,18 +17,26 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     megaset,
     handleSelectDataset,
 }: MegasetCardProps) => {
+    const isMultipleDatasets = Object.keys(megaset.datasets).length > 1;
     return (
         // <Col key={megaset.name}>
         <div key={megaset.name} className={styles.megacard}>
-            {Object.keys(megaset.datasets).length > 1 && megaset.title}
-            {map(megaset.datasets, (dataset) => (
-                <DatasetCard key={dataset.id} {...dataset} handleSelectDataset={handleSelectDataset} />
-            ))}
+            {isMultipleDatasets && 
+                <div className={styles.megasetTitle}>{megaset.title}</div>
+            }
+            <div className={styles.datasetCards}>
+                {map(megaset.datasets, (dataset) => (
+                    <DatasetCard key={dataset.id} {...dataset} handleSelectDataset={handleSelectDataset} />
+                ))}
+            </div>
             {megaset.publications && megaset.publications.length > 0 && 
                 <div>
                     Publications
                     {megaset.publications.map(publication => (
-                        <div key={`${megaset.name}-${publication.title}`}>{publication.title} {publication.citation}</div>
+                        <div key={`${megaset.name}-${publication.title}`} className={styles.publication}>
+                            <div className={styles.publicationTitle}>{publication.title}</div>
+                            <div className={styles.journalDate}>{publication.citation}</div>
+                        </div>
                     ))}
                 </div>
             }
