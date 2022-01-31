@@ -21,8 +21,16 @@
     column-gap: 10px;
 }
 
+.publications {
+    margin: 20px 10px 10px 10px;
+    font-size: 12px;
+}
+
 .publication {
     display: flex;
+    justify-content: space-between;
+    margin-top: 0.3em;
+    font-size: 16px;
 }
 
 .publicationTitle {
@@ -30,6 +38,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 75%;
+    font-style: italic;
 }
 
 .journalDate {

@@ -30,12 +30,18 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
                 ))}
             </div>
             {megaset.publications && megaset.publications.length > 0 && 
-                <div>
+                <div className={styles.publications}>
                     Publications
                     {megaset.publications.map(publication => (
                         <div key={`${megaset.name}-${publication.title}`} className={styles.publication}>
-                            <div className={styles.publicationTitle}>{publication.title}</div>
-                            <div className={styles.journalDate}>{publication.citation}</div>
+                            <div className={styles.publicationTitle}>
+                                <a href={publication.url} target="blank">
+                                    {publication.title}
+                                </a>
+                            </div>
+                            <div className={styles.journalDate}>
+                                {publication.citation}
+                            </div>
                         </div>
                     ))}
                 </div>
