@@ -40,7 +40,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
                                 </a>
                             </div>
                             <div className={styles.journalDate}>
-                                {publication.citation}
+                                {publication.citation}.
                             </div>
                         </div>
                     ))}
