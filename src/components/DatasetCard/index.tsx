@@ -26,7 +26,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     const displayTitle = (
         <>
             <div>
-                {userData.isNew && <Tag color="purple">new</Tag>}
+                {userData.isNew && <Tag color="#8950d9">new</Tag>}
                 {title ? title : name}
             </div>
             <span className={styles.version}>{versionPrefixed}</span>
