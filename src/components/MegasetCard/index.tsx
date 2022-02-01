@@ -19,12 +19,14 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
 }: MegasetCardProps) => {
     const numDatasets = Object.keys(megaset.datasets).length;
     const isMultipleDatasets = numDatasets > 1;
+    // Set a max-width for the megacard so that publications shrink into the megacard
+    // width instead of the megacard expanding to fit publications
     // TODO: decide on a max number of datasets per row to cap this maxWidth
-    const maxWidth = numDatasets * 430 + (numDatasets - 1) * 10 + 20;
+    const maxWidth = `${numDatasets * 430 + (numDatasets - 1) * 10 + 20}px`;
 
     return (
         // <Col key={megaset.name}>
-        <div key={megaset.name} className={styles.megacard} style={{ maxWidth: `${maxWidth}px` }}>
+        <div key={megaset.name} className={styles.megacard} style={{ maxWidth: maxWidth }}>
             {isMultipleDatasets && 
                 <div className={styles.megasetTitle}>{megaset.title}</div>
             }
