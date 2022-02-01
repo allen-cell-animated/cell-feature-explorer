@@ -1,6 +1,7 @@
-import { Button, Dropdown, Icon, Menu } from "antd";
+import { Button, Dropdown, Menu } from "antd";
+import { DownloadOutlined, CheckOutlined } from "@ant-design/icons";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { ClickParam } from "antd/es/menu";
+import { MenuInfo } from 'rc-menu/lib/interface'
 import { includes, uniq } from "lodash";
 import React, { MouseEvent } from "react";
 
@@ -73,7 +74,7 @@ export default class DownloadDropDownMenu extends React.Component<
         }
     }
 
-    public saveDownloadUrl(clickedLink: ClickParam) {
+    public saveDownloadUrl(clickedLink: MenuInfo) {
         const { downloadConfig } = this.props;
         const { alreadyDownloaded } = this.state;
         const thisAlreadyDownloaded = alreadyDownloaded[downloadConfig.key];
@@ -116,9 +117,9 @@ export default class DownloadDropDownMenu extends React.Component<
                 {downloadUrls.map((url, index) => (
                     <Menu.Item key={index} onClick={this.saveDownloadUrl}>
                         {includes(alreadyDownloaded, index.toString()) ? (
-                            <Icon type="check" />
+                            <CheckOutlined />
                         ) : (
-                            <Icon type="download" />
+                            <DownloadOutlined />
                         )}
                         <a href={url}> data chunk {index + 1} </a>
                     </Menu.Item>
@@ -139,7 +140,7 @@ export default class DownloadDropDownMenu extends React.Component<
                         id={id}
                         onClick={this.onDownload}
                     >
-                        <Icon type="download" />
+                        <DownloadOutlined />
                     </Button>
                 </Dropdown>
             </div>
