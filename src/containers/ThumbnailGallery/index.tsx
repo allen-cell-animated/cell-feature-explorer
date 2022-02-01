@@ -1,4 +1,5 @@
-import { Button, Col, Form, Icon, Input, List, Popconfirm, Radio, Row } from "antd";
+import { Button, Col, Form, Input, List, Popconfirm, Radio, Row } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -208,7 +209,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             <Row
                 id="gallery"
                 className={styles.container}
-                type="flex"
                 gutter={32}
                 justify="space-between"
             >
@@ -222,7 +222,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button icon="close" type="primary">
+                                <Button icon={<CloseOutlined/>} type="primary">
                                     Clear All
                                 </Button>
                             </Popconfirm>
@@ -242,8 +242,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
                         <h2>Gallery</h2>
-                        <Icon
-                            type="close"
+                        <CloseOutlined
                             style={{ fontSize: "2em" }}
                             onClick={this.closeGallery}
                         />

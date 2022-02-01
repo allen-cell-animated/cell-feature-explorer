@@ -1,4 +1,5 @@
-import { Avatar, Button, Card, Dropdown, Icon, List, Menu } from "antd";
+import { Avatar, Button, Card, Dropdown, List, Menu } from "antd";
+import { DownloadOutlined, CloseOutlined } from "@ant-design/icons";
 import React from "react";
 
 import { DeselectPointAction, SelectCellIn3DAction } from "../../state/selection/types";
@@ -33,14 +34,14 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             {props.downloadHref && (
                 <Menu.Item key="1">
                     <a href={props.downloadHref}>
-                        <Icon type="download" /> Segmented cell
+                        <DownloadOutlined /> Segmented cell
                     </a>
                 </Menu.Item>
             )}
             {props.downloadFullField && (
                 <Menu.Item key="2">
                     <a href={props.downloadFullField}>
-                        <Icon type="download" /> Full field image
+                        <DownloadOutlined /> Full field image
                     </a>
                 </Menu.Item>
             )}
@@ -56,10 +57,10 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             3D
         </Button>,
         <Dropdown key={`${props.cellID}-download`} overlay={menu} trigger={["click"]}>
-            <Button icon="download" />
+            <Button icon={<DownloadOutlined/>} />
         </Dropdown>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
-            <Icon type="close" />
+            <CloseOutlined />
         </Button>,
     ];
 

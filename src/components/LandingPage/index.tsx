@@ -35,7 +35,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
         <Layout>
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset</h2>
-                <Row type="flex" justify="space-around" className={styles.section}>
+                <Row justify="space-around" className={styles.section}>
                     {renderCards(megasets, handleSelectDataset)}
                     <Col className={styles.caption}>
                         The Cell Feature Explorer is an online tool to access our complete database
