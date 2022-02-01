@@ -17,10 +17,14 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     megaset,
     handleSelectDataset,
 }: MegasetCardProps) => {
-    const isMultipleDatasets = Object.keys(megaset.datasets).length > 1;
+    const numDatasets = Object.keys(megaset.datasets).length;
+    const isMultipleDatasets = numDatasets > 1;
+    // TODO: decide on a max number of datasets per row to cap this maxWidth
+    const maxWidth = numDatasets * 430 + (numDatasets - 1) * 10 + 20;
+
     return (
         // <Col key={megaset.name}>
-        <div key={megaset.name} className={styles.megacard}>
+        <div key={megaset.name} className={styles.megacard} style={{ maxWidth: `${maxWidth}px` }}>
             {isMultipleDatasets && 
                 <div className={styles.megasetTitle}>{megaset.title}</div>
             }
