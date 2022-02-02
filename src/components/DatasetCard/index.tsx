@@ -39,7 +39,6 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     );
     const cardContent = (
         <Card
-            style={{ width: 430 }}
             className={styles.card}
             hoverable
             bordered={false}

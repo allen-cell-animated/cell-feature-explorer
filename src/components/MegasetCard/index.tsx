@@ -22,7 +22,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     // Set a max-width for the megacard so that publications shrink into the megacard
     // width instead of the megacard expanding to fit publications
     // TODO: decide on a max number of datasets per row to cap this maxWidth
-    const maxWidth = `${numDatasets * 430 + (numDatasets - 1) * 10 + 20}px`;
+    const maxWidth = numDatasets > 1 ? "100%" : `${430 + 10 + 20}px`;
 
     return (
         // <Col key={megaset.name}>

@@ -51,8 +51,9 @@
 
 .section {
     margin: 0.5em auto 2em auto;
-    max-width: 1010px;
+    max-width: 950px;
     font-weight: 100;
+    justify-content: space-between;
 }
 
 .caption {
