@@ -3,6 +3,12 @@
 .card {
     padding: 15px 15px 5px 15px;
     background-color: #4b4b4b;
+    display: flex;
+    flex-direction: column;
+}
+
+.spacer {
+    flex-grow: 2;
 }
 
 .loadButton {
@@ -13,6 +19,9 @@
 
 .card :global(.ant-card-body) {
     padding: 0px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
 }
 
 .card :global(.ant-descriptions-item-label) {

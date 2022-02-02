@@ -49,6 +49,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     src={image}
                 />
             }
+            onClick={() => handleSelectDataset(id)}
         >
             <Meta
                 title={displayTitle}
@@ -59,6 +60,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     ></div>
                 }
             />
+            <div className={styles.spacer}/>
             <Descriptions column={1} size="small">
                 <Descriptions.Item label="Number of Cells">
                     {userData.totalCells.toLocaleString("en")}
@@ -78,7 +80,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     if (link) {
         return <a href={link}>{cardContent}</a>;
     }
-    return <div onClick={() => handleSelectDataset(id)}>{cardContent}</div>;
+    return cardContent;
 };
 
 export default DatasetCard;
