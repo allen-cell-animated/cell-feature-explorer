@@ -14,12 +14,10 @@ interface LandingPageProps {
 
 const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
     <Layout>
-        <Header className={styles.headerMain}>
-            <div>
-                View any of over 200,000 3D cell images and plot cells by features such as organelle
-                volume
-            </div>
-        </Header>
+        <div className={styles.headerMain}>
+            View any of over 200,000 3D cell images and plot cells by features such as organelle
+            volume
+        </div>
         <Layout>
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset to get started</h2>

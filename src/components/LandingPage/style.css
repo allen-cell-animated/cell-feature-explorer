@@ -31,7 +31,7 @@
 .header-main {
     text-align: left;
     background-color: var(--background-dim-gray);
-    padding: 15px 50px;
+    padding: 30px 50px;
     height: initial;
     display: flex;
     justify-content: space-between;
