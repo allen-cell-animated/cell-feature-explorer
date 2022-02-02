@@ -5,6 +5,7 @@
     background-color: #4b4b4b;
     display: flex;
     flex-direction: column;
+    max-width: 462px;
 }
 
 .spacer {
