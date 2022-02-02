@@ -8,12 +8,12 @@
     height: min-content;
 }
 
-/* TODO: something like this  */
-/* @media screen and (max-width: 480px) {
+/* One-column view for narrower screens  */
+@media screen and (max-width: 1030px) {
     .megacard {
-        max-width: 90vw !important;
+        max-width: 460px !important;
     }
-} */
+}
 
 .megasetTitle {
     text-align: center;
