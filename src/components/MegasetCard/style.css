@@ -1,6 +1,6 @@
 @import "../../styles/colors.css";
 
-.megacard {
+.container {
     background-color: var(--megacard-background);
     padding: 8px;
     box-shadow: 0px 1px 19px 5px rgb(0 0 0 / 25%);
@@ -11,7 +11,7 @@
 
 /* One-column view for narrower screens  */
 @media screen and (max-width: 1030px) {
-    .megacard {
+    .container {
         max-width: 460px !important;
     }
 }
@@ -43,6 +43,7 @@
     gap: 5px;
 }
 
+/* Shrink publication font for mobile view */
 @media screen and (max-width: 480px) {
     .publication {
         font-size: 12px;
@@ -53,7 +54,6 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 75%;
     font-style: italic;
     color: var(--link-text);
 }

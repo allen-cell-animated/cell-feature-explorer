@@ -12,20 +12,22 @@ interface MegasetCardProps {
     handleSelectDataset: (id: string) => void;
 }
 
+/* 
+Mirroring our data structure, every dataset card is rendered in a MegasetCard,
+but a MegasetCard can contain one or multiple dataset cards.
+*/
 const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     megaset,
     handleSelectDataset,
 }: MegasetCardProps) => {
     const numDatasets = Object.keys(megaset.datasets).length;
-    const isMultipleDatasets = numDatasets > 1;
-    // Set a max-width for the megacard so that publications shrink into the megacard
-    // width instead of the megacard expanding to fit publications
-    // TODO: decide on a max number of datasets per row to cap this maxWidth
-    const maxWidth = numDatasets > 1 ? "100%" : `${430 + 10 + 20}px`;
+    // Set a max-width for the container so that publications shrink into the 
+    // container instead of the container expanding to fit publications
+    const maxWidth = numDatasets > 1 ? "100%" : "460px";
 
     return (
-        <div key={megaset.name} className={styles.megacard} style={{ maxWidth: maxWidth }}>
-            {isMultipleDatasets && 
+        <div key={megaset.name} className={styles.container} style={{ maxWidth: maxWidth }}>
+            {numDatasets > 1 && 
                 <div className={styles.megasetTitle}>{megaset.title}</div>
             }
             <div className={styles.datasetCards}>

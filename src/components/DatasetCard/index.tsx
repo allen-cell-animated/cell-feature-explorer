@@ -60,6 +60,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     ></div>
                 }
             />
+            {/* Spacer div to push `Descriptions` to the bottom of the card */}
             <div className={styles.spacer}/>
             <Descriptions column={1} size="small">
                 <Descriptions.Item label="Number of Cells">

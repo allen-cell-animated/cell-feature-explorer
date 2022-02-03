@@ -18,6 +18,7 @@
     bottom: 14px;
 }
 
+/* Load button is at bottom center of card on mobile */
 @media screen and (max-width: 480px) {
     .loadButton {
         position: static;
@@ -42,6 +43,7 @@
 
 .card :global(.ant-card-meta-title) {
     text-align: center;
+    /* Allow wrapping of dataset title */
     white-space: normal;
 }
 
