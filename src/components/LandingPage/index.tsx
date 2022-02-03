@@ -3,10 +3,10 @@ import { Row, Col, Layout } from "antd";
 
 import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
+import { DATASET_CARD_WIDTH } from "../../constants";
 const { Content } = Layout;
 
 import styles from "./style.css";
-import { DATASET_CARD_WIDTH } from "../../constants";
 
 interface LandingPageProps {
     handleSelectDataset: (id: string) => void;
@@ -25,7 +25,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                 <Row 
                     type="flex"
                     className={styles.section}
-                    style={{maxWidth: `${DATASET_CARD_WIDTH * 2 + 30}px`}}
+                    style={{ maxWidth: `${DATASET_CARD_WIDTH * 2 + 30}px` }}
                 >
                     {megasets.map((megaset) => (
                         <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />

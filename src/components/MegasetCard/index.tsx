@@ -27,7 +27,11 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     const maxWidth = numDatasets > 1 ? "100%" : `${DATASET_CARD_WIDTH}px`;
 
     return (
-        <div key={megaset.name} className={styles.container} style={{ maxWidth: maxWidth }}>
+        <div 
+            key={megaset.name}
+            className={styles.container}
+            style={{ maxWidth: maxWidth }}
+        >
             {numDatasets > 1 && 
                 <div className={styles.megasetTitle}>{megaset.title}</div>
             }

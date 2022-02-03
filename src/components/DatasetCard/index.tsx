@@ -1,10 +1,11 @@
 import * as React from "react";
 import { Button, Card, Descriptions, Tag, Divider } from "antd";
+
 import { DatasetMetaData } from "../../state/image-dataset/types";
+import { DATASET_CARD_WIDTH } from "../../constants";
 const { Meta } = Card;
 
 import styles from "./style.css";
-import { DATASET_CARD_WIDTH } from "../../constants";
 
 interface DatasetCardProps extends DatasetMetaData {
     handleSelectDataset: (id: string) => void;
@@ -51,7 +52,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 />
             }
             onClick={() => handleSelectDataset(id)}
-            style={{maxWidth: `${DATASET_CARD_WIDTH}px`}}
+            style={{ maxWidth: `${DATASET_CARD_WIDTH}px` }}
         >
             <Meta
                 title={displayTitle}
