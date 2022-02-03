@@ -3,7 +3,7 @@ import { Row, Col, Layout } from "antd";
 
 import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 import styles from "./style.css";
 

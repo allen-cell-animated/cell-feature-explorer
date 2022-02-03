@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Col } from "antd";
 import { map } from "lodash";
 
 import { Megaset } from "../../state/image-dataset/types";
@@ -25,7 +24,6 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     const maxWidth = numDatasets > 1 ? "100%" : `${430 + 10 + 20}px`;
 
     return (
-        // <Col key={megaset.name}>
         <div key={megaset.name} className={styles.megacard} style={{ maxWidth: maxWidth }}>
             {isMultipleDatasets && 
                 <div className={styles.megasetTitle}>{megaset.title}</div>
@@ -53,7 +51,6 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
                 </div>
             }
         </div>
-        // </Col>
     )
 };
 
