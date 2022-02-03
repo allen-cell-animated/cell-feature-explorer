@@ -6,6 +6,7 @@ import { Megaset } from "../../state/image-dataset/types";
 const { Content } = Layout;
 
 import styles from "./style.css";
+import { DATASET_CARD_WIDTH } from "../../constants";
 
 interface LandingPageProps {
     handleSelectDataset: (id: string) => void;
@@ -21,7 +22,11 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
         <Layout>
             <Content className={styles.content}>
                 <h2 className={styles.subtitle}>Load a dataset to get started</h2>
-                <Row type="flex" className={styles.section}>
+                <Row 
+                    type="flex"
+                    className={styles.section}
+                    style={{maxWidth: `${DATASET_CARD_WIDTH * 2 + 30}px`}}
+                >
                     {megasets.map((megaset) => (
                         <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />
                     ))}

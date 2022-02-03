@@ -3,6 +3,7 @@ import { map } from "lodash";
 
 import { Megaset } from "../../state/image-dataset/types";
 import DatasetCard from "../../components/DatasetCard";
+import { DATASET_CARD_WIDTH } from "../../constants";
 
 import styles from "./style.css";
 
@@ -23,7 +24,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     const numDatasets = Object.keys(megaset.datasets).length;
     // Set a max-width for the container so that publications shrink into the 
     // container instead of the container expanding to fit publications
-    const maxWidth = numDatasets > 1 ? "100%" : "460px";
+    const maxWidth = numDatasets > 1 ? "100%" : `${DATASET_CARD_WIDTH}px`;
 
     return (
         <div key={megaset.name} className={styles.container} style={{ maxWidth: maxWidth }}>
