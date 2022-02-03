@@ -18,6 +18,13 @@
     bottom: 14px;
 }
 
+@media screen and (max-width: 480px) {
+    .loadButton {
+        position: static;
+        margin: 10px auto;
+    }
+}
+
 .card :global(.ant-card-body) {
     padding: 0px;
     display: flex;
@@ -35,6 +42,7 @@
 
 .card :global(.ant-card-meta-title) {
     text-align: center;
+    white-space: normal;
 }
 
 .card :global(.ant-card-meta-description) {
