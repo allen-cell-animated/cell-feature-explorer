@@ -248,31 +248,43 @@ export const getColorByValues = createSelector(
     }
 );
 
-export const getColorsForPlot = createSelector(
+export const getCategoryGroupColorsAndNames = createSelector(
     [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
     (
         colorBy: string,
         groupBy: string,
-        measuredFeaturesDefs,
+        measuredFeaturesDefs: MeasuredFeatureDef[],
         categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
+        /**
+         * This data is used to both make the color legend and to tell the plot how to color 
+         * the data when a categorical (discrete) feature has been chosen from the "colorBy" menu
+         */
         if (includes(categoricalFeatureKeys, colorBy)) {
             const feature = find(measuredFeaturesDefs, { key: colorBy });
             if (feature) {
                 const { options } = feature;
-                return map(options, (value, key) => {
-                    // for the groupby feature we're using the string name as the key instead 
-                    // of a numeral value. We might want to change this to remove complexity. 
-                    let name;
+                return map(options, (option: MeasuredFeaturesOption, key: string) => {
+                    /**
+                     * "key" is the numeral value in the features data. For categorical measured features
+                     * this number can represent:
+                     *   1. a number representing a boolean, ie, 1, 0, and -1 (for undefined)
+                     *   2. an id to be mapped to the feature option. ie, a cell line number.
+                     */
+                    let id;
                     if (groupBy === colorBy) {
-                        name = value.key || value.name;
+                        /**
+                         * For group by features, we're using the string name as the checkbox identifier instead of 
+                         * the numeral "key". We could change this in the future to reduce the complexity here.
+                         */
+                        id = option.key || option.name;
                     } else {
-                        name = key;
+                        id = key;
                     }
                     return {
-                        color: value.color,
-                        name: name,
-                        label: value.name,
+                        color: option.color,
+                        name: id,
+                        label: option.name,
                     };
                 });
             }

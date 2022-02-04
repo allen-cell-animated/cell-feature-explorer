@@ -24,7 +24,7 @@ import {
     getClickedCellsFileInfo,
     getColorBySelection,
     getColorByValues,
-    getColorsForPlot,
+    getCategoryGroupColorsAndNames,
     getFilteredCellData,
     getHoveredCardId,
     getIds,
@@ -98,7 +98,7 @@ export const getMainPlotData = createSelector(
         getColorByValues,
         getColorBySelection,
         getGroupByCategory,
-        getColorsForPlot,
+        getCategoryGroupColorsAndNames,
         getCategoricalFeatureKeys,
     ],
     (

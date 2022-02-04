@@ -23,7 +23,7 @@ import {
     getGroupingCategoryNames,
     getGroupByFeatureOptionsAsList,
     getGroupByCategory,
-    getColorsForPlot,
+    getCategoryGroupColorsAndNames,
     getGroupByFeatureDef,
     getGroupingCategoryNamesAsArray,
 } from "../../state/selection/selectors";
@@ -64,7 +64,7 @@ export const disambiguateCategoryNames = (options: MeasuredFeaturesOption[]): st
 };
 
 export const getLegendColors = createSelector(
-    [getColorsForPlot, getGroupByCategory, getColorBySelection],
+    [getCategoryGroupColorsAndNames, getGroupByCategory, getColorBySelection],
     (colors, groupBy, colorBy) => {
         // if color by and group by are the same, the legend 
         // is redundant 
