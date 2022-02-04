@@ -324,7 +324,7 @@ export const getSelected3DCellFileInfo = createSelector(
         if (isEmpty(fileInfo)) {
             return fileInfo;
         }
-        if (fileInfo.index) {
+        if (fileInfo.index !== undefined) {
             index = fileInfo.index;
         } else {
             // only won't be present if this cell was selected via the url
