@@ -114,7 +114,7 @@ export const getThumbnails = createSelector(
                 cellID,
                 downloadHref,
                 fullFieldDownloadHref,
-                labeledStructure: groupCategoryInfo.key || groupCategoryInfo.name,
+                category: groupCategoryInfo.key || groupCategoryInfo.name,
                 mitoticStage,
                 src: thumbnailSrc,
             };

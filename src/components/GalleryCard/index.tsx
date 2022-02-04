@@ -6,14 +6,14 @@ import { DeselectPointAction, SelectPointAction } from "../../state/selection/ty
 import styles from "./style.css";
 
 interface GalleryCardProps {
-    labeledStructure: string;
+    category: string;
     src: string;
     selected: boolean;
     downloadHref: string;
     cellID: string;
     mitoticStage?: string;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
-    handleOpenIn3D: (payload: {id: string}) => SelectPointAction;
+    handleOpenIn3D: (payload: { id: string }) => SelectPointAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -76,7 +76,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             <Card bordered={true}>
                 <Card.Meta
-                    title={props.labeledStructure}
+                    title={props.category}
                     avatar={
                         props.src && (
                             <div onClick={openCellIn3D}>

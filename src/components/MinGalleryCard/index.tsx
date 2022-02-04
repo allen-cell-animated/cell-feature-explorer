@@ -6,7 +6,7 @@ import { DeselectPointAction, SelectPointAction } from "../../state/selection/ty
 import styles from "./style.css";
 
 interface GalleryCardProps {
-    labeledStructure: string;
+    category: string;
     src: string;
     selected: boolean;
     downloadHref: string;

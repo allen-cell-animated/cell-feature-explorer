@@ -309,7 +309,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             <MinGalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
-                labeledStructure={item.labeledStructure}
+                category={item.category}
                 src={item.src}
                 selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
@@ -336,7 +336,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             <GalleryCard
                 onMouseEnter={this.hoverCard}
                 onMouseLeave={this.unHover}
-                labeledStructure={item.labeledStructure}
+                category={item.category}
                 mitoticStage={item.mitoticStage}
                 src={item.src}
                 selected={selectedCellId === item.cellID}

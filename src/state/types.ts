@@ -50,7 +50,7 @@ export interface Annotation {
 
 export interface Thumbnail {
     downloadHref: string;
-    labeledStructure: string;
+    category: string;
     mitoticStage: string;
     src: string;
     cellID: string;
