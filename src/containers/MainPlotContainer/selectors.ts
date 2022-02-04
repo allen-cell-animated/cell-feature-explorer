@@ -47,18 +47,21 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
 }
 
 export const handleNullValues = (
-    inputXValues: (number | null)[], inputYValues: (number | null)[]
+    inputXValues: (number | null)[],
+    inputYValues: (number | null)[]
 ): { xValues: (number | null)[]; yValues: (number | null)[] } => {
     let canPlot = false;
     let xValues = inputXValues.slice();
     let yValues = inputYValues.slice();
 
     if (xValues.length !== yValues.length) {
-        console.error("Cannot handleNullValues between two arrays because they have unequal length")
+        console.error(
+            "Cannot handleNullValues between two arrays because they have unequal length"
+        );
         return {
             xValues: xValues,
-            yValues: yValues
-        }
+            yValues: yValues,
+        };
     }
 
     // At every index where one array has a null value, the other array must
@@ -82,9 +85,9 @@ export const handleNullValues = (
 
     return {
         xValues: xValues,
-        yValues: yValues
-    }
-}
+        yValues: yValues,
+    };
+};
 
 export const getMainPlotData = createSelector(
     [
@@ -145,7 +148,8 @@ export const getAnnotations = createSelector(
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
-            const pointIndex = data.index || findIndex(cellIds, (id) => id === cellID);
+            const pointIndex =
+                data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
             if (pointIndex >= 0 && x !== null && y !== null) {
@@ -196,7 +200,6 @@ function colorSettings(
     plotSettings: Partial<PlotData>,
     plotData: GroupedPlotData | ContinuousPlotData
 ): Partial<PlotData> {
-
     if (isGrouped(plotData)) {
         return {
             ...plotSettings,
@@ -363,13 +366,15 @@ export const getYTickConversion = createSelector(
     }
 );
 
-
-export const getDataForOverlayCard = createSelector([getHoveredPointData, getGroupingCategoryNamesAsArray], (pointData, categoryNames) => {
-    if (!pointData || !categoryNames.length) {
-        return pointData;
+export const getDataForOverlayCard = createSelector(
+    [getHoveredPointData, getGroupingCategoryNamesAsArray],
+    (pointData, categoryNames) => {
+        if (!pointData || !categoryNames.length) {
+            return pointData;
+        }
+        return {
+            ...pointData,
+            [GROUP_BY_KEY]: categoryNames[pointData.index],
+        };
     }
-    return {
-        ...pointData,
-        [GROUP_BY_KEY]: categoryNames[pointData.index]
-    }
-});
+);
