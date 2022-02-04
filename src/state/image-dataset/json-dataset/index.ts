@@ -178,7 +178,6 @@ class JsonRequest implements ImageDataset {
                 {} as MappingOfMeasuredValuesArrays
             );
 
-            const categoryArray: string[] = [];
             const thumbnails: string[] = [];
             const ids: string[] = [];
             const indices: number[] = [];
@@ -228,15 +227,6 @@ class JsonRequest implements ImageDataset {
                                 arrayOfValues.push(Number(value));
                             }
                         }, {});
-
-                        const groupByValueIndex = indexOf(this.datasetInfo.featuresDataOrder, this.datasetInfo.groupBy.default)
-
-                        const categoryValue = el.features[groupByValueIndex];
-                        // augment file info with category value
-                        this.fileInfo[this.datasetInfo.groupBy.default] = categoryValue;
-                        const categoryInfo = groupByFeatureDef.options[categoryValue];
-
-                        categoryArray.push(categoryInfo ? categoryInfo.key || categoryInfo.name : "");
                         thumbnails.push(fileInfo.thumbnailPath);
                         ids.push(fileInfo[CELL_ID_KEY].toString());
                     });
