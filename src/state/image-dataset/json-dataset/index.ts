@@ -16,7 +16,7 @@ import {
 
 import { ImageDataset } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { find, indexOf } from "lodash";
+import { find } from "lodash";
 
 interface DatasetInfo {
     name: string;
