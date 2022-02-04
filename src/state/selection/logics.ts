@@ -150,6 +150,8 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
                     map(data, (data) => {
                         return {
                             ...data,
+                            // this is expected to always return data, this check 
+                            // is mostly for TypeScript (since there is also a catch block)
                             index: data ? indices[data.CellId] : -1,
                         };
                     })
