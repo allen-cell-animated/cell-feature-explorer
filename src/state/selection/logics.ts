@@ -127,11 +127,9 @@ const getIndicesForCellIds = (cellIds: string[], fullArrayOfCelIds: string[]) =>
      */
     const indices: { [key: string]: number } = {};
     const idsInOrder = cellIds.sort((a: string, b: string) => Number(a) - Number(b));
-    let lastFound = 0;
     idsInOrder.forEach((id: string) => {
-        const index = indexOf(fullArrayOfCelIds, id, lastFound);
+        const index = indexOf(fullArrayOfCelIds, id);
         indices[id] = index;
-        lastFound = index;
     });
     return indices;
 };
