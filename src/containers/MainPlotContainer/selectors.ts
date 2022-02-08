@@ -38,7 +38,7 @@ import {
     getHoveredPointData,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
-import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import { Annotation, ContinuousPlotData, CustomData, GroupedPlotData } from "../../state/types";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
@@ -90,7 +90,7 @@ export const handleNullValues = (
 
 export const getCustomData = createSelector(
     [getFilteredCellData],
-    (filteredCellData: DataForPlot) => {
+    (filteredCellData: DataForPlot): CustomData[] => {
         const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
         const indices = filteredCellData.indices;
         return map(indices, (index) => {

@@ -64,12 +64,17 @@ export interface SelectedGroupDatum {
     y: number;
 }
 
+export interface CustomData {
+    thumbnailPath: string; 
+    index: number;
+}
+
 export interface ContinuousPlotData {
     color: Color | Color[] | number | number[];
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: { thumbnailPath: string; index: number }[];
+    customdata?: CustomData[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -84,7 +89,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: { thumbnailPath: string; index: number }[];
+    customdata?: CustomData[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;
