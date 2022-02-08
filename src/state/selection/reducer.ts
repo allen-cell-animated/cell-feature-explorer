@@ -170,7 +170,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === DESELECT_POINT,
         perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
-            selectedPoints: filter(state.selectedPoints, (e) => e !== action.payload),
+            selectedPoints: filter(state.selectedPoints, (e) => e.CellId !== action.payload),
         }),
     },
     [DESELECT_ALL_POINTS]: {
