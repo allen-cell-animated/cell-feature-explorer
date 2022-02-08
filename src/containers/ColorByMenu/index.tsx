@@ -55,7 +55,7 @@ interface PropsFromState {
     filtersToExclude: string[];
     interactivePanelData: PanelData[];
     selectionSetsPanelData: PanelData[];
-    isInIntermediateState: boolean;
+    isInIndeterminateState: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
@@ -174,7 +174,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public renderTaggedStructuresPanel() {
         const {
             filtersToExclude,
-            isInIntermediateState,
+            isInIndeterminateState,
             interactivePanelData,
             downloadUrls,
             downloadConfig,
@@ -220,7 +220,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                 <div>
                     <div className={styles.interactiveLegendHeader}>
                         <Checkbox
-                            indeterminate={isInIntermediateState}
+                            indeterminate={isInIndeterminateState}
                             checked={filtersToExclude.length === 0}
                             onChange={this.allOnOff}
                         >
@@ -276,7 +276,7 @@ function mapStateToProps(state: State): PropsFromState {
         groupByTitle: getGroupByTitle(state),
         interactivePanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
-        isInIntermediateState: getCheckAllCheckboxIsIntermediate(state),
+        isInIndeterminateState: getCheckAllCheckboxIsIntermediate(state),
     };
 }
 
