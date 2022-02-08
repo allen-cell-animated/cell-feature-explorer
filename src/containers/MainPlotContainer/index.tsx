@@ -193,7 +193,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
-        console.log(hoveredPointData)
         return (
             hoveredPointData &&
             galleryCollapsed && (
