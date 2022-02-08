@@ -63,7 +63,10 @@ export function changeGroupByCategory(payload: string): ChangeGroupByCategory {
     };
 }
 
-export function lassoOrBoxSelectGroup(key: string | number, payload: LassoOrBoxSelectPointData[]): LassoOrBoxSelectAction  {
+export function lassoOrBoxSelectGroup(
+    key: string | number,
+    payload: LassoOrBoxSelectPointData[]
+): LassoOrBoxSelectAction {
     return {
         key,
         payload,
@@ -79,13 +82,13 @@ export function deselectGroupOfPoints(payload: string | number) {
 }
 
 export function deselectPoint(payload: string): DeselectPointAction {
-           return {
-               payload,
-               type: DESELECT_POINT,
-           };
-       }
+    return {
+        payload,
+        type: DESELECT_POINT,
+    };
+}
 
-export function selectPoint(payload: {id: string, index?: number}): SelectPointAction {
+export function selectPoint(payload: { id: string; index?: number }): SelectPointAction {
     return {
         payload,
         type: SELECT_POINT,
@@ -105,7 +108,7 @@ export function toggleFilterByCategoryName(payload: string): ChangeSelectionActi
     };
 }
 
-export function selectCellFor3DViewer(payload: {id: string}): SelectPointAction {
+export function selectCellFor3DViewer(payload: { id: string }): SelectPointAction {
     return {
         payload,
         type: OPEN_CELL_IN_3D,
@@ -141,18 +144,18 @@ export function changeMousePosition(payload: MousePosition): ChangeMousePosition
 }
 
 export function changeHoveredPoint(payload: SelectedPointData): ChangeHoveredPointAction {
-           return {
-               payload,
-               type: CHANGE_HOVERED_POINT_ID,
-           };
-       }
+    return {
+        payload,
+        type: CHANGE_HOVERED_POINT_ID,
+    };
+}
 
 export function setHoveredGalleryCard(payload: SelectedPointData): ChangeHoveredPointAction {
-           return {
-               payload,
-               type: CHANGE_HOVERED_GALLERY_CARD,
-           };
-       }
+    return {
+        payload,
+        type: CHANGE_HOVERED_GALLERY_CARD,
+    };
+}
 
 export function selectAlbum(payload: number): SelectAlbumAction {
     return {
@@ -169,18 +172,18 @@ export function toggleGallery(payload: boolean): BoolToggleAction {
 }
 
 export function changeDataset(payload: string): ChangeSelectionAction {
-           return {
-               payload,
-               type: CHANGE_DATASET,
-           };
-       }
+    return {
+        payload,
+        type: CHANGE_DATASET,
+    };
+}
 
 export function clearDataset(): ClearDatasetAction {
     return {
         type: CLEAR_DATASET,
     };
 }
-       
+
 export function receiveFileInfoDataForCell(payload: FileInfo) {
     return {
         payload,
@@ -206,5 +209,5 @@ export function setDisplayableGroups(payload: string[]): SetDisplayableGroupsAct
     return {
         payload,
         type: SET_DISPLAYABLE_GROUPS,
-    }
+    };
 }
