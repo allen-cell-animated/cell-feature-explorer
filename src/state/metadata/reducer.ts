@@ -1,4 +1,5 @@
 import { AnyAction } from "redux";
+import { Megaset } from "../image-dataset/types";
 import { ReceiveCellFileInfoAction } from "../selection/types";
 
 import { TypeToDescriptionMap } from "../types";
@@ -26,20 +27,22 @@ import {
     SetSmallScreenWarningAction,
     ReceiveMeasuredFeaturesAction,
     ClearAction,
+    PerCellLabels,
+    MappingOfMeasuredValuesArraysWithNulls,
+    FileInfo,
 } from "./types";
 
 export const initialState = {
     albums: [],
-    cellFileInfo: [],
+    cellFileInfo: [] as FileInfo[],
     isLoading: true,
     loadingText: "",
     showSmallScreenWarning: false,
-    megasets: [],
-    measuredFeatureNames: [],
+    megasets: [] as Megaset[],
     featureData: {
-        indices: [],
-        values: {},
-        labels: {},
+        indices: [] as number[],
+        values: {} as MappingOfMeasuredValuesArraysWithNulls,
+        labels: {} as PerCellLabels,
     },
     measuredFeaturesDefs: [],
     viewerChannelSettings: undefined,
@@ -59,7 +62,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
             ...state,
             cellFileInfo: initialState.cellFileInfo,
             isLoading: initialState.isLoading,
-            measuredFeatureNames: initialState.measuredFeatureNames,
             featureData: initialState.featureData,
             measuredFeaturesDefs: initialState.measuredFeaturesDefs,
             viewerChannelSettings: initialState.viewerChannelSettings,

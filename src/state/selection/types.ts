@@ -32,7 +32,7 @@ export interface LassoOrBoxSelectAction {
 }
 
 export interface SelectAxisAction {
-    axisId: keyof MetadataStateBranch;
+    axisId: string;
     payload: string;
     type: string;
 }

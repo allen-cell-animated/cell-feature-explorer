@@ -1,12 +1,7 @@
 import { find, includes, isEmpty, keys, map, mapValues, reduce, sortBy, values } from "lodash";
 import { createSelector } from "reselect";
 
-import {
-    ARRAY_OF_CELL_IDS_KEY,
-    CELL_ID_KEY,
-    FOV_ID_KEY,
-    GROUP_BY_KEY,
-} from "../../constants";
+import { ARRAY_OF_CELL_IDS_KEY, CELL_ID_KEY, FOV_ID_KEY, GROUP_BY_KEY } from "../../constants";
 import {
     getPerCellDataForPlot,
     getMeasuredFeaturesKeys,
@@ -62,7 +57,7 @@ export const getSelectedDatasetName = createSelector([getSelectedDataset], (sele
 
 export const getGroupByFeatureDef = createSelector(
     [getMeasuredFeaturesDefs, getGroupByCategory],
-    (features: MeasuredFeatureDef[], category):MeasuredFeatureDef => {
+    (features: MeasuredFeatureDef[], category): MeasuredFeatureDef => {
         const feature = find(map(features), { key: category });
         if (!feature) {
             return {} as MeasuredFeatureDef;
@@ -105,7 +100,7 @@ export const getGroupingCategoryNamesAsArray = createSelector(
         const categoryKey = groupByCategoryFeatureDef.key;
 
         return map(perCellDataForPlot.values[categoryKey], (ele) => {
-            return getCategoryString(groupByCategoryFeatureDef, ele);
+            return getCategoryString(groupByCategoryFeatureDef, ele.toString());
         });
     }
 );
@@ -123,15 +118,15 @@ export const getFilteredCellData = createSelector(
         filtersToExclude,
         perCellDataForPlot: DataForPlot,
         categoryKey: string,
-        groupingNames,
+        groupingNames
     ): DataForPlot => {
         if (!filtersToExclude.length) {
             return {
                 ...perCellDataForPlot,
                 labels: {
                     ...perCellDataForPlot.labels,
-                    [categoryKey]: groupingNames
-                }
+                    [categoryKey]: groupingNames,
+                },
             };
         }
         const categoryNameArray: string[] = [];
@@ -225,8 +220,6 @@ export const getIds = createSelector(
     }
 );
 
-
-
 export const getColorByValues = createSelector(
     [getFilteredCellData, getColorBySelection, getGroupByCategory],
     (metaData: DataForPlot, colorBy: string, groupBy: string): string[] | number[] => {
@@ -250,7 +243,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
         categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
         /**
-         * This data is used to both make the color legend and to tell the plot how to color 
+         * This data is used to both make the color legend and to tell the plot how to color
          * the data when a categorical (discrete) feature has been chosen from the "colorBy" menu
          */
         if (includes(categoricalFeatureKeys, colorBy)) {
@@ -267,7 +260,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     let id;
                     if (groupBy === colorBy) {
                         /**
-                         * For group by features, we're using the string name as the checkbox identifier instead of 
+                         * For group by features, we're using the string name as the checkbox identifier instead of
                          * the numeral "key". We could change this in the future to reduce the complexity here.
                          */
                         id = option.key || option.name;
@@ -289,7 +282,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
 export const getCategoryCounts = createSelector(
     [getPerCellDataForPlot, getColorBySelection, getMeasuredFeaturesDefs],
     (
-        measuredData: MetadataStateBranch,
+        measuredData: DataForPlot,
         colorBy: string,
         measuredFeatureDefs: MeasuredFeatureDef[]
     ): number[] => {
@@ -297,7 +290,7 @@ export const getCategoryCounts = createSelector(
         if (feature && feature.discrete) {
             const categoryValues = map(feature.options, (_, key) => Number(key));
             const totals = reduce(
-                measuredData[colorBy],
+                measuredData.values[colorBy],
                 (acc: { [key: number]: number }, cur) => {
                     const index = categoryValues.indexOf(Number(cur));
                     if (acc[index]) {
@@ -322,9 +315,20 @@ export const getClickedScatterPoints = createSelector(
 
 // 3D VIEWER SELECTORS
 export const getSelected3DCellFileInfo = createSelector(
-    [getSelected3DCell, getClickedCellsFileInfo, getGroupingCategoryNamesAsArray, getPerCellDataForPlot],
-    (selected3DCellId: string, fileInfoArray: FileInfo[], arrayOfCategoryNames, plotData): FileInfo => {
-        const fileInfo = getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || ({} as FileInfo);
+    [
+        getSelected3DCell,
+        getClickedCellsFileInfo,
+        getGroupingCategoryNamesAsArray,
+        getPerCellDataForPlot,
+    ],
+    (
+        selected3DCellId: string,
+        fileInfoArray: FileInfo[],
+        arrayOfCategoryNames,
+        plotData
+    ): FileInfo => {
+        const fileInfo =
+            getFileInfoDatumFromCellId(fileInfoArray, selected3DCellId) || ({} as FileInfo);
         let index = -1;
         if (isEmpty(fileInfo)) {
             return fileInfo;
@@ -337,8 +341,8 @@ export const getSelected3DCellFileInfo = createSelector(
         }
         return {
             ...fileInfo,
-            [GROUP_BY_KEY]: arrayOfCategoryNames[index]
-        }
+            [GROUP_BY_KEY]: arrayOfCategoryNames[index],
+        };
     }
 );
 
@@ -348,7 +352,6 @@ export const getSelected3DCellFOV = createSelector(
         return !isEmpty(fileInfo) ? fileInfo[FOV_ID_KEY].toString() : "";
     }
 );
-
 
 // SELECTED GROUPS SELECTORS
 export const getSelectedGroupsData = createSelector(

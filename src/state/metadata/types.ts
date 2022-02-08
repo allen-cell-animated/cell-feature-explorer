@@ -12,7 +12,19 @@ import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 export interface MetadataStateBranch {
-    [key: string]: any;
+    albums: Album[];
+    cellFileInfo: FileInfo[];
+    isLoading: boolean;
+    loadingText: string;
+    showSmallScreenWarning: boolean;
+    megasets: Megaset[];
+    featureData: {
+        indices: number[];
+        values: MappingOfMeasuredValuesArraysWithNulls;
+        labels: PerCellLabels;
+    };
+    measuredFeaturesDefs: MeasuredFeatureDef[];
+    viewerChannelSettings?: ViewerChannelSettings;
 }
 
 // FROM THE DATABASE TYPINGS
@@ -71,7 +83,7 @@ export interface PerCellLabels {
 
 export interface DataForPlot {
     indices: number[];
-    values: MappingOfMeasuredValuesArrays;
+    values: MappingOfMeasuredValuesArraysWithNulls;
     labels: PerCellLabels;
 }
 

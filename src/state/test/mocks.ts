@@ -7,6 +7,7 @@ import {
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
+import { initialState as initialMetaData } from "../metadata/reducer";
 import { FileInfo } from "../metadata/types";
 import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
 
@@ -150,6 +151,7 @@ const displayableGroups: any = ["Paxillin", "Alpha-actinin-1"];
 
 export const mockState = {
     metadata: {
+        ...initialMetaData,
         cellFileInfo: fileInfo,
         featureData: featureData,
         measuredFeaturesDefs: measuredFeaturesDefs,
