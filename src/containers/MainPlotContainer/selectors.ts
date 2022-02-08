@@ -31,7 +31,6 @@ import {
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
-    getThumbnailPaths,
     getFilteredXValues,
     getFilteredYValues,
     getGroupByCategory,
@@ -89,12 +88,26 @@ export const handleNullValues = (
     };
 };
 
+export const getCustomData = createSelector(
+    [getFilteredCellData],
+    (filteredCellData: DataForPlot) => {
+        const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
+        const indices = filteredCellData.indices;
+        return map(indices, (index) => {
+            return {
+                index,
+                thumbnailPath: thumbnailPaths[index],
+            };
+        });
+    }
+);
+
 export const getMainPlotData = createSelector(
     [
         getFilteredXValues,
         getFilteredYValues,
         getIds,
-        getThumbnailPaths,
+        getCustomData,
         getColorByValues,
         getColorBySelection,
         getGroupByCategory,
@@ -105,7 +118,7 @@ export const getMainPlotData = createSelector(
         xValues,
         yValues,
         ids,
-        thumbnailPaths,
+        customData,
         colorByValues,
         colorBy,
         groupBy,
@@ -124,7 +137,7 @@ export const getMainPlotData = createSelector(
             ids,
             x: newXAndYValues.xValues,
             y: newXAndYValues.yValues,
-            customdata: thumbnailPaths as string[],
+            customdata: customData,
         };
     }
 );

@@ -227,12 +227,7 @@ export const getIds = createSelector(
     }
 );
 
-export const getThumbnailPaths = createSelector(
-    [getFilteredPerCellLabels],
-    (cellLabels: PerCellLabels) => {
-        return cellLabels.thumbnailPaths || [];
-    }
-);
+
 
 export const getColorByValues = createSelector(
     [getFilteredCellData, getColorBySelection, getGroupByCategory],

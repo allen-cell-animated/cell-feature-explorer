@@ -4,7 +4,7 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
-import { ImageDataset} from "./image-dataset/types";
+import { ImageDataset } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
@@ -35,7 +35,7 @@ export interface State {
 }
 
 export interface TypeToDescriptionMap {
-    [propName: string ]: ActionDescription;
+    [propName: string]: ActionDescription;
 }
 
 export interface Annotation {
@@ -69,7 +69,7 @@ export interface ContinuousPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: string[];
+    customdata?: { thumbnailPath: string; index: number }[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -84,7 +84,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: string[];
+    customdata?: { thumbnailPath: string; index: number }[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;

@@ -46,10 +46,6 @@ import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
 import styles from "./style.css";
 
-interface PlotDatumWithId extends PlotDatum {
-    id: string;
-}
-
 interface PropsFromState {
     annotations: Annotation[];
     categoricalFeatures: string[];
@@ -133,7 +129,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 if (includes(clickedPoints, point.id)) {
                     handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint({id: point.id, index: point.pointIndex});
+                    handleSelectPoint({id: point.id, index: point.customdata.index});
                 }
             }
         });
@@ -142,7 +138,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPointHovered(hovered: any) {
         const { points, event } = hovered;
-        const { filtersToExclude, updateMousePosition, changeHoveredPoint: changeHoveredCell } = this.props;
+        const { filtersToExclude, updateMousePosition, changeHoveredPoint } = this.props;
         updateMousePosition({
             pageX: event.pageX,
             pageY: event.pageY,
@@ -154,13 +150,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 !includes(filtersToExclude, point.fullData.name)
                 ) {
                 window.clearTimeout(this.thumbnailTimeout);
-                changeHoveredCell({
+                changeHoveredPoint({
                     [CELL_ID_KEY]: point.id,
-                    index: point.pointIndex,
-                    thumbnailPath: point.customdata,
+                    index: point.customdata.index,
+                    thumbnailPath: point.customdata.thumbnailPath,
                 });
             } else {
-                changeHoveredCell(null);
+                changeHoveredPoint(null);
             }
         });
     }
@@ -170,25 +166,25 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     public onPlotUnhovered({ relatedTarget }: any) {
-        const { changeHoveredPoint: changeHoveredCell } = this.props;
+        const { changeHoveredPoint } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
-            changeHoveredCell(null);
+            changeHoveredPoint(null);
         }
     }
 
-    public onGroupSelected(eventData: PlotSelectionEvent) {
+    public onGroupSelected(eventData: any) {
         if (!eventData) {
             return;
         }
         const { points } = eventData;
-        const pointsWithIds = points as PlotDatumWithId[];
+        const pointsWithIds = points;
         const { handleLassoOrBoxSelect, handleSelectionToolUsed } = this.props;
         const key = Date.now().valueOf().toString();
         const payload: LassoOrBoxSelectPointData[] = map(
-            filter(pointsWithIds, (ele: PlotDatumWithId) => ele.data.name === SCATTER_PLOT_NAME),
-            (point: PlotDatumWithId) => ({
-                pointIndex: point.pointIndex as number,
+            filter(pointsWithIds, (ele) => ele.data.name === SCATTER_PLOT_NAME),
+            (point) => ({
+                pointIndex: point.customdata.index as number,
                 cellId: point.id as string,
             })
         );
