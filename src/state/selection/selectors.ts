@@ -24,7 +24,7 @@ import {
     PerCellLabels,
 } from "../metadata/types";
 import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
-import { getFileInfoDatumFromCellId } from "../util";
+import { getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
 import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types";
 
@@ -105,9 +105,7 @@ export const getGroupingCategoryNamesAsArray = createSelector(
         const categoryKey = groupByCategoryFeatureDef.key;
 
         return map(perCellDataForPlot.values[categoryKey], (ele) => {
-            const categoryInfo = groupByCategoryFeatureDef.options[ele];
-            return categoryInfo.key || categoryInfo.name;
-
+            return getCategoryString(groupByCategoryFeatureDef, ele);
         });
     }
 );

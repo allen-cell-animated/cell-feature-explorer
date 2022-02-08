@@ -1,7 +1,6 @@
 import { Popover } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { filter, includes, map } from "lodash";
-import { PlotSelectionEvent, PlotDatum } from "plotly.js";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 

@@ -9,7 +9,7 @@ import {
     CELL_ID_KEY,
 } from "../constants";
 
-import { FileInfo } from "./metadata/types";
+import { FileInfo, MeasuredFeatureDef } from "./metadata/types";
 import {
     BatchedAction,
     TypeToDescriptionMap,
@@ -84,4 +84,11 @@ export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): strin
         return "";
     }
     return `${thumbnailRoot}/${item.thumbnailPath}`;
+}
+
+export function getCategoryString(groupByFeatureDef: MeasuredFeatureDef, optionKey: string) {
+    const groupCategoryInfo = groupByFeatureDef.options[optionKey];
+    // key is the most specific but only used if the names are not unique.
+    // name is the display name for the category.
+    return groupCategoryInfo.key || groupCategoryInfo.name;
 }

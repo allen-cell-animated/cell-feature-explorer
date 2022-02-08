@@ -34,6 +34,7 @@ import {
     convertSingleImageIdToDownloadId,
     formatDownloadOfIndividualFile,
     formatThumbnailSrc,
+    getCategoryString,
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
@@ -120,12 +121,12 @@ export const getThumbnails = createSelector(
             }
 
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
-            const groupCategoryInfo = groupByFeatureDef.options[groupByValues[cellIndex]];
+            const category = getCategoryString(groupByFeatureDef, groupByValues[cellIndex].toString());
             return {
                 cellID,
                 downloadHref,
                 fullFieldDownloadHref,
-                category: groupCategoryInfo.key || groupCategoryInfo.name,
+                category,
                 mitoticStage,
                 src: thumbnailSrc,
             };
