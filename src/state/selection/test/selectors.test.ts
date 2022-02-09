@@ -1,10 +1,7 @@
 import { expect } from "chai";
 
 import { mockState } from "../../test/mocks";
-import {
-    NumberOrString,
-    State,
-} from "../../types";
+import { NumberOrString, State } from "../../types";
 import {
     getSelectedGroupKeys,
     getSelectedSetTotals,
@@ -113,17 +110,14 @@ describe("Selection selectors", () => {
             const state: State = {
                 ...mockState,
             };
-            const result: string[] = getGroupingCategoryNames(state).sort(
-                (a: string, b: string) => {
-                    return b > a ? 1 : -1;
-                }
-            );
+            const result: string[] = getGroupingCategoryNames(state);
+
             expect(result).to.deep.equal([
-                "Mitochondria",
-                "Microtubules",
-                "Matrix adhesions",
-                "Endoplasmic reticulum",
                 "Actin filaments",
+                "Endoplasmic reticulum",
+                "Matrix adhesions",
+                "Microtubules",
+                "Mitochondria",
             ]);
         });
     });
