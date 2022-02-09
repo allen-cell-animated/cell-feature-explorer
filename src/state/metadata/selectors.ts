@@ -1,9 +1,10 @@
-import { map, filter, find, forEach } from "lodash";
+import { map, filter, forEach } from "lodash";
 import { createSelector } from "reselect";
 
 import { MITOTIC_STAGE_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
 import { State } from "../types";
+import { findFeature } from "../util";
 
 import {
     DataForPlot,
@@ -87,8 +88,10 @@ export const getCategoricalFeatureKeys = createSelector(
 export const getMitoticStageNames = createSelector(
     [getMeasuredFeaturesDefs],
     (defs: MeasuredFeatureDef[]) => {
-        const mitoticFeature = find(defs, { key: MITOTIC_STAGE_KEY });
-        if (mitoticFeature) {
+        const mitoticFeature = findFeature(defs, MITOTIC_STAGE_KEY );
+        if (mitoticFeature && mitoticFeature.discrete) {
+            // if this feature exists, it will always be discrete, 
+            // but need to let typescript know that
             return mitoticFeature.options;
         } else return {};
     }

@@ -39,6 +39,7 @@ import {
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation, ContinuousPlotData, PlotlyCustomData, GroupedPlotData } from "../../state/types";
+import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
@@ -360,7 +361,7 @@ const makeNumberAxis = (): TickConversion => {
 export const getXTickConversion = createSelector(
     [getPlotByOnX, getMeasuredFeaturesDefs],
     (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
-        const feature = find(measuredFeaturesDefs, { key: plotByOnX });
+        const feature = findFeature(measuredFeaturesDefs,  plotByOnX);
         if (feature && feature.discrete) {
             return makeNumberToTextConversion(feature.options);
         }

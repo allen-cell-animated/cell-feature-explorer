@@ -15,6 +15,7 @@ import {
 } from "../metadata/selectors";
 import {
     DataForPlot,
+    DiscreteMeasuredFeatureDef,
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
@@ -24,7 +25,7 @@ import {
     PerCellLabels,
 } from "../metadata/types";
 import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
-import { getCategoryString, getFileInfoDatumFromCellId } from "../util";
+import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
 import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types";
 
@@ -62,10 +63,12 @@ export const getSelectedDatasetName = createSelector([getSelectedDataset], (sele
 
 export const getGroupByFeatureDef = createSelector(
     [getMeasuredFeaturesDefs, getGroupByCategory],
-    (features: MeasuredFeatureDef[], category):MeasuredFeatureDef => {
-        const feature = find(map(features), { key: category });
-        if (!feature) {
-            return {} as MeasuredFeatureDef;
+    (features: MeasuredFeatureDef[], category): DiscreteMeasuredFeatureDef => {
+        const feature = findFeature(map(features), category);
+        // the group by category is always going to point to a discrete feature,
+        // this just ensures the downstream selectors of this know that.
+        if (!feature || !feature.discrete) {
+            return {} as DiscreteMeasuredFeatureDef;
         }
         return feature;
     }
@@ -73,7 +76,7 @@ export const getGroupByFeatureDef = createSelector(
 
 export const getGroupByFeatureOptionsAsList = createSelector(
     [getGroupByFeatureDef],
-    (feature: MeasuredFeatureDef): MeasuredFeaturesOption[] => {
+    (feature: DiscreteMeasuredFeatureDef): MeasuredFeaturesOption[] => {
         if (isEmpty(feature)) {
             return [] as MeasuredFeaturesOption[];
         }
@@ -256,7 +259,8 @@ export const getCategoryGroupColorsAndNames = createSelector(
         if (includes(categoricalFeatureKeys, colorBy)) {
             const feature = find(measuredFeaturesDefs, { key: colorBy });
             if (feature) {
-                const { options } = feature;
+                const discreteFeature = feature as DiscreteMeasuredFeatureDef
+                const { options } = discreteFeature;
                 return map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
@@ -293,7 +297,7 @@ export const getCategoryCounts = createSelector(
         colorBy: string,
         measuredFeatureDefs: MeasuredFeatureDef[]
     ): number[] => {
-        const feature = find(measuredFeatureDefs, { key: colorBy });
+        const feature = findFeature(measuredFeatureDefs, colorBy);
         if (feature && feature.discrete) {
             const categoryValues = map(feature.options, (_, key) => Number(key));
             const totals = reduce(

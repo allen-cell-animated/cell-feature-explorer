@@ -7,7 +7,7 @@ import {
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { FileInfo } from "../metadata/types";
+import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
@@ -48,7 +48,7 @@ const fileInfo: FileInfo[] = [
     },
 ];
 
-const measuredFeaturesDefs = [
+const measuredFeaturesDefs: MeasuredFeatureDef[] = [
     {
         key: "cell-line",
         displayName: "Labeled Structure",
@@ -93,6 +93,8 @@ const measuredFeaturesDefs = [
         displayName: "Apical Proximity",
         key: "apical-proximity",
         unit: "unitless",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
         displayName: "Anaphase segmentation complete",
@@ -123,12 +125,16 @@ const measuredFeaturesDefs = [
         displayName: "Cell Surface area",
         key: "cellular-surface-area",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
         discrete: false,
         displayName: "Missing data",
         key: "missing-data",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
 ];
 const featureData = {

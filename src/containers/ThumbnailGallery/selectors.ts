@@ -16,8 +16,8 @@ import {
 } from "../../state/metadata/selectors";
 import {
     DataForPlot,
+    DiscreteMeasuredFeatureDef,
     FileInfo,
-    MeasuredFeatureDef,
     MeasuredFeaturesOptions,
 } from "../../state/metadata/types";
 import {
@@ -71,7 +71,7 @@ export const getThumbnails = createSelector(
         getMitoticStageNames,
     ],
     (
-        groupByFeatureDef: MeasuredFeatureDef,
+        groupByFeatureDef: DiscreteMeasuredFeatureDef,
         perCellPlotData: DataForPlot,
         mitoticKeysArray: number[],
         fileInfoOfSelectedCells: FileInfo[],
