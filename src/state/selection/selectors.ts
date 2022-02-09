@@ -258,9 +258,8 @@ export const getCategoryGroupColorsAndNames = createSelector(
          */
         if (includes(categoricalFeatureKeys, colorBy)) {
             const feature = find(measuredFeaturesDefs, { key: colorBy });
-            if (feature) {
-                const discreteFeature = feature as DiscreteMeasuredFeatureDef
-                const { options } = discreteFeature;
+            if (feature && feature.discrete) {
+                const { options } = feature;
                 return map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
