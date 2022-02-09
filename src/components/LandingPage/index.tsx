@@ -48,7 +48,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                     </Col>
                 </Row>
                 <Row className={styles.lightSection}>
-                    <Col className={styles.section}>
+                    <Col className={styles.lightSectionContent}>
                         <h2 className={styles.subtitle}>Cell features in our data </h2>
                         <div className={styles.paragraph}>
                             hiPS cells from the{" "}

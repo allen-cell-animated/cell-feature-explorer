@@ -3,6 +3,8 @@
 .content {
     flex: 2;
     padding: 20px 40px;
+    font-weight: 100;
+    justify-content: center;
 }
 
 .header {
@@ -51,8 +53,6 @@
 
 .section {
     margin: 0.5em auto 2em auto;
-    font-weight: 100;
-    justify-content: center;
     column-gap: 30px;
 }
 
@@ -70,6 +70,16 @@
     line-height: 1.75;
     color: var(--text-gray);
 }
+
+.light-section-content {
+    margin: 2em auto;
+    max-width: 1010px;
+}
+
+.light-section .subtitle {
+    margin-bottom: 1.2em;
+}
+
 .light-section .paragraph {
     padding: 0 20px;
 }
