@@ -8,7 +8,7 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { FileInfo } from "../metadata/types";
-import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
+import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
     {
@@ -146,7 +146,8 @@ const featureData = {
     },
 };
 
-const displayableGroups: any = ["Paxillin", "Alpha-actinin-1"];
+const displayableGroups: string[] = ["Paxillin", "Alpha-actinin-1"];
+const INITIAL_COLOR_AND_GROUP_BY = "cell-line";
 
 export const mockState = {
     metadata: {
@@ -156,12 +157,12 @@ export const mockState = {
         viewerChannelSettings: {},
     },
     selection: {
-        colorBy: INITIAL_COLOR_BY,
+        colorBy: INITIAL_COLOR_AND_GROUP_BY,
         downloadConfig: {
             key: "",
             type: "",
         },
-        groupBy: INITIAL_COLOR_BY,
+        groupBy: INITIAL_COLOR_AND_GROUP_BY,
         filterExclude: [],
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",

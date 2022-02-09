@@ -43,7 +43,6 @@ export const CHANGE_DATASET = makeSelectionConstant("change-dataset");
 export const CLEAR_DATASET = makeSelectionConstant("clear-dataset");
 export const SET_DISPLAYABLE_GROUPS = makeSelectionConstant("set-displayable-groups");
 
-export const INITIAL_COLOR_BY = "cell-line";
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 
 export const INITIAL_COLORS = [
