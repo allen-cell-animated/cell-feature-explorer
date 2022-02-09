@@ -162,8 +162,13 @@ export const getAnnotations = createSelector(
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
+            // FileInfo is typed with `index` as optional because it gets added to the 
+            // data from the database. However, at this point, index will always be defined, but since 
+            // typescript doesn't know that, we still have this backup to find it in the
+            // id array but that code should never be executed. 
             const pointIndex =
                 data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
+            console.log(data.index)
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
             if (pointIndex >= 0 && x !== null && y !== null) {
