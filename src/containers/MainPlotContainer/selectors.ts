@@ -23,11 +23,11 @@ import {
     getApplyColorToSelections,
     getClickedCellsFileInfo,
     getColorBySelection,
-    getColorByValues,
+    getFilteredColorByValues,
     getCategoryGroupColorsAndNames,
     getFilteredCellData,
     getHoveredCardId,
-    getIds,
+    getFilteredIds,
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
@@ -89,7 +89,7 @@ export const handleNullValues = (
     };
 };
 
-export const getCustomData = createSelector(
+export const getPlotlyCustomData = createSelector(
     [getFilteredCellData],
     (filteredCellData: DataForPlot): PlotlyCustomData[] => {
         const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
@@ -107,9 +107,9 @@ export const getMainPlotData = createSelector(
     [
         getFilteredXValues,
         getFilteredYValues,
-        getIds,
-        getCustomData,
-        getColorByValues,
+        getFilteredIds,
+        getPlotlyCustomData,
+        getFilteredColorByValues,
         getColorBySelection,
         getGroupByCategory,
         getCategoryGroupColorsAndNames,
