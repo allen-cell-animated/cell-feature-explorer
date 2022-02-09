@@ -168,7 +168,6 @@ export const getAnnotations = createSelector(
             // id array but that code should never be executed. 
             const pointIndex =
                 data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
-            console.log(data.index)
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
             if (pointIndex >= 0 && x !== null && y !== null) {
