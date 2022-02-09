@@ -64,7 +64,7 @@ export interface SelectedGroupDatum {
     y: number;
 }
 
-export interface CustomData {
+export interface PlotlyCustomData {
     thumbnailPath: string; 
     index: number;
 }
@@ -74,7 +74,7 @@ export interface ContinuousPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: CustomData[];
+    customdata?: PlotlyCustomData[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -89,7 +89,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: CustomData[];
+    customdata?: PlotlyCustomData[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;
