@@ -121,8 +121,8 @@ export const getMainPlotData = createSelector(
         ids,
         customData,
         colorByValues,
-        colorBy,
-        groupBy,
+        categoryToColorBy,
+        categoryToGroupBy,
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
@@ -131,8 +131,8 @@ export const getMainPlotData = createSelector(
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
         return {
-            color: colorBy === groupBy ? undefined : colorByValues,
-            groupBy: includes(categoricalFeatures, colorBy),
+            color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
+            groupBy: includes(categoricalFeatures, categoryToColorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,

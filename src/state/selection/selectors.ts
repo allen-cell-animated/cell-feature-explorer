@@ -66,13 +66,13 @@ export const getSelectedDatasetName = createSelector([getSelectedDataset], (sele
 
 export const getGroupByFeatureDef = createSelector(
     /**
-     * Returns the full feature definition of the feature currently selected as the 
+     * Returns the full feature definition of the feature currently selected as the
      * "groupBy" feature. This is the feature that will dictate the checkboxes on the left
-     * hand panel. 
+     * hand panel.
      */
     [getMeasuredFeaturesDefs, getGroupByCategory],
-    (features: MeasuredFeatureDef[], category): DiscreteMeasuredFeatureDef => {
-        const feature = findFeature(map(features), category);
+    (features: MeasuredFeatureDef[], categoryToGroupBy: string): DiscreteMeasuredFeatureDef => {
+        const feature = findFeature(map(features), categoryToGroupBy);
         // the group by category is always going to point to a discrete feature,
         // this just ensures the downstream selectors of this know that.
         if (!feature || !feature.discrete) {
@@ -111,12 +111,12 @@ export const getGroupingCategoryNames = createSelector(
 export const getCategoryGroupColorsAndNames = createSelector(
     /**
      * Returns array of objects that have the color mapping for each category in a colorBy
-     * selection if the colorBy is a discrete feature. 
+     * selection if the colorBy is a discrete feature.
      */
     [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
     (
-        colorBy: string,
-        groupBy: string,
+        categoryToColorBy: string,
+        categoryToGroupBy: string,
         measuredFeaturesDefs: MeasuredFeatureDef[],
         categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
@@ -124,8 +124,8 @@ export const getCategoryGroupColorsAndNames = createSelector(
          * This data is used to both make the color legend and to tell the plot how to color
          * the data when a categorical (discrete) feature has been chosen from the "colorBy" menu
          */
-        if (includes(categoricalFeatureKeys, colorBy)) {
-            const feature = findFeature(measuredFeaturesDefs, colorBy );
+        if (includes(categoricalFeatureKeys, categoryToColorBy)) {
+            const feature = findFeature(measuredFeaturesDefs, categoryToColorBy);
             if (feature && feature.discrete) {
                 const { options } = feature;
                 return map(options, (option: MeasuredFeaturesOption, key: string) => {
@@ -136,7 +136,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
                      *   2. an id to be mapped to the feature option. ie, a cell line number.
                      */
                     let id;
-                    if (groupBy === colorBy) {
+                    if (categoryToGroupBy === categoryToColorBy) {
                         /**
                          * For group by features, we're using the string name as the checkbox identifier instead of
                          * the numeral "key". We could change this in the future to reduce the complexity here.
@@ -229,14 +229,14 @@ export const getColorByCategoryCounts = createSelector(
     [getPerCellDataForPlot, getColorBySelection, getMeasuredFeaturesDefs],
     (
         measuredData: MetadataStateBranch,
-        colorBy: string,
+        categoryToColorBy: string,
         measuredFeatureDefs: MeasuredFeatureDef[]
     ): number[] => {
-        const feature = findFeature(measuredFeatureDefs, colorBy);
+        const feature = findFeature(measuredFeatureDefs, categoryToColorBy);
         if (feature && feature.discrete) {
             const categoryValues = map(feature.options, (_, key) => Number(key));
             const totals = reduce(
-                measuredData[colorBy],
+                measuredData[categoryToColorBy],
                 (acc: { [key: number]: number }, cur) => {
                     const index = categoryValues.indexOf(Number(cur));
                     if (acc[index]) {
@@ -354,15 +354,19 @@ export const getFilteredIds = createSelector(
 
 export const getFilteredColorByValues = createSelector(
     [getFilteredCellData, getColorBySelection, getGroupByCategory],
-    (metaData: DataForPlot, colorBy: string, groupBy: string): string[] | number[] => {
+    (
+        metaData: DataForPlot,
+        categoryToColorBy: string,
+        categoryToGroupBy: string
+    ): string[] | number[] => {
         if (!metaData.labels) {
             return [];
         }
         const options: MeasuredFeaturesWithCategoryNames = {
             ...metaData.values,
-            [groupBy]: metaData.labels[groupBy],
+            [categoryToGroupBy]: metaData.labels[categoryToGroupBy],
         };
-        return options[colorBy] || [];
+        return options[categoryToColorBy] || [];
     }
 );
 
