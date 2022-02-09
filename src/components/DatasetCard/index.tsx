@@ -28,6 +28,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     const displayTitle = (
         <>
             <div>
+                {/* Tag color is bright purple */}
                 {userData.isNew && <Tag color="#8950d9">new</Tag>}
                 {title ? title : name}
             </div>
