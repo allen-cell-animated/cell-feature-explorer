@@ -7,6 +7,7 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 @light-gray: #a0a0a0;
 @bright-green: #b2d030;
 @bright-blue: #00a0ff;
+@white: #ffffff;
 
 // -------- Colors -----------
 @primary-color          : tint(@purple, 90%);
@@ -33,9 +34,9 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 @body-background        : @background-color;
 //// Base background color for most components
 @component-background   :  @background-color;
-@heading-color          : #fff;
-@text-color             : darken(#fff, 25%);
-@text-color-secondary   : darken(#fff, 40%);
+@heading-color          : @white;
+@text-color             : darken(@white, 25%);
+@text-color-secondary   : darken(@white, 40%);
 
 @background-color-light : lighten(@dark-gray, 10%);  // background of header and selected item
 @background-color-base  : hsv(0, 0, 96%);  // Default grey background color
@@ -64,12 +65,12 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 @layout-sider-background        : transparent;
 @layout-trigger-height          : 48px;
 @layout-trigger-background      : #002140;
-@layout-trigger-color           : #fff;
+@layout-trigger-color           : @white;
 @layout-zero-trigger-width      : 36px;
 @layout-zero-trigger-height     : 42px;
 // Layout light theme
-@layout-sider-background-light  : #fff;
-@layout-trigger-background-light: #fff;
+@layout-sider-background-light  : @white;
+@layout-trigger-background-light: @white;
 @layout-trigger-color-light     : @text-color;
 
 // Buttons
@@ -77,7 +78,7 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 @btn-border-radius-base : @border-radius-base;
 @btn-border-radius-sm   : @border-radius-base;
 
-@btn-primary-color      : #fff;
+@btn-primary-color      : @white;
 @btn-primary-bg         : @highlight-color;
 
 @btn-default-color      : @text-color;
@@ -115,13 +116,13 @@ https://github.com/ant-design/ant-design/blob/master/components/style/themes/def
 // Checkbox
 @checkbox-size          : 16px;
 @checkbox-color         : @background-color-light;
-@checkbox-check-color   : #fff;
+@checkbox-check-color   : @white;
 
 // Radio buttons
 @radio-button-bg           : @btn-default-bg;
 @radio-button-color        : @btn-default-color;
-@radio-button-hover-color  : #fff;
-@radio-button-active-color : #fff;
+@radio-button-hover-color  : @white;
+@radio-button-active-color : @white;
 
 // Input
 // ---
