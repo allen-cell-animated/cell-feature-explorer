@@ -76,7 +76,7 @@ function mapStateToProps(state: State) {
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
-        megasets: metadataStateBranch.selectors.getMegasets(state),
+        megasets: metadataStateBranch.selectors.getMegasetsByNewest(state),
     };
 }
 
