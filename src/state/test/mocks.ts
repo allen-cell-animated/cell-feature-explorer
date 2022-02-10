@@ -8,8 +8,8 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { initialState as initialMetaData } from "../metadata/reducer";
-import { FileInfo } from "../metadata/types";
-import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
+import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
+import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
     {
@@ -49,7 +49,7 @@ const fileInfo: FileInfo[] = [
     },
 ];
 
-const measuredFeaturesDefs = [
+const measuredFeaturesDefs: MeasuredFeatureDef[] = [
     {
         key: "cell-line",
         displayName: "Labeled Structure",
@@ -94,6 +94,8 @@ const measuredFeaturesDefs = [
         displayName: "Apical Proximity",
         key: "apical-proximity",
         unit: "unitless",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
         displayName: "Anaphase segmentation complete",
@@ -124,12 +126,16 @@ const measuredFeaturesDefs = [
         displayName: "Cell Surface area",
         key: "cellular-surface-area",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
         discrete: false,
         displayName: "Missing data",
         key: "missing-data",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
 ];
 const featureData = {
@@ -147,7 +153,8 @@ const featureData = {
     },
 };
 
-const displayableGroups: any = ["Paxillin", "Alpha-actinin-1"];
+const displayableGroups: string[] = ["Paxillin", "Alpha-actinin-1"];
+const INITIAL_COLOR_AND_GROUP_BY = "cell-line";
 
 export const mockState = {
     metadata: {
@@ -158,12 +165,12 @@ export const mockState = {
         viewerChannelSettings: {},
     },
     selection: {
-        colorBy: INITIAL_COLOR_BY,
+        colorBy: INITIAL_COLOR_AND_GROUP_BY,
         downloadConfig: {
             key: "",
             type: "",
         },
-        groupBy: INITIAL_COLOR_BY,
+        groupBy: INITIAL_COLOR_AND_GROUP_BY,
         filterExclude: [],
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",

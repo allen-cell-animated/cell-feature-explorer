@@ -265,7 +265,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State): PropsFromState {
     return {
-        categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
+        categoryCounts: selectionStateBranch.selectors.getColorByCategoryCounts(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
         colorForPlot: getLegendColors(state),

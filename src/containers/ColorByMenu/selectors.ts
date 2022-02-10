@@ -65,10 +65,10 @@ export const disambiguateCategoryNames = (options: MeasuredFeaturesOption[]): st
 
 export const getLegendColors = createSelector(
     [getCategoryGroupColorsAndNames, getGroupByCategory, getColorBySelection],
-    (colors, groupBy, colorBy) => {
-        // if color by and group by are the same, the legend 
-        // is redundant 
-        if (colorBy === groupBy) {
+    (colors, categoryToGroupBy, categoryToColorBy) => {
+        // if color by and group by are the same, the legend
+        // is redundant
+        if (categoryToColorBy === categoryToGroupBy) {
             return [];
         }
         return colors;
@@ -100,8 +100,8 @@ export const getInteractivePanelData = createSelector(
         getDisplayableGroups,
     ],
     (
-        groupBy: string[],
-        colorBy: string[],
+        categoryToGroupBy: string[],
+        categoryToColorBy: string[],
         categories: MeasuredFeaturesOption[],
         filtersToExclude: string[],
         displayableGroups: string[]
@@ -114,7 +114,7 @@ export const getInteractivePanelData = createSelector(
             const total: number = category.count || 0;
             const disabled = !displayableGroups.includes(id);
             const color = getColorForCategory(
-                colorBy === groupBy,
+                categoryToColorBy === categoryToGroupBy,
                 includes(filtersToExclude, id),
                 disabled,
                 category.color

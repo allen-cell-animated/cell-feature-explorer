@@ -49,14 +49,26 @@ export interface MeasuredFeaturesOption {
 
 export type MeasuredFeaturesOptions = { [key: string]: MeasuredFeaturesOption };
 
-export interface MeasuredFeatureDef {
-    discrete: boolean;
+export interface ContinuousMeasuredFeatureDef {
+    discrete: false;
     displayName: string;
+    description: string;
+    key: string;
+    unit?: string;
+    tooltip: string;
+}
+
+export interface DiscreteMeasuredFeatureDef {
+    discrete: true;
+    displayName: string;
+    description: string;
     key: string;
     unit?: string;
     options: MeasuredFeaturesOptions;
     tooltip: string;
 }
+
+export type MeasuredFeatureDef = ContinuousMeasuredFeatureDef | DiscreteMeasuredFeatureDef;
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfMeasuredValuesArrays {

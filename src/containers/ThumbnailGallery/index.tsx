@@ -20,7 +20,7 @@ import {
 } from "../../state/selection/actions";
 import {
     getClickedScatterPoints,
-    getIds,
+    getFilteredIds,
     getSelected3DCell,
     getSelectedAlbum,
 } from "../../state/selection/selectors";
@@ -356,7 +356,7 @@ function mapStateToProps(state: State): PropsFromState {
         albumData: getAllAlbumData(state),
         clickedPoints: getClickedScatterPoints(state),
         data: getThumbnails(state),
-        ids: getIds(state),
+        ids: getFilteredIds(state),
         selectedAlbum: getSelectedAlbum(state),
         selectedAlbumName: getSelectedAlbumName(state),
         selectedCell: getSelected3DCell(state),

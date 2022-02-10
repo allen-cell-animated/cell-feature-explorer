@@ -23,11 +23,11 @@ import {
     getApplyColorToSelections,
     getClickedCellsFileInfo,
     getColorBySelection,
-    getColorByValues,
+    getFilteredColorByValues,
     getCategoryGroupColorsAndNames,
     getFilteredCellData,
     getHoveredCardId,
-    getIds,
+    getFilteredIds,
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
@@ -38,7 +38,8 @@ import {
     getHoveredPointData,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
-import { Annotation, ContinuousPlotData, CustomData, GroupedPlotData } from "../../state/types";
+import { Annotation, ContinuousPlotData, PlotlyCustomData, GroupedPlotData } from "../../state/types";
+import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
@@ -88,9 +89,9 @@ export const handleNullValues = (
     };
 };
 
-export const getCustomData = createSelector(
+export const getPlotlyCustomData = createSelector(
     [getFilteredCellData],
-    (filteredCellData: DataForPlot): CustomData[] => {
+    (filteredCellData: DataForPlot): PlotlyCustomData[] => {
         const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
         const indices = filteredCellData.indices;
         return map(indices, (index) => {
@@ -106,9 +107,9 @@ export const getMainPlotData = createSelector(
     [
         getFilteredXValues,
         getFilteredYValues,
-        getIds,
-        getCustomData,
-        getColorByValues,
+        getFilteredIds,
+        getPlotlyCustomData,
+        getFilteredColorByValues,
         getColorBySelection,
         getGroupByCategory,
         getCategoryGroupColorsAndNames,
@@ -120,8 +121,8 @@ export const getMainPlotData = createSelector(
         ids,
         customData,
         colorByValues,
-        colorBy,
-        groupBy,
+        categoryToColorBy,
+        categoryToGroupBy,
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
@@ -130,8 +131,8 @@ export const getMainPlotData = createSelector(
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
         return {
-            color: colorBy === groupBy ? undefined : colorByValues,
-            groupBy: includes(categoricalFeatures, colorBy),
+            color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
+            groupBy: includes(categoricalFeatures, categoryToColorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
@@ -161,6 +162,10 @@ export const getAnnotations = createSelector(
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
+            // FileInfo is typed with `index` as optional because it gets added to the 
+            // data from the database. However, at this point, index will always be defined, but since 
+            // typescript doesn't know that, we still have this backup to find it in the
+            // id array but that code should never be executed. 
             const pointIndex =
                 data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
@@ -360,7 +365,7 @@ const makeNumberAxis = (): TickConversion => {
 export const getXTickConversion = createSelector(
     [getPlotByOnX, getMeasuredFeaturesDefs],
     (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
-        const feature = find(measuredFeaturesDefs, { key: plotByOnX });
+        const feature = findFeature(measuredFeaturesDefs,  plotByOnX);
         if (feature && feature.discrete) {
             return makeNumberToTextConversion(feature.options);
         }

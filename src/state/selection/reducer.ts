@@ -17,7 +17,6 @@ import {
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
-    INITIAL_COLOR_BY,
     INITIAL_COLORS,
     INITIAL_SELECTED_ALBUM_ID,
     INITIAL_SELECTION_COLORS,
@@ -61,7 +60,7 @@ import {
 export const initialState = {
     applySelectionSetColoring: true,
     cellSelectedFor3D: null,
-    colorBy: INITIAL_COLOR_BY,
+    colorBy: "",
     dataset: "",
     downloadConfig: {
         key: "",

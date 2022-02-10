@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { getGroupingCategoryNames } from "../../selection/selectors";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
@@ -18,25 +17,6 @@ describe("Metadata branch selectors", () => {
                 "anaphase-segmentation-complete",
                 "cellular-surface-area",
                 "missing-data",
-            ]);
-        });
-    });
-    describe("getGroupingCategoryNames", () => {
-        it("returns names of the categories in the dataset", () => {
-            const state: State = {
-                ...mockState,
-            };
-            const result: string[] = getGroupingCategoryNames(state).sort(
-                (a: string, b: string) => {
-                    return b > a ? 1 : -1;
-                }
-            );
-            expect(result).to.deep.equal([
-                    "Mitochondria",
-                    "Microtubules",
-                    "Matrix adhesions",
-                    "Endoplasmic reticulum",
-                    "Actin filaments",
             ]);
         });
     });
