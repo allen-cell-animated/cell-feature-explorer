@@ -1,8 +1,10 @@
 @import "../../styles/colors.css";
+@import "../../styles/constants.css";
 
 .content {
     flex: 2;
     padding: 20px 40px;
+    font-weight: 100;
 }
 
 .header {
@@ -13,7 +15,8 @@
 .subtitle {
     text-align: center;
     font-size: 24px;
-    margin: 1.2em 0;
+    margin-top: 1em;
+    margin-bottom: 0;
 }
 .alert {
     margin-right: 120px;
@@ -30,7 +33,7 @@
 .header-main {
     text-align: left;
     background-color: var(--background-dim-gray);
-    padding: 15px 50px;
+    padding: 30px 50px;
     height: initial;
     display: flex;
     justify-content: space-between;
@@ -49,14 +52,15 @@
 }
 
 .section {
-    margin: 2em auto;
-    max-width: 1010px;
-    font-weight: 100;
+    margin: 0.5em auto 2em auto;
+    column-gap: var(--dataset-card-gap-width);
+    max-width: var(--datasets-section-max-width);
+    justify-content: center;
 }
 
 .caption {
     font-size: 1rem;
-    margin: 2em 4.4em;
+    margin: 2em 5%;
     text-align: justify;
     color: var(--text-gray);
 }
@@ -68,6 +72,16 @@
     line-height: 1.75;
     color: var(--text-gray);
 }
+
+.light-section-content {
+    margin: 2em auto;
+    max-width: 1010px;
+}
+
+.light-section .subtitle {
+    margin-bottom: 1.2em;
+}
+
 .light-section .paragraph {
     padding: 0 20px;
 }

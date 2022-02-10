@@ -1,0 +1,8 @@
+:root {
+    --dataset-card-width: 460px;
+    --dataset-card-gap-width: 30px; /* Horizontal gap between two dataset cards */
+    --max-datasets-per-row: 2;
+    --datasets-section-max-width: calc(
+        var(--max-datasets-per-row) * var(--dataset-card-width) + (var(--max-datasets-per-row) - 1) * var(--dataset-card-gap-width)
+    );
+}

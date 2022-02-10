@@ -2,9 +2,10 @@
     --background-dark-gray: #131313;
     --background-black-purple: #222222;
     --background-dim-gray: #383838;
-    --purple: #8048f3;
+    --purple: #8950d9;
     --dimgray: #6e6e6e;
     --highlight-green: #b2d030;
+    --bright-blue: #00a0ff;
     --text-gray: #a0a0a0;
     --header-gray: #4b4b4b;
     --panel-body-background-gray: #313131;
@@ -15,4 +16,6 @@
     --bottom-panel: var(--background-black-purple);
     --bottom-panel-trigger: var(--header-gray);
     --bottom-panel-trigger-label: var(--light-gray);
+    --megacard-background: var(--background-dim-gray);
+    --link-text: var(--bright-blue);
 }

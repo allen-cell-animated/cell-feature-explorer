@@ -21,3 +21,7 @@
 :global(.ant-select-arrow) {
     color: white;
 }
+
+:global(.ant-select-selection--single .ant-select-selection__rendered) {
+    margin-right: 30px;
+}
