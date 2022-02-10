@@ -1,10 +1,10 @@
 @import "../../styles/colors.css";
+@import "../../styles/constants.css";
 
 .content {
     flex: 2;
     padding: 20px 40px;
     font-weight: 100;
-    justify-content: center;
 }
 
 .header {
@@ -53,7 +53,9 @@
 
 .section {
     margin: 0.5em auto 2em auto;
-    column-gap: 30px;
+    column-gap: var(--dataset-card-gap-width);
+    max-width: var(--datasets-section-max-width);
+    justify-content: center;
 }
 
 .caption {

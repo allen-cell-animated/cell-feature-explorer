@@ -1,10 +1,12 @@
 @import "../../styles/colors.css";
+@import "../../styles/constants.css";
 
 .card {
     padding: 15px 15px 5px 15px;
     background-color: #4b4b4b;
     display: flex;
     flex-direction: column;
+    max-width: var(--dataset-card-width);
 }
 
 .spacer {

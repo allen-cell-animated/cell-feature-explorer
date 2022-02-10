@@ -50,8 +50,6 @@ export const MY_SELECTIONS_ID = 0;
 export const DISABLE_COLOR = "#6e6e6e";
 export const OFF_COLOR = "#000";
 
-export const DATASET_CARD_WIDTH = 460;
-
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
     cellName: CELL_ID_KEY,
