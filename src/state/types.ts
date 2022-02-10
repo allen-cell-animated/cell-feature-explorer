@@ -91,7 +91,7 @@ export interface GroupedPlotData {
     y: (number | null)[];
     customdata?: PlotlyCustomData[];
     groupBy: boolean;
-    groups: number[] | string[];
+    groups: string[];
     groupSettings: GroupSettings[] | null;
     plotName?: string;
 }

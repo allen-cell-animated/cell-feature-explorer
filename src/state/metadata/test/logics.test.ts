@@ -1,35 +1,35 @@
 import { expect } from "chai";
 import { findVisibleDataPoint } from "../logics";
-import { MappingOfMeasuredValuesArraysWithNulls } from "../types";
+import { MappingOfMeasuredValuesArrays } from "../types";
 
 const length = 4;
 const plotByOnX = "plotOnX";
 const plotByOnY = "plotOnY";
 
-const testDataWithValues1: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataWithValues1: MappingOfMeasuredValuesArrays = {
     plotOnX: [0, 1, 3, 4],
     plotOnY: [0, null, null, null],
 };
-const testDataWithValues2: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataWithValues2: MappingOfMeasuredValuesArrays = {
     plotOnX: [0, 1, 3, 4],
     plotOnY: [0, 3, null, null],
 };
 
-const testDataWithValues3: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataWithValues3: MappingOfMeasuredValuesArrays = {
     plotOnX: [0, 1, 3, 4],
     plotOnY: [0, 3, 4, null],
 };
-const testDataWithValues4: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataWithValues4: MappingOfMeasuredValuesArrays = {
     plotOnX: [0, 1, 3, 4],
     plotOnY: [0, 3, 4, 2],
 };
 
-const testDataNoValues1: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataNoValues1: MappingOfMeasuredValuesArrays = {
     plotOnX: [0, 1, 3, 4],
     plotOnY: [null, null, null, null],
 };
 
-const testDataNoValues2: MappingOfMeasuredValuesArraysWithNulls = {
+const testDataNoValues2: MappingOfMeasuredValuesArrays = {
     plotOnX: [null, null, 3, 4],
     plotOnY: [0, 1, null, null],
 };

@@ -1,3 +1,4 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { AnyAction } from "redux";
 import { Megaset } from "../image-dataset/types";
 import { ReceiveCellFileInfoAction } from "../selection/types";
@@ -28,7 +29,7 @@ import {
     ReceiveMeasuredFeaturesAction,
     ClearAction,
     PerCellLabels,
-    MappingOfMeasuredValuesArraysWithNulls,
+    MappingOfMeasuredValuesArrays,
     FileInfo,
 } from "./types";
 
@@ -41,11 +42,11 @@ export const initialState = {
     megasets: [] as Megaset[],
     featureData: {
         indices: [] as number[],
-        values: {} as MappingOfMeasuredValuesArraysWithNulls,
+        values: {} as MappingOfMeasuredValuesArrays,
         labels: {} as PerCellLabels,
     },
     measuredFeaturesDefs: [],
-    viewerChannelSettings: undefined,
+    viewerChannelSettings: {} as ViewerChannelSettings,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {

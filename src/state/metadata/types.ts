@@ -20,11 +20,11 @@ export interface MetadataStateBranch {
     megasets: Megaset[];
     featureData: {
         indices: number[];
-        values: MappingOfMeasuredValuesArraysWithNulls;
+        values: MappingOfMeasuredValuesArrays;
         labels: PerCellLabels;
     };
     measuredFeaturesDefs: MeasuredFeatureDef[];
-    viewerChannelSettings?: ViewerChannelSettings;
+    viewerChannelSettings: ViewerChannelSettings;
 }
 
 // FROM THE DATABASE TYPINGS
@@ -72,19 +72,7 @@ export type MeasuredFeatureDef = ContinuousMeasuredFeatureDef | DiscreteMeasured
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfMeasuredValuesArrays {
-    [key: string]: number[];
-}
-
-export interface MappingOfMeasuredValuesArraysWithNulls {
     [key: string]: (number | null)[];
-}
-
-export interface MeasuredFeatures {
-    [key: string]: number;
-}
-
-export interface MeasuredFeaturesWithCategoryNames {
-    [key: string]: number[] | string[];
 }
 
 export interface PerCellLabels {
@@ -93,21 +81,25 @@ export interface PerCellLabels {
     [key: string]: string[];
 }
 
+export interface MeasuredFeaturesWithCategoryNames {
+    [key: string]: string[] | (number | null)[];
+}
+
 export interface DataForPlot {
     indices: number[];
-    values: MappingOfMeasuredValuesArraysWithNulls;
+    values: MappingOfMeasuredValuesArrays;
     labels: PerCellLabels;
 }
 
 // ACTIONS
 
-export interface ReceiveMeasuredFeaturesAction {
-    payload: MetadataStateBranch[];
+export interface ReceiveAction {
+    payload: {[key: string]: any};
     type: string;
 }
 
-export interface ReceiveAction {
-    payload: MetadataStateBranch;
+export interface ReceiveMeasuredFeaturesAction {
+    payload: MeasuredFeatureDef[];
     type: string;
 }
 

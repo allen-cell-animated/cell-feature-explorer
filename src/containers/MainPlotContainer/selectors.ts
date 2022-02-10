@@ -130,11 +130,12 @@ export const getMainPlotData = createSelector(
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
+        const isGrouped = includes(categoricalFeatures, categoryToColorBy)
         return {
             color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
-            groupBy: includes(categoricalFeatures, categoryToColorBy),
+            groupBy: isGrouped,
             groupSettings: colorsForPlot,
-            groups: colorByValues,
+            groups: isGrouped? colorByValues as string[] : [],
             ids,
             x: newXAndYValues.xValues,
             y: newXAndYValues.yValues,

@@ -9,7 +9,7 @@ import { batchActions } from "../util";
 import {
     receiveAvailableDatasets,
     receiveMeasuredFeatureDefs,
-    receiveMetadata,
+    receiveDataForPlot,
     receiveViewerChannelSettings,
     setLoadingText,
     stopLoading,
@@ -97,7 +97,7 @@ const requestFeatureDataLogic = createLogic({
         return imageDataSet
             .getFeatureData()
             .then((data: DataForPlot) => {
-                actions.push(receiveMetadata(data));
+                actions.push(receiveDataForPlot(data));
                 dispatch(batchActions(actions));
                 return data;
             })

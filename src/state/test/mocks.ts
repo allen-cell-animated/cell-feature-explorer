@@ -1,3 +1,4 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -162,7 +163,7 @@ export const mockState = {
         cellFileInfo: fileInfo,
         featureData: featureData,
         measuredFeaturesDefs: measuredFeaturesDefs,
-        viewerChannelSettings: {},
+        viewerChannelSettings: {} as ViewerChannelSettings,
     },
     selection: {
         colorBy: INITIAL_COLOR_AND_GROUP_BY,

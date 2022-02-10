@@ -1,5 +1,7 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { map, filter, forEach } from "lodash";
 import { createSelector } from "reselect";
+import { Album } from "..";
 
 import { MITOTIC_STAGE_KEY } from "../../constants";
 import { DatasetMetaData, Megaset } from "../image-dataset/types";
@@ -8,20 +10,21 @@ import { findFeature } from "../util";
 
 import {
     DataForPlot,
+    FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
 } from "./types";
 
 // BASIC SELECTORS
-export const getPerCellDataForPlot = (state: State) => state.metadata.featureData;
-export const getAllAlbumData = (state: State) => state.metadata.albums;
-export const getIsLoading = (state: State) => state.metadata.isLoading;
-export const getLoadingText = (state: State) => state.metadata.loadingText;
-export const getShowSmallScreenWarning = (state: State) => state.metadata.showSmallScreenWarning;
-export const getMegasets = (state: State) => state.metadata.megasets;
-export const getMeasuredFeaturesDefs = (state: State) => state.metadata.measuredFeaturesDefs;
-export const getFileInfo = (state: State) => state.metadata.cellFileInfo;
-export const getViewerChannelSettings = (state: State) => state.metadata.viewerChannelSettings;
+export const getPerCellDataForPlot = (state: State): DataForPlot => state.metadata.featureData;
+export const getAllAlbumData = (state: State): Album[] => state.metadata.albums;
+export const getIsLoading = (state: State): boolean => state.metadata.isLoading;
+export const getLoadingText = (state: State): string => state.metadata.loadingText;
+export const getShowSmallScreenWarning = (state: State): boolean => state.metadata.showSmallScreenWarning;
+export const getMegasets = (state: State): Megaset[] => state.metadata.megasets;
+export const getMeasuredFeaturesDefs = (state: State): MeasuredFeatureDef[] => state.metadata.measuredFeaturesDefs;
+export const getFileInfo = (state: State): FileInfo[] => state.metadata.cellFileInfo;
+export const getViewerChannelSettings = (state: State): ViewerChannelSettings => state.metadata.viewerChannelSettings;
 
 // Return individual datasets (unpack any megasets)
 export const getDatasets = createSelector([getMegasets], (megasets): DatasetMetaData[] => {
@@ -98,7 +101,7 @@ export const getMitoticStageNames = createSelector(
 
 export const getMitoticKeyPerCell = createSelector(
     [getMeasuredFeatureArrays],
-    (measuredFeatures: MappingOfMeasuredValuesArrays): number[] => {
+    (measuredFeatures: MappingOfMeasuredValuesArrays): (number| null)[] => {
         return measuredFeatures[MITOTIC_STAGE_KEY] || [];
     }
 );

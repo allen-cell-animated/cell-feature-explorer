@@ -16,7 +16,6 @@ import {
     MeasuredFeatureDef,
     MeasuredFeaturesOption,
     MeasuredFeaturesWithCategoryNames,
-    MetadataStateBranch,
     PerCellLabels,
 } from "../metadata/types";
 import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
@@ -180,7 +179,7 @@ export const getGroupingCategoryNamesAsArray = createSelector(
         const categoryKey = groupByCategoryFeatureDef.key;
 
         return map(perCellDataForPlot.values[categoryKey], (ele) => {
-            return getCategoryString(groupByCategoryFeatureDef, ele.toString());
+            return getCategoryString(groupByCategoryFeatureDef, ele ? ele.toString() : "");
         });
     }
 );
@@ -192,13 +191,19 @@ export const getGroupingCategoryNamesAsArray = createSelector(
  * These arrays are the length of the data, regardless of whether any of the data has been filtered 
  * by the checkboxes.  
  */
-export const getMeasuredValues = createSelector([getPerCellDataForPlot], (plotForData) => {
-    return plotForData.values || {};
-});
+export const getMeasuredValues = createSelector(
+    [getPerCellDataForPlot],
+    (dataForPlot: DataForPlot): MappingOfMeasuredValuesArrays => {
+        return dataForPlot.values || {};
+    }
+);
 
 export const getXValues = createSelector(
     [getMeasuredValues, getPlotByOnX],
-    (measuredData: MappingOfMeasuredValuesArrays, plotByOnX: string): (number | null)[] => {
+    (
+        measuredData: MappingOfMeasuredValuesArrays,
+        plotByOnX: string
+    ): (number | null)[] => {
         if (measuredData[plotByOnX]) {
             return measuredData[plotByOnX];
         }
@@ -223,8 +228,8 @@ export const getColorByCategoryCounts = createSelector(
      */
     [getPerCellDataForPlot, getColorBySelection, getMeasuredFeaturesDefs],
     (
-        measuredData: MetadataStateBranch,
-        categoryToColorBy: string,
+        measuredData: DataForPlot,
+        categoryToColorBy: keyof DataForPlot,
         measuredFeatureDefs: MeasuredFeatureDef[]
     ): number[] => {
         const feature = findFeature(measuredFeatureDefs, categoryToColorBy);
@@ -353,7 +358,7 @@ export const getFilteredColorByValues = createSelector(
         metaData: DataForPlot,
         categoryToColorBy: string,
         categoryToGroupBy: string
-    ): string[] | number[] => {
+    ): string[] | (number | null)[] => {
         if (!metaData.labels) {
             return [];
         }
@@ -425,8 +430,8 @@ export const getSelectedGroupsData = createSelector(
         selectedGroupColorMapping
     ): ContinuousPlotData => {
         const colorArray: string[] = [];
-        const xValues: number[] = [];
-        const yValues: number[] = [];
+        const xValues: (number | null)[] = [];
+        const yValues: (number | null)[] = [];
 
         mapValues(selectedGroups, (value, key) => {
             // for each point index, get x, y, and color for the point.

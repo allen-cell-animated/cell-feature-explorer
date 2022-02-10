@@ -73,7 +73,7 @@ export const getThumbnails = createSelector(
     (
         groupByFeatureDef: DiscreteMeasuredFeatureDef,
         perCellPlotData: DataForPlot,
-        mitoticKeysArray: number[],
+        mitoticKeysArray: (number | null)[],
         fileInfoOfSelectedCells: FileInfo[],
         downloadRoot: string,
         thumbnailRoot: string,
@@ -97,7 +97,7 @@ export const getThumbnails = createSelector(
 
             let mitoticStage = "";
             if (!isEmpty(mitoticStageNames) && mitoticKeysArray.length) {
-                const mitoticKey = mitoticKeysArray[cellIndex];
+                const mitoticKey = mitoticKeysArray[cellIndex] || -1;
                 mitoticStage = mitoticStageNames[mitoticKey]
                     ? mitoticStageNames[mitoticKey].name
                     : "";
@@ -121,7 +121,8 @@ export const getThumbnails = createSelector(
             }
 
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
-            const category = getCategoryString(groupByFeatureDef, groupByValues[cellIndex].toString());
+            const lookupKey =  groupByValues[cellIndex];
+            const category = getCategoryString(groupByFeatureDef, lookupKey ? lookupKey.toString() : "");
             return {
                 cellID,
                 downloadHref,
