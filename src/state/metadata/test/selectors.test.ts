@@ -1,8 +1,10 @@
 import { expect } from "chai";
+import {Timestamp} from "@firebase/firestore-types";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
-import { compareVersions, getMeasuredFeaturesKeys, getProteinNames } from "../selectors";
+import { Megaset } from "../../image-dataset/types";
+import { getMeasuredFeaturesKeys, getProteinNames, getMegasetsByNewest } from "../selectors";
 
 describe("Metadata branch selectors", () => {
     describe("getMeasuredFeaturesKeys", () => {
@@ -37,42 +39,57 @@ describe("Metadata branch selectors", () => {
         });
     });
 
-    describe("compareVersions", () => {
-        it("returns a negative if the major version of the first item is greater", () => {
-            const result = compareVersions("2021.1", "2020.1");
-            const resultNoMinor = compareVersions("2021", "2020");
+    describe("getMegasetsByNewest", () => {
+        it("returns an array of Megaset objects sorted by dateCreated, newest first", () => {
+            const megasetsFromState: Megaset[] = [
+                {
+                    "production": false,
+                    "name": "middle megaset",
+                    "datasets": {},
+                    "title": "Title for middle megaset",
+                    "dateCreated": new Timestamp(1700000000, 0)
+                },
+                {
+                    "production": false,
+                    "name": "oldest megaset",
+                    "datasets": {},
+                    "title": "Title for oldest megaset",
+                    "dateCreated": new Timestamp(1600000000, 0)
+                },
+                {
+                    "production": false,
+                    "name": "newest megaset",
+                    "datasets": {},
+                    "title": "Title for newest megaset",
+                    "dateCreated": new Timestamp(1800000000, 0)
+                },
+            ];
+            const expected: Megaset[] = [
+                {
+                    "production": false,
+                    "name": "newest megaset",
+                    "datasets": {},
+                    "title": "Title for newest megaset",
+                    "dateCreated": new Timestamp(1800000000, 0)
+                },
+                {
+                    "production": false,
+                    "name": "middle megaset",
+                    "datasets": {},
+                    "title": "Title for middle megaset",
+                    "dateCreated": new Timestamp(1700000000, 0)
+                },
+                {
+                    "production": false,
+                    "name": "oldest megaset",
+                    "datasets": {},
+                    "title": "Title for oldest megaset",
+                    "dateCreated": new Timestamp(1600000000, 0)
+                },
+            ]
 
-            expect(result).to.be.lessThan(0);
-            expect(resultNoMinor).to.be.lessThan(0);
+            const result = getMegasetsByNewest.resultFunc(megasetsFromState);
+            expect(result).to.deep.equal(expected);
         })
-        it("returns a negative if the first item has a minor version and the second doesn't", () => {
-            const result = compareVersions("2021.1", "2021");
-            
-            expect(result).to.be.lessThan(0);
-        });
-        it("returns negative if the minor version of the first item is greater", () => {
-            const result = compareVersions("2020.2", "2020.1");
-            const resultDoubleDigit = compareVersions("2020.10", "2020.1");
-            
-            expect(result).to.be.lessThan(0);
-            expect(resultDoubleDigit).to.be.lessThan(0);
-        });
-        it("returns negative if the patch version of the first item is greater", () => {
-            const result = compareVersions("2020.1.2", "2020.1.0");
-            const resultDoubleDigit = compareVersions("2020.1.10", "2020.1.1");
-            
-            expect(result).to.be.lessThan(0);
-            expect(resultDoubleDigit).to.be.lessThan(0);
-        });
-        it("returns 0 if versions are the same", () => {
-            const resultMajor = compareVersions("2020", "2020");
-            const resultMinor = compareVersions("2020.1", "2020.1");
-            const resultPatch = compareVersions("2020.1.1", "2020.1.1");
-
-            expect(resultMajor).to.equal(0);
-            expect(resultMinor).to.equal(0);
-            expect(resultPatch).to.equal(0);
-
-        });
     })
 });
