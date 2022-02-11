@@ -52,7 +52,7 @@ export const getDownloadRoot = (state: State): string => state.selection.downloa
 export const getVolumeViewerDataRoot = (state: State): string => state.selection.volumeViewerDataRoot;
 export const getDisplayableGroups = (state: State): string[] => state.selection.displayableGroups;
 
-export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
+export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset): string => {
     return selectedDataset.split("_v")[0];
 });
 
