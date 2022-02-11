@@ -96,7 +96,10 @@ const requestFeatureDataLogic = createLogic({
 
         return imageDataSet
             .getFeatureData()
-            .then((data: DataForPlot) => {
+            .then((data: DataForPlot | void) => {
+                if (!data) {
+                    return done();
+                }
                 actions.push(receiveDataForPlot(data));
                 dispatch(batchActions(actions));
                 return data;
@@ -131,9 +134,9 @@ const requestFeatureDataLogic = createLogic({
 
                 if (!getSelected3DCell(state)) {
                     dispatch(
-                        selectCellFor3DViewer(
-                            { id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex] }
-                        )
+                        selectCellFor3DViewer({
+                            id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex],
+                        })
                     );
                 }
 
