@@ -16,7 +16,7 @@ import {
     Y_AXIS_ID,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { FileInfo, MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
+import { MeasuredFeatureDef, RequestAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import {
     ChangeHoveredPointAction,
@@ -29,6 +29,7 @@ import {
     SelectPointAction,
     TickConversion,
     SetDisplayableGroupsAction,
+    SelectedPointData,
 } from "../../state/selection/types";
 import { Annotation, State } from "../../state/types";
 
@@ -51,7 +52,7 @@ interface PropsFromState {
     clickedPoints: string[];
     filtersToExclude: string[];
     galleryCollapsed: boolean;
-    hoveredPointData: FileInfo | undefined;
+    hoveredPointData: SelectedPointData | null;
     mousePosition: MousePosition;
     plotDataArray: any;
     thumbnailRoot: string;

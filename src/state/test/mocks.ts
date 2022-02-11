@@ -9,6 +9,7 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { initialState as initialMetaData } from "../metadata/reducer";
+import { initialState as initialSelectionState } from "../selection/reducer";
 import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { INITIAL_COLORS } from "../selection/constants";
 
@@ -166,6 +167,7 @@ export const mockState = {
         viewerChannelSettings: {} as ViewerChannelSettings,
     },
     selection: {
+        ...initialSelectionState,
         colorBy: INITIAL_COLOR_AND_GROUP_BY,
         downloadConfig: {
             key: "",

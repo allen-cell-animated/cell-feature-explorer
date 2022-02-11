@@ -37,7 +37,7 @@ import {
     getGroupingCategoryNamesAsArray,
     getHoveredPointData,
 } from "../../state/selection/selectors";
-import { TickConversion } from "../../state/selection/types";
+import { SelectedPointData, TickConversion } from "../../state/selection/types";
 import {
     Annotation,
     ContinuousPlotData,
@@ -412,7 +412,7 @@ export const getYTickConversion = createSelector(
 
 export const getDataForOverlayCard = createSelector(
     [getHoveredPointData, getGroupingCategoryNamesAsArray],
-    (pointData, categoryNames): FileInfo => {
+    (pointData, categoryNames): SelectedPointData | null => {
         if (!pointData || !categoryNames.length || pointData.index === undefined) {
             return pointData;
         }

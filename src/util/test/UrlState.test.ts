@@ -132,7 +132,7 @@ describe("UrlState utility class", () => {
     describe("toUrlSearchParameterMap", () => {
         it("re-maps app state to a key:value object", () => {
             const selections = {
-                cellSelectedFor3D: 10,
+                cellSelectedFor3D: "10",
                 colorBy: "Protein",
                 plotByOnX: "X value",
                 plotByOnY: "Y value",
@@ -149,7 +149,7 @@ describe("UrlState utility class", () => {
 
         it("omits values that are not meaningful to include in the URL", () => {
             const selections = {
-                cellSelectedFor3D: null,
+                cellSelectedFor3D: "",
                 colorBy: "Color by",
                 plotByOnX: "X value",
                 plotByOnY: "Y value",

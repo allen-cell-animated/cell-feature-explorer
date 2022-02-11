@@ -50,9 +50,9 @@ describe("Viewer selectors", () => {
             expect(result).to.deep.equal({
                 cellId: "1",
                 baseUrl: "url",
-                cellDownloadHref: "undefined&id=C1",
+                cellDownloadHref: "&id=C1",
                 cellPath: "volumeviewerPath",
-                fovDownloadHref: "undefined&id=F12762",
+                fovDownloadHref: "&id=F12762",
                 fovPath: "fovVolumeviewerPath",
                 viewerChannelSettings: {},
             });
@@ -70,7 +70,7 @@ describe("Viewer selectors", () => {
             expect(result).to.deep.equal({
                 cellId: "12762",
                 baseUrl: "url",
-                cellDownloadHref: "undefined&id=F12762",
+                cellDownloadHref: "&id=F12762",
                 cellPath: "fovVolumeviewerPath",
                 fovDownloadHref: "",
                 fovPath: "",

@@ -21,7 +21,7 @@ import {
 import { NumberOrString, SelectedGroups, State } from "../types";
 import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
-import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData, MousePosition } from "./types";
+import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData, MousePosition, SelectedPointData } from "./types";
 
 // BASIC SELECTORS
 export const getPlotByOnX = (state: State): string => state.selection.plotByOnX;
@@ -39,7 +39,8 @@ export const getApplyColorToSelections = (state: State): boolean =>
     state.selection.applySelectionSetColoring;
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
 export const getMousePosition = (state: State): MousePosition => state.selection.mousePosition;
-export const getHoveredPointData = (state: State): FileInfo => state.selection.hoveredPointData;
+export const getHoveredPointData = (state: State): SelectedPointData | null =>
+    state.selection.hoveredPointData;
 export const getHoveredCardId = (state: State): string => state.selection.hoveredCardId;
 export const getSelectedAlbum = (state: State): number => state.selection.selectedAlbum;
 export const getGalleryCollapsed = (state: State): boolean => state.selection.galleryCollapsed;
