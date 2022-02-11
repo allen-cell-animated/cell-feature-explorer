@@ -176,7 +176,7 @@ export const mockState = {
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",
         defaultColors: INITIAL_COLORS,
-        selectedGroupColors: INITIAL_COLORS,
+        selectedGroupColors: {},
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,
         displayableGroups: displayableGroups,

@@ -1,7 +1,7 @@
 import {
     CELL_ID_KEY,
 } from "../../constants";
-import { FileInfo, MetadataStateBranch } from "../metadata/types";
+import { FileInfo } from "../metadata/types";
 
 export interface CellDataArrays {
     [key: string]: number[] | FileInfo[] | string[];

@@ -8,7 +8,7 @@ import {
     OFF_COLOR,
 } from "../../constants/index";
 import { getLabelsPerCell } from "../../state/metadata/selectors";
-import { MeasuredFeatureDef, MeasuredFeaturesOption } from "../../state/metadata/types";
+import { MappingOfMeasuredValuesArrays, MeasuredFeatureDef, MeasuredFeaturesOption } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -27,7 +27,7 @@ import {
     getGroupByFeatureDef,
     getGroupingCategoryNamesAsArray,
 } from "../../state/selection/selectors";
-import { LassoOrBoxSelectPointData } from "../../state/selection/types";
+import { ColorForPlot, LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
@@ -65,13 +65,13 @@ export const disambiguateCategoryNames = (options: MeasuredFeaturesOption[]): st
 
 export const getLegendColors = createSelector(
     [getCategoryGroupColorsAndNames, getGroupByCategory, getColorBySelection],
-    (colors, categoryToGroupBy, categoryToColorBy) => {
+    (colorsAndNames, categoryToGroupBy, categoryToColorBy): ColorForPlot[] => {
         // if color by and group by are the same, the legend
         // is redundant
         if (categoryToColorBy === categoryToGroupBy) {
             return [];
         }
-        return colors;
+        return colorsAndNames;
     }
 );
 
@@ -80,7 +80,7 @@ const getColorForCategory = (
     isExcluded: boolean,
     isDisabled: boolean,
     categoryColor: string
-) => {
+): string => {
     if (isDisabled) {
         return DISABLE_COLOR;
     }
@@ -100,8 +100,8 @@ export const getInteractivePanelData = createSelector(
         getDisplayableGroups,
     ],
     (
-        categoryToGroupBy: string[],
-        categoryToColorBy: string[],
+        categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
+        categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
         categories: MeasuredFeaturesOption[],
         filtersToExclude: string[],
         displayableGroups: string[]

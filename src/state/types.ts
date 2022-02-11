@@ -3,7 +3,7 @@ import { Color } from "plotly.js";
 import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
-import { SelectionStateBranch } from "./selection/types";
+import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
 import { ImageDataset } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
@@ -69,31 +69,38 @@ export interface PlotlyCustomData {
     index: number;
 }
 
+export enum DataType {
+    CONTINUOUS = "continuous",
+    GROUPED = "grouped"
+}
+
 export interface ContinuousPlotData {
-    color: Color | Color[] | number | number[];
+    color?: Color | Color[] | number | number[];
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
     customdata?: PlotlyCustomData[];
     opacity?: number[];
-    groupBy?: boolean;
     plotName?: string;
-    groupColors?: Color[];
+    dataType: DataType.CONTINUOUS;
 }
 
 interface GroupSettings {
     name: string;
     color: Color | number;
 }
+
 export interface GroupedPlotData {
+    color?: Color | Color[] | number | number[];
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
     customdata?: PlotlyCustomData[];
-    groupBy: boolean;
-    groups: string[];
-    groupSettings: GroupSettings[] | null;
+    opacity?: number[];
     plotName?: string;
+    dataType: DataType.GROUPED;
+    groups: string[];
+    groupSettings: GroupSettings[];
 }
 
 export interface SelectedGroup {
@@ -107,8 +114,7 @@ export interface SelectedGroupData {
 }
 
 export interface SelectedGroups {
-    [key: number]: number[];
-    [key: string]: number[];
+    [key: string]: LassoOrBoxSelectPointData[];
 }
 
 export interface Album {

@@ -55,9 +55,9 @@ export const getFileInfoToShow = createSelector(
     [getSelectedAlbumData, getClickedCellsFileInfo, getSelectedAlbumFileInfo],
     (
         selectedAlbumData: Album | undefined,
-        clickedScatterPointIDs: FileInfo[],
+        clickedScatterPointFileInfo: FileInfo[],
         albumFileInfo: FileInfo[]
-    ): FileInfo[] => (selectedAlbumData ? albumFileInfo : clickedScatterPointIDs)
+    ): FileInfo[] => (selectedAlbumData ? albumFileInfo : clickedScatterPointFileInfo)
 );
 
 export const getThumbnails = createSelector(

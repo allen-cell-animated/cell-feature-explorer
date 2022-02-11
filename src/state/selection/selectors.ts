@@ -18,37 +18,38 @@ import {
     MeasuredFeaturesWithCategoryNames,
     PerCellLabels,
 } from "../metadata/types";
-import { ContinuousPlotData, NumberOrString, SelectedGroups, State } from "../types";
+import { NumberOrString, SelectedGroups, State } from "../types";
 import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
-import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData } from "./types";
+import { ColorForPlot, DownloadConfig, LassoOrBoxSelectPointData, MousePosition } from "./types";
 
 // BASIC SELECTORS
-export const getPlotByOnX = (state: State) => state.selection.plotByOnX;
-export const getPlotByOnY = (state: State) => state.selection.plotByOnY;
-export const getGroupByCategory = (state: State) => state.selection.groupBy;
-export const getClickedCellsFileInfo = (state: State) => state.selection.selectedPoints;
-export const getSelectedGroups = (state: State) => state.selection.selectedGroups;
-export const getColorBySelection = (state: State) => state.selection.colorBy;
-export const getDefaultColors = (state: State) => state.selection.defaultColors;
-export const getSelectionSetColors = (state: State) => state.selection.selectedGroupColors;
-export const getFiltersToExclude = (state: State) => state.selection.filterExclude;
-export const getSelected3DCell = (state: State) => state.selection.cellSelectedFor3D;
-export const getApplyColorToSelections = (state: State) =>
+export const getPlotByOnX = (state: State): string => state.selection.plotByOnX;
+export const getPlotByOnY = (state: State): string => state.selection.plotByOnY;
+export const getGroupByCategory = (state: State): string => state.selection.groupBy;
+export const getClickedCellsFileInfo = (state: State): FileInfo[] => state.selection.selectedPoints;
+export const getSelectedGroups = (state: State): SelectedGroups => state.selection.selectedGroups;
+export const getColorBySelection = (state: State): keyof MappingOfMeasuredValuesArrays =>
+    state.selection.colorBy;
+export const getDefaultColors = (state: State): string[] => state.selection.defaultColors;
+export const getSelectionSetColors = (state: State): {[key: string]: string} => state.selection.selectedGroupColors;
+export const getFiltersToExclude = (state: State): string[] => state.selection.filterExclude;
+export const getSelected3DCell = (state: State): string => state.selection.cellSelectedFor3D;
+export const getApplyColorToSelections = (state: State): boolean =>
     state.selection.applySelectionSetColoring;
 export const getDownloadConfig = (state: State): DownloadConfig => state.selection.downloadConfig;
-export const getMousePosition = (state: State) => state.selection.mousePosition;
-export const getHoveredPointData = (state: State) => state.selection.hoveredPointData;
-export const getHoveredCardId = (state: State) => state.selection.hoveredCardId;
-export const getSelectedAlbum = (state: State) => state.selection.selectedAlbum;
-export const getGalleryCollapsed = (state: State) => state.selection.galleryCollapsed;
-export const getSelectedDataset = (state: State) => state.selection.dataset;
-export const getThumbnailRoot = (state: State) => state.selection.thumbnailRoot;
-export const getSelectedIdsFromUrl = (state: State) => state.selection.initSelectedPoints;
-export const getSelectedAlbumFileInfo = (state: State) => state.selection.selectedAlbumFileInfo;
-export const getDownloadRoot = (state: State) => state.selection.downloadRoot;
-export const getVolumeViewerDataRoot = (state: State) => state.selection.volumeViewerDataRoot;
-export const getDisplayableGroups = (state: State) => state.selection.displayableGroups;
+export const getMousePosition = (state: State): MousePosition => state.selection.mousePosition;
+export const getHoveredPointData = (state: State): FileInfo => state.selection.hoveredPointData;
+export const getHoveredCardId = (state: State): string => state.selection.hoveredCardId;
+export const getSelectedAlbum = (state: State): number => state.selection.selectedAlbum;
+export const getGalleryCollapsed = (state: State): boolean => state.selection.galleryCollapsed;
+export const getSelectedDataset = (state: State): string => state.selection.dataset;
+export const getThumbnailRoot = (state: State): string => state.selection.thumbnailRoot;
+export const getSelectedIdsFromUrl = (state: State): string[] => state.selection.initSelectedPoints;
+export const getSelectedAlbumFileInfo = (state: State): FileInfo[] => state.selection.selectedAlbumFileInfo;
+export const getDownloadRoot = (state: State): string => state.selection.downloadRoot;
+export const getVolumeViewerDataRoot = (state: State): string => state.selection.volumeViewerDataRoot;
+export const getDisplayableGroups = (state: State): string[] => state.selection.displayableGroups;
 
 export const getSelectedDatasetName = createSelector([getSelectedDataset], (selectedDataset) => {
     return selectedDataset.split("_v")[0];
@@ -109,8 +110,8 @@ export const getCategoryGroupColorsAndNames = createSelector(
      */
     [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
     (
-        categoryToColorBy: string,
-        categoryToGroupBy: string,
+        categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
+        categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
         measuredFeaturesDefs: MeasuredFeatureDef[],
         categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
@@ -119,7 +120,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
          * the data when a categorical (discrete) feature has been chosen from the "colorBy" menu
          */
         if (includes(categoricalFeatureKeys, categoryToColorBy)) {
-            const feature = findFeature(measuredFeaturesDefs, categoryToColorBy);
+            const feature = findFeature(measuredFeaturesDefs, categoryToColorBy as string);
             if (feature && feature.discrete) {
                 const { options } = feature;
                 return map(options, (option: MeasuredFeaturesOption, key: string) => {
@@ -227,16 +228,13 @@ export const getColorByCategoryCounts = createSelector(
      * color by category 
      */
     [getPerCellDataForPlot, getColorBySelection, getMeasuredFeaturesDefs],
-    (
-        measuredData: DataForPlot,
-        categoryToColorBy: keyof DataForPlot,
-        measuredFeatureDefs: MeasuredFeatureDef[]
+    (measuredData: DataForPlot, categoryToColorBy: keyof MappingOfMeasuredValuesArrays, measuredFeatureDefs: MeasuredFeatureDef[]
     ): number[] => {
-        const feature = findFeature(measuredFeatureDefs, categoryToColorBy);
+        const feature = findFeature(measuredFeatureDefs, categoryToColorBy as string);
         if (feature && feature.discrete) {
             const categoryValues = map(feature.options, (_, key) => Number(key));
             const totals = reduce(
-                measuredData[categoryToColorBy],
+                measuredData.values[categoryToColorBy],
                 (acc: { [key: number]: number }, cur) => {
                     const index = categoryValues.indexOf(Number(cur));
                     if (acc[index]) {
@@ -356,8 +354,8 @@ export const getFilteredColorByValues = createSelector(
     [getFilteredCellData, getColorBySelection, getGroupByCategory],
     (
         metaData: DataForPlot,
-        categoryToColorBy: string,
-        categoryToGroupBy: string
+        categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
+        categoryToGroupBy: keyof MappingOfMeasuredValuesArrays
     ): string[] | (number | null)[] => {
         if (!metaData.labels) {
             return [];
@@ -428,12 +426,16 @@ export const getSelectedGroupsData = createSelector(
         plotByOnX,
         plotByOnY,
         selectedGroupColorMapping
-    ): ContinuousPlotData => {
+    ): {
+        x: (number | null)[];
+        y: (number | null)[];
+        color: string[];
+    } => {
         const colorArray: string[] = [];
         const xValues: (number | null)[] = [];
         const yValues: (number | null)[] = [];
 
-        mapValues(selectedGroups, (value, key) => {
+        mapValues(selectedGroups, (value, key: string) => {
             // for each point index, get x, y, and color for the point.
             value.forEach((point: LassoOrBoxSelectPointData) => {
                 colorArray.push(selectedGroupColorMapping[key]);
@@ -441,7 +443,6 @@ export const getSelectedGroupsData = createSelector(
                 yValues.push(metaData.values[plotByOnY][point.pointIndex]);
             });
         });
-
         return {
             color: colorArray,
             x: xValues,

@@ -13,6 +13,8 @@ import {
     FileInfo,
     MappingOfMeasuredValuesArrays,
     MeasuredFeatureDef,
+    MeasuredFeaturesOptions,
+    PerCellLabels,
 } from "./types";
 
 // BASIC SELECTORS
@@ -61,14 +63,14 @@ export const compareVersions = (versionA: string, versionB: string): number => {
 
 export const getMeasuredFeatureArrays = createSelector(
     [getPerCellDataForPlot],
-    (dataForPlot: DataForPlot) => {
+    (dataForPlot: DataForPlot): MappingOfMeasuredValuesArrays => {
         return dataForPlot.values;
     }
 );
 
 export const getLabelsPerCell = createSelector(
     [getPerCellDataForPlot],
-    (dataForPlot: DataForPlot) => {
+    (dataForPlot: DataForPlot): PerCellLabels => {
         return dataForPlot.labels;
     }
 );
@@ -89,7 +91,7 @@ export const getCategoricalFeatureKeys = createSelector(
 
 export const getMitoticStageNames = createSelector(
     [getMeasuredFeaturesDefs],
-    (defs: MeasuredFeatureDef[]) => {
+    (defs: MeasuredFeatureDef[]): MeasuredFeaturesOptions => {
         const mitoticFeature = findFeature(defs, MITOTIC_STAGE_KEY );
         if (mitoticFeature && mitoticFeature.discrete) {
             // if this feature exists, it will always be discrete, 

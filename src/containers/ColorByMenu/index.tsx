@@ -15,7 +15,7 @@ import {
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
 } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
-import { MeasuredFeatureDef } from "../../state/metadata/types";
+import { MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
@@ -49,7 +49,7 @@ const { Panel } = Collapse;
 
 interface PropsFromState {
     // selector props
-    colorBy: string;
+    colorBy: keyof MappingOfMeasuredValuesArrays;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     filtersToExclude: string[];
@@ -192,10 +192,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     <Col span={18}>
                         <AxisDropDown
                             axisId={COLOR_BY_SELECTOR}
-                            value={colorBy}
+                            value={colorBy as string}
                             options={colorByMenuOptions}
                             handleChangeAxis={handleChangeAxis}
-                            tooltip={getFeatureDefTooltip(colorBy, colorByMenuOptions)}
+                            tooltip={getFeatureDefTooltip(colorBy as string, colorByMenuOptions)}
                         />
                     </Col>
                 </Row>
