@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import {Timestamp} from "@firebase/firestore-types";
+import { firestore } from "firebase";
+const { Timestamp } = firestore;
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
