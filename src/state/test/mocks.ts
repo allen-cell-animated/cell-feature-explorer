@@ -10,7 +10,7 @@ import {
 } from "../../constants";
 import { initialState as initialMetaData } from "../metadata/reducer";
 import { initialState as initialSelectionState } from "../selection/reducer";
-import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
+import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
@@ -140,7 +140,7 @@ const measuredFeaturesDefs: MeasuredFeatureDef[] = [
         description: "description",
     },
 ];
-const featureData = {
+const featureData: DataForPlot = {
     indices: [0, 1],
     values: {
         "cell-line": [5, 7],
