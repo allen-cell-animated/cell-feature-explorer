@@ -80,14 +80,15 @@ const getColorForCategory = (
     isExcluded: boolean,
     isDisabled: boolean,
     categoryColor: string
-): string => {
+) => {
     if (isDisabled) {
         return DISABLE_COLOR;
-    }
-    if (showGroupByColors) {
-        return isExcluded ? OFF_COLOR : categoryColor;
+    } else if (isExcluded) {
+        return OFF_COLOR;
+    } else if (showGroupByColors) {
+        return categoryColor;
     } else {
-        return isExcluded ? OFF_COLOR : DISABLE_COLOR;
+        return DISABLE_COLOR;
     }
 };
 

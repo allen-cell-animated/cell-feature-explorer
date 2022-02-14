@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Card, Descriptions, Tag, Divider} from "antd";
+import { Button, Card, Descriptions, Tag, Divider } from "antd";
+
 import { DatasetMetaData } from "../../state/image-dataset/types";
 const { Meta } = Card;
 
@@ -26,7 +27,8 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     const displayTitle = (
         <>
             <div>
-                {userData.isNew && <Tag color="purple">new</Tag>}
+                {/* Tag color is bright purple */}
+                {userData.isNew && <Tag color="#8950d9">new</Tag>}
                 {title ? title : name}
             </div>
             <span className={styles.version}>{versionPrefixed}</span>
@@ -39,7 +41,6 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
     );
     const cardContent = (
         <Card
-            style={{ width: 430 }}
             className={styles.card}
             hoverable
             bordered={false}
@@ -50,6 +51,7 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     src={image}
                 />
             }
+            onClick={() => handleSelectDataset(id)}
         >
             <Meta
                 title={displayTitle}
@@ -60,6 +62,8 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     ></div>
                 }
             />
+            {/* Spacer div to push `Descriptions` to the bottom of the card */}
+            <div className={styles.spacer}/>
             <Descriptions column={1} size="small">
                 <Descriptions.Item label="Number of Cells">
                     {userData.totalCells.toLocaleString("en")}
@@ -71,12 +75,15 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                     {userData.totalTaggedStructures}
                 </Descriptions.Item>
             </Descriptions>
+            <Button type="primary" className={styles.loadButton}>
+                Load
+            </Button>
         </Card>
     );
     if (link) {
         return <a href={link}>{cardContent}</a>;
     }
-    return <div onClick={() => handleSelectDataset(id)}>{cardContent}</div>;
+    return cardContent;
 };
 
 export default DatasetCard;

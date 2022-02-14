@@ -1,10 +1,9 @@
 import React from "react";
 import { Row, Col, Layout } from "antd";
-import { map } from "lodash";
 
-import DatasetCard from "../../components/DatasetCard";
+import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 import styles from "./style.css";
 
@@ -13,30 +12,22 @@ interface LandingPageProps {
     megasets: Megaset[];
 }
 
-const renderCards = (megasets: Megaset[], handleSelectDataset: (id: string) => void) => {
-    // TODO: Display megasets differently (grouped together) from standalone datasets
-    return megasets.map((megaset) => (
-        map(megaset.datasets, (dataset) => (
-            <Col key={`${dataset.name}-${dataset.version}`}>
-                <DatasetCard {...dataset} handleSelectDataset={handleSelectDataset} />
-            </Col>
-        ))
-    ))
-}
-
 const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
     <Layout>
-        <Header className={styles.headerMain}>
-            <div>
-                View any of over 200,000 3D cell images and plot cells by features such as organelle
-                volume
-            </div>
-        </Header>
+        <div className={styles.headerMain}>
+            View any of over 200,000 3D cell images and plot cells by features such as organelle
+            volume
+        </div>
         <Layout>
             <Content className={styles.content}>
-                <h2 className={styles.subtitle}>Load a dataset</h2>
-                <Row type="flex" justify="space-around" className={styles.section}>
-                    {renderCards(megasets, handleSelectDataset)}
+                <h2 className={styles.subtitle}>Load a dataset to get started</h2>
+                <Row 
+                    type="flex"
+                    className={styles.section}
+                >
+                    {megasets.map((megaset) => (
+                        <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />
+                    ))}
                     <Col className={styles.caption}>
                         The Cell Feature Explorer is an online tool to access our complete database
                         of segmented and processed cells as curated datasets. We have annotated each
@@ -55,7 +46,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                     </Col>
                 </Row>
                 <Row className={styles.lightSection}>
-                    <Col className={styles.section}>
+                    <Col className={styles.lightSectionContent}>
                         <h2 className={styles.subtitle}>Cell features in our data </h2>
                         <div className={styles.paragraph}>
                             hiPS cells from the{" "}

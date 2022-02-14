@@ -1,0 +1,64 @@
+@import "../../styles/colors.css";
+@import "../../styles/constants.css";
+
+.container {
+    background-color: var(--megacard-background);
+    padding: 8px;
+    box-shadow: 0px 1px 19px 5px rgb(0 0 0 / 25%);
+    margin: 25px 0;
+    height: min-content;
+    min-width: 0;
+}
+
+/* One-column view for narrower screens  */
+@media screen and (max-width: 1030px) {
+    .container {
+        max-width: var(--dataset-card-width) !important;
+    }
+}
+
+.megasetTitle {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    margin: 0.5em 1em 1em 1em;
+}
+
+.datasetCards {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.publications {
+    margin: 20px 10px 10px 10px;
+    font-size: 12px;
+}
+
+.publication {
+    display: flex;
+    margin-top: 0.3em;
+    font-size: 16px;
+    gap: 5px;
+}
+
+/* Shrink publication font for mobile view */
+@media screen and (max-width: 480px) {
+    .publication {
+        font-size: 12px;
+    }
+}
+
+.publicationTitle {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-style: italic;
+    color: var(--link-text);
+}
+
+.journalDate {
+    white-space: nowrap;
+}

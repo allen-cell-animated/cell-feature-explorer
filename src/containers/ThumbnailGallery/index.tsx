@@ -221,7 +221,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button icon="close" type="primary">
+                                <Button icon="close">
                                     Clear All
                                 </Button>
                             </Popconfirm>
