@@ -4,89 +4,92 @@ import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
 import { State } from "../../../state/types";
 import {
-    disambiguateStructureNames,
+    disambiguateCategoryNames,
     getInteractivePanelData,
     getListOfCellIdsByDownloadConfig,
-    getSelectionPanelData
+    getSelectionPanelData,
 } from "../selectors";
 import { PanelData } from "../types";
 
 describe("ColorByMenu selectors", () => {
-
     const newMockState = mockState;
 
-    describe("disambiguateStructureNames", () => {
-        it("attaches the protein name to each non-unique structure name", () => {
-            const result = disambiguateStructureNames(newMockState.metadata.cellLineDefs);
-            
-            /* Without disambiguation, structure names would be:
+    describe("disambiguateCategoryNames", () => {
+        it("attaches the key to each non-unique name", () => {
+            const mockData = [
+                {
+                    name: "same name",
+                    key: "1",
+                    color: "#ffffff",
+                },
+                {
+                    name: "same name",
+                    key: "2",
+                    color: "#ffffff",
+                },
+                {
+                    name: "diff name",
+                    key: "3",
+                    color: "#ffffff",
+                },
+            ];
+            const result = disambiguateCategoryNames(mockData);
+
+            /* Without disambiguation, names would be:
             [
-                "Nucleolus (Granular Component)",
-                "Actin filaments",
-                "Actin filaments",
-                "Actin filaments",
-                "Adherens junctions",
+                "same name",
+                "same name",
+                "diff name",
             ]
             */
-            const expected = [
-                "Nucleolus (Granular Component)",
-                "Actin filaments (Alpha-actinin-1)",
-                "Actin filaments (Beta-actin)",
-                "Actin filaments (Delta-actin)",
-                "Adherens junctions",
-            ];
+            const expected = ["same name (1)", "same name (2)", "diff name"];
             expect(result).to.deep.equal(expected);
         });
     });
-    
+
     describe("getInteractivePanelData", () => {
-        it("returns an set of props for each protein in state", () => {
+        it("returns an set of props for each category in state", () => {
             const result: PanelData[] = getInteractivePanelData(newMockState);
             const data = [
                 {
                     checked: true,
-                    color: "#bbcd22",
+                    color: "#FF96FF",
                     disabled: false,
-                    gene: "ABC-2",
                     id: "Alpha-actinin-1",
-                    name: "Actin filaments (Alpha-actinin-1)",
-                    total: 1809,
-                },
-                {
-                    checked: true,
-                    color: "#ff9900",
-                    disabled: false,
-                    gene: "ABC-3",
-                    id: "Beta-actin",
-                    name: "Actin filaments (Beta-actin)",
-                    total: 1039,
-                },
-                {
-                    checked: true,
-                    color: "#FFEE1E",
-                    disabled: false,
-                    gene: "ABC-5",
-                    id: "Beta-catenin",
-                    name: "Adherens junctions",
-                    total: 2343,
-                },
-                {
-                    checked: true,
-                    color: "#FD92B6",
-                    disabled: false,
-                    gene: "ABC-4",
-                    id: "Delta-actin",
-                    name: "Actin filaments (Delta-actin)",
-                    total: 2003,
+                    name: "Actin filaments",
+                    total: 1,
                 },
                 {
                     checked: true,
                     color: "#6e6e6e",
                     disabled: true,
-                    gene: "ABC-1",
-                    id: "Nucleophosmin",
-                    name: "Nucleolus (Granular Component)",
-                    total: 3470,
+                    id: "Sec61 beta",
+                    name: "Endoplasmic reticulum",
+                    total: 0,
+                },
+                {
+                    checked: true,
+                    color: "#77207C",
+                    disabled: false,
+                    id: "Paxillin",
+                    name: "Matrix adhesions",
+                    total: 1,
+                },
+                {
+                    checked: true,
+                    color: "#6e6e6e",
+                    disabled: true,
+                    id: "Alpha-tubulin",
+                    name: "Microtubules",
+                    total: 0,
+                },
+                {
+                    checked: true,
+                    color: "#6e6e6e",
+                    disabled: true,
+                    id: "Tom20",
+                    name: "Mitochondria",
+                    total: 0,
                 },
             ];
             expect(result).to.deep.equal(data);
@@ -112,25 +115,22 @@ describe("ColorByMenu selectors", () => {
             };
             const result: PanelData[] = getSelectionPanelData(state);
             expect(result.length).to.deep.equal(2);
-
         });
-
     });
 
     describe("getListOfCellIdsByDownloadConfig", () => {
-
         it("returns an empty array if there is no download config", () => {
             const result: string[] = getListOfCellIdsByDownloadConfig(newMockState);
             expect(result.length).to.deep.equal(0);
         });
 
-        it("returns an array of cell ids that match the protein name if that is the download config type", () => {
+        it("returns an array of cell ids that match the category name if that is the download config type", () => {
             const state: State = {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
                     downloadConfig: {
-                        key: "protein1",
+                        key: "Paxillin",
                         type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
                     },
                 },
@@ -138,8 +138,6 @@ describe("ColorByMenu selectors", () => {
 
             const result: string[] = getListOfCellIdsByDownloadConfig(state);
             expect(result).to.deep.equal(["C1"]);
-
         });
     });
-
 });

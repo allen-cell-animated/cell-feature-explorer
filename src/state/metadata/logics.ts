@@ -9,7 +9,6 @@ import { batchActions } from "../util";
 import {
     receiveAvailableDatasets,
     receiveMeasuredFeatureDefs,
-    receiveCellLineData,
     receiveMetadata,
     receiveViewerChannelSettings,
     setLoadingText,
@@ -21,11 +20,10 @@ import {
     RECEIVE_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_ALBUM_DATA,
-    REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     REQUEST_VIEWER_CHANNEL_SETTINGS,
 } from "./constants";
-import { CellLineDef, DataForPlot } from "./types";
+import { DataForPlot } from "./types";
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 import {
     selectPoint,
@@ -39,21 +37,6 @@ import {
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-
-const requestCellLineDefs = createLogic({
-    process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
-
-        return imageDataSet
-            .getCellLineDefs()
-            .then((data: CellLineDef[]) => dispatch(receiveCellLineData(data)))
-            .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
-            })
-            .then(() => done());
-    },
-    type: REQUEST_CELL_LINE_DATA,
-});
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -139,14 +122,17 @@ const requestFeatureDataLogic = createLogic({
                         selectedCellIndex = findVisibleDataPoint(ids.length, xValues, yValues);
                     }
                     dispatch(
-                        selectPoint(metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex])
+                        selectPoint({
+                            id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex],
+                            index: selectedCellIndex,
+                        })
                     );
                 }
 
                 if (!getSelected3DCell(state)) {
                     dispatch(
                         selectCellFor3DViewer(
-                            metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex]
+                            { id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex] }
                         )
                     );
                 }
@@ -198,7 +184,6 @@ const requestViewerChannelSettings = createLogic({
 });
 
 export default [
-    requestCellLineDefs,
     requestAlbumData,
     requestFeatureDataLogic,
     requestAvailableDatasets,

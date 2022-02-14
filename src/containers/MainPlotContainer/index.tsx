@@ -1,7 +1,6 @@
 import { Popover } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { filter, includes, map } from "lodash";
-import { PlotSelectionEvent, PlotDatum } from "plotly.js";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 
@@ -11,7 +10,7 @@ import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
     CELL_ID_KEY,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     SCATTER_PLOT_NAME,
     X_AXIS_ID,
     Y_AXIS_ID,
@@ -35,6 +34,7 @@ import { Annotation, State } from "../../state/types";
 
 import {
     getAnnotations,
+    getDataForOverlayCard,
     getScatterPlotDataArray,
     getXDisplayOptions,
     getXTickConversion,
@@ -44,10 +44,6 @@ import {
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
 
 import styles from "./style.css";
-
-interface PlotDatumWithId extends PlotDatum {
-    id: string;
-}
 
 interface PropsFromState {
     annotations: Annotation[];
@@ -67,15 +63,14 @@ interface PropsFromState {
     yTickConversion: TickConversion;
     xValues: (number | null)[];
     yValues: (number | null)[];
-    proteinNames: string[];
+    categoryNames: string[];
 }
 
 interface DispatchProps {
-    changeHoveredCell: ActionCreator<ChangeHoveredPointAction>;
+    changeHoveredPoint: ActionCreator<ChangeHoveredPointAction>;
     handleDeselectPoint: ActionCreator<DeselectPointAction>;
     handleLassoOrBoxSelect: ActionCreator<LassoOrBoxSelectAction>;
     handleSelectPoint: ActionCreator<SelectPointAction>;
-    requestCellLineData: ActionCreator<RequestAction>;
     requestFeatureData: ActionCreator<RequestAction>;
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
@@ -113,12 +108,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     private updateChecklistItems() {
-        const { xValues, yValues, proteinNames } = this.props;
+        const { xValues, yValues, categoryNames } = this.props;
         // Could memoize this if performance becomes an issue
         const displayable = new Set<string>();
         for (let i = 0; i < xValues.length; i++) {
             if (xValues[i] !== null && yValues[i] !== null) {
-                displayable.add(proteinNames[i]);
+                displayable.add(categoryNames[i]);
             }
         }
         this.props.setDisplayableGroups([...displayable]);
@@ -133,7 +128,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 if (includes(clickedPoints, point.id)) {
                     handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint(point.id);
+                    handleSelectPoint({id: point.id, index: point.customdata.index});
                 }
             }
         });
@@ -142,52 +137,53 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     // TODO: retype once plotly has id and fullData types
     public onPointHovered(hovered: any) {
         const { points, event } = hovered;
-        const { filtersToExclude, updateMousePosition, changeHoveredCell } = this.props;
+        const { filtersToExclude, updateMousePosition, changeHoveredPoint } = this.props;
         updateMousePosition({
             pageX: event.pageX,
             pageY: event.pageY,
         });
+
         points.forEach((point: any) => {
             if (
                 point.data.name === SCATTER_PLOT_NAME &&
                 !includes(filtersToExclude, point.fullData.name)
-            ) {
+                ) {
                 window.clearTimeout(this.thumbnailTimeout);
-                changeHoveredCell({
+                changeHoveredPoint({
                     [CELL_ID_KEY]: point.id,
-                    [PROTEIN_NAME_KEY]: point.fullData.name,
-                    thumbnailPath: point.customdata,
+                    index: point.customdata.index,
+                    thumbnailPath: point.customdata.thumbnailPath,
                 });
             } else {
-                changeHoveredCell(null);
+                changeHoveredPoint(null);
             }
         });
     }
 
     public onPointUnhovered() {
-        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredCell(null), 500);
+        this.thumbnailTimeout = window.setTimeout(() => this.props.changeHoveredPoint(null), 500);
     }
 
     public onPlotUnhovered({ relatedTarget }: any) {
-        const { changeHoveredCell } = this.props;
+        const { changeHoveredPoint } = this.props;
         // prevents click events from triggering the popover to close
         if (relatedTarget.className) {
-            changeHoveredCell(null);
+            changeHoveredPoint(null);
         }
     }
 
-    public onGroupSelected(eventData: PlotSelectionEvent) {
+    public onGroupSelected(eventData: any) {
         if (!eventData) {
             return;
         }
         const { points } = eventData;
-        const pointsWithIds = points as PlotDatumWithId[];
+        const pointsWithIds = points;
         const { handleLassoOrBoxSelect, handleSelectionToolUsed } = this.props;
         const key = Date.now().valueOf().toString();
         const payload: LassoOrBoxSelectPointData[] = map(
-            filter(pointsWithIds, (ele: PlotDatumWithId) => ele.data.name === SCATTER_PLOT_NAME),
-            (point: PlotDatumWithId) => ({
-                pointIndex: point.pointIndex as number,
+            filter(pointsWithIds, (ele) => ele.data.name === SCATTER_PLOT_NAME),
+            (point) => ({
+                pointIndex: point.customdata.index as number,
                 cellId: point.id as string,
             })
         );
@@ -201,7 +197,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             hoveredPointData &&
             galleryCollapsed && (
                 <PopoverCard
-                    title={hoveredPointData[PROTEIN_NAME_KEY]}
+                    title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
                 />
@@ -297,7 +293,7 @@ function mapStateToProps(state: State): PropsFromState {
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
-        hoveredPointData: selectionStateBranch.selectors.getHoveredPointData(state),
+        hoveredPointData: getDataForOverlayCard(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
@@ -309,18 +305,17 @@ function mapStateToProps(state: State): PropsFromState {
         yTickConversion: getYTickConversion(state),
         xValues: selectionStateBranch.selectors.getXValues(state),
         yValues: selectionStateBranch.selectors.getYValues(state),
-        proteinNames: metadataStateBranch.selectors.getProteinLabelsPerCell(state),
+        categoryNames: selectionStateBranch.selectors.getGroupingCategoryNamesAsArray(state),
     };
 }
 
 const dispatchToPropsMap: DispatchProps = {
-    changeHoveredCell: selectionStateBranch.actions.changeHoveredPoint,
+    changeHoveredPoint: selectionStateBranch.actions.changeHoveredPoint,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleDeselectPoint: selectionStateBranch.actions.deselectPoint,
     handleLassoOrBoxSelect: selectionStateBranch.actions.lassoOrBoxSelectGroup,
     handleSelectPoint: selectionStateBranch.actions.selectPoint,
     requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
-    requestCellLineData: metadataStateBranch.actions.requestCellLineData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
     setDisplayableGroups: selectionStateBranch.actions.setDisplayableGroups,

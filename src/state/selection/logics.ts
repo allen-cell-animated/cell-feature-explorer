@@ -1,14 +1,10 @@
 import { createLogic } from "redux-logic";
-import { filter, find, remove } from "lodash";
+import { filter, find, indexOf, map, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
-import {
-    requestCellLineData,
-    requestFeatureData,
-    requestViewerChannelSettings,
-} from "../metadata/actions";
-import { getDatasets } from "../metadata/selectors";
+import { requestFeatureData, requestViewerChannelSettings } from "../metadata/actions";
+import { getDatasets, getPerCellDataForPlot } from "../metadata/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
 
@@ -24,7 +20,7 @@ import {
     SYNC_STATE_WITH_URL,
 } from "./constants";
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
-import { changeAxis } from "./actions";
+import { changeAxis, changeGroupByCategory } from "./actions";
 import { FileInfo } from "../metadata/types";
 import { DatasetMetaData } from "../image-dataset/types";
 
@@ -71,7 +67,7 @@ const changeDatasetLogic = createLogic({
             selectedDataset = find(datasets, { id: action.payload });
         }
         if (selectedDataset === undefined) {
-            console.error(`A dataset matching ${action.payload} is not available.`)
+            console.error(`A dataset matching ${action.payload} is not available.`);
             return done();
         }
         imageDataSet
@@ -80,6 +76,7 @@ const changeDatasetLogic = createLogic({
                 const actions = [
                     changeAxis(X_AXIS_ID, selections.defaultXAxis),
                     changeAxis(Y_AXIS_ID, selections.defaultYAxis),
+                    changeGroupByCategory(selections.defaultGroupBy),
                 ];
                 if (selections.defaultColorBy) {
                     actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
@@ -94,7 +91,6 @@ const changeDatasetLogic = createLogic({
                         volumeViewerDataRoot: selections.volumeViewerDataRoot,
                     },
                 });
-                dispatch(requestCellLineData());
                 dispatch(requestFeatureData());
                 dispatch(requestViewerChannelSettings());
                 done();
@@ -105,14 +101,13 @@ const changeDatasetLogic = createLogic({
 const requestCellFileInfoForSelectedPoint = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, imageDataSet } = deps;
-
         return imageDataSet
-            .getFileInfoByCellId(action.payload.toString())
+            .getFileInfoByCellId(action.payload.id.toString())
             .then((data?: FileInfo) => {
                 if (!data) {
                     return {};
                 }
-                return data;
+                return { ...data, index: action.payload.index };
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console
@@ -124,14 +119,41 @@ const requestCellFileInfoForSelectedPoint = createLogic({
     type: SELECT_POINT,
 });
 
+const getIndicesForCellIds = (cellIds: string[], fullArrayOfCelIds: string[]) => {
+    /**
+     * This will be called when there is an array of selected cells coming from the url.
+     * All that is stored in the url is the cell id, so we need to find the index for each of these
+     * ids, but we only need to do this once.
+     */
+    const indices: { [key: string]: number } = {};
+    const idsInOrder = cellIds.sort((a: string, b: string) => Number(a) - Number(b));
+    idsInOrder.forEach((id: string) => {
+        const index = indexOf(fullArrayOfCelIds, id);
+        indices[id] = index;
+    });
+    return indices;
+};
+
 const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
     process(deps: ReduxLogicDeps) {
-        const { action, imageDataSet } = deps;
+        const { action, imageDataSet, getState } = deps;
+        const state = getState();
+        const plotData = getPerCellDataForPlot(state);
+        const indices = getIndicesForCellIds(action.payload, plotData.labels.cellIds);
 
         return imageDataSet
             .getFileInfoByArrayOfCellIds(action.payload)
             .then((data: (FileInfo | undefined)[]) => {
-                return filter(data);
+                return filter(
+                    map(data, (data) => {
+                        return {
+                            ...data,
+                            // this is expected to always return data, this check 
+                            // is mostly for TypeScript (since there is also a catch block)
+                            index: data ? indices[data.CellId] : -1,
+                        };
+                    })
+                );
             })
             .catch((reason: string) => {
                 console.log(reason); // tslint:disable-line:no-console

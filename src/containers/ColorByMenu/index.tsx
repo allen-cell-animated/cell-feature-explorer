@@ -34,6 +34,7 @@ import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
 import {
     createUrlFromListOfIds,
     getCheckAllCheckboxIsIntermediate,
+    getLegendColors,
     getGroupByTitle,
     getInteractivePanelData,
     getSelectionPanelData,
@@ -52,10 +53,9 @@ interface PropsFromState {
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     filtersToExclude: string[];
-    proteinPanelData: PanelData[];
-    proteinNames: string[];
+    interactivePanelData: PanelData[];
     selectionSetsPanelData: PanelData[];
-    someProteinsOff: boolean;
+    isInIndeterminateState: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
@@ -67,7 +67,7 @@ interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
-    handleFilterByProteinName: ActionCreator<ChangeSelectionAction>;
+    handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
 }
 
@@ -91,23 +91,23 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderTaggedStructuresPanel = this.renderTaggedStructuresPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
-        this.onProteinDownloadButtonClicked = this.onProteinDownloadButtonClicked.bind(this);
+        this.onCategorySetDownloadButtonClicked = this.onCategorySetDownloadButtonClicked.bind(this);
         this.onSelectionSetDownloadButtonClicked =
             this.onSelectionSetDownloadButtonClicked.bind(this);
     }
 
     public onBarClicked({ target }: CheckboxChangeEvent) {
-        const { handleFilterByProteinName, filtersToExclude } = this.props;
+        const { handleFilterByCategoryName, filtersToExclude } = this.props;
         const newFilterList = includes(filtersToExclude, target.value)
             ? filter(filtersToExclude, (e) => e !== target.value)
             : [...filtersToExclude, target.value];
-        handleFilterByProteinName(newFilterList);
+        handleFilterByCategoryName(newFilterList);
     }
 
-    public onProteinDownloadButtonClicked(proteinName: string) {
+    public onCategorySetDownloadButtonClicked(categoryName: string) {
         const { handleChangeDownloadSettings } = this.props;
         handleChangeDownloadSettings({
-            key: proteinName,
+            key: categoryName,
             type: DOWNLOAD_CONFIG_TYPE_PROTEIN,
         });
     }
@@ -121,11 +121,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     }
 
     public allOnOff({ target }: CheckboxChangeEvent) {
-        const { handleFilterByProteinName, proteinNames } = this.props;
+        const { handleFilterByCategoryName, interactivePanelData } = this.props;
         if (target.checked) {
-            return handleFilterByProteinName([]);
+            return handleFilterByCategoryName([]);
         }
-        handleFilterByProteinName(proteinNames);
+        const keys = interactivePanelData.map((ele: PanelData) => ele.id);
+        handleFilterByCategoryName(keys);
     }
 
     public onActivePanelChange(value: string | string[]) {
@@ -173,8 +174,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     public renderTaggedStructuresPanel() {
         const {
             filtersToExclude,
-            someProteinsOff,
-            proteinPanelData,
+            isInIndeterminateState,
+            interactivePanelData,
             downloadUrls,
             downloadConfig,
             colorBy,
@@ -219,7 +220,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                 <div>
                     <div className={styles.interactiveLegendHeader}>
                         <Checkbox
-                            indeterminate={someProteinsOff}
+                            indeterminate={isInIndeterminateState}
                             checked={filtersToExclude.length === 0}
                             onChange={this.allOnOff}
                         >
@@ -231,12 +232,12 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     <InteractiveLegend
                         closeable={false}
                         showTooltips={true}
-                        panelData={proteinPanelData}
+                        panelData={interactivePanelData}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
                         hideable={true}
                         onBarClicked={this.onBarClicked}
-                        handleDownload={this.onProteinDownloadButtonClicked}
+                        handleDownload={this.onCategorySetDownloadButtonClicked}
                     />
                 </div>
             </React.Fragment>
@@ -264,19 +265,18 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
 
 function mapStateToProps(state: State): PropsFromState {
     return {
-        categoryCounts: selectionStateBranch.selectors.getCategoryCounts(state),
+        categoryCounts: selectionStateBranch.selectors.getColorByCategoryCounts(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
-        colorForPlot: selectionStateBranch.selectors.getColorsForPlot(state),
+        colorForPlot: getLegendColors(state),
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         groupByTitle: getGroupByTitle(state),
-        proteinNames: metadataStateBranch.selectors.getProteinNames(state),
-        proteinPanelData: getInteractivePanelData(state),
+        interactivePanelData: getInteractivePanelData(state),
         selectionSetsPanelData: getSelectionPanelData(state),
-        someProteinsOff: getCheckAllCheckboxIsIntermediate(state),
+        isInIndeterminateState: getCheckAllCheckboxIsIntermediate(state),
     };
 }
 
@@ -285,7 +285,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
-    handleFilterByProteinName: selectionStateBranch.actions.toggleFilterByProteinName,
+    handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
     mapStateToProps,

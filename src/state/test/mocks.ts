@@ -1,28 +1,19 @@
 import {
-    CELL_LINE_DEF_NAME_KEY,
-    CELL_LINE_DEF_PROTEIN_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
-    CELL_LINE_DEF_GENE_KEY,
-    PROTEIN_NAME_KEY,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_COUNT_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { FileInfo } from "../metadata/types";
-import { INITIAL_COLOR_BY, INITIAL_COLORS } from "../selection/constants";
+import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
+import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -30,65 +21,18 @@ export const selectedCellFileInfo: FileInfo[] = [
     },
     {
         [CELL_ID_KEY]: "2",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
         [VOLUME_VIEWER_PATH]: "path",
-    },
-];
-
-const cellLineDefs = [
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-57",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Nucleophosmin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Nucleolus (Granular Component)",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-1",
-        [CELL_COUNT_KEY]: 3470,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-7",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Alpha-actinin-1",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Alpha-actinin-1",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-2",
-        [CELL_COUNT_KEY]: 1809,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-16",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-actin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Beta-actin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-3",
-        [CELL_COUNT_KEY]: 1039,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-999",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Delta-actin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Actin filaments",
-        [PROTEIN_NAME_KEY]: "Delta-actin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-4",
-        [CELL_COUNT_KEY]: 2003,
-    },
-    {
-        [CELL_LINE_DEF_NAME_KEY]: "AICS-58",
-        [CELL_LINE_DEF_PROTEIN_KEY]: "Beta-catenin",
-        [CELL_LINE_DEF_STRUCTURE_KEY]: "Adherens junctions",
-        [PROTEIN_NAME_KEY]: "Beta-catenin",
-        [CELL_LINE_DEF_GENE_KEY]: "ABC-5",
-        [CELL_COUNT_KEY]: 2343,
     },
 ];
 
 const fileInfo: FileInfo[] = [
     {
         [CELL_ID_KEY]: "1",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -96,9 +40,7 @@ const fileInfo: FileInfo[] = [
     },
     {
         [CELL_ID_KEY]: "2",
-        [CELL_LINE_NAME_KEY]: "AICS-57",
         [FOV_ID_KEY]: "12762",
-        [PROTEIN_NAME_KEY]: "Nucleophosmin",
         [FOV_THUMBNAIL_PATH]: "path",
         [FOV_VOLUME_VIEWER_PATH]: "path",
         [THUMBNAIL_PATH]: "path",
@@ -106,34 +48,99 @@ const fileInfo: FileInfo[] = [
     },
 ];
 
-const measuredFeaturesDefs = [
+const measuredFeaturesDefs: MeasuredFeatureDef[] = [
+    {
+        key: "cell-line",
+        displayName: "Labeled Structure",
+        unit: "",
+        description:
+            "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        tooltip:
+            "Name of the cellular structure that has been fluorescently labeled in each cell line",
+        discrete: true,
+        options: {
+            "5": {
+                color: "#77207C",
+                name: "Matrix adhesions",
+                key: "Paxillin",
+                count: 1,
+            },
+            "7": {
+                color: "#FF96FF",
+                name: "Actin filaments",
+                key: "Alpha-actinin-1",
+                count: 1,
+            },
+            "10": {
+                color: "#FFFFB5",
+                name: "Endoplasmic reticulum",
+                key: "Sec61 beta",
+            },
+            "11": {
+                color: "#FFD184",
+                name: "Mitochondria",
+                key: "Tom20",
+            },
+            "12": {
+                color: "#6B4500",
+                name: "Microtubules",
+                key: "Alpha-tubulin",
+            },
+        },
+    },
     {
         discrete: false,
         displayName: "Apical Proximity",
         key: "apical-proximity",
         unit: "unitless",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
+        displayName: "Anaphase segmentation complete",
+        description:
+            "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+        tooltip:
+            "Whether the segmentation contains the entirety of the cell boundary (only determined for cells in anaphase).",
+        unit: "unitless",
+        key: "anaphase-segmentation-complete",
         discrete: true,
-        displayName: "Cell Segmentation",
-        key: "cell-segmentation",
-        unit: "complete",
+        options: {
+            "0": {
+                color: "#fed98e",
+                name: "Incomplete",
+            },
+            "1": {
+                color: "#7f48f3",
+                name: "Complete",
+            },
+            "-1": {
+                color: "#838383",
+                name: "Not determined",
+            },
+        },
     },
     {
         discrete: false,
         displayName: "Cell Surface area",
         key: "cellular-surface-area",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
     {
         discrete: false,
         displayName: "Missing data",
         key: "missing-data",
         unit: "µm²",
+        tooltip: "tooltip",
+        description: "description",
     },
 ];
 const featureData = {
+    indices: [0, 1],
     values: {
+        "cell-line": [5, 7],
         "apical-proximity": [-0.25868651080317, -0.1],
         "cell-segmentation": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
@@ -142,34 +149,30 @@ const featureData = {
     labels: {
         [ARRAY_OF_CELL_IDS_KEY]: ["1", "2"],
         thumbnailPaths: ["path1", "path2"],
-        [PROTEIN_NAME_KEY]: ["protein1", "protein2"],
     },
 };
 
-// The protein name for the first cell line should be disabled in the
-// left panel
-const displayableGroups = cellLineDefs
-    .slice(1)
-    .map((cellLine) => cellLine[CELL_LINE_DEF_PROTEIN_KEY]);
+const displayableGroups: string[] = ["Paxillin", "Alpha-actinin-1"];
+const INITIAL_COLOR_AND_GROUP_BY = "cell-line";
 
 export const mockState = {
     metadata: {
-        cellLineDefs: cellLineDefs,
         cellFileInfo: fileInfo,
         featureData: featureData,
         measuredFeaturesDefs: measuredFeaturesDefs,
         viewerChannelSettings: {},
     },
     selection: {
-        colorBy: INITIAL_COLOR_BY,
+        colorBy: INITIAL_COLOR_AND_GROUP_BY,
         downloadConfig: {
             key: "",
             type: "",
         },
+        groupBy: INITIAL_COLOR_AND_GROUP_BY,
         filterExclude: [],
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",
-        proteinColors: INITIAL_COLORS,
+        defaultColors: INITIAL_COLORS,
         selectedGroupColors: INITIAL_COLORS,
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,

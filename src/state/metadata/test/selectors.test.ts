@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
-import { compareVersions, getMeasuredFeaturesKeys, getProteinNames } from "../selectors";
+import { compareVersions, getMeasuredFeaturesKeys } from "../selectors";
 
 describe("Metadata branch selectors", () => {
     describe("getMeasuredFeaturesKeys", () => {
@@ -12,27 +12,11 @@ describe("Metadata branch selectors", () => {
             };
             const result: string[] = getMeasuredFeaturesKeys(state);
             expect(result).to.deep.equal([
+                "cell-line",
                 "apical-proximity",
-                "cell-segmentation",
+                "anaphase-segmentation-complete",
                 "cellular-surface-area",
                 "missing-data",
-            ]);
-        });
-    });
-    describe("getProteinNames", () => {
-        it("returns names of the proteins in the dataset", () => {
-            const state: State = {
-                ...mockState,
-            };
-            const result: string[] = getProteinNames(state).sort((a: string, b: string) => {
-                return b > a ? 1 : -1;
-            });
-            expect(result).to.deep.equal([
-                "Nucleophosmin",
-                "Delta-actin",
-                "Beta-catenin",
-                "Beta-actin",
-                "Alpha-actinin-1",
             ]);
         });
     });

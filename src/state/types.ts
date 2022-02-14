@@ -4,7 +4,7 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { SelectionStateBranch } from "./selection/types";
-import { ImageDataset} from "./image-dataset/types";
+import { ImageDataset } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
@@ -35,11 +35,10 @@ export interface State {
 }
 
 export interface TypeToDescriptionMap {
-    [propName: string ]: ActionDescription;
+    [propName: string]: ActionDescription;
 }
 
 export interface Annotation {
-    cellLine: string;
     cellID: string;
     hovered: boolean;
     fovID: string;
@@ -51,7 +50,7 @@ export interface Annotation {
 
 export interface Thumbnail {
     downloadHref: string;
-    labeledStructure: string;
+    category: string;
     mitoticStage: string;
     src: string;
     cellID: string;
@@ -65,12 +64,17 @@ export interface SelectedGroupDatum {
     y: number;
 }
 
+export interface PlotlyCustomData {
+    thumbnailPath: string; 
+    index: number;
+}
+
 export interface ContinuousPlotData {
     color: Color | Color[] | number | number[];
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: string[];
+    customdata?: PlotlyCustomData[];
     opacity?: number[];
     groupBy?: boolean;
     plotName?: string;
@@ -85,7 +89,7 @@ export interface GroupedPlotData {
     ids?: string[];
     x: (number | null)[];
     y: (number | null)[];
-    customdata?: string[];
+    customdata?: PlotlyCustomData[];
     groupBy: boolean;
     groups: number[] | string[];
     groupSettings: GroupSettings[] | null;

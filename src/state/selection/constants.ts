@@ -1,17 +1,17 @@
 import {
     MY_SELECTIONS_ID,
-    PROTEIN_NAME_KEY,
 } from "../../constants/index";
 import { makeConstant } from "../util";
 
 const makeSelectionConstant = (constant: string) => makeConstant("selection", constant);
 
 export const CHANGE_AXIS = makeSelectionConstant("deselect-file");
+export const CHANGE_GROUP_BY_CATEGORY = makeSelectionConstant("change-group-by-category");
 export const SELECT_GROUP_VIA_PLOT = makeSelectionConstant("select_group");
 export const DESELECT_POINT = makeSelectionConstant("deselect-point");
 export const SELECT_POINT = makeSelectionConstant("select-point");
 export const DESELECT_ALL_POINTS = makeSelectionConstant("deselect-all-points");
-export const TOGGLE_FILTER_BY_PROTEIN_NAME = makeSelectionConstant("toggle-filter-by-protein-name");
+export const TOGGLE_FILTER_BY_CATEGORY_NAME = makeSelectionConstant("toggle-filter-by-category-name");
 export const OPEN_CELL_IN_3D = makeSelectionConstant("open-cell-in-3d");
 export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeSelectionConstant("apply-selection-set-color");
 export const DESELECT_GROUP_OF_POINTS = makeSelectionConstant("deselect-group");
@@ -43,7 +43,6 @@ export const CHANGE_DATASET = makeSelectionConstant("change-dataset");
 export const CLEAR_DATASET = makeSelectionConstant("clear-dataset");
 export const SET_DISPLAYABLE_GROUPS = makeSelectionConstant("set-displayable-groups");
 
-export const INITIAL_COLOR_BY = PROTEIN_NAME_KEY;
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 
 export const INITIAL_COLORS = [

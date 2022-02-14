@@ -6,7 +6,6 @@ import {
     CELL_ID_KEY,
     FOV_ID_KEY,
     FOV_VOLUME_VIEWER_PATH,
-    PROTEIN_NAME_KEY,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import {
@@ -15,10 +14,16 @@ import {
     getMitoticKeyPerCell,
     getMitoticStageNames,
 } from "../../state/metadata/selectors";
-import { DataForPlot, FileInfo, MeasuredFeaturesOptions } from "../../state/metadata/types";
+import {
+    DataForPlot,
+    DiscreteMeasuredFeatureDef,
+    FileInfo,
+    MeasuredFeaturesOptions,
+} from "../../state/metadata/types";
 import {
     getClickedCellsFileInfo,
     getDownloadRoot,
+    getGroupByFeatureDef,
     getSelectedAlbum,
     getSelectedAlbumFileInfo,
     getThumbnailRoot,
@@ -29,6 +34,7 @@ import {
     convertSingleImageIdToDownloadId,
     formatDownloadOfIndividualFile,
     formatThumbnailSrc,
+    getCategoryString,
 } from "../../state/util";
 
 export const getSelectedAlbumData = createSelector(
@@ -56,6 +62,7 @@ export const getFileInfoToShow = createSelector(
 
 export const getThumbnails = createSelector(
     [
+        getGroupByFeatureDef,
         getPerCellDataForPlot,
         getMitoticKeyPerCell,
         getFileInfoToShow,
@@ -64,6 +71,7 @@ export const getThumbnails = createSelector(
         getMitoticStageNames,
     ],
     (
+        groupByFeatureDef: DiscreteMeasuredFeatureDef,
         perCellPlotData: DataForPlot,
         mitoticKeysArray: number[],
         fileInfoOfSelectedCells: FileInfo[],
@@ -74,9 +82,15 @@ export const getThumbnails = createSelector(
         if (isEmpty(perCellPlotData.labels) || !fileInfoOfSelectedCells.length) {
             return [];
         }
+        const groupByValues = perCellPlotData.values[groupByFeatureDef.key];
         return map(fileInfoOfSelectedCells, (fileInfoForCell: FileInfo) => {
             const cellID = fileInfoForCell[CELL_ID_KEY];
-            const cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
+            let cellIndex = -1;
+            if (fileInfoForCell.index !== undefined && fileInfoForCell.index > 0) {
+                cellIndex = fileInfoForCell.index
+            } else {
+                cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
+            } 
             if (cellIndex < 0) {
                 return {} as Thumbnail;
             }
@@ -84,7 +98,9 @@ export const getThumbnails = createSelector(
             let mitoticStage = "";
             if (!isEmpty(mitoticStageNames) && mitoticKeysArray.length) {
                 const mitoticKey = mitoticKeysArray[cellIndex];
-                mitoticStage = mitoticStageNames[mitoticKey].name;
+                mitoticStage = mitoticStageNames[mitoticKey]
+                    ? mitoticStageNames[mitoticKey].name
+                    : "";
             }
 
             let downloadHref = "";
@@ -105,11 +121,12 @@ export const getThumbnails = createSelector(
             }
 
             const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
+            const category = getCategoryString(groupByFeatureDef, groupByValues[cellIndex].toString());
             return {
                 cellID,
                 downloadHref,
                 fullFieldDownloadHref,
-                labeledStructure: fileInfoForCell[PROTEIN_NAME_KEY],
+                category,
                 mitoticStage,
                 src: thumbnailSrc,
             };

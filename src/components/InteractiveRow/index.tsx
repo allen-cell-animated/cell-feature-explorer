@@ -12,7 +12,6 @@ interface InteractiveRowProps {
     id: string;
     name: string;
     total: number;
-    gene?: string;
     checked?: boolean;
     closeable?: boolean;
     disabled: boolean;
@@ -52,7 +51,6 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             id,
             color,
             name,
-            gene,
             total,
             onBarClicked,
             checked,
@@ -63,9 +61,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
 
         const tooltip = (
             <div>
-                Protein: {id}
-                <br />
-                Gene: {gene}
+                {id}
             </div>
         );
 
