@@ -7,15 +7,10 @@ export const ARRAY_OF_FILE_INFO_KEY = "fileInfo";
 export const SCATTER_PLOT_NAME = "features-scatter-plot";
 export const SELECTIONS_PLOT_NAME = "selections-scatter-plot";
 export const COLOR_BY_SELECTOR = "colorBy";
-export const PROTEIN_NAME_KEY = "structureProteinName";
-export const CELL_LINE_DEF_NAME_KEY = "CellLineId_Name";
-export const CELL_LINE_DEF_STRUCTURE_KEY = "StructureId_Name";
-export const CELL_LINE_DEF_PROTEIN_KEY = "ProteinId_DisplayName";
-export const CELL_LINE_DEF_GENE_KEY = "GeneId_Name";
+export const GROUP_BY_KEY = "groupBy";
 
 export const CELL_ID_KEY = "CellId";
 export const FOV_ID_KEY = "FOVId";
-export const CELL_LINE_NAME_KEY = "CellLineName";
 export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
 export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
 export const THUMBNAIL_PATH = "thumbnailPath";
@@ -24,7 +19,6 @@ export const VOLUME_VIEWER_PATH = "volumeviewerPath";
 export type FILE_INFO_KEY =
     | typeof CELL_ID_KEY
     | typeof FOV_ID_KEY
-    | typeof CELL_LINE_NAME_KEY
     | typeof THUMBNAIL_PATH
     | typeof VOLUME_VIEWER_PATH
     | typeof FOV_THUMBNAIL_PATH
@@ -33,7 +27,7 @@ export type FILE_INFO_KEY =
 export const FILE_INFO_KEYS = Object.freeze([
     CELL_ID_KEY,
     FOV_ID_KEY,
-    CELL_LINE_NAME_KEY,
+    GROUP_BY_KEY,
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
     FOV_THUMBNAIL_PATH,
@@ -75,10 +69,4 @@ export const GENERAL_PLOT_SETTINGS = {
     showLegendCutoffWidth: 692,
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
-};
-
-export const DEFAULT_GROUP_BY: { [key: string]: string } = {
-    aics_hipsc: "labeled structure",
-    cellsystems_fish: "RNA FISH targets",
-    cellsystems_live: "labeled structure",
 };

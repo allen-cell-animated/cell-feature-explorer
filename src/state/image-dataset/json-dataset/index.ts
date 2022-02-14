@@ -1,33 +1,22 @@
 import axios, { AxiosResponse } from "axios";
-import { find, map } from "lodash";
 
 import {
-    CELL_LINE_DEF_STRUCTURE_KEY,
     FILE_INFO_KEYS,
-    CELL_LINE_DEF_NAME_KEY,
-    PROTEIN_NAME_KEY,
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_LINE_NAME_KEY,
     CELL_COUNT_KEY,
-    CELL_LINE_DEF_GENE_KEY,
 } from "../../../constants";
+
 import {
-    CELL_LINE_DEF_NAME_JSON_KEY,
-    CELL_LINE_DEF_PROTEIN_JSON_KEY,
-    CELL_LINE_DEF_STRUCTURE_JSON_KEY,
-} from "./constants";
-import {
-    CellLineDef,
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
-    MetadataStateBranch,
 } from "../../metadata/types";
 
 import { ImageDataset } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { find } from "lodash";
 
 interface DatasetInfo {
     name: string;
@@ -38,15 +27,23 @@ interface DatasetInfo {
     userData: { [propName: string]: any };
     featureDefsPath: string;
     featuresDataPath: string;
-    cellLineDataPath: string;
     viewerSettingsPath: string;
     albumPath: string;
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
-    defaultXAxis: string;
-    defaultYAxis: string;
-    defaultColorBy: string;
+    xAxis: {
+        default: string;
+    }
+    yAxis: {
+        default: string;
+    }
+    colorBy: {
+        default: string;
+    }
+    groupBy: {
+        default: string;
+    }
     featuresDisplayOrder: string[];
     featuresDataOrder: string[];
 }
@@ -54,7 +51,6 @@ interface DatasetInfo {
 class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
-    private cellLines: CellLineDef[] = [];
     private viewerChannelSettings?: ViewerChannelSettings;
 
     private featureDefsPromise?: Promise<any[]>;
@@ -73,15 +69,23 @@ class JsonRequest implements ImageDataset {
             userData: {},
             featureDefsPath: "",
             featuresDataPath: "",
-            cellLineDataPath: "",
             viewerSettingsPath: "",
             albumPath: "",
             thumbnailRoot: "",
             downloadRoot: "",
             volumeViewerDataRoot: "",
-            defaultXAxis: "",
-            defaultYAxis: "",
-            defaultColorBy: "",
+            xAxis: {
+                default: "",
+            },
+            yAxis: {
+                default: "",
+            },
+            colorBy: {
+                default: "",
+            },
+            groupBy: {
+                default: "",
+            },
             featuresDisplayOrder: [],
             featuresDataOrder: [],
         };
@@ -101,15 +105,15 @@ class JsonRequest implements ImageDataset {
     public selectDataset = (manifestPath: string) => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
-        this.cellLines = [];
 
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
             return {
-                defaultXAxis: data.defaultXAxis,
-                defaultYAxis: data.defaultYAxis,
-                defaultColorBy: data.defaultColorBy,
+                defaultXAxis: data.xAxis.default,
+                defaultYAxis: data.yAxis.default,
+                defaultColorBy: data.colorBy.default,
+                defaultGroupBy: data.groupBy.default,
                 thumbnailRoot: data.thumbnailRoot,
                 downloadRoot: data.downloadRoot,
                 volumeViewerDataRoot: data.volumeViewerDataRoot,
@@ -129,41 +133,6 @@ class JsonRequest implements ImageDataset {
             this.viewerChannelSettings = data as ViewerChannelSettings;
             return this.viewerChannelSettings;
         });
-    };
-
-    public getCellLineDefs = () => {
-        if (this.cellLines && this.cellLines.length > 0) {
-            return Promise.resolve(this.cellLines);
-        }
-
-        return this.getJson(this.datasetInfo.cellLineDataPath)
-            .then((data) => {
-                const cellLines = map(data, (datum: MetadataStateBranch) => {
-                    return {
-                        [CELL_LINE_DEF_NAME_KEY]: datum[CELL_LINE_DEF_NAME_JSON_KEY],
-                        [CELL_LINE_DEF_STRUCTURE_KEY]: datum[CELL_LINE_DEF_STRUCTURE_JSON_KEY],
-                        [PROTEIN_NAME_KEY]: datum[CELL_LINE_DEF_PROTEIN_JSON_KEY],
-                        [CELL_LINE_DEF_GENE_KEY]: datum[CELL_LINE_DEF_GENE_KEY],
-                        [CELL_COUNT_KEY]: datum[CELL_COUNT_KEY] || 0,
-                    };
-                });
-                this.cellLines = cellLines;
-                return cellLines;
-            })
-            .then(() => {
-                return this.getMeasuredFeatureDefs();
-            })
-            .then(() => {
-                this.dataPromise = this.getFeatureData();
-                return this.dataPromise;
-            })
-            .then(() => {
-                // filter cell lines and return subset
-                this.cellLines = this.cellLines.filter(
-                    (cellLine) => (cellLine[CELL_COUNT_KEY] as number) > 0
-                );
-                return this.cellLines;
-            });
     };
 
     public getMeasuredFeatureDefs = () => {
@@ -209,12 +178,13 @@ class JsonRequest implements ImageDataset {
                 {} as MappingOfMeasuredValuesArrays
             );
 
-            const proteinArray: string[] = [];
             const thumbnails: string[] = [];
             const ids: string[] = [];
+            const indices: number[] = [];
             this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
                 (featureDataArray) => {
-                    featureDataArray.forEach((el: any) => {
+                    featureDataArray.forEach((el: any, index: number) => {
+                        indices.push(index);
                         // FILE INFO
                         // number of file info property names must be same as number of file_info entries in data
                         if (FILE_INFO_KEYS.length !== el.file_info.length) {
@@ -235,21 +205,16 @@ class JsonRequest implements ImageDataset {
                             throw new Error("Bad number of feature entries in data");
                         }
 
-                        const cellLine = find(this.cellLines, {
-                            [CELL_LINE_DEF_NAME_KEY]: fileInfo[CELL_LINE_NAME_KEY],
+                        const groupByFeatureDef = find(featureDefs, {
+                            key: this.datasetInfo.groupBy.default,
                         });
-                        if (!cellLine) {
-                            throw new Error(
-                                `Undefined cell line name ${fileInfo[CELL_LINE_NAME_KEY]}`
-                            );
-                        }
-                        // augment file info with protein name
-                        fileInfo[PROTEIN_NAME_KEY] = cellLine.structureProteinName;
-                        // increment count in cell line
-                        if (cellLine[CELL_COUNT_KEY] !== undefined) {
-                            (cellLine[CELL_COUNT_KEY] as number)++;
+
+            
+                        // increment count in feature def
+                        if (groupByFeatureDef[CELL_COUNT_KEY] !== undefined) {
+                            (groupByFeatureDef[CELL_COUNT_KEY] as number)++;
                         } else {
-                            cellLine[CELL_COUNT_KEY] = 1;
+                            groupByFeatureDef[CELL_COUNT_KEY] = 1;
                         }
 
                         el.features.forEach((value: number, index: number) => {
@@ -262,15 +227,13 @@ class JsonRequest implements ImageDataset {
                                 arrayOfValues.push(Number(value));
                             }
                         }, {});
-
-                        proteinArray.push(cellLine ? cellLine[PROTEIN_NAME_KEY] : "");
                         thumbnails.push(fileInfo.thumbnailPath);
                         ids.push(fileInfo[CELL_ID_KEY].toString());
                     });
                     return {
+                        indices: indices,
                         values: dataMappedByMeasuredFeatures,
                         labels: {
-                            [PROTEIN_NAME_KEY]: proteinArray,
                             thumbnailPaths: thumbnails,
                             [ARRAY_OF_CELL_IDS_KEY]: ids,
                         },

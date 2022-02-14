@@ -1,12 +1,10 @@
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
-import { FileInfo } from "../../state/metadata/types";
+import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getDownloadRoot,
+    getGroupByFeatureDef,
     getSelected3DCellFileInfo,
-    getSelected3DCellLabeledProtein,
-    getSelected3DCellLabeledStructure,
-    getSelectedDatasetName,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
 import {
@@ -17,6 +15,7 @@ import {
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { getViewerChannelSettings } from "../../state/metadata/selectors";
+import { GROUP_BY_KEY } from "../../constants";
 
 export interface VolumeViewerProps {
     cellId: string;
@@ -83,31 +82,21 @@ export const getPropsForVolumeViewer = createSelector(
 
 export const getViewerHeader = createSelector(
     [
-        getSelectedDatasetName,
         getSelected3DCellFileInfo,
-        getSelected3DCellLabeledStructure,
-        getSelected3DCellLabeledProtein,
+        getGroupByFeatureDef,
     ],
     (
-        selectedDatasetName,
         fileInfo,
-        structureName,
-        protein
+        groupByFeatureDef: MeasuredFeatureDef,
     ): { cellId: string; label: string; value: string } => {
         let label = "";
         let value = "";
-        if (isEmpty(fileInfo) || !structureName) {
+        if (isEmpty(fileInfo)) {
             return { cellId: "", label, value };
         }
         const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
-        // TODO: figure out a data driven solution for this.
-        if (selectedDatasetName === "cellsystems_fish") {
-            label = "Gene pair";
-            value = protein;
-        } else {
-            label = "Labeled structure (protein)";
-            value = `${structureName} (${protein})`;
-        }
+        label = groupByFeatureDef.displayName;
+        value = fileInfo[GROUP_BY_KEY] || "";
         return {
             cellId,
             label,

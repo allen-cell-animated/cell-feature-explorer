@@ -2,13 +2,14 @@ import { Timestamp } from "@firebase/firestore-types";
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
-import { CellLineDef, DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
+import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
 export interface InitialDatasetSelections {
     defaultXAxis: string;
     defaultYAxis: string;
     defaultColorBy: string;
+    defaultGroupBy: string;
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
@@ -53,7 +54,6 @@ export interface Megaset {
 export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<Megaset[]>;
-    getCellLineDefs(): Promise<CellLineDef[]>;
     getViewerChannelSettings(): Promise<ViewerChannelSettings>;
     getFeatureData(): Promise<DataForPlot>;
     getAlbumData(): Promise<Album[]>;

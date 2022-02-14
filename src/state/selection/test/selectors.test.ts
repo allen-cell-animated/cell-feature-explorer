@@ -1,15 +1,13 @@
 import { expect } from "chai";
 
 import { mockState } from "../../test/mocks";
-import {
-    NumberOrString,
-    State,
-} from "../../types";
+import { NumberOrString, State } from "../../types";
 import {
     getSelectedGroupKeys,
     getSelectedSetTotals,
     getFilteredXValues,
     getFilteredYValues,
+    getGroupingCategoryNames,
 } from "../selectors";
 
 describe("Selection selectors", () => {
@@ -105,6 +103,22 @@ describe("Selection selectors", () => {
 
             const result: number[] = getSelectedSetTotals(state);
             expect(result).to.deep.equal([total1, total2]);
+        });
+    });
+    describe("getGroupingCategoryNames", () => {
+        it("returns names of the categories in the dataset", () => {
+            const state: State = {
+                ...mockState,
+            };
+            const result: string[] = getGroupingCategoryNames(state);
+
+            expect(result).to.deep.equal([
+                "Actin filaments",
+                "Endoplasmic reticulum",
+                "Matrix adhesions",
+                "Microtubules",
+                "Mitochondria",
+            ]);
         });
     });
 });

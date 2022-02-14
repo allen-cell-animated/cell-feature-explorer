@@ -1,10 +1,7 @@
 import {
     CELL_ID_KEY,
-    PROTEIN_NAME_KEY,
 } from "../../constants";
 import { FileInfo, MetadataStateBranch } from "../metadata/types";
-
-export type MenuSelectionChoices = "structureProteinName" | "cellularFeatures"
 
 export interface CellDataArrays {
     [key: string]: number[] | FileInfo[] | string[];
@@ -51,12 +48,10 @@ export interface DeselectGroupOfPointsAction {
 }
 
 export interface  SelectPointAction {
-    payload: string;
-    type: string;
-}
-
-export interface  SelectCellIn3DAction {
-    payload: string;
+    payload: {
+        id: string;
+        index?: number;
+    };
     type: string;
 }
 
@@ -85,7 +80,7 @@ export interface ChangeMousePositionAction {
 
 export interface SelectedPointData {
     [CELL_ID_KEY]: string;
-    [PROTEIN_NAME_KEY]: string;
+    index: number;
     thumbnailPath: string;
 }
 
@@ -151,5 +146,10 @@ export interface ClearDatasetAction {
 
 export interface SetDisplayableGroupsAction {
     payload: string[];
+    type: string;
+}
+
+export interface ChangeGroupByCategory {
+    payload: string;
     type: string;
 }

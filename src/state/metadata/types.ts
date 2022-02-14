@@ -1,14 +1,9 @@
 import {
-    CELL_COUNT_KEY,
     CELL_ID_KEY,
-    CELL_LINE_DEF_GENE_KEY,
-    CELL_LINE_DEF_NAME_KEY,
-    CELL_LINE_DEF_STRUCTURE_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
@@ -22,40 +17,46 @@ export interface MetadataStateBranch {
 
 // FROM THE DATABASE TYPINGS
 
-export interface CellLineDef {
-    [CELL_LINE_DEF_NAME_KEY]: string;
-    [CELL_LINE_DEF_STRUCTURE_KEY]: string;
-    [PROTEIN_NAME_KEY]: string; // changed on read from [CELL_LINE_DEF_PROTEIN_KEY]
-    [CELL_LINE_DEF_GENE_KEY]: string;
-    [CELL_COUNT_KEY]?: number;
-}
-
 export interface FileInfo {
     [CELL_ID_KEY]: string;
-    [CELL_LINE_NAME_KEY]: string;
     [FOV_ID_KEY]: string;
-    [PROTEIN_NAME_KEY]: string;
     [FOV_THUMBNAIL_PATH]: string;
     [FOV_VOLUME_VIEWER_PATH]: string;
     [THUMBNAIL_PATH]: string;
     [VOLUME_VIEWER_PATH]: string;
+    [GROUP_BY_KEY]?: string;
+    index?: number; // added to the data after it's loaded for fast lookup into other array
 }
 
 export interface MeasuredFeaturesOption {
     color: string;
     name: string;
+    key?: string;
+    count?: number;
 }
 
 export type MeasuredFeaturesOptions = { [key: string]: MeasuredFeaturesOption };
 
-export interface MeasuredFeatureDef {
-    discrete: boolean;
+export interface ContinuousMeasuredFeatureDef {
+    discrete: false;
     displayName: string;
+    description: string;
+    key: string;
+    unit?: string;
+    tooltip: string;
+}
+
+export interface DiscreteMeasuredFeatureDef {
+    discrete: true;
+    displayName: string;
+    description: string;
     key: string;
     unit?: string;
     options: MeasuredFeaturesOptions;
     tooltip: string;
 }
+
+export type MeasuredFeatureDef = ContinuousMeasuredFeatureDef | DiscreteMeasuredFeatureDef;
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfMeasuredValuesArrays {
@@ -70,17 +71,18 @@ export interface MeasuredFeatures {
     [key: string]: number;
 }
 
-export interface MeasuredFeaturesWithProteinNames {
+export interface MeasuredFeaturesWithCategoryNames {
     [key: string]: number[] | string[];
 }
 
 export interface PerCellLabels {
     thumbnailPaths: string[];
     cellIds: string[];
-    structureProteinName: string[];
+    [key: string]: string[];
 }
 
 export interface DataForPlot {
+    indices: number[];
     values: MappingOfMeasuredValuesArrays;
     labels: PerCellLabels;
 }
@@ -99,10 +101,6 @@ export interface ReceiveAction {
 
 export interface ReceiveAvailableDatasetsAction {
     payload: Megaset[];
-    type: string;
-}
-export interface ReceiveCellLineAction {
-    payload: CellLineDef[];
     type: string;
 }
 

@@ -17,7 +17,6 @@ import {
     DESELECT_ALL_POINTS,
     DESELECT_GROUP_OF_POINTS,
     DESELECT_POINT,
-    INITIAL_COLOR_BY,
     INITIAL_COLORS,
     INITIAL_SELECTED_ALBUM_ID,
     INITIAL_SELECTION_COLORS,
@@ -26,7 +25,7 @@ import {
     SET_DOWNLOAD_CONFIG,
     SET_MOUSE_POSITION,
     TOGGLE_APPLY_SELECTION_SET_COLOR,
-    TOGGLE_FILTER_BY_PROTEIN_NAME,
+    TOGGLE_FILTER_BY_CATEGORY_NAME,
     TOGGLE_GALLERY_OPEN_CLOSE,
     SET_DATASET,
     RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
@@ -34,10 +33,12 @@ import {
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
     CLEAR_DATASET,
     SET_DISPLAYABLE_GROUPS,
+    CHANGE_GROUP_BY_CATEGORY,
 } from "./constants";
 import {
     BoolToggleAction,
     ChangeDownloadConfigAction,
+    ChangeGroupByCategory,
     ChangeHoveredPointAction,
     ChangeMousePositionAction,
     ChangeSelectedDatasetAction,
@@ -51,7 +52,6 @@ import {
     SelectAlbumAction,
     SelectArrayOfPointsAction,
     SelectAxisAction,
-    SelectCellIn3DAction,
     SelectionStateBranch,
     SelectPointAction,
     SetDisplayableGroupsAction,
@@ -60,7 +60,7 @@ import {
 export const initialState = {
     applySelectionSetColoring: true,
     cellSelectedFor3D: null,
-    colorBy: INITIAL_COLOR_BY,
+    colorBy: "",
     dataset: "",
     downloadConfig: {
         key: "",
@@ -76,7 +76,8 @@ export const initialState = {
     },
     plotByOnX: "",
     plotByOnY: "",
-    proteinColors: INITIAL_COLORS,
+    groupBy: "",
+    defaultColors: INITIAL_COLORS,
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedGroupColors: {},
     selectedGroups: {},
@@ -105,8 +106,8 @@ const actionToConfigMap: TypeToDescriptionMap = {
     [CLEAR_DATASET]: {
         accepts: (action: AnyAction): action is ClearDatasetAction => action.type === CLEAR_DATASET,
         perform: () => {
-            return { ...initialState }
-        }
+            return { ...initialState };
+        },
     },
 
     [CHANGE_AXIS]: {
@@ -116,12 +117,21 @@ const actionToConfigMap: TypeToDescriptionMap = {
             [action.axisId]: action.payload,
         }),
     },
-    [OPEN_CELL_IN_3D]: {
-        accepts: (action: AnyAction): action is SelectCellIn3DAction =>
-            action.type === OPEN_CELL_IN_3D,
-        perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
+
+    [CHANGE_GROUP_BY_CATEGORY]: {
+        accepts: (action: AnyAction): action is ChangeGroupByCategory =>
+            action.type === CHANGE_GROUP_BY_CATEGORY,
+        perform: (state: SelectionStateBranch, action: ChangeGroupByCategory) => ({
             ...state,
-            cellSelectedFor3D: action.payload,
+            groupBy: action.payload,
+        }),
+    },
+    [OPEN_CELL_IN_3D]: {
+        accepts: (action: AnyAction): action is SelectPointAction =>
+            action.type === OPEN_CELL_IN_3D,
+        perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
+            ...state,
+            cellSelectedFor3D: action.payload.id,
         }),
     },
     [SELECT_GROUP_VIA_PLOT]: {
@@ -159,7 +169,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
             action.type === DESELECT_POINT,
         perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
-            selectedPoints: filter(state.selectedPoints, (e) => e !== action.payload),
+            selectedPoints: filter(state.selectedPoints, (e) => e.CellId !== action.payload),
         }),
     },
     [DESELECT_ALL_POINTS]: {
@@ -170,9 +180,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
             selectedPoints: [...initialState.selectedPoints],
         }),
     },
-    [TOGGLE_FILTER_BY_PROTEIN_NAME]: {
+    [TOGGLE_FILTER_BY_CATEGORY_NAME]: {
         accepts: (action: AnyAction): action is ChangeSelectionAction =>
-            action.type === TOGGLE_FILTER_BY_PROTEIN_NAME,
+            action.type === TOGGLE_FILTER_BY_CATEGORY_NAME,
         perform: (state: SelectionStateBranch, action: ChangeSelectionAction) => ({
             ...state,
             filterExclude: action.payload,

@@ -1,25 +1,19 @@
 import { find } from "lodash";
-import {
-    AnyAction,
-    Reducer,
-} from "redux";
+import { AnyAction, Reducer } from "redux";
 
-import {
-    APP_ID,
-    CELL_ID_KEY,
-} from "../constants";
+import { APP_ID, CELL_ID_KEY } from "../constants";
 
-import { FileInfo } from "./metadata/types";
-import {
-    BatchedAction,
-    TypeToDescriptionMap,
-} from "./types";
+import { DiscreteMeasuredFeatureDef, FileInfo, MeasuredFeatureDef } from "./metadata/types";
+import { BatchedAction, TypeToDescriptionMap } from "./types";
 
 export function makeConstant(associatedReducer: string, actionType: string) {
     return `${APP_ID}/${associatedReducer.toUpperCase()}/${actionType.toUpperCase()}`;
 }
 
-export function makeReducer<S>(typeToDescriptionMap: TypeToDescriptionMap, initialState: S): Reducer<S> {
+export function makeReducer<S>(
+    typeToDescriptionMap: TypeToDescriptionMap,
+    initialState: S
+): Reducer<S> {
     return (state: S = initialState, action: AnyAction) => {
         const description = typeToDescriptionMap[action.type];
         if (!description) {
@@ -53,8 +47,11 @@ export function enableBatching<S>(reducer: Reducer<S>, initialState: S): Reducer
     };
 }
 
-export function getFileInfoDatumFromCellId(fileInfoArray: FileInfo[], cellId: string): FileInfo | undefined {
-    return find(fileInfoArray, (datum: FileInfo) => ((datum[CELL_ID_KEY].toString()) === cellId));
+export function getFileInfoDatumFromCellId(
+    fileInfoArray: FileInfo[],
+    cellId: string
+): FileInfo | undefined {
+    return find(fileInfoArray, (datum: FileInfo) => datum[CELL_ID_KEY].toString() === cellId);
 }
 
 export function convertFullFieldIdToDownloadId(id: number | string): string {
@@ -76,7 +73,7 @@ export function convertSingleImageIdToDownloadId(id: string): string {
 }
 
 export function formatDownloadOfIndividualFile(root: string, id: string): string {
-    return`${root}&id=${id}`;
+    return `${root}&id=${id}`;
 }
 
 export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
@@ -84,4 +81,18 @@ export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): strin
         return "";
     }
     return `${thumbnailRoot}/${item.thumbnailPath}`;
+}
+
+export function findFeature(features: MeasuredFeatureDef[], searchKey: string) {
+    return find(features, { key: searchKey });
+}
+
+export function getCategoryString(
+    groupByFeatureDef: DiscreteMeasuredFeatureDef,
+    optionKey: string
+) {
+    const groupCategoryInfo = groupByFeatureDef.options[optionKey];
+    // key is the most specific but only used if the names are not unique.
+    // name is the display name for the category.
+    return groupCategoryInfo.key || groupCategoryInfo.name;
 }

@@ -1,15 +1,7 @@
 import { expect } from "chai";
 
-import {
-    COLOR_BY_SELECTOR,
-    X_AXIS_ID,
-    Y_AXIS_ID,
-} from "../../constants";
-import {
-    changeAxis,
-    selectCellFor3DViewer,
-    selectPoint,
-} from "../../state/selection/actions";
+import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
+import { changeAxis, selectCellFor3DViewer, selectPoint } from "../../state/selection/actions";
 
 import { initialState } from "../../state/selection/reducer";
 import { selectedCellFileInfo } from "../../state/test/mocks";
@@ -62,53 +54,61 @@ describe("UrlState utility class", () => {
 
     describe("toReduxActions", () => {
         it("maps a key value pair to a redux action", () => {
-            expect(UrlState.toReduxActions({
-                [URLSearchParam.plotByOnX]: "feature_x",
-            }))
+            expect(
+                UrlState.toReduxActions({
+                    [URLSearchParam.plotByOnX]: "feature_x",
+                })
+            )
                 .to.be.an("array")
                 .of.length(1)
                 .and.to.have.deep.members([changeAxis(X_AXIS_ID, "feature_x")]);
         });
 
         it("adds cellSelectedFor3D to list of selected points if not already there", () => {
-            expect(UrlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-            }))
+            expect(
+                UrlState.toReduxActions({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                })
+            )
                 .to.be.an("array")
                 .of.length(2)
-                .and.to.have.deep.members([selectPoint("2"), selectCellFor3DViewer("2")]);
+                .and.to.have.deep.members([selectPoint({ id: "2" }), selectCellFor3DViewer({id: "2"})]);
         });
 
         it("does not duplicate cellSelectedFor3D in list of selected points if it is already there", () => {
-            expect(UrlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.selectedPoint]: ["2"],
-            }))
+            expect(
+                UrlState.toReduxActions({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.selectedPoint]: ["2"],
+                })
+            )
                 .to.be.an("array")
                 .of.length(2)
-                .and.to.have.deep.members([selectPoint("2"), selectCellFor3DViewer("2")]);
+                .and.to.have.deep.members([selectPoint({ id: "2" }), selectCellFor3DViewer({id: "2"})]);
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
-            expect(UrlState.toReduxActions({
-                [URLSearchParam.cellSelectedFor3D]: "2",
-                [URLSearchParam.plotByOnX]: "feature_x",
-                [URLSearchParam.plotByOnY]: "feature_y",
-                [URLSearchParam.colorBy]: "feature_z",
-                [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
-            }))
+            expect(
+                UrlState.toReduxActions({
+                    [URLSearchParam.cellSelectedFor3D]: "2",
+                    [URLSearchParam.plotByOnX]: "feature_x",
+                    [URLSearchParam.plotByOnY]: "feature_y",
+                    [URLSearchParam.colorBy]: "feature_z",
+                    [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+                })
+            )
                 .to.be.an("array")
                 .of.length(9)
                 .and.to.have.deep.members([
-                    selectCellFor3DViewer("2"),
+                    selectCellFor3DViewer({id: "2"}),
                     changeAxis(X_AXIS_ID, "feature_x"),
                     changeAxis(Y_AXIS_ID, "feature_y"),
                     changeAxis(COLOR_BY_SELECTOR, "feature_z"),
-                    selectPoint("1"),
-                    selectPoint("2"),
-                    selectPoint("3"),
-                    selectPoint("4"),
-                    selectPoint("5"),
+                    selectPoint({ id: "1" }),
+                    selectPoint({ id: "2" }),
+                    selectPoint({ id: "3" }),
+                    selectPoint({ id: "4" }),
+                    selectPoint({ id: "5" }),
                 ]);
         });
 
@@ -117,10 +117,12 @@ describe("UrlState utility class", () => {
         });
 
         it("ignores search params that are not explicitly configured", () => {
-            expect(UrlState.toReduxActions({
-                [URLSearchParam.colorBy]: "feature_z",
-                superFakeMadeUpUrlParam: "superFakeMadeUpValue",
-            }))
+            expect(
+                UrlState.toReduxActions({
+                    [URLSearchParam.colorBy]: "feature_z",
+                    superFakeMadeUpUrlParam: "superFakeMadeUpValue",
+                })
+            )
                 .to.be.an("array")
                 .of.length(1)
                 .and.to.have.deep.members([changeAxis(COLOR_BY_SELECTOR, "feature_z")]);
@@ -172,7 +174,7 @@ describe("UrlState utility class", () => {
             });
         });
         it("omits values that are set to initial values", () => {
-            const selections =  {...initialState};
+            const selections = { ...initialState };
 
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({});
         });

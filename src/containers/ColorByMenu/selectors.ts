@@ -1,80 +1,61 @@
-import {
-    chunk,
-    includes,
-    map,
-    reduce,
-    values,
-} from "lodash";
+import { chunk, includes, map, reduce, values } from "lodash";
 import { createSelector } from "reselect";
 
 import {
-    CELL_COUNT_KEY,
-    CELL_LINE_DEF_GENE_KEY,
-    DEFAULT_GROUP_BY,
     DISABLE_COLOR,
     DOWNLOAD_CONFIG_TYPE_PROTEIN,
     DOWNLOAD_CONFIG_TYPE_SELECTION_SET,
     OFF_COLOR,
-    PROTEIN_NAME_KEY,
 } from "../../constants/index";
-import {
-    getLabelsPerCell,
-    getProteinNames,
-    getSortedCellLineDefs,
-} from "../../state/metadata/selectors";
-import { CellLineDef } from "../../state/metadata/types";
+import { getLabelsPerCell } from "../../state/metadata/selectors";
+import { MeasuredFeatureDef, MeasuredFeaturesOption } from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
     getDownloadConfig,
     getDownloadRoot,
     getFiltersToExclude,
-    getProteinColors,
     getSelectedGroupKeys,
     getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
     getDisplayableGroups,
-    getSelectedDatasetName,
+    getGroupingCategoryNames,
+    getGroupByFeatureOptionsAsList,
+    getGroupByCategory,
+    getCategoryGroupColorsAndNames,
+    getGroupByFeatureDef,
+    getGroupingCategoryNamesAsArray,
 } from "../../state/selection/selectors";
 import { LassoOrBoxSelectPointData } from "../../state/selection/types";
-import { NumberOrString } from "../../state/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
 
-export const getGroupByTitle = createSelector([getSelectedDatasetName], (selectedDatasetName: string): string => {
-    return DEFAULT_GROUP_BY[selectedDatasetName] || "labeled structure";
-})
+export const getGroupByTitle = createSelector(
+    [getGroupByFeatureDef],
+    (groupByFeatureDef: MeasuredFeatureDef): string => {
+        return groupByFeatureDef.displayName;
+    }
+);
 
 export const getCheckAllCheckboxIsIntermediate = createSelector(
-    [getFiltersToExclude, getProteinNames] ,
-    (filtersToExclude, allProteinNames): boolean => {
-        return filtersToExclude.length > 0 && filtersToExclude.length !== allProteinNames.length;
-} );
+    [getFiltersToExclude, getGroupingCategoryNames],
+    (filtersToExclude, categoryNames: string[]): boolean => {
+        return filtersToExclude.length > 0 && filtersToExclude.length !== categoryNames.length;
+    }
+);
 
-const getColors = createSelector(
-    [getColorBySelection, getProteinColors, getProteinNames, getFiltersToExclude],
-    (colorBy, proteinColors, proteinNames, filtersToExclude) => {
-        return colorBy === PROTEIN_NAME_KEY ?
-            proteinNames
-                .map((ele: NumberOrString, index: number) =>
-                    includes(filtersToExclude, ele) ? OFF_COLOR : proteinColors[index]) :
-            proteinNames
-                .map((ele: NumberOrString) =>
-                    includes(filtersToExclude, ele) ? OFF_COLOR : DISABLE_COLOR);
-    });
+export const disambiguateCategoryNames = (options: MeasuredFeaturesOption[]): string[] => {
+    const categoryNames: string[] = map(options, (option) => option.name);
+    const keys: string[] = map(options, (option) => option.key || "");
 
-export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] => {
-    const proteinNames: string[] = cellLines.map(cellLine => cellLine.structureProteinName);
-    const structureNames: string[] = cellLines.map(cellLine => cellLine.StructureId_Name);
-    
-    const repeatedNames: string[] = structureNames.filter((name, i) => {
-        return structureNames.indexOf(name) !== i;
+    const repeatedNames: string[] = categoryNames.filter((name, i) => {
+        return categoryNames.indexOf(name) !== i;
     });
-    const disambiguatedNames: string[] = structureNames.map((name, i) => {
+    const disambiguatedNames: string[] = categoryNames.map((name, i) => {
         if (repeatedNames.includes(name)) {
-            return `${name} (${proteinNames[i]})`;
+            return `${name} (${keys[i]})`;
         }
         return name;
     });
@@ -82,32 +63,83 @@ export const disambiguateStructureNames = (cellLines: CellLineDef[]): string[] =
     return disambiguatedNames;
 };
 
+export const getLegendColors = createSelector(
+    [getCategoryGroupColorsAndNames, getGroupByCategory, getColorBySelection],
+    (colors, categoryToGroupBy, categoryToColorBy) => {
+        // if color by and group by are the same, the legend
+        // is redundant
+        if (categoryToColorBy === categoryToGroupBy) {
+            return [];
+        }
+        return colors;
+    }
+);
+
+const getColorForCategory = (
+    showGroupByColors: boolean,
+    isExcluded: boolean,
+    isDisabled: boolean,
+    categoryColor: string
+) => {
+    if (isDisabled) {
+        return DISABLE_COLOR;
+    } else if (isExcluded) {
+        return OFF_COLOR;
+    } else if (showGroupByColors) {
+        return categoryColor;
+    } else {
+        return DISABLE_COLOR;
+    }
+};
+
 export const getInteractivePanelData = createSelector(
-    [getSortedCellLineDefs, getFiltersToExclude, getColors, getDisplayableGroups],
-    (cellLines, filtersToExclude, proteinColors: string[], displayableGroups): PanelData[] => {
-        const structureNames = disambiguateStructureNames(cellLines);
-        return map(cellLines, (cellLine: CellLineDef, index: number) => {
-            const proteinName: string = cellLine[PROTEIN_NAME_KEY];
-            const geneName: string = cellLine[CELL_LINE_DEF_GENE_KEY];
-            const structureName: string = structureNames[index];
-            const total: number = cellLine[CELL_COUNT_KEY] || 0;
-            const disabled = !displayableGroups.includes(proteinName);
-            const color = disabled ? DISABLE_COLOR : proteinColors[index];
+    [
+        getGroupByCategory,
+        getColorBySelection,
+        getGroupByFeatureOptionsAsList,
+        getFiltersToExclude,
+        getDisplayableGroups,
+    ],
+    (
+        categoryToGroupBy: string[],
+        categoryToColorBy: string[],
+        categories: MeasuredFeaturesOption[],
+        filtersToExclude: string[],
+        displayableGroups: string[]
+    ): PanelData[] => {
+        const names = disambiguateCategoryNames(categories);
+        return map(categories, (category: MeasuredFeaturesOption, index: number) => {
+            const name: string = category.name;
+            const key: string = category.key || "";
+            const id = key || name;
+            const total: number = category.count || 0;
+            const disabled = !displayableGroups.includes(id);
+            const color = getColorForCategory(
+                categoryToColorBy === categoryToGroupBy,
+                includes(filtersToExclude, id),
+                disabled,
+                category.color
+            );
             return {
-                checked: !includes(filtersToExclude, proteinName),
+                checked: !includes(filtersToExclude, id),
                 color: color,
-                id: proteinName,
-                name: structureName,
-                gene: geneName,
+                id: id,
+                name: names[index],
                 disabled: disabled,
                 total,
             };
         });
-    });
+    }
+);
 
 export const getSelectionPanelData = createSelector(
     [getApplyColorToSelections, getSelectionSetColors, getSelectedGroupKeys, getSelectedSetTotals],
-    (applyColorToSelections, selectedSetColors, selectedSetNames, selectedSetTotals): PanelData[] => {
+    (
+        applyColorToSelections,
+        selectedSetColors,
+        selectedSetNames,
+        selectedSetTotals
+    ): PanelData[] => {
         return map(selectedSetNames, (name, index) => {
             const color = applyColorToSelections ? values(selectedSetColors)[index] : DISABLE_COLOR;
             const displayName = Number(name) ? index : name;
@@ -118,25 +150,18 @@ export const getSelectionPanelData = createSelector(
                 total: selectedSetTotals[index],
             };
         });
-    });
+    }
+);
 
 export const getListOfCellIdsByDownloadConfig = createSelector(
-    [
-        getLabelsPerCell,
-        getDownloadConfig,
-        getSelectedGroups,
-    ],
-    (
-        labelsPerCell,
-        downloadConfig,
-        selectedGroups
-    ): string[] => {
+    [getLabelsPerCell, getGroupingCategoryNamesAsArray, getDownloadConfig, getSelectedGroups],
+    (labelsPerCell, namePerCell: string[], downloadConfig, selectedGroups): string[] => {
         const returnArray: string[] = [];
         if (downloadConfig.type === DOWNLOAD_CONFIG_TYPE_PROTEIN) {
             return reduce(
-                labelsPerCell.structureProteinName,
-                (acc, proteinName: string, index) => {
-                    if (proteinName === downloadConfig.key) {
+                namePerCell,
+                (acc, categoryName: string, index) => {
+                    if (categoryName === downloadConfig.key) {
                         acc.push(convertSingleImageIdToDownloadId(labelsPerCell.cellIds[index]));
                     }
                     return acc;
@@ -148,18 +173,19 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
             return selectedCells.map((point: LassoOrBoxSelectPointData) =>
                 convertSingleImageIdToDownloadId(point.cellId)
             );
-          
         }
         return returnArray;
-});
+    }
+);
 
 export const createUrlFromListOfIds = createSelector(
     [getDownloadRoot, getListOfCellIdsByDownloadConfig],
     (downloadRoot: string, cellIdsToDownload): string[] => {
-    const chunkSize = 300;
-    const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
-    return map(
-        chunksOfIds,
-        (listOfIds) => `${downloadRoot}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`
-    );
-});
+        const chunkSize = 300;
+        const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
+        return map(
+            chunksOfIds,
+            (listOfIds) => `${downloadRoot}${map(listOfIds, (cellId) => `&id=${cellId}`).join("")}`
+        );
+    }
+);

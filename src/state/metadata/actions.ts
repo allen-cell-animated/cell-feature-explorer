@@ -8,14 +8,12 @@ import {
     RECEIVE_ALBUM_DATA,
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
-    RECEIVE_CELL_LINE_DATA,
     RECEIVE_MEASURED_FEATURE_DEFS,
     RECEIVE_METADATA,
     RECEIVE_VIEWER_CHANNEL_SETTINGS,
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
     REQUEST_CELL_FILE_INFO,
-    REQUEST_CELL_LINE_DATA,
     REQUEST_FEATURE_DATA,
     REQUEST_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
@@ -23,14 +21,12 @@ import {
     SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
-    CellLineDef,
     FileInfo,
     MetadataStateBranch,
     ReceiveAction,
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
     ReceiveCellFileInfoAction,
-    ReceiveCellLineAction,
     ReceiveMeasuredFeaturesAction,
     ReceiveViewerChannelSettingsAction,
     RequestAction,
@@ -56,13 +52,6 @@ export function clearDatasetValues() {
     };
 }
 
-export function receiveCellLineData(payload: CellLineDef[]): ReceiveCellLineAction {
-    return {
-        payload,
-        type: RECEIVE_CELL_LINE_DATA,
-    };
-}
-
 export function receiveFileInfoData(payload: FileInfo[]): ReceiveCellFileInfoAction {
     return {
         payload,
@@ -83,12 +72,6 @@ export function receiveMeasuredFeatureDefs(
     return {
         payload,
         type: RECEIVE_MEASURED_FEATURE_DEFS,
-    };
-}
-
-export function requestCellLineData(): RequestAction {
-    return {
-        type: REQUEST_CELL_LINE_DATA,
     };
 }
 

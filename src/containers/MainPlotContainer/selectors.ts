@@ -4,10 +4,9 @@ import { createSelector } from "reselect";
 import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
-    CELL_LINE_NAME_KEY,
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
-    PROTEIN_NAME_KEY,
+    GROUP_BY_KEY,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
@@ -24,20 +23,23 @@ import {
     getApplyColorToSelections,
     getClickedCellsFileInfo,
     getColorBySelection,
-    getColorByValues,
-    getColorsForPlot,
+    getFilteredColorByValues,
+    getCategoryGroupColorsAndNames,
     getFilteredCellData,
     getHoveredCardId,
-    getIds,
+    getFilteredIds,
     getPlotByOnX,
     getPlotByOnY,
     getSelectedGroupsData,
-    getThumbnailPaths,
     getFilteredXValues,
     getFilteredYValues,
+    getGroupByCategory,
+    getGroupingCategoryNamesAsArray,
+    getHoveredPointData,
 } from "../../state/selection/selectors";
 import { TickConversion } from "../../state/selection/types";
-import { Annotation, ContinuousPlotData, GroupedPlotData } from "../../state/types";
+import { Annotation, ContinuousPlotData, PlotlyCustomData, GroupedPlotData } from "../../state/types";
+import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
 
 function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
@@ -45,18 +47,21 @@ function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is 
 }
 
 export const handleNullValues = (
-    inputXValues: (number | null)[], inputYValues: (number | null)[]
+    inputXValues: (number | null)[],
+    inputYValues: (number | null)[]
 ): { xValues: (number | null)[]; yValues: (number | null)[] } => {
     let canPlot = false;
     let xValues = inputXValues.slice();
     let yValues = inputYValues.slice();
 
     if (xValues.length !== yValues.length) {
-        console.error("Cannot handleNullValues between two arrays because they have unequal length")
+        console.error(
+            "Cannot handleNullValues between two arrays because they have unequal length"
+        );
         return {
             xValues: xValues,
-            yValues: yValues
-        }
+            yValues: yValues,
+        };
     }
 
     // At every index where one array has a null value, the other array must
@@ -80,28 +85,44 @@ export const handleNullValues = (
 
     return {
         xValues: xValues,
-        yValues: yValues
+        yValues: yValues,
+    };
+};
+
+export const getPlotlyCustomData = createSelector(
+    [getFilteredCellData],
+    (filteredCellData: DataForPlot): PlotlyCustomData[] => {
+        const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
+        const indices = filteredCellData.indices;
+        return map(indices, (index) => {
+            return {
+                index,
+                thumbnailPath: thumbnailPaths[index],
+            };
+        });
     }
-}
+);
 
 export const getMainPlotData = createSelector(
     [
         getFilteredXValues,
         getFilteredYValues,
-        getIds,
-        getThumbnailPaths,
-        getColorByValues,
+        getFilteredIds,
+        getPlotlyCustomData,
+        getFilteredColorByValues,
         getColorBySelection,
-        getColorsForPlot,
+        getGroupByCategory,
+        getCategoryGroupColorsAndNames,
         getCategoricalFeatureKeys,
     ],
     (
         xValues,
         yValues,
         ids,
-        thumbnailPaths,
+        customData,
         colorByValues,
-        colorBy,
+        categoryToColorBy,
+        categoryToGroupBy,
         colorsForPlot,
         categoricalFeatures
     ): GroupedPlotData | ContinuousPlotData => {
@@ -110,14 +131,14 @@ export const getMainPlotData = createSelector(
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
         return {
-            color: colorBy === PROTEIN_NAME_KEY ? undefined : colorByValues,
-            groupBy: colorBy === PROTEIN_NAME_KEY || includes(categoricalFeatures, colorBy),
+            color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
+            groupBy: includes(categoricalFeatures, categoryToColorBy),
             groupSettings: colorsForPlot,
             groups: colorByValues,
             ids,
             x: newXAndYValues.xValues,
             y: newXAndYValues.yValues,
-            customdata: thumbnailPaths as string[],
+            customdata: customData,
         };
     }
 );
@@ -138,17 +159,20 @@ export const getAnnotations = createSelector(
         return clickedCellsFileInfo.reduce((acc, data) => {
             const cellID = data[CELL_ID_KEY];
             const fovID = data[FOV_ID_KEY] || "";
-            const cellLine = data[CELL_LINE_NAME_KEY] || "";
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
-            const pointIndex = findIndex(cellIds, (id) => id === cellID);
+            // FileInfo is typed with `index` as optional because it gets added to the 
+            // data from the database. However, at this point, index will always be defined, but since 
+            // typescript doesn't know that, we still have this backup to find it in the
+            // id array but that code should never be executed. 
+            const pointIndex =
+                data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
             const y = filteredCellData.values[yAxis][pointIndex];
             if (pointIndex >= 0 && x !== null && y !== null) {
                 acc.push({
                     cellID,
-                    cellLine,
                     fovID,
                     hovered: cellID === currentHoveredCellId,
                     pointIndex,
@@ -317,25 +341,8 @@ export const getYDisplayOptions = createSelector(
 
 export const getColorByDisplayOptions = createSelector(
     [getMeasuredFeaturesDefs, getGroupByTitle],
-    (featureDefs, groupByTitle): MeasuredFeatureDef[] => {
-        if (!find(featureDefs, { key: PROTEIN_NAME_KEY })) {
-            // TODO: this should be in the data already, not added here
-            // need to have what drop downs each feature def should be included in. 
-            const tooltip =
-                groupByTitle === "RNA FISH targets"
-                    ? "Pair of gene transcripts assayed by RNA fluorescence in situ hybridization (RNA FISH)"
-                    : "Name of the cellular structure that has been fluorescently labeled in each cell line";
-            return [
-                {
-                    key: PROTEIN_NAME_KEY,
-                    displayName: `${groupByTitle[0].toUpperCase()}${groupByTitle.substr(1)}`, // assuming the title is not in title case
-                    discrete: true,
-                    unit: null,
-                    tooltip: tooltip,
-                },
-                ...featureDefs,
-            ];
-        }
+    (featureDefs): MeasuredFeatureDef[] => {
+        // TODO: use "exclude" in database to filter measured features
         return featureDefs;
     }
 );
@@ -358,7 +365,7 @@ const makeNumberAxis = (): TickConversion => {
 export const getXTickConversion = createSelector(
     [getPlotByOnX, getMeasuredFeaturesDefs],
     (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
-        const feature = find(measuredFeaturesDefs, { key: plotByOnX });
+        const feature = findFeature(measuredFeaturesDefs,  plotByOnX);
         if (feature && feature.discrete) {
             return makeNumberToTextConversion(feature.options);
         }
@@ -374,5 +381,18 @@ export const getYTickConversion = createSelector(
             return makeNumberToTextConversion(feature.options);
         }
         return makeNumberAxis();
+    }
+);
+
+export const getDataForOverlayCard = createSelector(
+    [getHoveredPointData, getGroupingCategoryNamesAsArray],
+    (pointData, categoryNames) => {
+        if (!pointData || !categoryNames.length) {
+            return pointData;
+        }
+        return {
+            ...pointData,
+            [GROUP_BY_KEY]: categoryNames[pointData.index],
+        };
     }
 );

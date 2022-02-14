@@ -1,18 +1,18 @@
 import { Avatar, List } from "antd";
 import React from "react";
 
-import { DeselectPointAction, SelectCellIn3DAction } from "../../state/selection/types";
+import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
 import styles from "./style.css";
 
 interface GalleryCardProps {
-    labeledStructure: string;
+    category: string;
     src: string;
     selected: boolean;
     downloadHref: string;
     cellID: string;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
-    handleOpenIn3D: (payload: string) => SelectCellIn3DAction;
+    handleOpenIn3D: (payload: { id: string }) => SelectPointAction;
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
@@ -20,7 +20,7 @@ interface GalleryCardProps {
 
 const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
     const openCellin3D = () => {
-        props.handleOpenIn3D(props.cellID);
+        props.handleOpenIn3D({ id: props.cellID });
     };
 
     return (
