@@ -35,27 +35,11 @@ export const getDatasets = createSelector([getMegasets], (megasets): DatasetMeta
     return datasets;
 })
 
-export const compareVersions = (versionA: string, versionB: string): number => {
-    const [majorA, minorA, patchA] = versionA.split(".");
-    const [majorB, minorB, patchB] = versionB.split(".");
-    // may not exist (or actually be 0), either way, set to zero for comparison
-    const minorANum = Number(minorA) || 0;
-    const minorBNum = Number(minorB) || 0;
-    const patchANum = Number(patchA) || 0;
-    const patchBNum = Number(patchB) || 0;
-
-    if (majorA === majorB) {
-        // if the major versions are equal, check the minor and patch numbers
-        if (minorANum === minorBNum) {
-            // if minor versions are also equal, check patch number
-            return patchBNum - patchANum;
-        } else {
-            return minorBNum - minorANum;
-        }
-    } else {
-        return Number(majorB) - Number(majorA);
-    }
-};
+export const getMegasetsByNewest = createSelector([getMegasets], (megasets): Megaset[] => {
+    return megasets.sort((a: Megaset, b: Megaset) => {
+        return b.dateCreated.seconds - a.dateCreated.seconds;
+    })
+});
 
 export const getMeasuredFeatureArrays = createSelector(
     [getPerCellDataForPlot],

@@ -1,3 +1,5 @@
+import { Timestamp } from "@firebase/firestore-types";
+
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
@@ -42,6 +44,7 @@ export interface Megaset {
     name: string;
     title: string;
     production: boolean;
+    dateCreated: Timestamp;
     datasets: {
         [key: string]: DatasetMetaData
     };
