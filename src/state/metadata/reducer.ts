@@ -12,7 +12,7 @@ import {
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
     RECEIVE_MEASURED_FEATURE_DEFS,
-    RECEIVE_METADATA,
+    RECEIVE_DATA_FOR_PLOT,
     RECEIVE_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
@@ -50,8 +50,8 @@ export const initialState = {
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [RECEIVE_METADATA]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_METADATA,
+    [RECEIVE_DATA_FOR_PLOT]: {
+        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,

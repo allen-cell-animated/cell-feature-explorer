@@ -1,6 +1,6 @@
 import { makeConstant } from "../util";
 
-export const RECEIVE_METADATA = makeConstant("metadata", "receive");
+export const RECEIVE_DATA_FOR_PLOT = makeConstant("metadata", "receive");
 export const REQUEST_FEATURE_DATA = makeConstant("metadata", "request");
 export const REQUEST_ALBUM_DATA = makeConstant("metadata", "request-album-data");
 export const RECEIVE_ALBUM_DATA = makeConstant("metadata", "receive-album-data");
