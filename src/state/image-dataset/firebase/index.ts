@@ -220,7 +220,9 @@ class FirebaseRequest implements ImageDataset {
                         cellIds: ids,
                     },
                 };
-            });
+            }).catch(e => {
+                console.log("ERROR FETCHING FEATURE DATA:", e)
+            })
     };
 
     public getFileInfoByCellId = (cellId: string) => {

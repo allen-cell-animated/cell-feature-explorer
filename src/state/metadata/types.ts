@@ -12,7 +12,19 @@ import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 export interface MetadataStateBranch {
-    [key: string]: any;
+    albums: Album[];
+    cellFileInfo: FileInfo[];
+    isLoading: boolean;
+    loadingText: string;
+    showSmallScreenWarning: boolean;
+    megasets: Megaset[];
+    featureData: {
+        indices: number[];
+        values: MappingOfMeasuredValuesArrays;
+        labels: PerCellLabels;
+    };
+    measuredFeaturesDefs: MeasuredFeatureDef[];
+    viewerChannelSettings: ViewerChannelSettings;
 }
 
 // FROM THE DATABASE TYPINGS
@@ -60,25 +72,17 @@ export type MeasuredFeatureDef = ContinuousMeasuredFeatureDef | DiscreteMeasured
 
 // DATA HELD IN STATE TYPINGS
 export interface MappingOfMeasuredValuesArrays {
-    [key: string]: number[];
-}
-
-export interface MappingOfMeasuredValuesArraysWithNulls {
     [key: string]: (number | null)[];
-}
-
-export interface MeasuredFeatures {
-    [key: string]: number;
-}
-
-export interface MeasuredFeaturesWithCategoryNames {
-    [key: string]: number[] | string[];
 }
 
 export interface PerCellLabels {
     thumbnailPaths: string[];
     cellIds: string[];
     [key: string]: string[];
+}
+
+export interface MeasuredFeaturesWithCategoryNames {
+    [key: string]: string[] | (number | null)[];
 }
 
 export interface DataForPlot {
@@ -89,13 +93,13 @@ export interface DataForPlot {
 
 // ACTIONS
 
-export interface ReceiveMeasuredFeaturesAction {
-    payload: MetadataStateBranch[];
+export interface ReceiveAction {
+    payload: {[key: string]: any};
     type: string;
 }
 
-export interface ReceiveAction {
-    payload: MetadataStateBranch;
+export interface ReceiveMeasuredFeaturesAction {
+    payload: MeasuredFeatureDef[];
     type: string;
 }
 

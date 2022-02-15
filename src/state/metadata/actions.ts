@@ -9,7 +9,7 @@ import {
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
     RECEIVE_MEASURED_FEATURE_DEFS,
-    RECEIVE_METADATA,
+    RECEIVE_DATA_FOR_PLOT,
     RECEIVE_VIEWER_CHANNEL_SETTINGS,
     REQUEST_ALBUM_DATA,
     REQUEST_AVAILABLE_DATASETS,
@@ -21,8 +21,9 @@ import {
     SET_SHOW_SMALL_SCREEN_WARNING,
 } from "./constants";
 import {
+    DataForPlot,
     FileInfo,
-    MetadataStateBranch,
+    MeasuredFeatureDef,
     ReceiveAction,
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
@@ -59,15 +60,15 @@ export function receiveFileInfoData(payload: FileInfo[]): ReceiveCellFileInfoAct
     };
 }
 
-export function receiveMetadata(payload: MetadataStateBranch): ReceiveAction {
+export function receiveDataForPlot(payload: DataForPlot): ReceiveAction {
     return {
         payload,
-        type: RECEIVE_METADATA,
+        type: RECEIVE_DATA_FOR_PLOT,
     };
 }
 
 export function receiveMeasuredFeatureDefs(
-    payload: MetadataStateBranch[]
+    payload: MeasuredFeatureDef[]
 ): ReceiveMeasuredFeaturesAction {
     return {
         payload,

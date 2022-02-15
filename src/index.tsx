@@ -14,11 +14,16 @@ import {
     metadata,
     selection,
 } from "./state";
+import { initialState } from "./state/selection/reducer";
 import { UrlState } from "./util";
 import { URLSearchParam } from "./util/UrlState";
 
 const pram = new Pram(createHistory());
-const store = createReduxStore({ selection: UrlState.toAppState(pram.getParams())});
+const initialSelections = {
+    ...initialState,
+    ...UrlState.toAppState(pram.getParams())
+}
+const store = createReduxStore({ selection: initialSelections });
 
 store.dispatch(selection.actions.syncStateWithURL(pram.getParams()));
 

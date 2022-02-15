@@ -1,4 +1,5 @@
 import { includes, map, find, findIndex, isEmpty } from "lodash";
+import { PlotData } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
@@ -18,7 +19,6 @@ import {
     MeasuredFeatureDef,
     MeasuredFeaturesOptions,
 } from "../../state/metadata/types";
-import { PlotData } from "../../state/plotlyjs-types";
 import {
     getApplyColorToSelections,
     getClickedCellsFileInfo,
@@ -37,14 +37,16 @@ import {
     getGroupingCategoryNamesAsArray,
     getHoveredPointData,
 } from "../../state/selection/selectors";
-import { TickConversion } from "../../state/selection/types";
-import { Annotation, ContinuousPlotData, PlotlyCustomData, GroupedPlotData } from "../../state/types";
+import { SelectedPointData, TickConversion } from "../../state/selection/types";
+import {
+    Annotation,
+    ContinuousPlotData,
+    PlotlyCustomData,
+    GroupedPlotData,
+    DataType,
+} from "../../state/types";
 import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
-
-function isGrouped(plotData: GroupedPlotData | ContinuousPlotData): plotData is GroupedPlotData {
-    return plotData.groupBy === true;
-}
 
 export const handleNullValues = (
     inputXValues: (number | null)[],
@@ -130,16 +132,28 @@ export const getMainPlotData = createSelector(
         // because a coordinate like (3, null) won't be plotted anyway and produces
         // inaccurate histograms.
         const newXAndYValues = handleNullValues(xValues, yValues);
-        return {
-            color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
-            groupBy: includes(categoricalFeatures, categoryToColorBy),
-            groupSettings: colorsForPlot,
-            groups: colorByValues,
-            ids,
-            x: newXAndYValues.xValues,
-            y: newXAndYValues.yValues,
-            customdata: customData,
-        };
+        const isGrouped: boolean = includes(categoricalFeatures, categoryToColorBy);
+        if (isGrouped) {
+            return {
+                color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
+                dataType: DataType.GROUPED,
+                groupSettings: colorsForPlot,
+                groups: colorByValues as string[],
+                ids,
+                x: newXAndYValues.xValues,
+                y: newXAndYValues.yValues,
+                customdata: customData,
+            };
+        } else {
+            return {
+                color: categoryToColorBy === categoryToGroupBy ? undefined : colorByValues,
+                dataType: DataType.CONTINUOUS,
+                ids,
+                x: newXAndYValues.xValues,
+                y: newXAndYValues.yValues,
+                customdata: customData,
+            };
+        }
     }
 );
 
@@ -162,10 +176,10 @@ export const getAnnotations = createSelector(
             const thumbnailPath = data[THUMBNAIL_PATH] || "";
 
             const cellIds = filteredCellData.labels[ARRAY_OF_CELL_IDS_KEY];
-            // FileInfo is typed with `index` as optional because it gets added to the 
-            // data from the database. However, at this point, index will always be defined, but since 
+            // FileInfo is typed with `index` as optional because it gets added to the
+            // data from the database. However, at this point, index will always be defined, but since
             // typescript doesn't know that, we still have this backup to find it in the
-            // id array but that code should never be executed. 
+            // id array but that code should never be executed.
             const pointIndex =
                 data.index !== undefined ? data.index : findIndex(cellIds, (id) => id === cellID);
             const x = filteredCellData.values[xAxis][pointIndex];
@@ -188,21 +202,32 @@ export const getAnnotations = createSelector(
 
 export const composePlotlyData = createSelector(
     [getMainPlotData, getApplyColorToSelections, getSelectedGroupsData],
-    (mainPlotDataValues, applyColorToSelections, selectedGroups): any => {
+    (
+        mainPlotDataValues: ContinuousPlotData | GroupedPlotData,
+        applyColorToSelections,
+        selectedGroups
+    ): {
+        mainPlotData: ContinuousPlotData | GroupedPlotData;
+        selectedGroupPlotData: ContinuousPlotData | null;
+    } => {
         const mainPlotData = {
             ...mainPlotDataValues,
-            groupSettings: isGrouped(mainPlotDataValues)
-                ? {
-                      ...mainPlotDataValues.groupSettings,
-                  }
-                : null,
             plotName: SCATTER_PLOT_NAME,
         };
-
+        if (
+            mainPlotDataValues.dataType === DataType.GROUPED &&
+            mainPlotData.dataType === DataType.GROUPED
+        ) {
+            // NOTE: because of line 213, if one of these are true,
+            // both are true, but typescript wanted both to be checked
+            mainPlotData.groupSettings = {
+                ...mainPlotDataValues.groupSettings,
+            };
+        }
         const selectedGroupPlotData = applyColorToSelections
             ? {
                   ...selectedGroups,
-                  groupBy: false,
+                  dataType: "continuous" as DataType.CONTINUOUS,
                   plotName: SELECTIONS_PLOT_NAME,
               }
             : null;
@@ -218,7 +243,7 @@ function colorSettings(
     plotSettings: Partial<PlotData>,
     plotData: GroupedPlotData | ContinuousPlotData
 ): Partial<PlotData> {
-    if (isGrouped(plotData)) {
+    if (plotData.dataType === DataType.GROUPED) {
         return {
             ...plotSettings,
             transforms: [
@@ -257,7 +282,7 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     const plotSettings = {
         hoverinfo: "none" as const,
         ids: plotData.ids,
-        customdata: plotData.customdata,
+        customdata: plotData.customdata as any,
         marker: {
             size: GENERAL_PLOT_SETTINGS.circleRadius,
             symbol: "circle",
@@ -275,7 +300,7 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     return colorSettings(plotSettings, plotData);
 }
 
-function makeHistogramPlotX(data: number[]) {
+function makeHistogramPlotX(data: (number | null)[]) {
     return {
         marker: {
             color: GENERAL_PLOT_SETTINGS.histogramColor,
@@ -293,7 +318,8 @@ function makeHistogramPlotX(data: number[]) {
         yaxis: "y2",
     };
 }
-function makeHistogramPlotY(data: number[]) {
+
+function makeHistogramPlotY(data: (number | null)[]) {
     return {
         marker: {
             color: GENERAL_PLOT_SETTINGS.histogramColor,
@@ -312,7 +338,7 @@ function makeHistogramPlotY(data: number[]) {
     };
 }
 
-export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData) => {
+export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData): Partial<PlotData>[] => {
     const { mainPlotData, selectedGroupPlotData } = allPlotData;
     const data = [
         makeHistogramPlotX(mainPlotData.x),
@@ -347,7 +373,7 @@ export const getColorByDisplayOptions = createSelector(
     }
 );
 
-const makeNumberToTextConversion = (options: MeasuredFeaturesOptions) => {
+const makeNumberToTextConversion = (options: MeasuredFeaturesOptions): TickConversion => {
     return {
         tickText: map(options, "name"),
         tickValues: map(options, (_, key) => Number(key)),
@@ -365,7 +391,7 @@ const makeNumberAxis = (): TickConversion => {
 export const getXTickConversion = createSelector(
     [getPlotByOnX, getMeasuredFeaturesDefs],
     (plotByOnX, measuredFeaturesDefs: MeasuredFeatureDef[]): TickConversion => {
-        const feature = findFeature(measuredFeaturesDefs,  plotByOnX);
+        const feature = findFeature(measuredFeaturesDefs, plotByOnX);
         if (feature && feature.discrete) {
             return makeNumberToTextConversion(feature.options);
         }
@@ -386,8 +412,8 @@ export const getYTickConversion = createSelector(
 
 export const getDataForOverlayCard = createSelector(
     [getHoveredPointData, getGroupingCategoryNamesAsArray],
-    (pointData, categoryNames) => {
-        if (!pointData || !categoryNames.length) {
+    (pointData, categoryNames): SelectedPointData | null => {
+        if (!pointData || !categoryNames.length || pointData.index === undefined) {
             return pointData;
         }
         return {

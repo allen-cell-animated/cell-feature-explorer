@@ -1,3 +1,4 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -7,7 +8,9 @@ import {
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { FileInfo, MeasuredFeatureDef } from "../metadata/types";
+import { initialState as initialMetaData } from "../metadata/reducer";
+import { initialState as initialSelectionState } from "../selection/reducer";
+import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { INITIAL_COLORS } from "../selection/constants";
 
 export const selectedCellFileInfo: FileInfo[] = [
@@ -137,7 +140,7 @@ const measuredFeaturesDefs: MeasuredFeatureDef[] = [
         description: "description",
     },
 ];
-const featureData = {
+const featureData: DataForPlot = {
     indices: [0, 1],
     values: {
         "cell-line": [5, 7],
@@ -157,12 +160,14 @@ const INITIAL_COLOR_AND_GROUP_BY = "cell-line";
 
 export const mockState = {
     metadata: {
+        ...initialMetaData,
         cellFileInfo: fileInfo,
         featureData: featureData,
         measuredFeaturesDefs: measuredFeaturesDefs,
-        viewerChannelSettings: {},
+        viewerChannelSettings: {} as ViewerChannelSettings,
     },
     selection: {
+        ...initialSelectionState,
         colorBy: INITIAL_COLOR_AND_GROUP_BY,
         downloadConfig: {
             key: "",
@@ -173,7 +178,7 @@ export const mockState = {
         plotByOnX: "INITIAL_PLOT_BY_ON_X",
         plotByOnY: "INITIAL_PLOT_BY_ON_Y",
         defaultColors: INITIAL_COLORS,
-        selectedGroupColors: INITIAL_COLORS,
+        selectedGroupColors: {},
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,
         displayableGroups: displayableGroups,

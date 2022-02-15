@@ -4,8 +4,10 @@ import {
     uniqBy,
 } from "lodash";
 import { AnyAction } from "redux";
+import { SelectedGroups } from "..";
 
 import { CELL_ID_KEY } from "../../constants";
+import { FileInfo } from "../metadata/types";
 import { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
@@ -59,16 +61,16 @@ import {
 
 export const initialState = {
     applySelectionSetColoring: true,
-    cellSelectedFor3D: null,
+    cellSelectedFor3D: "",
     colorBy: "",
     dataset: "",
     downloadConfig: {
         key: "",
         type: "",
     },
-    filterExclude: [],
+    filterExclude: [] as string[],
     galleryCollapsed: true,
-    hoveredCardId: -1,
+    hoveredCardId: "",
     hoveredPointData: null,
     mousePosition: {
         pageX: 0,
@@ -79,11 +81,12 @@ export const initialState = {
     groupBy: "",
     defaultColors: INITIAL_COLORS,
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
+    selectedAlbumFileInfo: [] as FileInfo[],
     selectedGroupColors: {},
-    selectedGroups: {},
-    displayableGroups: [],
-    selectedPoints: [],
-    initSelectedPoints: [],
+    selectedGroups: {} as SelectedGroups,
+    displayableGroups: [] as string[],
+    selectedPoints: [] as FileInfo[],
+    initSelectedPoints: [] as string[],
     thumbnailRoot: "",
     downloadRoot: "",
     volumeViewerDataRoot: "",

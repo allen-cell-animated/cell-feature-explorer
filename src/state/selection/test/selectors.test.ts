@@ -68,8 +68,18 @@ describe("Selection selectors", () => {
                 selection: {
                     ...newMockState.selection,
                     selectedGroups: {
-                        id1: [1, 2, 3, 4],
-                        id2: [2, 3, 4, 5],
+                        id1: [
+                            { cellId: "1", pointIndex: 0 },
+                            { cellId: "2", pointIndex: 1 },
+                            { cellId: "3", pointIndex: 2 },
+                            { cellId: "4", pointIndex: 3 },
+                        ],
+                        id2: [
+                            { cellId: "2", pointIndex: 1 },
+                            { cellId: "3", pointIndex: 3 },
+                            { cellId: "4", pointIndex: 3 },
+                            { cellId: "5", pointIndex: 4 },
+                        ],
                     },
                 },
             };
@@ -93,8 +103,21 @@ describe("Selection selectors", () => {
                 selection: {
                     ...newMockState.selection,
                     selectedGroups: {
-                        id1: [1, 2, 3, 4],
-                        id2: [2, 3, 4, 5, 6, 7, 8],
+                        id1: [
+                            { cellId: "1", pointIndex: 0 },
+                            { cellId: "2", pointIndex: 1 },
+                            { cellId: "3", pointIndex: 2 },
+                            { cellId: "4", pointIndex: 3 },
+                        ],
+                        id2: [
+                            { cellId: "2", pointIndex: 1 },
+                            { cellId: "3", pointIndex: 3 },
+                            { cellId: "4", pointIndex: 3 },
+                            { cellId: "5", pointIndex: 4 },
+                            { cellId: "6", pointIndex: 5 },
+                            { cellId: "7", pointIndex: 6 },
+                            { cellId: "8", pointIndex: 7 },
+                        ],
                     },
                 },
             };

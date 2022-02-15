@@ -1,4 +1,6 @@
+import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { AnyAction } from "redux";
+import { Megaset } from "../image-dataset/types";
 import { ReceiveCellFileInfoAction } from "../selection/types";
 
 import { TypeToDescriptionMap } from "../types";
@@ -10,7 +12,7 @@ import {
     RECEIVE_AVAILABLE_DATASETS,
     RECEIVE_CELL_FILE_INFO,
     RECEIVE_MEASURED_FEATURE_DEFS,
-    RECEIVE_METADATA,
+    RECEIVE_DATA_FOR_PLOT,
     RECEIVE_VIEWER_CHANNEL_SETTINGS,
     SET_IS_LOADING,
     SET_LOADING_TEXT,
@@ -26,28 +28,30 @@ import {
     SetSmallScreenWarningAction,
     ReceiveMeasuredFeaturesAction,
     ClearAction,
+    PerCellLabels,
+    MappingOfMeasuredValuesArrays,
+    FileInfo,
 } from "./types";
 
 export const initialState = {
     albums: [],
-    cellFileInfo: [],
+    cellFileInfo: [] as FileInfo[],
     isLoading: true,
     loadingText: "",
     showSmallScreenWarning: false,
-    megasets: [],
-    measuredFeatureNames: [],
+    megasets: [] as Megaset[],
     featureData: {
-        indices: [],
-        values: {},
-        labels: {},
+        indices: [] as number[],
+        values: {} as MappingOfMeasuredValuesArrays,
+        labels: {} as PerCellLabels,
     },
     measuredFeaturesDefs: [],
-    viewerChannelSettings: undefined,
+    viewerChannelSettings: {} as ViewerChannelSettings,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [RECEIVE_METADATA]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_METADATA,
+    [RECEIVE_DATA_FOR_PLOT]: {
+        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,
@@ -59,7 +63,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
             ...state,
             cellFileInfo: initialState.cellFileInfo,
             isLoading: initialState.isLoading,
-            measuredFeatureNames: initialState.measuredFeatureNames,
             featureData: initialState.featureData,
             measuredFeaturesDefs: initialState.measuredFeaturesDefs,
             viewerChannelSettings: initialState.viewerChannelSettings,

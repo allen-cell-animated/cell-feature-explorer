@@ -1,7 +1,35 @@
+import { SelectedGroups } from "..";
 import {
     CELL_ID_KEY,
 } from "../../constants";
-import { FileInfo, MetadataStateBranch } from "../metadata/types";
+import { FileInfo } from "../metadata/types";
+
+export interface SelectionStateBranch {
+    applySelectionSetColoring: boolean;
+    cellSelectedFor3D: string;
+    colorBy: string;
+    dataset: string;
+    downloadConfig: DownloadConfig;
+    filterExclude: string[];
+    galleryCollapsed: boolean;
+    hoveredCardId: string;
+    hoveredPointData: SelectedPointData | null;
+    mousePosition: MousePosition;
+    plotByOnX: string;
+    plotByOnY: string;
+    groupBy: string;
+    defaultColors: string[];
+    selectedAlbum: number;
+    selectedGroupColors: { [key: string]: string };
+    selectedGroups: SelectedGroups;
+    selectedAlbumFileInfo: FileInfo[];
+    displayableGroups: string[];
+    selectedPoints: FileInfo[];
+    initSelectedPoints: string[];
+    thumbnailRoot: string;
+    downloadRoot: string;
+    volumeViewerDataRoot: string;
+}
 
 export interface CellDataArrays {
     [key: string]: number[] | FileInfo[] | string[];
@@ -17,10 +45,6 @@ export interface MousePosition {
     pageY: number;
 }
 
-export interface SelectionStateBranch {
-    [key: string]: any;
-}
-
 export interface LassoOrBoxSelectPointData {
     pointIndex: number;
     cellId: string;
@@ -32,7 +56,7 @@ export interface LassoOrBoxSelectAction {
 }
 
 export interface SelectAxisAction {
-    axisId: keyof MetadataStateBranch;
+    axisId: string;
     payload: string;
     type: string;
 }
@@ -82,7 +106,8 @@ export interface SelectedPointData {
     [CELL_ID_KEY]: string;
     index: number;
     thumbnailPath: string;
-}
+    groupBy?: string;
+}   
 
 export interface ChangeHoveredPointAction {
     payload: SelectedPointData;

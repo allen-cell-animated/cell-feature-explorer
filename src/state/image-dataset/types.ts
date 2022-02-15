@@ -55,7 +55,7 @@ export interface ImageDataset {
     selectDataset(manifest: any): Promise<InitialDatasetSelections>;
     getAvailableDatasets(): Promise<Megaset[]>;
     getViewerChannelSettings(): Promise<ViewerChannelSettings>;
-    getFeatureData(): Promise<DataForPlot>;
+    getFeatureData(): Promise<DataForPlot | void>;
     getAlbumData(): Promise<Album[]>;
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
