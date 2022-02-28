@@ -1,4 +1,4 @@
-name: Deploy AWS
+name: Manual Deploy Staging AWS
 env: 
   NODE_VERSION: '12.x'
 on:
