@@ -62,7 +62,12 @@ jobs:
         with:
           node-version: ${{env.NODE_VERSION}}
       - run: npm ci 
-      - run: npm run build USE_DEV_DB=${{ github.event.inputs.use_staging_db }}
+      - name: Staging Database
+        if: ${{ github.event.inputs.use_staging_db == true }}
+        run: npm run staging-db-build
+      - name: Production Database
+        if: ${{ github.event.inputs.use_staging_db == false }}
+        run: npm run build     
       - name: Copy files to staging bucket
         run: aws s3 sync ./dist/ s3://staging.cfe.allencell.org --delete
 

@@ -2,7 +2,6 @@ const path = require("path");
 
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -21,30 +20,6 @@ const BASE_PLUGINS = [
         },
     }),
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
-        patterns: [
-            {
-                from: path.resolve(__dirname, "../src/data", "cell_feature_analysis.json"),
-                to: "data",
-            },
-            {
-                from: path.resolve(__dirname, "../src/data", "feature_defs.json"),
-                to: "data",
-            },
-            {
-                from: path.resolve(__dirname, "../src/data", "cell-line-def.json"),
-                to: "data",
-            },
-            {
-                from: path.resolve(__dirname, "../src/data", "albums.json"),
-                to: "data",
-            },
-            {
-                from: path.resolve(__dirname, "../src/images"),
-                to: "images",
-            },
-        ],
-    }),
     new MiniCssExtractPlugin({
         filename: "style.[contenthash].css",
     }),
