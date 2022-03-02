@@ -47,7 +47,6 @@ export const getDisplayableGroups = createSelector(
                 displayable.add(categoryNames[i]);
             }
         }
-        console.log(displayable);
         return [...displayable];
     }
 );
