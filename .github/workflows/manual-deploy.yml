@@ -7,7 +7,7 @@ on:
       use_staging_db:
         description: 'Deploy with staging db'     
         required: true
-        default: false
+        default: 'false'
 
 jobs:
   lint:
@@ -63,10 +63,10 @@ jobs:
           node-version: ${{env.NODE_VERSION}}
       - run: npm ci 
       - name: Staging Database
-        if: ${{ github.event.inputs.use_staging_db }} == true
+        if: ${{ github.event.inputs.use_staging_db == 'true' }}
         run: npm run staging-db-build
       - name: Production Database
-        if: ${{ github.event.inputs.use_staging_db }} == false
+        if: ${{ github.event.inputs.use_staging_db == 'false' }}
         run: npm run build     
       - name: Copy files to staging bucket
         run: aws s3 sync ./dist/ s3://staging.cfe.allencell.org --delete
