@@ -72,7 +72,7 @@ describe("ColorByMenu selectors", () => {
             // "Alpha-actinin-1" and "Paxillin" cell lines in the mock data
             // if this test fails, check that the mock data hasn't changed
             const actin = find(result, { id: "Alpha-actinin-1" });
-            const paxillin = find(result, { id: "Alpha-actinin-1" });
+            const paxillin = find(result, { id: "Paxillin" });
             const tom20 = find(result, { id: "Tom20" });
 
             expect(actin?.disabled).to.be.false;
