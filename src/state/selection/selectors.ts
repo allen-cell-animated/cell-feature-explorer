@@ -75,7 +75,6 @@ export const getSelectedAlbumFileInfo = (state: State): FileInfo[] =>
 export const getDownloadRoot = (state: State): string => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State): string =>
     state.selection.volumeViewerDataRoot;
-export const getDisplayableGroups = (state: State): string[] => state.selection.displayableGroups;
 
 export const getSelectedDatasetName = createSelector(
     [getSelectedDataset],
