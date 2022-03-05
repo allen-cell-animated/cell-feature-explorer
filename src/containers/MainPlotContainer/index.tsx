@@ -28,7 +28,6 @@ import {
     LassoOrBoxSelectPointData,
     SelectPointAction,
     TickConversion,
-    SetDisplayableGroupsAction,
     SelectedPointData,
 } from "../../state/selection/types";
 import { Annotation, State } from "../../state/types";
@@ -62,9 +61,6 @@ interface PropsFromState {
     xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
-    xValues: (number | null)[];
-    yValues: (number | null)[];
-    categoryNames: string[];
 }
 
 interface DispatchProps {
@@ -76,7 +72,6 @@ interface DispatchProps {
     updateMousePosition: ActionCreator<ChangeMousePositionAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
     requestCellFileInfoData: ActionCreator<RequestAction>;
-    setDisplayableGroups: ActionCreator<SetDisplayableGroupsAction>;
 }
 
 interface PropsFromApp {
@@ -98,27 +93,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
     }
 
     private thumbnailTimeout = 0;
-
-    public componentDidUpdate(prevProps: MainPlotContainerProps) {
-        const { xDropDownValue, yDropDownValue, xValues } = this.props;
-        const isPlotPopulated = prevProps.xValues.length === 0 && xValues.length > 0;
-        const isAxisChanged = prevProps.xDropDownValue !== xDropDownValue || prevProps.yDropDownValue !== yDropDownValue;
-        if (isPlotPopulated || isAxisChanged) {
-            this.updateChecklistItems();
-        }
-    }
-
-    private updateChecklistItems() {
-        const { xValues, yValues, categoryNames } = this.props;
-        // Could memoize this if performance becomes an issue
-        const displayable = new Set<string>();
-        for (let i = 0; i < xValues.length; i++) {
-            if (xValues[i] !== null && yValues[i] !== null) {
-                displayable.add(categoryNames[i]);
-            }
-        }
-        this.props.setDisplayableGroups([...displayable]);
-    }
 
     // TODO: retype once plotly has id and fullData types
     public onPointClicked(clicked: any) {
@@ -304,9 +278,6 @@ function mapStateToProps(state: State): PropsFromState {
         yDropDownOptions: getYDisplayOptions(state),
         yDropDownValue: selectionStateBranch.selectors.getPlotByOnY(state),
         yTickConversion: getYTickConversion(state),
-        xValues: selectionStateBranch.selectors.getXValues(state),
-        yValues: selectionStateBranch.selectors.getYValues(state),
-        categoryNames: selectionStateBranch.selectors.getGroupingCategoryNamesAsArray(state),
     };
 }
 
@@ -319,7 +290,6 @@ const dispatchToPropsMap: DispatchProps = {
     requestCellFileInfoData: metadataStateBranch.actions.requestCellFileInfoData,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
     updateMousePosition: selectionStateBranch.actions.changeMousePosition,
-    setDisplayableGroups: selectionStateBranch.actions.setDisplayableGroups,
 };
 
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(

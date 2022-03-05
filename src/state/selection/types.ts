@@ -23,7 +23,6 @@ export interface SelectionStateBranch {
     selectedGroupColors: { [key: string]: string };
     selectedGroups: SelectedGroups;
     selectedAlbumFileInfo: FileInfo[];
-    displayableGroups: string[];
     selectedPoints: FileInfo[];
     initSelectedPoints: string[];
     thumbnailRoot: string;
@@ -166,11 +165,6 @@ export interface SetHoveredCardAction {
 };
 
 export interface ClearDatasetAction {
-    type: string;
-}
-
-export interface SetDisplayableGroupsAction {
-    payload: string[];
     type: string;
 }
 

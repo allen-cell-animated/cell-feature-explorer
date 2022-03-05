@@ -8,7 +8,11 @@ import {
     OFF_COLOR,
 } from "../../constants/index";
 import { getLabelsPerCell } from "../../state/metadata/selectors";
-import { MappingOfMeasuredValuesArrays, MeasuredFeatureDef, MeasuredFeaturesOption } from "../../state/metadata/types";
+import {
+    MappingOfMeasuredValuesArrays,
+    MeasuredFeatureDef,
+    MeasuredFeaturesOption,
+} from "../../state/metadata/types";
 import {
     getApplyColorToSelections,
     getColorBySelection,
@@ -19,18 +23,33 @@ import {
     getSelectedGroups,
     getSelectedSetTotals,
     getSelectionSetColors,
-    getDisplayableGroups,
     getGroupingCategoryNames,
     getGroupByFeatureOptionsAsList,
     getGroupByCategory,
     getCategoryGroupColorsAndNames,
     getGroupByFeatureDef,
     getGroupingCategoryNamesAsArray,
+    getYValues,
+    getXValues,
 } from "../../state/selection/selectors";
 import { ColorForPlot, LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
+
+export const getDisplayableGroups = createSelector(
+    [getXValues, getYValues, getGroupingCategoryNamesAsArray],
+    (xValues, yValues, categoryNames): string[] => {
+        // Could memoize this if performance becomes an issue
+        const displayable = new Set<string>();
+        for (let i = 0; i < xValues.length; i++) {
+            if (xValues[i] !== null && yValues[i] !== null) {
+                displayable.add(categoryNames[i]);
+            }
+        }
+        return [...displayable];
+    }
+);
 
 export const getGroupByTitle = createSelector(
     [getGroupByFeatureDef],

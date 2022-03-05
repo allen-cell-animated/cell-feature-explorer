@@ -90,7 +90,7 @@ export function findFeature(features: MeasuredFeatureDef[], searchKey: string) {
 export function getCategoryString(
     groupByFeatureDef: DiscreteMeasuredFeatureDef,
     optionKey?: string
-) {
+): string {
     if (!optionKey) {
         return "";
     }

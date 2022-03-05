@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { find } from "lodash";
 
 import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
 import { mockState } from "../../../state/test/mocks";
@@ -48,51 +49,51 @@ describe("ColorByMenu selectors", () => {
     });
 
     describe("getInteractivePanelData", () => {
-        it("returns an set of props for each category in state", () => {
+        it("returns an array where each item is of type PanelData", () => {
             const result: PanelData[] = getInteractivePanelData(newMockState);
-            const data = [
-                {
-                    checked: true,
-                    color: "#FF96FF",
-                    disabled: false,
-                    id: "Alpha-actinin-1",
-                    name: "Actin filaments",
-                    total: 1,
+            const requiredKeys = ["color", "id", "name", "total"];
+            const allKeys = [...requiredKeys, "disabled", "checked"];
+            // make sure each element has required keys
+            result.forEach((ele: PanelData) => {
+                requiredKeys.forEach((key: string) => {
+                    expect(ele.hasOwnProperty(key)).to.be.true;
+                });
+            });
+
+            // make sure there are no extra keys
+            result.forEach((ele: PanelData) => {
+                Object.keys(ele).forEach((key: string) => {
+                    expect(allKeys.indexOf(key)).to.be.greaterThan(-1);
+                });
+            });
+        });
+        it("returns disabled === false for any category that has data", () => {
+            const result: PanelData[] = getInteractivePanelData(newMockState);
+            // "Alpha-actinin-1" and "Paxillin" cell lines in the mock data
+            // if this test fails, check that the mock data hasn't changed
+            const actin = find(result, { id: "Alpha-actinin-1" });
+            const paxillin = find(result, { id: "Paxillin" });
+            const tom20 = find(result, { id: "Tom20" });
+
+            expect(actin?.disabled).to.be.false;
+            expect(paxillin?.disabled).to.be.false;
+            expect(tom20?.disabled).to.be.true;
+
+        });
+        it("returns disabled === true if that category isn't represented the plot", () => {
+            const state = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX:  "missing-data",
                 },
-                {
-                    checked: true,
-                    color: "#6e6e6e",
-                    disabled: true,
-                    id: "Sec61 beta",
-                    name: "Endoplasmic reticulum",
-                    total: 0,
-                },
-                {
-                    checked: true,
-                    color: "#77207C",
-                    disabled: false,
-                    id: "Paxillin",
-                    name: "Matrix adhesions",
-                    total: 1,
-                },
-                {
-                    checked: true,
-                    color: "#6e6e6e",
-                    disabled: true,
-                    id: "Alpha-tubulin",
-                    name: "Microtubules",
-                    total: 0,
-                },
-                {
-                    checked: true,
-                    color: "#6e6e6e",
-                    disabled: true,
-                    id: "Tom20",
-                    name: "Mitochondria",
-                    total: 0,
-                },
-            ];
-            expect(result).to.deep.equal(data);
+            };
+            // "missing data" is missing for all points, so no category should be 
+            // enabled
+            const result: PanelData[] = getInteractivePanelData(state);
+            result.forEach(ele => {
+                expect(ele.disabled).to.be.true
+            })
         });
     });
 

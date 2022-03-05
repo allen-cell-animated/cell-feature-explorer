@@ -75,7 +75,6 @@ export const getSelectedAlbumFileInfo = (state: State): FileInfo[] =>
 export const getDownloadRoot = (state: State): string => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State): string =>
     state.selection.volumeViewerDataRoot;
-export const getDisplayableGroups = (state: State): string[] => state.selection.displayableGroups;
 
 export const getSelectedDatasetName = createSelector(
     [getSelectedDataset],
@@ -204,11 +203,11 @@ export const getGroupingCategoryNamesAsArray = createSelector(
      * ["beta-actin", "beta-actin", "tom20", "tom20"]
      */
     [getPerCellDataForPlot, getGroupByFeatureDef],
-    (perCellDataForPlot, groupByCategoryFeatureDef): string[] => {
-        const categoryKey = groupByCategoryFeatureDef.key;
-
-        return map(perCellDataForPlot.values[categoryKey], (ele) => {
-            return getCategoryString(groupByCategoryFeatureDef, ele ? ele.toString() : "");
+    (perCellDataForPlot: DataForPlot, groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef): string[] => {
+        const categoryKey: string = groupByCategoryFeatureDef.key;
+        return map(perCellDataForPlot.values[categoryKey], (ele: (number | null)): string => {
+            const numeralRepresentationOfTheCategory = ele !== null ? ele.toString() : "";
+            return getCategoryString(groupByCategoryFeatureDef, numeralRepresentationOfTheCategory);
         });
     }
 );
