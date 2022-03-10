@@ -11,6 +11,10 @@
     width: initial !important;
 }
 
+.container {
+    height: 100vh;
+}
+
 .wrapper.is-loading {
     overflow: hidden;
     height: 100vh;
