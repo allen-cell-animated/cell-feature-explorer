@@ -50,13 +50,6 @@
     margin: 0;
 }
 
-/* TODO: remove this */
-.header-section {
-    text-align: center;
-    border-top: 0.5px solid var(--dimgray);
-    border-bottom: 0.5px solid var(--dimgray);
-}
-
 :global(.ant-menu-horizontal) {
     border-bottom: 1px solid var(--border-gray);
 }
