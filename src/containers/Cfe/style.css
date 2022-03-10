@@ -11,6 +11,7 @@
 
 .content {
     flex: 2;
+    background-color: black;
 }
 
 .blur {
