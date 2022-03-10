@@ -4,19 +4,7 @@
 
 ## Description
 
-Main features in a brief descriptive text.
-
-## Installation
-
-
-## Structure
-src/<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[components/](src/components/README.md)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[constants/](src/constants/README.md)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[containers/](src/containers/README.md)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[state/](src/state/README.md)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;[styles/](src/styles/README.md)<br/>
-___
+The Cell Feature Explorer is an online tool to access our complete database of segmented and processed cells as curated datasets. We have annotated each of our cells with measured features, such as cellular volume and what stage of mitosis it is in. The tool is composed of a plot and a 3D viewer. In the plot each cell is graphed by its measured features described in our journal publications. To access older data sets, see our Data Downloading page.
 
 ## Documentation
 For making a dataset that can be read by the Cell Feature Explorer visit the
