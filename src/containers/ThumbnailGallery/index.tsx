@@ -272,7 +272,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         return (
             <div id="gallery" className={styles.container}>
                 <div className={styles.galleryHeader}>
-                    <h3>Gallery</h3>
+                    <h2>Gallery</h2>
                 </div>
                 <List
                     itemLayout="horizontal"

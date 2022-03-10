@@ -5,10 +5,10 @@
 }
 
 .container {
-
     padding: 0em 1em;
     flex-flow: row;
 }
+
 .gallery-header {
     margin: auto;
     padding: 1em 1em 1em 0em;
@@ -23,6 +23,10 @@
     &  :global(.ant-form-item) {
              margin: auto;
     }
+}
+
+.gallery-header > h2 {
+    font-size: 19px;
 }
 
 .side-bar-header {
