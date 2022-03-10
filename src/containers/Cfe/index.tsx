@@ -1,4 +1,4 @@
-import { Affix, Layout } from "antd";
+import { Affix, Layout, Menu } from "antd";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
@@ -104,9 +104,14 @@ class Cfe extends React.Component<CfeProps> {
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <Header className={styles.headerSection}>
-                        <h2>Plot</h2>
-                    </Header>
+                    <Menu className={styles.tabbedMenu} mode="horizontal">
+                        <Menu.Item key="plot">
+                            Plot
+                        </Menu.Item>
+                        <Menu.Item key="3d-viewer">
+                            3D Viewer
+                        </Menu.Item>
+                    </Menu>
                     <Layout>
                         <SmallScreenWarning
                             handleClose={this.handleClose}
