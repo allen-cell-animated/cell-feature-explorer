@@ -29,6 +29,24 @@ Typical steps to contribute:
 
 4. Submit a pull request to merge your fork's branch into this repository, via GitHub.
 
+
+### Deployment
+Once built, Webpack outputs (e.g., index.html, JS and CSS files) are put into a tar archive, gzipped, and stored in
+Artifactory in the `maven-snapshot-local` repo. From there, deployments involve: a) pulling a particular artifact (referenced by git tag) out of Artifactory
+and b) copying the contents of the artifact to an S3 website bucket. For both staging and production deployments, these 
+steps are captured in this project's Jenkinsfile and can be executed by setting the proper parameters for the Jenkins build.
+
+#### Staging deployment
+Automatically builds from `main`, can also be manually triggered on Jenkins
+
+#### Production deployment
+On `main` branch
+1. Make a new version: `npm version [patch/minor/major]`
+2. Push the new package.json version: `git push origin main`
+3. Push the new tag: `git push origin [NEW_TAG]`
+
+This will trigger a github workflow which copies the assets from the staging bucket into the production bucket.
+
 ## Questions or Thoughts?
 
 Talk to us on [one of our community forums][community].
