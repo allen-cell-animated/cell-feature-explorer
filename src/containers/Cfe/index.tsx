@@ -1,4 +1,5 @@
 import { Affix, Layout, Menu } from "antd";
+import { ClickParam } from "antd/lib/menu";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
@@ -15,7 +16,7 @@ import ThumbnailGallery from "../ThumbnailGallery";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
-const { Content, Header, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
@@ -38,6 +39,7 @@ class Cfe extends React.Component<CfeProps> {
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
         width: window.innerWidth,
+        currentTab: "plot"
     };
 
     public componentDidMount = () => {
@@ -74,6 +76,10 @@ class Cfe extends React.Component<CfeProps> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     };
 
+    private handleTabClick = (event: ClickParam) => {
+        this.setState({ currentTab: event.key });
+    }
+
     public render() {
         const {
             galleryCollapsed,
@@ -104,7 +110,12 @@ class Cfe extends React.Component<CfeProps> {
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <Menu className={styles.tabbedMenu} mode="horizontal">
+                    <Menu 
+                        className={styles.tabbedMenu}
+                        onClick={this.handleTabClick}
+                        selectedKeys={[this.state.currentTab]}
+                        mode="horizontal"
+                    >
                         <Menu.Item key="plot">
                             Plot
                         </Menu.Item>
@@ -118,30 +129,46 @@ class Cfe extends React.Component<CfeProps> {
                             onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                             visible={showSmallScreenWarning}
                         />
-                        <Sider
-                            className={styles.colorMenu}
-                            width={450}
-                            collapsible={false}
-                            collapsedWidth={250}
-                        >
-                            <ColorByMenu
-                                panelKeys={Cfe.panelKeys}
-                                openKeys={openKeys}
-                                defaultActiveKey={defaultActiveKey}
-                                onPanelClicked={this.onPanelClicked}
-                            />
-                        </Sider>
-                        <Content className={styles.content}>
-                            <div className={styles.plotView}>
-                                <MainPlotContainer
-                                    handleSelectionToolUsed={this.onSelectionToolUsed}
+                        {this.state.currentTab === "plot" &&
+                            <Sider
+                                className={styles.colorMenu}
+                                width={450}
+                                collapsible={false}
+                                collapsedWidth={250}
+                            >
+                                <ColorByMenu
+                                    panelKeys={Cfe.panelKeys}
+                                    openKeys={openKeys}
+                                    defaultActiveKey={defaultActiveKey}
+                                    onPanelClicked={this.onPanelClicked}
                                 />
-                            </div>
+                            </Sider>
+                        }
+                        <Content className={styles.content}>
+                            {this.state.currentTab === "3d-viewer" && viewerHeader.cellId ? 
+                                <div>
+                                    <h4 className={styles.selectedInfo}>
+                                        <span className={styles.label}>Viewing cell:</span>{" "}
+                                        {viewerHeader.cellId},{" "}
+                                        <span className={styles.label}>{viewerHeader.label}:</span>{" "}
+                                        {viewerHeader.value}
+                                    </h4>
+                                    <CellViewer {...volumeViewerProps} />
+                                </div>
+                                :
+                                <div className={styles.plotView}>
+                                    <MainPlotContainer
+                                        handleSelectionToolUsed={this.onSelectionToolUsed}
+                                    />
+                                </div>
+                            }
                         </Content>
-                        {/* spacer for the gallery overlay */}
-                        <Sider width={120} />
+                        {this.state.currentTab === "plot" &&
+                            /* spacer for the gallery overlay */
+                            < Sider width={120} />
+                        }
                     </Layout>
-                    <div className={styles.cellViewerContainer}>
+                    {/* <div className={styles.cellViewerContainer}>
                         <Header className={styles.headerSection}>
                             <h2 className={styles.header}>3D Viewer</h2>
                             {viewerHeader.cellId && (
@@ -154,7 +181,7 @@ class Cfe extends React.Component<CfeProps> {
                             )}
                         </Header>
                         <CellViewer {...volumeViewerProps} />
-                    </div>
+                    </div> */}
                 </Layout>
             </Layout>
         );
