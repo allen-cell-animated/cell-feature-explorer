@@ -151,7 +151,10 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
 
         return annotations.map((point, index) => {
             const lastOne = index + 1 === annotations.length;
-            const show = lastOne && this.state.showFullAnnotation;
+            // FIXME: There's probably a better way to prevent this.state being
+            // undefined here and crashing the app, but this is a quick fix to get
+            // the tabbed view working.
+            const show = this.state ? lastOne && this.state.showFullAnnotation : false;
             const hasText = !!show || !!point.hovered;
             return {
                 align: "left",
