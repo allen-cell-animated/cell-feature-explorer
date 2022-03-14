@@ -1,5 +1,9 @@
 @import "../../styles/colors.css";
 
+.hidden {
+    display: none;
+}
+
 :global(.ant-affix) {
     z-index: 100;
 }
