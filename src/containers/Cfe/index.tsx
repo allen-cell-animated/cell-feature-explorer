@@ -106,6 +106,7 @@ class Cfe extends React.Component<CfeProps> {
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
                             toggleGallery={toggleGallery}
+                            openViewerTab={() => this.setState({currentTab: "3d-viewer"})}
                         />
                     </Sider>
                 </Affix>

@@ -63,6 +63,7 @@ interface OwnProps {
     collapsed: boolean;
     mitoticStage?: number;
     toggleGallery: (value: boolean) => void;
+    openViewerTab: () => void;
 }
 
 type ThumbnailGalleryProps = PropsFromState & DispatchProps & OwnProps;
@@ -194,6 +195,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         const { handleOpenIn3D } = this.props;
         window.setTimeout(this.scrollGallery, 3000);
         this.closeGallery();
+        this.props.openViewerTab();
         return handleOpenIn3D(cellId);
     }
 
