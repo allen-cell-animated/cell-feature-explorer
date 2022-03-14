@@ -130,16 +130,14 @@ class Cfe extends React.Component<CfeProps> {
                         />
                         {this.state.currentTab === "3d-viewer" && viewerHeader.cellId ? 
                             <Content className={styles.content}>
-                                <>
-                                    {/* TODO: bring this back in the right position */}
-                                    {/* <h4 className={styles.selectedInfo}>
-                                            <span className={styles.label}>Viewing cell:</span>{" "}
-                                            {viewerHeader.cellId},{" "}
-                                            <span className={styles.label}>{viewerHeader.label}:</span>{" "}
-                                            {viewerHeader.value}
-                                        </h4> */}
-                                    <CellViewer {...volumeViewerProps} />
-                                </>
+                                {/* TODO: bring this back in the right position */}
+                                {/* <h4 className={styles.selectedInfo}>
+                                        <span className={styles.label}>Viewing cell:</span>{" "}
+                                        {viewerHeader.cellId},{" "}
+                                        <span className={styles.label}>{viewerHeader.label}:</span>{" "}
+                                        {viewerHeader.value}
+                                    </h4> */}
+                                <CellViewer {...volumeViewerProps} />
                             </Content>
                             :
                             <PlotTab/>
