@@ -1,0 +1,18 @@
+@import "../../styles/colors.css";
+
+.content {
+    flex: 2;
+    background-color: black;
+}
+
+.color-menu {
+    min-height: 80vh;
+}
+
+.color-menu :global(.ant-collapse) {
+    border-top: 0;
+    border-left: 0;
+}
+.color-menu :global(.ant-layout-sider-trigger) {
+    position: inherit;
+}

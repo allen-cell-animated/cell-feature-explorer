@@ -102,17 +102,6 @@
     border-radius: 0;
 }
 
-.color-menu {
-    min-height: 80vh;
-}
-
-.color-menu :global(.ant-collapse) {
-    border-top: 0;
-    border-left: 0;
-}
-.color-menu :global(.ant-layout-sider-trigger) {
-    position: inherit;
-}
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger){
     width: 20px !important;
     height: 100%;

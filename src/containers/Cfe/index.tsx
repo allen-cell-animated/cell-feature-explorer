@@ -6,13 +6,12 @@ import { ActionCreator, connect } from "react-redux";
 
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
-import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
-import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
+import PlotTab from "../../components/PlotTab";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
@@ -89,7 +88,6 @@ class Cfe extends React.Component<CfeProps> {
             showSmallScreenWarning,
         } = this.props;
 
-        const { openKeys, defaultActiveKey } = this.state;
         return (
             <Layout>
                 <Affix>
@@ -130,44 +128,21 @@ class Cfe extends React.Component<CfeProps> {
                             onDismissCheckboxChecked={this.onDismissCheckboxChecked}
                             visible={showSmallScreenWarning}
                         />
-                        {this.state.currentTab === "plot" &&
-                            <Sider
-                                className={styles.colorMenu}
-                                width={450}
-                                collapsible={false}
-                                collapsedWidth={250}
-                            >
-                                <ColorByMenu
-                                    panelKeys={Cfe.panelKeys}
-                                    openKeys={openKeys}
-                                    defaultActiveKey={defaultActiveKey}
-                                    onPanelClicked={this.onPanelClicked}
-                                />
-                            </Sider>
-                        }
-                        <Content className={styles.content}>
-                            {this.state.currentTab === "3d-viewer" && viewerHeader.cellId ? 
+                        {this.state.currentTab === "3d-viewer" && viewerHeader.cellId ? 
+                            <Content className={styles.content}>
                                 <>
                                     {/* TODO: bring this back in the right position */}
                                     {/* <h4 className={styles.selectedInfo}>
-                                        <span className={styles.label}>Viewing cell:</span>{" "}
-                                        {viewerHeader.cellId},{" "}
-                                        <span className={styles.label}>{viewerHeader.label}:</span>{" "}
-                                        {viewerHeader.value}
-                                    </h4> */}
+                                            <span className={styles.label}>Viewing cell:</span>{" "}
+                                            {viewerHeader.cellId},{" "}
+                                            <span className={styles.label}>{viewerHeader.label}:</span>{" "}
+                                            {viewerHeader.value}
+                                        </h4> */}
                                     <CellViewer {...volumeViewerProps} />
                                 </>
-                                :
-                                <div className={styles.plotView}>
-                                    <MainPlotContainer
-                                        handleSelectionToolUsed={this.onSelectionToolUsed}
-                                    />
-                                </div>
-                            }
-                        </Content>
-                        {this.state.currentTab === "plot" &&
-                            /* spacer for the gallery overlay */
-                            < Sider width={120} />
+                            </Content>
+                            :
+                            <PlotTab/>
                         }
                     </Layout>
                 </Layout>
