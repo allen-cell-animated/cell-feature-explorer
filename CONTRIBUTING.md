@@ -29,6 +29,22 @@ Typical steps to contribute:
 
 4. Submit a pull request to merge your fork's branch into this repository, via GitHub.
 
+
+### Deployment
+
+#### Staging deployment
+Automatically builds from `main`, can also be manually triggered on github actions. 
+Optional input for pointing the staging build at the non production database. But will 
+default to the production database on automatic builds. 
+
+#### Production deployment
+On `main` branch
+1. Make a new version: `npm version [patch/minor/major]`
+2. Push the new package.json version: `git push origin main`
+3. Push the new tag: `git push origin [NEW_TAG]`
+
+This will trigger a github workflow which copies the assets from the staging bucket into the production bucket.
+
 ## Questions or Thoughts?
 
 Talk to us on [one of our community forums][community].
