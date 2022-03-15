@@ -32,9 +32,17 @@ interface CfeProps {
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
-class Cfe extends React.Component<CfeProps> {
+interface CfeState {
+    defaultActiveKey: string[];
+    dontShowSmallScreenWarningAgain: boolean;
+    openKeys: string[];
+    width: number;
+    currentTab: string;
+}
+
+class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
-    public state = {
+    public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
@@ -47,6 +55,15 @@ class Cfe extends React.Component<CfeProps> {
         this.props.setShowSmallScreenWarning(window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT);
         window.addEventListener("resize", this.updateDimensions);
     };
+
+    public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
+        const { currentTab } = this.state;
+        if (prevState.currentTab !== currentTab && currentTab === "3d-viewer") {
+            // Need to manually trigger events that depend on the window resizing,
+            // otherwise the 3D viewer canvas will have 0 height and 0 width.
+            window.dispatchEvent(new Event('resize'));
+        }
+    }
 
     public updateDimensions = () => {
         if (window.innerWidth === this.state.width) {
