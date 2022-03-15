@@ -1,5 +1,9 @@
 @import "../../styles/colors.css";
 
+.hidden {
+    display: none;
+}
+
 .content {
     flex: 2;
     background-color: black;

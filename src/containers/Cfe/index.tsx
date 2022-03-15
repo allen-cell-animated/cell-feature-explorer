@@ -3,6 +3,7 @@ import { ClickParam } from "antd/lib/menu";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
+import classNames from "classnames";
 
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
@@ -38,6 +39,7 @@ class Cfe extends React.Component<CfeProps> {
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
         width: window.innerWidth,
+        // FIXME: use symbolic constant
         currentTab: "plot"
     };
 
@@ -87,6 +89,15 @@ class Cfe extends React.Component<CfeProps> {
             volumeViewerProps,
             showSmallScreenWarning,
         } = this.props;
+        const { currentTab } = this.state;
+
+        const viewerClassNames = classNames([
+            styles.content, 
+            {[styles.hidden]: currentTab !== "3d-viewer"}
+        ]);
+        const plotClassNames = classNames([
+            {[styles.hidden]: currentTab === "3d-viewer"}
+        ]);
 
         return (
             <Layout>
@@ -122,27 +133,24 @@ class Cfe extends React.Component<CfeProps> {
                             3D Viewer
                         </Menu.Item>
                     </Menu>
-                    <Layout>
-                        <SmallScreenWarning
-                            handleClose={this.handleClose}
-                            onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                            visible={showSmallScreenWarning}
-                        />
-                        {this.state.currentTab === "3d-viewer" && viewerHeader.cellId ? 
-                            <Content className={styles.content}>
-                                {/* TODO: bring this back in the right position */}
-                                {/* <h4 className={styles.selectedInfo}>
-                                        <span className={styles.label}>Viewing cell:</span>{" "}
-                                        {viewerHeader.cellId},{" "}
-                                        <span className={styles.label}>{viewerHeader.label}:</span>{" "}
-                                        {viewerHeader.value}
-                                    </h4> */}
-                                <CellViewer {...volumeViewerProps} />
-                            </Content>
-                            :
-                            <PlotTab/>
-                        }
+                    <SmallScreenWarning
+                        handleClose={this.handleClose}
+                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                        visible={showSmallScreenWarning}
+                    />
+                    <Layout className={plotClassNames}>
+                        <PlotTab />
                     </Layout>
+                    <Content className={viewerClassNames}>
+                        {/* TODO: bring this back in the right position */}
+                        {/* <h4 className={styles.selectedInfo}>
+                                <span className={styles.label}>Viewing cell:</span>{" "}
+                                {viewerHeader.cellId},{" "}
+                                <span className={styles.label}>{viewerHeader.label}:</span>{" "}
+                                {viewerHeader.value}
+                            </h4> */}
+                        <CellViewer {...volumeViewerProps} />
+                    </Content>
                 </Layout>
             </Layout>
         );
