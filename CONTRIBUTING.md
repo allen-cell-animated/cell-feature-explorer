@@ -31,13 +31,11 @@ Typical steps to contribute:
 
 
 ### Deployment
-Once built, Webpack outputs (e.g., index.html, JS and CSS files) are put into a tar archive, gzipped, and stored in
-Artifactory in the `maven-snapshot-local` repo. From there, deployments involve: a) pulling a particular artifact (referenced by git tag) out of Artifactory
-and b) copying the contents of the artifact to an S3 website bucket. For both staging and production deployments, these 
-steps are captured in this project's Jenkinsfile and can be executed by setting the proper parameters for the Jenkins build.
 
 #### Staging deployment
-Automatically builds from `main`, can also be manually triggered on Jenkins
+Automatically builds from `main`, can also be manually triggered on github actions. 
+Optional input for pointing the staging build at the non production database. But will 
+default to the production database on automatic builds. 
 
 #### Production deployment
 On `main` branch
