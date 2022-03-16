@@ -66,6 +66,7 @@
     margin-top: 7px;
     margin-left: 30px;
     padding: 0 10px;
+    color: #ffffff;
 }
 
 :global(.ant-menu-horizontal > .ant-menu-item), :global(.ant-menu-horizontal > .ant-menu-submenu) {
@@ -81,7 +82,7 @@
 :global(.ant-menu-horizontal > .ant-menu-item-selected),
 :global(.ant-menu-horizontal > .ant-menu-submenu-selected)
 {
-  border-bottom: 3px solid #f3eefb;
+  border-bottom: 3px solid #ffffff;
 }
 
 :global(.allencell-header) {
