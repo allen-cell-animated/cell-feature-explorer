@@ -71,6 +71,9 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             wrapper.className = "image-info-wrapper";
             if (parent) {
                 parent.appendChild(wrapper);
+                // FIXME: the CSS Modules class names here aren't working, probably
+                // need to turn them into regular class names and use global selectors
+                // in the stylesheet.
                 wrapper.innerHTML = `
                     <h4 className=${styles.selectedInfo}>
                         <span className=${styles.label}>Viewing cell:</span>${" "}
