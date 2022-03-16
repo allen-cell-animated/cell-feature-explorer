@@ -13,6 +13,13 @@
     justify-content: flex-start;
 }
 
+:global(.image-info-wrapper) {
+    z-index: 100;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
 .content {
     flex: 2;
     background-color: black;
