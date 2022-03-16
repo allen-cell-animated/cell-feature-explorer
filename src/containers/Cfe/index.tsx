@@ -20,6 +20,8 @@ const { Content, Sider } = Layout;
 
 import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
+const PLOT_TAB_KEY = "plot";
+const VIEWER_TAB_KEY = "3d-viewer";
 
 interface CfeProps {
     galleryCollapsed: boolean;
@@ -47,8 +49,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
         width: window.innerWidth,
-        // FIXME: use symbolic constant
-        currentTab: "plot"
+        currentTab: PLOT_TAB_KEY
     };
 
     public componentDidMount = () => {
@@ -58,7 +59,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
-        if (prevState.currentTab !== currentTab && currentTab === "3d-viewer") {
+        if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,
             // otherwise the 3D viewer canvas will have 0 height and 0 width.
             window.dispatchEvent(new Event('resize'));
@@ -101,7 +102,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public render() {
         const {
             galleryCollapsed,
-            viewerHeader,
+            // viewerHeader,
             toggleGallery,
             volumeViewerProps,
             showSmallScreenWarning,
@@ -110,10 +111,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
         const viewerClassNames = classNames([
             styles.content, 
-            {[styles.hidden]: currentTab !== "3d-viewer"}
+            {[styles.hidden]: currentTab !== VIEWER_TAB_KEY}
         ]);
         const plotClassNames = classNames([
-            {[styles.hidden]: currentTab === "3d-viewer"}
+            {[styles.hidden]: currentTab === VIEWER_TAB_KEY}
         ]);
 
         return (
@@ -132,7 +133,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
                             toggleGallery={toggleGallery}
-                            openViewerTab={() => this.setState({currentTab: "3d-viewer"})}
+                            openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
                         />
                     </Sider>
                 </Affix>
@@ -143,7 +144,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         selectedKeys={[this.state.currentTab]}
                         mode="horizontal"
                     >
-                        <Menu.Item key="plot">
+                        <Menu.Item key={PLOT_TAB_KEY}>
                             <span 
                                 className={classNames([
                                     "icon-moon",
@@ -153,7 +154,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                             />
                             Plot
                         </Menu.Item>
-                        <Menu.Item key="3d-viewer">
+                        <Menu.Item key={VIEWER_TAB_KEY}>
                             <span
                                 className={classNames([
                                     "icon-moon",
