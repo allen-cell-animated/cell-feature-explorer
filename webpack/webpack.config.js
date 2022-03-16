@@ -41,7 +41,6 @@ module.exports = ({ analyze, env } = {}) => ({
             {
                 test: /\.css/,
                 include: [path.resolve(__dirname, "../", "src")],
-                exclude: [path.resolve(__dirname, "../src", "style.css")],
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
@@ -75,10 +74,7 @@ module.exports = ({ analyze, env } = {}) => ({
             // e.g., importing antd component css
             {
                 test: /\.css/,
-                include: [
-                    path.resolve(__dirname, "../", "node_modules"),
-                    path.resolve(__dirname, "../src", "style.css")
-                ],
+                include: [path.resolve(__dirname, "../", "node_modules")],
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,

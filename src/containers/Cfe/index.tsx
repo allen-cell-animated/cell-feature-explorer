@@ -166,7 +166,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                 className={classNames([
                                     "icon-moon",
                                     "anticon",
-                                    styles.iconPlot
+                                    styles.plotIcon
                                 ])}
                             />
                             Plot
@@ -176,7 +176,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                 className={classNames([
                                     "icon-moon",
                                     "anticon",
-                                    styles.iconCube
+                                    styles.cubeIcon
                                 ])}
                             />
                             3D Viewer
