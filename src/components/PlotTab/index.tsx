@@ -9,7 +9,6 @@ const { Content, Sider } = Layout;
 
 import styles from "./style.css";
 
-// TODO: turn this in to function component
 class PlotTab extends React.Component {
     private static panelKeys = ["groupings", "selections"];
     public state = {
