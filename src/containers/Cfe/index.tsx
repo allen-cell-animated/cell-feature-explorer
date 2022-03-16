@@ -124,7 +124,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public render() {
         const {
             galleryCollapsed,
-            // viewerHeader,
             toggleGallery,
             volumeViewerProps,
             showSmallScreenWarning,
