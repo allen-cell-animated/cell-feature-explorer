@@ -154,3 +154,13 @@
     color: var(--text-gray);
     border-color: var(--text-gray);
 }
+
+/* Icomoon icons */
+
+.plot-icon::after {
+    content: "\e901";
+}
+
+.cube-icon::after {
+    content: "\e900";
+}

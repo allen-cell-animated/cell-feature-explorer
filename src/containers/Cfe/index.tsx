@@ -144,9 +144,23 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         mode="horizontal"
                     >
                         <Menu.Item key="plot">
+                            <span 
+                                className={classNames([
+                                    "icon-moon",
+                                    "anticon",
+                                    styles.plotIcon
+                                ])}
+                            />
                             Plot
                         </Menu.Item>
                         <Menu.Item key="3d-viewer">
+                            <span
+                                className={classNames([
+                                    "icon-moon",
+                                    "anticon",
+                                    styles.cubeIcon
+                                ])}
+                            />
                             3D Viewer
                         </Menu.Item>
                     </Menu>
