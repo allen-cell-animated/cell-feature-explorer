@@ -4,12 +4,6 @@
     display: none;
 }
 
-/* Tried this to see if I can make canvas render on tab switch */
-/* :global(canvas), :global(#volumeViewerContainerDiv) {
-    height: 100% !important;
-    width: 100% !important;
-} */
-
 :global(.ant-affix) {
     z-index: 100;
 }
@@ -157,10 +151,10 @@
 
 /* Icomoon icons */
 
-.plot-icon::after {
+.icon-plot::after {
     content: "\e901";
 }
 
-.cube-icon::after {
+.icon-cube::after {
     content: "\e900";
 }
