@@ -65,6 +65,8 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             window.dispatchEvent(new Event('resize'));
 
             // Add selected cell info on top left corner of canvas
+            // TODO: The info should ideally be passed into web-3d-cell-viewer and
+            // handled there.
             const { viewerHeader } = this.props;
             const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
             const wrapper = document.createElement("div");
