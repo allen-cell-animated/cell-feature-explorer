@@ -115,15 +115,6 @@ module.exports = ({ analyze, env } = {}) => ({
                 test: /\.(png|jpg|gif|svg)$/i,
                 type: "asset/resource",
             },
-            {
-                test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
-                include: [path.resolve(__dirname, "../src/assets/fonts")],
-                loader: "url-loader",
-                options: {
-                    name: "[name].[ext]",
-                    esModule: false,
-                },
-            },
         ],
     },
 

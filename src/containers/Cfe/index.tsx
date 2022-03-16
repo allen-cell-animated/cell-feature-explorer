@@ -161,24 +161,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         selectedKeys={[this.state.currentTab]}
                         mode="horizontal"
                     >
-                        <Menu.Item key={PLOT_TAB_KEY}>
-                            <span 
-                                className={classNames([
-                                    "icon-moon",
-                                    "anticon",
-                                    styles.plotIcon
-                                ])}
-                            />
+                        <Menu.Item key="plot">
                             Plot
                         </Menu.Item>
-                        <Menu.Item key={VIEWER_TAB_KEY}>
-                            <span
-                                className={classNames([
-                                    "icon-moon",
-                                    "anticon",
-                                    styles.cubeIcon
-                                ])}
-                            />
+                        <Menu.Item key="3d-viewer">
                             3D Viewer
                         </Menu.Item>
                     </Menu>
