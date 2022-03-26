@@ -1,4 +1,5 @@
 @import "../../styles/colors.css";
+@import "../../styles/constants.css";
 
 .hidden {
     display: none;
@@ -11,7 +12,7 @@
 
 .color-menu {
     min-height: 80vh;
-    height: calc(100vh - 56px - 64px);
+    height: calc(100vh - var(--header-height) - var(--tab-bar-height));
 }
 
 .color-menu :global(.ant-collapse) {
