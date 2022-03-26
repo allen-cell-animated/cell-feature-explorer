@@ -63,6 +63,28 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             // Need to manually trigger events that depend on the window resizing,
             // otherwise the 3D viewer canvas will have 0 height and 0 width.
             window.dispatchEvent(new Event('resize'));
+
+            // Add selected cell info on top left corner of canvas
+            // TODO: The info should ideally be passed into web-3d-cell-viewer and
+            // handled there.
+            const { viewerHeader } = this.props;
+            const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
+            const wrapper = document.createElement("div");
+            wrapper.className = "image-info-wrapper";
+            if (parent) {
+                parent.appendChild(wrapper);
+                // FIXME: the CSS Modules class names here aren't working, probably
+                // need to turn them into regular class names and use global selectors
+                // in the stylesheet.
+                wrapper.innerHTML = `
+                    <h4 className=${styles.selectedInfo}>
+                        <span className=${styles.label}>Viewing cell:</span>${" "}
+                        ${viewerHeader.cellId},${" "}
+                        <span className=${styles.label}>${viewerHeader.label}:</span>${" "}
+                        ${viewerHeader.value}
+                    </h4>
+                `
+            }
         }
     }
 
@@ -102,7 +124,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public render() {
         const {
             galleryCollapsed,
-            // viewerHeader,
             toggleGallery,
             volumeViewerProps,
             showSmallScreenWarning,
@@ -144,24 +165,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         selectedKeys={[this.state.currentTab]}
                         mode="horizontal"
                     >
-                        <Menu.Item key={PLOT_TAB_KEY}>
-                            <span 
-                                className={classNames([
-                                    "icon-moon",
-                                    "anticon",
-                                    styles.iconPlot
-                                ])}
-                            />
+                        <Menu.Item key="plot">
                             Plot
                         </Menu.Item>
-                        <Menu.Item key={VIEWER_TAB_KEY}>
-                            <span
-                                className={classNames([
-                                    "icon-moon",
-                                    "anticon",
-                                    styles.iconCube
-                                ])}
-                            />
+                        <Menu.Item key="3d-viewer">
                             3D Viewer
                         </Menu.Item>
                     </Menu>
@@ -174,13 +181,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         <PlotTab />
                     </Layout>
                     <Content className={viewerClassNames}>
-                        {/* TODO: bring this back in the right position */}
-                        {/* <h4 className={styles.selectedInfo}>
-                                <span className={styles.label}>Viewing cell:</span>{" "}
-                                {viewerHeader.cellId},{" "}
-                                <span className={styles.label}>{viewerHeader.label}:</span>{" "}
-                                {viewerHeader.value}
-                            </h4> */}
                         <CellViewer {...volumeViewerProps} />
                     </Content>
                 </Layout>

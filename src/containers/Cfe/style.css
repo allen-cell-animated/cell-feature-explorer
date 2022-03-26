@@ -13,6 +13,13 @@
     justify-content: flex-start;
 }
 
+:global(.image-info-wrapper) {
+    z-index: 100;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
 .content {
     flex: 2;
     background-color: black;
@@ -178,14 +185,4 @@
 :global(.ant-menu-horizontal > .ant-menu-submenu-selected)
 {
   border-bottom: 3px solid #ffffff;
-}
-
-/* Icomoon icons */
-
-.icon-plot::after {
-    content: "\e901";
-}
-
-.icon-cube::after {
-    content: "\e900";
 }
