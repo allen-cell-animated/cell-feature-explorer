@@ -186,3 +186,13 @@
 {
   border-bottom: 3px solid #ffffff;
 }
+
+/* Icomoon icons */
+
+.plot-icon::after {
+    content: "\e901";
+}
+
+.cube-icon::after {
+    content: "\e900";
+}

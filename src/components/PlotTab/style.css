@@ -18,7 +18,7 @@
 .color-menu :global(.ant-collapse) {
     border-top: 0;
     border-left: 0;
-    max-height: calc(100vh - 56px - 64px);
+    max-height: calc(100vh  - var(--header-height) - var(--tab-bar-height));
     overflow: scroll;
 }
 .color-menu :global(.ant-layout-sider-trigger) {
