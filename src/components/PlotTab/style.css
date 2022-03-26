@@ -11,11 +11,14 @@
 
 .color-menu {
     min-height: 80vh;
+    height: calc(100vh - 56px - 64px);
 }
 
 .color-menu :global(.ant-collapse) {
     border-top: 0;
     border-left: 0;
+    max-height: calc(100vh - 56px - 64px);
+    overflow: scroll;
 }
 .color-menu :global(.ant-layout-sider-trigger) {
     position: inherit;

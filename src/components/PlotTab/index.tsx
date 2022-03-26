@@ -44,13 +44,11 @@ class PlotTab extends React.Component {
                 </Sider>
                 <Content className={styles.content}>
                     <div>
-                        <MainPlotContainer
-                            handleSelectionToolUsed={this.onSelectionToolUsed}
-                        />
+                        <MainPlotContainer handleSelectionToolUsed={this.onSelectionToolUsed} />
                     </div>
                 </Content>
                 {/* spacer for the gallery overlay */}
-                < Sider width={120} />
+                <Sider width={120} />
             </>
         );
     }
