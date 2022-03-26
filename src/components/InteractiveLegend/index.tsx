@@ -52,9 +52,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
                         downloadConfig={downloadConfig}
                     />
                 );
-            })
-            }
-
+            })}
         </React.Fragment>
     );
 };
