@@ -7,10 +7,17 @@ const themeVariables = lessToJs(
 );
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const { devServer, Env, stats } = require("./constants");
+const {
+    devServer,
+    Env,
+    stats
+} = require("./constants");
 const getPluginsByEnv = require("./plugins");
 
-module.exports = ({ analyze, env } = {}) => ({
+module.exports = ({
+    analyze,
+    env
+} = {}) => ({
     devtool: env !== Env.PRODUCTION && "source-map",
     devServer: {
         static: {
@@ -26,8 +33,7 @@ module.exports = ({ analyze, env } = {}) => ({
     },
     mode: env === Env.PRODUCTION ? "production" : "development",
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.(ts|js|tsx|jsx)$/,
                 include: [path.resolve(__dirname, "../", "src")],
                 exclude: /node_modules/,
@@ -41,8 +47,8 @@ module.exports = ({ analyze, env } = {}) => ({
             {
                 test: /\.css/,
                 include: [path.resolve(__dirname, "../", "src")],
-                use: [
-                    {
+                exclude: [path.resolve(__dirname, "../src", "style.css")],
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
@@ -74,9 +80,11 @@ module.exports = ({ analyze, env } = {}) => ({
             // e.g., importing antd component css
             {
                 test: /\.css/,
-                include: [path.resolve(__dirname, "../", "node_modules")],
-                use: [
-                    {
+                include: [
+                    path.resolve(__dirname, "../", "node_modules"),
+                    path.resolve(__dirname, "../src", "style.css")
+                ],
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
@@ -89,8 +97,7 @@ module.exports = ({ analyze, env } = {}) => ({
                 // i.e. no options in css-loader because we figure they are already
                 test: /\.less$/,
                 include: [path.resolve(__dirname, "../", "node_modules")],
-                use: [
-                    {
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
@@ -114,6 +121,15 @@ module.exports = ({ analyze, env } = {}) => ({
             {
                 test: /\.(png|jpg|gif|svg)$/i,
                 type: "asset/resource",
+            },
+            {
+                test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
+                include: [path.resolve(__dirname, "../src/assets/fonts")],
+                loader: "url-loader",
+                options: {
+                    name: "[name].[ext]",
+                    esModule: false,
+                },
             },
         ],
     },
