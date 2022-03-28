@@ -47,7 +47,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             layout: {
                 annotations: this.makeAnnotations(),
                 autosize: true,
-                height: GENERAL_PLOT_SETTINGS.plotHeight,
+                height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
                 legend: GENERAL_PLOT_SETTINGS.legend,
                 margin: GENERAL_PLOT_SETTINGS.margin,
@@ -74,19 +74,36 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
-        if (
-            !isEqual(annotations, prevProps.annotations) ||
-            prevState.showFullAnnotation !== this.state.showFullAnnotation
-        ) {
-            this.setState({
+    public componentDidMount () {
+        const { state } = this;
+        const setState = this.setState.bind(this)
+
+        window.addEventListener("resize", function () {
+            // Using Plotly's relayout-function with graph-name and
+            // the variable with the new height and width
+            setState({
                 layout: {
-                    ...this.state.layout,
-                    annotations: this.makeAnnotations(),
+                    ...state.layout,
+                    height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 },
             });
-        }
+        });
+    }
+
+    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
+        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
+
+            if (
+                !isEqual(annotations, prevProps.annotations) ||
+                prevState.showFullAnnotation !== this.state.showFullAnnotation
+            ) {
+                this.setState({
+                    layout: {
+                        ...this.state.layout,
+                        annotations: this.makeAnnotations(),
+                    },
+                });
+            }
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion
@@ -186,6 +203,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         const { onPointClicked, onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } =
             this.props;
         const options = {
+            responsive: true,
             displayModeBar: true,
             displaylogo: false,
             modeBarButtonsToRemove: [
