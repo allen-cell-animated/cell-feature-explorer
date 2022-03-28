@@ -67,7 +67,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         if (viewerHeader.cellId !== undefined && viewerHeader.cellId !== prevViewerHeader.cellId) {
             const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
             let wrapper = document.querySelector(".image-info-wrapper");
-            console.log(wrapper);
             if (parent) {
                 if (!wrapper) {
                     wrapper = document.createElement("div");
