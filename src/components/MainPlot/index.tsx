@@ -45,7 +45,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
 
         this.state = {
             layout: {
-                annotations: this.makeAnnotations(),
+                annotations: [], // will get updated once component updates
                 autosize: true,
                 height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
@@ -74,16 +74,23 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidMount () {
-        const { state } = this;
-        const setState = this.setState.bind(this)
+    public componentDidMount() {
+        const { state, makeAnnotations } = this;
+        const setState = this.setState.bind(this);
 
+        setState({
+            layout: {
+                ...this.state.layout,
+                annotations: this.makeAnnotations(),
+            },
+        });
         window.addEventListener("resize", function () {
             // Using Plotly's relayout-function with graph-name and
             // the variable with the new height and width
             setState({
                 layout: {
                     ...state.layout,
+                    annotations: makeAnnotations(),
                     height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 },
             });
@@ -93,24 +100,23 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
         const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
 
-            if (
-                !isEqual(annotations, prevProps.annotations) ||
-                prevState.showFullAnnotation !== this.state.showFullAnnotation
-            ) {
-                this.setState({
-                    layout: {
-                        ...this.state.layout,
-                        annotations: this.makeAnnotations(),
-                    },
-                });
-            }
+        if (
+            !isEqual(annotations, prevProps.annotations) ||
+            prevState.showFullAnnotation !== this.state.showFullAnnotation
+        ) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    annotations: this.makeAnnotations(),
+                },
+            });
+        }
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion
         ) {
             const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
             const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
-
             this.setState({
                 layout: {
                     ...this.state.layout,
@@ -127,6 +133,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 },
             });
         }
+
     }
 
     public clickedAnnotation() {
@@ -168,10 +175,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
 
         return annotations.map((point, index) => {
             const lastOne = index + 1 === annotations.length;
-            // FIXME: There's probably a better way to prevent this.state being
-            // undefined here and crashing the app, but this is a quick fix to get
-            // the tabbed view working.
-            const show = this.state ? lastOne && this.state.showFullAnnotation : false;
+            const show = lastOne && this.state.showFullAnnotation;
             const hasText = !!show || !!point.hovered;
             return {
                 align: "left",
