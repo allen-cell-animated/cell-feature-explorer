@@ -1,4 +1,3 @@
-import { isEqual } from "lodash";
 import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
@@ -20,8 +19,10 @@ interface MainPlotProps {
     yTickConversion: TickConversion;
 }
 
+type AxisType = "array" | "auto" | "linear" | undefined;
+
 interface MainPlotState {
-    layout: any;
+    height: any;
     showFullAnnotation: boolean;
 }
 
@@ -44,96 +45,20 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
 
         this.state = {
-            layout: {
-                annotations: [], // will get updated once component updates
-                autosize: true,
-                height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
-                hovermode: "closest",
-                legend: GENERAL_PLOT_SETTINGS.legend,
-                margin: GENERAL_PLOT_SETTINGS.margin,
-                paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-                xaxis: this.makeAxis(
-                    [0, 0.85],
-                    ".1f",
-                    false,
-                    props.xAxisType,
-                    props.xTickConversion
-                ),
-                xaxis2: histogramAxis,
-                yaxis: this.makeAxis(
-                    [0, 0.85],
-                    ".1f",
-                    false,
-                    props.yAxisType,
-                    props.yTickConversion
-                ),
-                yaxis2: histogramAxis,
-            },
+            height: window.innerHeight,
             showFullAnnotation: true,
         };
     }
 
     public componentDidMount() {
-        const { state, makeAnnotations } = this;
         const setState = this.setState.bind(this);
-
-        setState({
-            layout: {
-                ...this.state.layout,
-                annotations: this.makeAnnotations(),
-            },
-        });
         window.addEventListener("resize", function () {
             // Using Plotly's relayout-function with graph-name and
             // the variable with the new height and width
             setState({
-                layout: {
-                    ...state.layout,
-                    annotations: makeAnnotations(),
-                    height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
-                },
+                height: window.innerHeight,
             });
         });
-    }
-
-    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
-
-        if (
-            !isEqual(annotations, prevProps.annotations) ||
-            prevState.showFullAnnotation !== this.state.showFullAnnotation
-        ) {
-            this.setState({
-                layout: {
-                    ...this.state.layout,
-                    annotations: this.makeAnnotations(),
-                },
-            });
-        }
-        if (
-            xTickConversion !== prevProps.xTickConversion ||
-            yTickConversion !== prevProps.yTickConversion
-        ) {
-            const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
-            const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
-            this.setState({
-                layout: {
-                    ...this.state.layout,
-                    margin: {
-                        ...this.state.layout.margin,
-                        l: marginLeft,
-                        b: marginBottom,
-                    },
-                    annotations: this.makeAnnotations(),
-                    xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType, xTickConversion),
-                    xaxis2: histogramAxis,
-                    yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType, yTickConversion),
-                    yaxis2: histogramAxis,
-                },
-            });
-        }
-
     }
 
     public clickedAnnotation() {
@@ -144,7 +69,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         domain: number[],
         hoverformat: string,
         zeroline: boolean,
-        type: string,
+        type: AxisType,
         tickConversion: any
     ) {
         return {
@@ -203,6 +128,26 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         });
     }
 
+    public makeLayout() {
+        const { xAxisType, xTickConversion, yAxisType, yTickConversion } = this.props;
+        const { height } = this.state;
+
+        return {
+            annotations: this.makeAnnotations(),
+            autosize: true,
+            height: height - GENERAL_PLOT_SETTINGS.heightMargin,
+            hovermode: "closest" as const,
+            legend: GENERAL_PLOT_SETTINGS.legend,
+            margin: GENERAL_PLOT_SETTINGS.margin,
+            paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+            plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+            xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType as AxisType, xTickConversion),
+            xaxis2: histogramAxis,
+            yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType as AxisType, yTickConversion),
+            yaxis2: histogramAxis,
+        };
+    }
+
     public render() {
         const { onPointClicked, onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } =
             this.props;
@@ -224,7 +169,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             <Plot
                 data={plotDataArray}
                 useResizeHandler={true}
-                layout={this.state.layout}
+                layout={this.makeLayout()}
                 config={options}
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
