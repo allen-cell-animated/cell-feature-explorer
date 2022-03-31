@@ -17,12 +17,6 @@
     bottom: 2px;
 }
 
-:global(.modebar) {
-    bottom: 0!important;
-    top: initial!important;
-    right: 18%!important;
-}
-
 :global(.modebar-container) {
     position: initial!important;
 }
