@@ -44,6 +44,30 @@ interface CfeState {
 
 class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
+
+    private static hackyViewerTitleOverlay = (id: string, label: string, value: string) => {
+        const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
+        let wrapper = document.querySelector(".image-info-wrapper");
+        if (parent) {
+            if (!wrapper) {
+                wrapper = document.createElement("div");
+                wrapper.className = "image-info-wrapper";
+            }
+            parent.appendChild(wrapper);
+            // FIXME: the CSS Modules class names here aren't working, probably
+            // need to turn them into regular class names and use global selectors
+            // in the stylesheet.
+            wrapper.innerHTML = `
+                <h4 className=viewer-overlay-title>
+                    <span className=label>Viewing cell:</span>${" "}
+                    ${id},${" "}
+                    <span className=label>${label}:</span>${" "}
+                    ${value}
+                </h4>
+            `;
+        }
+    };
+
     public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
@@ -65,26 +89,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         const { viewerHeader } = this.props;
         const { viewerHeader: prevViewerHeader } = prevProps;
         if (viewerHeader.cellId !== undefined && viewerHeader.cellId !== prevViewerHeader.cellId) {
-            const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
-            let wrapper = document.querySelector(".image-info-wrapper");
-            if (parent) {
-                if (!wrapper) {
-                    wrapper = document.createElement("div");
-                    wrapper.className = "image-info-wrapper";
-                }
-                parent.appendChild(wrapper);
-                // FIXME: the CSS Modules class names here aren't working, probably
-                // need to turn them into regular class names and use global selectors
-                // in the stylesheet.
-                wrapper.innerHTML = `
-                <h4 className=${styles.selectedInfo}>
-                    <span className=${styles.label}>Viewing cell:</span>${" "}
-                    ${viewerHeader.cellId},${" "}
-                    <span className=${styles.label}>${viewerHeader.label}:</span>${" "}
-                    ${viewerHeader.value}
-                </h4>
-            `;
-            }
+            Cfe.hackyViewerTitleOverlay(viewerHeader.cellId, viewerHeader.label, viewerHeader.value);
         }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,
