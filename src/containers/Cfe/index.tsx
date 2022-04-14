@@ -58,10 +58,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             // need to turn them into regular class names and use global selectors
             // in the stylesheet.
             wrapper.innerHTML = `
-                <h4 className="viewer-overlay-title">
-                    <span className="label">Viewing cell:</span>${" "}
+                <h4 class="viewer-overlay-title">
+                    <span class="label">Viewing cell:</span>${" "}
                     ${id},${" "}
-                    <span className="label">${label}:</span>${" "}
+                    <span class="label">${label}:</span>${" "}
                     ${value}
                 </h4>
             `;
