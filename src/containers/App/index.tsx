@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import classNames from "classnames";
 
 import AllenCellHeader from "../../components/AppHeader";
-import BackToPlot from "../../components/BackToPlot/index";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
 import LandingPage from "../../components/LandingPage";
@@ -50,8 +49,6 @@ class App extends React.Component<AppProps> {
             >
                 <Layout className={layoutClassnames}>
                     <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
-
-                    {!!selectedDataset && <BackToPlot />}
                     <Header className={styles.navBar}>
                         <AllenCellHeader selectedDataset={selectedDataset} />
                     </Header>

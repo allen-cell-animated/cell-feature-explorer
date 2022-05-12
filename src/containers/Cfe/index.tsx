@@ -1,24 +1,27 @@
-import { Affix, Layout } from "antd";
+import { Affix, Layout, Menu } from "antd";
+import { ClickParam } from "antd/lib/menu";
 import { uniq } from "lodash";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
+import classNames from "classnames";
 
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
-import ColorByMenu from "../ColorByMenu";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
-import MainPlotContainer from "../MainPlotContainer";
 import ThumbnailGallery from "../ThumbnailGallery";
+import PlotTab from "../../components/PlotTab";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
-const { Content, Header, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
+const PLOT_TAB_KEY = "plot";
+const VIEWER_TAB_KEY = "3d-viewer";
 
 interface CfeProps {
     galleryCollapsed: boolean;
@@ -31,18 +34,68 @@ interface CfeProps {
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
-class Cfe extends React.Component<CfeProps> {
+interface CfeState {
+    defaultActiveKey: string[];
+    dontShowSmallScreenWarningAgain: boolean;
+    openKeys: string[];
+    width: number;
+    currentTab: string;
+}
+
+class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
-    public state = {
+
+    private static hackyViewerTitleOverlay = (id: string, label: string, value: string) => {
+        const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
+        let wrapper = document.querySelector(".image-info-wrapper");
+        if (parent) {
+            if (!wrapper) {
+                wrapper = document.createElement("div");
+                wrapper.className = "image-info-wrapper";
+            }
+            parent.appendChild(wrapper);
+            // FIXME: the CSS Modules class names here aren't working, probably
+            // need to turn them into regular class names and use global selectors
+            // in the stylesheet.
+            wrapper.innerHTML = `
+                <h4 class="viewer-overlay-title">
+                    <span class="label">Viewing cell:</span>${" "}
+                    ${id},${" "}
+                    <span class="label">${label}:</span>${" "}
+                    ${value}
+                </h4>
+            `;
+        }
+    };
+
+    public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
         openKeys: [Cfe.panelKeys[0]],
         width: window.innerWidth,
+        currentTab: PLOT_TAB_KEY,
     };
 
     public componentDidMount = () => {
         this.props.setShowSmallScreenWarning(window.innerWidth <= SMALL_SCREEN_WARNING_BREAKPOINT);
         window.addEventListener("resize", this.updateDimensions);
+    };
+
+    public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
+        const { currentTab } = this.state;
+        // Add selected cell info on top left corner of canvas
+        // TODO: The info should ideally be passed into web-3d-cell-viewer and
+        // handled there.
+        const { viewerHeader } = this.props;
+        const { viewerHeader: prevViewerHeader } = prevProps;
+        if (viewerHeader.cellId !== undefined && viewerHeader.cellId !== prevViewerHeader.cellId) {
+            Cfe.hackyViewerTitleOverlay(viewerHeader.cellId, viewerHeader.label, viewerHeader.value);
+        }
+        if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
+            // Need to manually trigger events that depend on the window resizing,
+            // otherwise the 3D viewer canvas will have 0 height and 0 width.
+            window.dispatchEvent(new Event("resize"));
+        }
     };
 
     public updateDimensions = () => {
@@ -74,16 +127,21 @@ class Cfe extends React.Component<CfeProps> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     };
 
-    public render() {
-        const {
-            galleryCollapsed,
-            viewerHeader,
-            toggleGallery,
-            volumeViewerProps,
-            showSmallScreenWarning,
-        } = this.props;
+    private handleTabClick = (event: ClickParam) => {
+        this.setState({ currentTab: event.key });
+    };
 
-        const { openKeys, defaultActiveKey } = this.state;
+    public render() {
+        const { galleryCollapsed, toggleGallery, volumeViewerProps, showSmallScreenWarning } =
+            this.props;
+        const { currentTab } = this.state;
+
+        const viewerClassNames = classNames([
+            styles.content,
+            { [styles.hidden]: currentTab !== VIEWER_TAB_KEY },
+        ]);
+        const plotClassNames = classNames([{ [styles.hidden]: currentTab === VIEWER_TAB_KEY }]);
+
         return (
             <Layout>
                 <Affix>
@@ -100,56 +158,41 @@ class Cfe extends React.Component<CfeProps> {
                         <ThumbnailGallery
                             collapsed={galleryCollapsed}
                             toggleGallery={toggleGallery}
+                            openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
                         />
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <Header className={styles.headerSection}>
-                        <h2>Plot</h2>
-                    </Header>
-                    <Layout>
-                        <SmallScreenWarning
-                            handleClose={this.handleClose}
-                            onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                            visible={showSmallScreenWarning}
-                        />
-                        <Sider
-                            className={styles.colorMenu}
-                            width={450}
-                            collapsible={false}
-                            collapsedWidth={250}
-                        >
-                            <ColorByMenu
-                                panelKeys={Cfe.panelKeys}
-                                openKeys={openKeys}
-                                defaultActiveKey={defaultActiveKey}
-                                onPanelClicked={this.onPanelClicked}
+                    <Menu
+                        className={styles.tabbedMenu}
+                        onClick={this.handleTabClick}
+                        selectedKeys={[this.state.currentTab]}
+                        mode="horizontal"
+                    >
+                        <Menu.Item key={PLOT_TAB_KEY}>
+                            <span
+                                className={classNames(["icon-moon", "anticon", styles.plotIcon])}
                             />
-                        </Sider>
-                        <Content className={styles.content}>
-                            <div className={styles.plotView}>
-                                <MainPlotContainer
-                                    handleSelectionToolUsed={this.onSelectionToolUsed}
-                                />
-                            </div>
-                        </Content>
-                        {/* spacer for the gallery overlay */}
-                        <Sider width={120} />
+                            Plot
+                        </Menu.Item>
+                        <Menu.Item key={VIEWER_TAB_KEY}>
+                            <span
+                                className={classNames(["icon-moon", "anticon", styles.cubeIcon])}
+                            />
+                            3D Viewer
+                        </Menu.Item>
+                    </Menu>
+                    <SmallScreenWarning
+                        handleClose={this.handleClose}
+                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                        visible={showSmallScreenWarning}
+                    />
+                    <Layout className={plotClassNames}>
+                        <PlotTab />
                     </Layout>
-                    <div className={styles.cellViewerContainer}>
-                        <Header className={styles.headerSection}>
-                            <h2 className={styles.header}>3D Viewer</h2>
-                            {viewerHeader.cellId && (
-                                <h4 className={styles.selectedInfo}>
-                                    <span className={styles.label}>Viewing cell:</span>{" "}
-                                    {viewerHeader.cellId},{" "}
-                                    <span className={styles.label}>{viewerHeader.label}:</span>{" "}
-                                    {viewerHeader.value}
-                                </h4>
-                            )}
-                        </Header>
+                    <Content className={viewerClassNames}>
                         <CellViewer {...volumeViewerProps} />
-                    </div>
+                    </Content>
                 </Layout>
             </Layout>
         );

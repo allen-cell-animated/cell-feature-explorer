@@ -1,5 +1,9 @@
 @import "../../styles/colors.css";
 
+.hidden {
+    display: none;
+}
+
 :global(.ant-affix) {
     z-index: 100;
 }
@@ -9,8 +13,17 @@
     justify-content: flex-start;
 }
 
+:global(.image-info-wrapper) {
+    z-index: 100;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
 .content {
     flex: 2;
+    background-color: black;
+    max-height: calc(100vh  - var(--header-height) - var(--tab-bar-height));
 }
 
 .blur {
@@ -26,12 +39,12 @@
     margin-right: 120px;
 }
 
-.selected-info {
+:global(.viewer-overlay-title) {
     margin-top: 2px;
     display: inline-block;
 }
 
-.label {
+:global(.viewer-overlay-title .label) {
     color: var(--text-gray);
 }
 
@@ -47,12 +60,6 @@
 
 .header-main h1 {
     margin: 0;
-}
-
-.header-section {
-    text-align: center;
-    border-top: 0.5px solid var(--dimgray);
-    border-bottom: 0.5px solid var(--dimgray);
 }
 
 :global(.allencell-header) {
@@ -99,17 +106,6 @@
     border-radius: 0;
 }
 
-.color-menu {
-    min-height: 80vh;
-}
-
-.color-menu :global(.ant-collapse) {
-    border-top: 0;
-    border-left: 0;
-}
-.color-menu :global(.ant-layout-sider-trigger) {
-    position: inherit;
-}
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger){
     width: 20px !important;
     height: 100%;
@@ -155,4 +151,49 @@
 :global(.ant-btn-background-ghost) {
     color: var(--text-gray);
     border-color: var(--text-gray);
+}
+
+/* Tabs */
+
+.tabbed-menu {
+    font-size: 19px;
+}
+
+:global(.ant-menu-horizontal) {
+    border-bottom: 1px solid var(--border-gray);
+}
+
+:global(.ant-menu-horizontal .ant-menu-item) {
+    margin-top: 7px;
+    margin-left: 30px;
+    padding: 0 10px;
+    color: #ffffff;
+}
+
+/* Necessary for adjusting the thickness of the tab underline on hover/active */
+:global(.ant-menu-horizontal > .ant-menu-item), :global(.ant-menu-horizontal > .ant-menu-submenu) {
+    border-bottom: 3px solid transparent;
+}
+
+/* Necessary for adjusting the thickness of the tab underline on hover/active */
+:global(.ant-menu-horizontal > .ant-menu-item:hover), 
+:global(.ant-menu-horizontal > .ant-menu-submenu:hover),
+:global(.ant-menu-horizontal > .ant-menu-item-active),
+:global(.ant-menu-horizontal > .ant-menu-submenu-active),
+:global(.ant-menu-horizontal > .ant-menu-item-open), 
+:global(.ant-menu-horizontal > .ant-menu-submenu-open),
+:global(.ant-menu-horizontal > .ant-menu-item-selected),
+:global(.ant-menu-horizontal > .ant-menu-submenu-selected)
+{
+  border-bottom: 3px solid #ffffff;
+}
+
+/* Icomoon icons */
+
+.plot-icon::after {
+    content: "\e901";
+}
+
+.cube-icon::after {
+    content: "\e900";
 }

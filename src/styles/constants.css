@@ -1,4 +1,6 @@
 :root {
+    --header-height: 56px;
+    --tab-bar-height: 64px;
     --dataset-card-width: 460px;
     --dataset-card-gap-width: 30px; /* Horizontal gap between two dataset cards */
     --max-datasets-per-row: 2;

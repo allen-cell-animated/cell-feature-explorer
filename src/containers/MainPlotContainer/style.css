@@ -1,24 +1,20 @@
 @import "../../styles/colors.css";
+@import "../../styles/constants.css";
 
 .container {
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1.5em 1.5em 5em 5em;
+    padding: 5em 1.5em 5em 5em;
     flex: 1;
     margin-bottom: 2em;
+    height: calc(100vh  - var(--header-height) - var(--tab-bar-height) - 4em);
 }
 
 .glossary-link {
     position: absolute;
     right: 10px;
     bottom: 2px;
-}
-
-:global(.modebar) {
-    bottom: 0!important;
-    top: initial!important;
-    right: 18%!important;
 }
 
 :global(.modebar-container) {

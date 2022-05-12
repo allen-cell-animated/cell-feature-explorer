@@ -17,6 +17,7 @@ import {
 import { initialState } from "./state/selection/reducer";
 import { UrlState } from "./util";
 import { URLSearchParam } from "./util/UrlState";
+import "./style.css";
 
 const pram = new Pram(createHistory());
 const initialSelections = {

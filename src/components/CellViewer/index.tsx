@@ -23,7 +23,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 cellDownloadHref={props.cellDownloadHref}
                 fovPath={props.fovPath}
                 viewerChannelSettings={props.viewerChannelSettings}
-                appHeight="90vh"
+                appHeight="100%"
                 canvasMargin="0 120px 0 0"
             />
         </div>
