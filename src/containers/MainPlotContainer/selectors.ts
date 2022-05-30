@@ -96,10 +96,10 @@ export const getPlotlyCustomData = createSelector(
     (filteredCellData: DataForPlot): PlotlyCustomData[] => {
         const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
         const indices = filteredCellData.indices;
-        return map(indices, (index) => {
+        return map(indices, (cellIndex, i) => {
             return {
-                index,
-                thumbnailPath: thumbnailPaths[index],
+                index: cellIndex,
+                thumbnailPath: thumbnailPaths[i],
             };
         });
     }
