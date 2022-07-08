@@ -66,7 +66,9 @@ export const getPropsForVolumeViewer = createSelector(
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
         }
-
+        if (!dataRoot.endsWith("/")) {
+            dataRoot = dataRoot + "/";
+        }
         const props = {
             cellId: cellId,
             baseUrl: dataRoot,
