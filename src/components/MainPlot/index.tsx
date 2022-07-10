@@ -78,34 +78,15 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
-        if (
-            !isEqual(annotations, prevProps.annotations) ||
-            prevState.showFullAnnotation !== this.state.showFullAnnotation
-        ) {
-            this.setState({
-                layout: {
-                    ...this.state.layout,
-                    annotations: this.makeAnnotations(),
-                },
-            });
-        }
+    public componentDidUpdate(prevProps: MainPlotProps) {
+        const { xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion
         ) {
-            const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
-            const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
-
             this.setState({
                 layout: {
                     ...this.state.layout,
-                    margin: {
-                        ...this.state.layout.margin,
-                        l: marginLeft,
-                        b: marginBottom,
-                    },
                     annotations: this.makeAnnotations(),
                     xaxis: this.makeAxis(
                         [0, 0.85],
@@ -114,7 +95,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         xAxisType as AxisType,
                         xTickConversion
                     ),
-                    xaxis2: histogramAxis,
                     yaxis: this.makeAxis(
                         [0, 0.85],
                         ".1f",
@@ -122,7 +102,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         yAxisType as AxisType,
                         yTickConversion
                     ),
-                    yaxis2: histogramAxis,
                 },
             });
         }
