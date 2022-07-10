@@ -78,18 +78,15 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
+    public componentDidUpdate(prevProps: MainPlotProps) {
         const { xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
-        const { height } = this.state;
         if (
             xTickConversion !== prevProps.xTickConversion ||
-            yTickConversion !== prevProps.yTickConversion ||
-            height !== prevState.height
+            yTickConversion !== prevProps.yTickConversion
         ) {
             this.setState({
                 layout: {
                     ...this.state.layout,
-                    height: this.state.height - GENERAL_PLOT_SETTINGS.heightMargin,
                     annotations: this.makeAnnotations(),
                     xaxis: this.makeAxis(
                         [0, 0.85],
