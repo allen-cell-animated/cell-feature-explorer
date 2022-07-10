@@ -1,6 +1,7 @@
 import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
+import { isEqual } from "lodash";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
@@ -22,6 +23,7 @@ interface MainPlotProps {
 type AxisType = "array" | "auto" | "linear" | undefined;
 
 interface MainPlotState {
+    layout: any;
     height: any;
     showFullAnnotation: boolean;
 }
@@ -45,9 +47,85 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
 
         this.state = {
+            layout: {
+                annotations: this.makeAnnotations(),
+                autosize: true,
+                height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
+                hovermode: "closest",
+                legend: GENERAL_PLOT_SETTINGS.legend,
+                margin: GENERAL_PLOT_SETTINGS.margin,
+                paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                xaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.xAxisType as AxisType,
+                    props.xTickConversion
+                ),
+                xaxis2: histogramAxis,
+                yaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.yAxisType as AxisType,
+                    props.yTickConversion
+                ),
+                yaxis2: histogramAxis,
+            },
             height: window.innerHeight,
             showFullAnnotation: true,
         };
+    }
+
+    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
+        const { annotations, xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
+        if (
+            !isEqual(annotations, prevProps.annotations) ||
+            prevState.showFullAnnotation !== this.state.showFullAnnotation
+        ) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    annotations: this.makeAnnotations(),
+                },
+            });
+        }
+        if (
+            xTickConversion !== prevProps.xTickConversion ||
+            yTickConversion !== prevProps.yTickConversion
+        ) {
+            const marginLeft = yAxisType === "array" ? 120 : GENERAL_PLOT_SETTINGS.margin.l;
+            const marginBottom = xAxisType === "array" ? 70 : GENERAL_PLOT_SETTINGS.margin.b;
+
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    margin: {
+                        ...this.state.layout.margin,
+                        l: marginLeft,
+                        b: marginBottom,
+                    },
+                    annotations: this.makeAnnotations(),
+                    xaxis: this.makeAxis(
+                        [0, 0.85],
+                        ".1f",
+                        false,
+                        xAxisType as AxisType,
+                        xTickConversion
+                    ),
+                    xaxis2: histogramAxis,
+                    yaxis: this.makeAxis(
+                        [0, 0.85],
+                        ".1f",
+                        false,
+                        yAxisType as AxisType,
+                        yTickConversion
+                    ),
+                    yaxis2: histogramAxis,
+                },
+            });
+        }
     }
 
     public componentDidMount() {
@@ -169,7 +247,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             <Plot
                 data={plotDataArray}
                 useResizeHandler={true}
-                layout={this.makeLayout()}
+                layout={this.state.layout}
                 config={options}
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
