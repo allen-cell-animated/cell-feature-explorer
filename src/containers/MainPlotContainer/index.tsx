@@ -103,7 +103,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 if (includes(clickedPoints, point.id)) {
                     handleDeselectPoint(point.id);
                 } else if (point.fullData.marker.opacity) {
-                    handleSelectPoint({id: point.id, index: point.customdata.index});
+                    handleSelectPoint({ id: point.id, index: point.customdata.index });
                 }
             }
         });
@@ -122,7 +122,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
             if (
                 point.data.name === SCATTER_PLOT_NAME &&
                 !includes(filtersToExclude, point.fullData.name)
-                ) {
+            ) {
                 window.clearTimeout(this.thumbnailTimeout);
                 changeHoveredPoint({
                     [CELL_ID_KEY]: point.id,
