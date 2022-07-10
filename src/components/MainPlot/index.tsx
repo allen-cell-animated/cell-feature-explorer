@@ -78,7 +78,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public componentDidUpdate(prevProps: MainPlotProps) {
+    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
         const { xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
         if (
             xTickConversion !== prevProps.xTickConversion ||
@@ -102,6 +102,14 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         yAxisType as AxisType,
                         yTickConversion
                     ),
+                },
+            });
+        }
+        if (this.state.height !== prevState.height) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    height: this.state.height - GENERAL_PLOT_SETTINGS.heightMargin,
                 },
             });
         }
