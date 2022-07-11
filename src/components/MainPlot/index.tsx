@@ -61,6 +61,14 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         });
     }
 
+    public shouldComponentUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
+        return (
+            this.state.height !== prevState.height ||
+            this.props.xTickConversion !== prevProps.xTickConversion ||
+            this.props.yTickConversion !== prevProps.yTickConversion
+        );
+    }
+
     public clickedAnnotation() {
         this.setState({ showFullAnnotation: false });
     }
