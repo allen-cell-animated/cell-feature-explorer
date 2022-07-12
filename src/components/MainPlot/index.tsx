@@ -45,6 +45,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         super(props);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
+        this.resize = this.resize.bind(this);
 
         this.state = {
             layout: {
@@ -115,17 +116,20 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         }
     }
 
-    public componentDidMount() {
-        const setState = this.setState.bind(this);
-        window.addEventListener("resize", function () {
-            // Using Plotly's relayout-function with graph-name and
-            // the variable with the new height and width
-            setState({
-                height: window.innerHeight,
-            });
-        });
+    private resize() {
+        // Using Plotly's relayout-function with graph-name and
+        // the variable with the new height and width
+        this.setState(() => ({
+            height: window.innerHeight,
+        }));
     }
 
+    public componentDidMount() {
+        window.addEventListener("resize", this.resize);
+    }
+    public componentWillUnmount() {
+        window.removeEventListener("resize", this.resize);
+    }
     public clickedAnnotation() {
         this.setState({ showFullAnnotation: false });
     }
