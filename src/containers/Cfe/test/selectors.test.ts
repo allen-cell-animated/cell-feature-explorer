@@ -49,7 +49,7 @@ describe("Viewer selectors", () => {
             const result = getPropsForVolumeViewer(stateWithSelections);
             expect(result).to.deep.equal({
                 cellId: "1",
-                baseUrl: "url",
+                baseUrl: "url/",
                 cellDownloadHref: "&id=C1",
                 cellPath: "volumeviewerPath",
                 fovDownloadHref: "&id=F12762",
@@ -69,7 +69,7 @@ describe("Viewer selectors", () => {
 
             expect(result).to.deep.equal({
                 cellId: "12762",
-                baseUrl: "url",
+                baseUrl: "url/",
                 cellDownloadHref: "&id=F12762",
                 cellPath: "fovVolumeviewerPath",
                 fovDownloadHref: "",
