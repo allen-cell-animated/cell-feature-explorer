@@ -1,6 +1,7 @@
 import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
+import { isEqual } from "lodash";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
@@ -22,6 +23,7 @@ interface MainPlotProps {
 type AxisType = "array" | "auto" | "linear" | undefined;
 
 interface MainPlotState {
+    layout: any;
     height: any;
     showFullAnnotation: boolean;
 }
@@ -43,24 +45,91 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         super(props);
         this.makeAnnotations = this.makeAnnotations.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
+        this.resize = this.resize.bind(this);
 
         this.state = {
+            layout: {
+                annotations: this.makeAnnotations(),
+                autosize: true,
+                height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
+                hovermode: "closest",
+                legend: GENERAL_PLOT_SETTINGS.legend,
+                margin: GENERAL_PLOT_SETTINGS.margin,
+                paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+                xaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.xAxisType as AxisType,
+                    props.xTickConversion
+                ),
+                xaxis2: histogramAxis,
+                yaxis: this.makeAxis(
+                    [0, 0.85],
+                    ".1f",
+                    false,
+                    props.yAxisType as AxisType,
+                    props.yTickConversion
+                ),
+                yaxis2: histogramAxis,
+            },
             height: window.innerHeight,
             showFullAnnotation: true,
         };
     }
 
-    public componentDidMount() {
-        const setState = this.setState.bind(this);
-        window.addEventListener("resize", function () {
-            // Using Plotly's relayout-function with graph-name and
-            // the variable with the new height and width
-            setState({
-                height: window.innerHeight,
+    public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
+        const { xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
+        if (
+            xTickConversion !== prevProps.xTickConversion ||
+            yTickConversion !== prevProps.yTickConversion
+        ) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    annotations: this.makeAnnotations(),
+                    xaxis: this.makeAxis(
+                        [0, 0.85],
+                        ".1f",
+                        false,
+                        xAxisType as AxisType,
+                        xTickConversion
+                    ),
+                    yaxis: this.makeAxis(
+                        [0, 0.85],
+                        ".1f",
+                        false,
+                        yAxisType as AxisType,
+                        yTickConversion
+                    ),
+                },
             });
-        });
+        }
+        if (this.state.height !== prevState.height) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    height: this.state.height - GENERAL_PLOT_SETTINGS.heightMargin,
+                },
+            });
+        }
     }
 
+    private resize() {
+        // Using Plotly's relayout-function with graph-name and
+        // the variable with the new height and width
+        this.setState(() => ({
+            height: window.innerHeight,
+        }));
+    }
+
+    public componentDidMount() {
+        window.addEventListener("resize", this.resize);
+    }
+    public componentWillUnmount() {
+        window.removeEventListener("resize", this.resize);
+    }
     public clickedAnnotation() {
         this.setState({ showFullAnnotation: false });
     }
@@ -169,7 +238,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             <Plot
                 data={plotDataArray}
                 useResizeHandler={true}
-                layout={this.makeLayout()}
+                layout={this.state.layout}
                 config={options}
                 onClick={onPointClicked}
                 onClickAnnotation={this.clickedAnnotation}
