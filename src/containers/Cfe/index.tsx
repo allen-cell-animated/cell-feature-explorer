@@ -45,29 +45,6 @@ interface CfeState {
 class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
 
-    private static hackyViewerTitleOverlay = (id: string, label: string, value: string) => {
-        const parent = document.querySelector(".cell-viewer-wrapper .ant-layout-content");
-        let wrapper = document.querySelector(".image-info-wrapper");
-        if (parent) {
-            if (!wrapper) {
-                wrapper = document.createElement("div");
-                wrapper.className = "image-info-wrapper";
-            }
-            parent.appendChild(wrapper);
-            // FIXME: the CSS Modules class names here aren't working, probably
-            // need to turn them into regular class names and use global selectors
-            // in the stylesheet.
-            wrapper.innerHTML = `
-                <h4 class="viewer-overlay-title">
-                    <span class="label">Viewing cell:</span>${" "}
-                    ${id},${" "}
-                    <span class="label">${label}:</span>${" "}
-                    ${value}
-                </h4>
-            `;
-        }
-    };
-
     public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
@@ -83,14 +60,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
-        // Add selected cell info on top left corner of canvas
-        // TODO: The info should ideally be passed into web-3d-cell-viewer and
-        // handled there.
-        const { viewerHeader } = this.props;
-        const { viewerHeader: prevViewerHeader } = prevProps;
-        if (viewerHeader.cellId !== undefined && viewerHeader.cellId !== prevViewerHeader.cellId) {
-            Cfe.hackyViewerTitleOverlay(viewerHeader.cellId, viewerHeader.label, viewerHeader.value);
-        }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,
             // otherwise the 3D viewer canvas will have 0 height and 0 width.
@@ -163,25 +132,40 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <Menu
-                        className={styles.tabbedMenu}
-                        onClick={this.handleTabClick}
-                        selectedKeys={[this.state.currentTab]}
-                        mode="horizontal"
-                    >
-                        <Menu.Item key={PLOT_TAB_KEY}>
-                            <span
-                                className={classNames(["icon-moon", "anticon", styles.plotIcon])}
-                            />
-                            Plot
-                        </Menu.Item>
-                        <Menu.Item key={VIEWER_TAB_KEY}>
-                            <span
-                                className={classNames(["icon-moon", "anticon", styles.cubeIcon])}
-                            />
-                            3D Viewer
-                        </Menu.Item>
-                    </Menu>
+                    <div style={{display: "flex", alignItems: "center"}}>
+                        <span style={{width: "450px"}}>
+                            <Menu
+                                className={styles.tabbedMenu}
+                                onClick={this.handleTabClick}
+                                selectedKeys={[this.state.currentTab]}
+                                mode="horizontal"
+                            >
+                                <Menu.Item key={PLOT_TAB_KEY}>
+                                    <span
+                                        className={classNames(["icon-moon", "anticon", styles.plotIcon])}
+                                    />
+                                    Plot
+                                </Menu.Item>
+                                <Menu.Item key={VIEWER_TAB_KEY}>
+                                    <span
+                                        className={classNames(["icon-moon", "anticon", styles.cubeIcon])}
+                                    />
+                                    3D Viewer
+                                </Menu.Item>
+                            </Menu>
+                        </span>
+                        <span style={{flex: "auto", textAlign: "center"}}>
+                            <h4
+                                className="viewer-title"
+                                style={this.state.currentTab !== VIEWER_TAB_KEY ? {display: "none"} : {}}
+                            >
+                                <span className="label">Viewing cell: </span>
+                                {this.props.viewerHeader.cellId}
+                                <span className="label">, {this.props.viewerHeader.label}: </span>
+                                {this.props.viewerHeader.value}
+                            </h4>
+                        </span>
+                    </div>
                     <SmallScreenWarning
                         handleClose={this.handleClose}
                         onDismissCheckboxChecked={this.onDismissCheckboxChecked}

@@ -39,12 +39,12 @@
     margin-right: 120px;
 }
 
-:global(.viewer-overlay-title) {
+:global(.viewer-title) {
     margin-top: 2px;
-    display: inline-block;
+    align-self: center;
 }
 
-:global(.viewer-overlay-title .label) {
+:global(.viewer-title .label) {
     color: var(--text-gray);
 }
 
