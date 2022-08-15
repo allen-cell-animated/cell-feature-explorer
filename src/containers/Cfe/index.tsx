@@ -154,7 +154,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                 </Menu.Item>
                             </Menu>
                         </span>
-                        <span style={{flex: "auto", textAlign: "center"}}>
+                        <span style={{flex: "auto", textAlign: "center", marginRight: "120px"}}>
                             <h4
                                 className="viewer-title"
                                 style={this.state.currentTab !== VIEWER_TAB_KEY ? {display: "none"} : {}}
