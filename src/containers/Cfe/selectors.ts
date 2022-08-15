@@ -34,7 +34,7 @@ export const getPropsForVolumeViewer = createSelector(
             return {} as VolumeViewerProps;
         }
 
-        const formatPathForViewer = (path: string) => path.split("_atlas.json")[0];
+        const formatPathForViewer = (path: string) => path;
 
         /**
          * If there is not both single cell volume data and full field volume data
@@ -66,7 +66,9 @@ export const getPropsForVolumeViewer = createSelector(
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
         }
-
+        if (!dataRoot.endsWith("/")) {
+            dataRoot = dataRoot + "/";
+        }
         const props = {
             cellId: cellId,
             baseUrl: dataRoot,
@@ -81,13 +83,10 @@ export const getPropsForVolumeViewer = createSelector(
 );
 
 export const getViewerHeader = createSelector(
-    [
-        getSelected3DCellFileInfo,
-        getGroupByFeatureDef,
-    ],
+    [getSelected3DCellFileInfo, getGroupByFeatureDef],
     (
         fileInfo,
-        groupByFeatureDef: MeasuredFeatureDef,
+        groupByFeatureDef: MeasuredFeatureDef
     ): { cellId: string; label: string; value: string } => {
         let label = "";
         let value = "";
