@@ -40,6 +40,7 @@ interface CfeState {
     openKeys: string[];
     width: number;
     currentTab: string;
+    controlPanelCollapsed: boolean;
 }
 
 class Cfe extends React.Component<CfeProps, CfeState> {
@@ -51,6 +52,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         openKeys: [Cfe.panelKeys[0]],
         width: window.innerWidth,
         currentTab: PLOT_TAB_KEY,
+        controlPanelCollapsed: false,
     };
 
     public componentDidMount = () => {
@@ -87,6 +89,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         this.setState({ openKeys: value });
     };
 
+    public onControlPanelToggle = (collapsed: boolean) => {
+        this.setState({ controlPanelCollapsed: collapsed });
+    };
+
     public handleClose = () => {
         this.props.setShowSmallScreenWarning(false);
         this.props.requestFeatureData();
@@ -103,7 +109,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public render() {
         const { galleryCollapsed, toggleGallery, volumeViewerProps, showSmallScreenWarning } =
             this.props;
-        const { currentTab } = this.state;
+        const { currentTab, controlPanelCollapsed } = this.state;
 
         const viewerClassNames = classNames([
             styles.content,
@@ -132,32 +138,21 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                     </Sider>
                 </Affix>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <div style={{display: "flex", alignItems: "center"}}>
-                        <span style={{width: "450px"}}>
-                            <Menu
-                                className={styles.tabbedMenu}
-                                onClick={this.handleTabClick}
-                                selectedKeys={[this.state.currentTab]}
-                                mode="horizontal"
-                            >
-                                <Menu.Item key={PLOT_TAB_KEY}>
-                                    <span
-                                        className={classNames(["icon-moon", "anticon", styles.plotIcon])}
-                                    />
-                                    Plot
-                                </Menu.Item>
-                                <Menu.Item key={VIEWER_TAB_KEY}>
-                                    <span
-                                        className={classNames(["icon-moon", "anticon", styles.cubeIcon])}
-                                    />
-                                    3D Viewer
-                                </Menu.Item>
-                            </Menu>
-                        </span>
-                        <span style={{flex: "auto", textAlign: "center", marginRight: "120px"}}>
+                    <div
+                        className={
+                            controlPanelCollapsed
+                                ? classNames([styles.viewerMenuBar, styles.viewerMenuBarCollapsed])
+                                : styles.viewerMenuBar
+                        }
+                    >
+                        <span className={styles.viewerTitleContainer}>
                             <h4
                                 className="viewer-title"
-                                style={this.state.currentTab !== VIEWER_TAB_KEY ? {display: "none"} : {}}
+                                style={
+                                    this.state.currentTab !== VIEWER_TAB_KEY
+                                        ? { display: "none" }
+                                        : {}
+                                }
                             >
                                 <span className="label">Viewing cell: </span>
                                 {this.props.viewerHeader.cellId}
@@ -165,6 +160,33 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                 {this.props.viewerHeader.value}
                             </h4>
                         </span>
+                        <Menu
+                            className={styles.tabbedMenu}
+                            onClick={this.handleTabClick}
+                            selectedKeys={[this.state.currentTab]}
+                            mode="horizontal"
+                        >
+                            <Menu.Item key={PLOT_TAB_KEY}>
+                                <span
+                                    className={classNames([
+                                        "icon-moon",
+                                        "anticon",
+                                        styles.plotIcon,
+                                    ])}
+                                />
+                                Plot
+                            </Menu.Item>
+                            <Menu.Item key={VIEWER_TAB_KEY}>
+                                <span
+                                    className={classNames([
+                                        "icon-moon",
+                                        "anticon",
+                                        styles.cubeIcon,
+                                    ])}
+                                />
+                                3D Viewer
+                            </Menu.Item>
+                        </Menu>
                     </div>
                     <SmallScreenWarning
                         handleClose={this.handleClose}
@@ -175,7 +197,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         <PlotTab />
                     </Layout>
                     <Content className={viewerClassNames}>
-                        <CellViewer {...volumeViewerProps} />
+                        <CellViewer
+                            onControlPanelToggle={this.onControlPanelToggle}
+                            {...volumeViewerProps}
+                        />
                     </Content>
                 </Layout>
             </Layout>

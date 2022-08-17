@@ -25,6 +25,7 @@ export interface VolumeViewerProps {
     fovDownloadHref: string;
     cellDownloadHref: string;
     viewerChannelSettings?: ViewerChannelSettings;
+    onControlPanelToggle?(collapsed: boolean): void;
 }
 
 export const getPropsForVolumeViewer = createSelector(
