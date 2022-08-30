@@ -48,6 +48,7 @@ export interface Megaset {
     datasets: {
         [key: string]: DatasetMetaData
     };
+    extra?: string;
     publications?: Publication[];
 }
 
