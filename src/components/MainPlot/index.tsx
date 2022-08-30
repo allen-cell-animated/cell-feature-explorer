@@ -1,7 +1,6 @@
 import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
-import { isEqual } from "lodash";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";

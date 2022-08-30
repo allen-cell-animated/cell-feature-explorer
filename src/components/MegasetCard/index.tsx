@@ -41,6 +41,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
                     <DatasetCard key={dataset.id} {...dataset} handleSelectDataset={handleSelectDataset} />
                 ))}
             </div>
+            {megaset.extra && (<div className={styles.extra}>{megaset.extra}</div>)}
             {megaset.publications && megaset.publications.length > 0 && 
                 <div className={styles.publications}>
                     Publications
