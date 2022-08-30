@@ -44,6 +44,16 @@
     gap: 5px;
 }
 
+.extra {
+    font-weight: 400;
+    color: #fff;
+    border: 1.5px solid var(--purple);
+    border-radius: 0 0 20px 0;
+    margin-top: 10px;
+    padding: 10px 10px 10px 10px;
+    font-size: 12px;
+}
+
 /* Shrink publication font for mobile view */
 @media screen and (max-width: 480px) {
     .publication {
