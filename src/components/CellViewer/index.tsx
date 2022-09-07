@@ -6,7 +6,12 @@ import "antd/lib/drawer/style/index.less";
 
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
-import styles from "./style.css";
+const CONTAINER_STYLE = {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "red",
+};
 
 const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     if (!props.cellId) {
@@ -14,7 +19,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     }
 
     return (
-        <div className={styles.cellViewer}>
+        <div style={CONTAINER_STYLE}>
             <ImageViewerApp
                 cellId={props.cellId}
                 baseUrl={props.baseUrl}

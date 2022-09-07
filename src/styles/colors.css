@@ -13,9 +13,6 @@
     --off-white: #f8f8f8;
     --border-gray: var(--dimgray);
     --dark-theme-text-color: var(--off-white);
-    --bottom-panel: var(--background-black-purple);
-    --bottom-panel-trigger: var(--header-gray);
-    --bottom-panel-trigger-label: var(--light-gray);
     --megacard-background: var(--background-dim-gray);
     --link-text: var(--bright-blue);
 }
