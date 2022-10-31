@@ -107,7 +107,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     };
 
     public render() {
-        const { galleryCollapsed, toggleGallery, volumeViewerProps, showSmallScreenWarning } =
+        const { galleryCollapsed, toggleGallery, showSmallScreenWarning, viewerHeader } =
             this.props;
         const { currentTab, controlPanelCollapsed } = this.state;
 
@@ -147,16 +147,16 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                     >
                         <span className={styles.viewerTitleContainer}>
                             <h4
-                                className="viewer-title"
+                                className={styles.viewerTitle}
                                 style={
                                     this.state.currentTab !== VIEWER_TAB_KEY
                                         ? { display: "none" }
                                         : {}
                                 }
                             >
-                                <span className="label">Viewing cell: </span>
+                                <span className={styles.label}>Viewing cell: </span>
                                 {this.props.viewerHeader.cellId}
-                                <span className="label">, {this.props.viewerHeader.label}: </span>
+                                <span className={styles.label}>, {viewerHeader.label}: </span>
                                 {this.props.viewerHeader.value}
                             </h4>
                         </span>
@@ -199,7 +199,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                     <Content className={viewerClassNames}>
                         <CellViewer
                             onControlPanelToggle={this.onControlPanelToggle}
-                            {...volumeViewerProps}
+                            {...this.props.volumeViewerProps}
                         />
                     </Content>
                 </Layout>

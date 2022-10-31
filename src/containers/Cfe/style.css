@@ -39,7 +39,11 @@
     margin-right: 120px;
 }
 
-:global(.viewer-title .label) {
+.viewer-title {
+    margin-bottom: 0;
+}
+
+.viewer-title .label {
     color: var(--text-gray);
 }
 

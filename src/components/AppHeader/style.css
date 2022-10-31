@@ -34,11 +34,6 @@
     margin-left: 12px;
 }
 
-.viewer-title {
-    text-align: center;
-    font-size: 16px;
-    font-weight: 400;
-}
 .vertical-bar {
     display: inline-block;
     margin-right: 14px;
@@ -65,7 +60,6 @@
 }
 /* For small-med tablet in portrait mode or narrower */
 @media screen and (max-width: 768px) {
-
     /* Hide the Load Model button and the loaded trajectory name */
     .page-header .viewer-title,
     .page-header :global(.ant-btn-primary) {
@@ -79,7 +73,8 @@
 /* For smartphone in portrait mode */
 @media screen and (max-width: 480px) {
     /* Hide "| Simularium Home" */
-    .vertical-bar, .cfe-home {
+    .vertical-bar,
+    .cfe-home {
         display: none;
     }
 }
