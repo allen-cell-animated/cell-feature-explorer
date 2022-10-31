@@ -31,7 +31,7 @@ class PlotTab extends React.Component {
             <>
                 <Sider
                     className={styles.colorMenu}
-                    width={450}
+                    width={500}
                     collapsible={false}
                     collapsedWidth={250}
                 >

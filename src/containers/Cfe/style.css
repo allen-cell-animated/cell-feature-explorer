@@ -63,6 +63,7 @@
 
 .viewer-menu-bar {
     position: relative;
+    overflow: hidden;
 }
 
 .viewer-title-container {
