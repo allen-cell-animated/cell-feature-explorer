@@ -23,7 +23,7 @@
 .content {
     flex: 2;
     background-color: black;
-    max-height: calc(100vh  - var(--header-height) - var(--tab-bar-height));
+    max-height: calc(100vh - var(--header-height) - var(--tab-bar-height));
 }
 
 .blur {
@@ -39,12 +39,7 @@
     margin-right: 120px;
 }
 
-:global(.viewer-overlay-title) {
-    margin-top: 2px;
-    display: inline-block;
-}
-
-:global(.viewer-overlay-title .label) {
+:global(.viewer-title .label) {
     color: var(--text-gray);
 }
 
@@ -60,6 +55,34 @@
 
 .header-main h1 {
     margin: 0;
+}
+
+.viewer-menu-bar {
+    position: relative;
+}
+
+.viewer-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 450px;
+    right: 120px;
+    transition: left 0.2s;
+}
+
+@media screen and (max-width: 950px) {
+    .viewer-title-container {
+        justify-content: right;
+        padding-right: 12px;
+    }
+}
+
+.viewer-menu-bar-collapsed > .viewer-title-container {
+    left: 0;
 }
 
 :global(.allencell-header) {
@@ -101,27 +124,26 @@
 :global(.ant-collapse),
 :global(.ant-collapse-header),
 :global(.ant-collapse > .ant-collapse-item:last-child),
-:global(.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header)
-{
+:global(.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header) {
     border-radius: 0;
 }
 
-.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger){
+.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger) {
     width: 20px !important;
     height: 100%;
     position: absolute;
     left: -20px;
     top: 0px;
-    background-color:  var(--header-gray);
+    background-color: var(--header-gray);
     border-left: 0.5px solid var(--border-gray);
     border-right: none;
 
-& i {
-      display: block;
-      position: absolute;
-      left: 3.5px;
-      top: 50%;
-  }
+    & i {
+        display: block;
+        position: absolute;
+        left: 3.5px;
+        top: 50%;
+    }
 }
 
 .sider :global(.ant-layout-sider-children) {
@@ -139,13 +161,13 @@
     position: absolute;
     left: -20px;
     top: 0px;
-    background-color:#000000a1;
+    background-color: #000000a1;
     border-left: 0.5px solid var(--border-gray);
     border-right: 0.5px solid var(--border-gray);
 
     & i {
-          display: none;
-      }
+        display: none;
+    }
 }
 
 :global(.ant-btn-background-ghost) {
@@ -171,21 +193,21 @@
 }
 
 /* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item), :global(.ant-menu-horizontal > .ant-menu-submenu) {
+:global(.ant-menu-horizontal > .ant-menu-item),
+:global(.ant-menu-horizontal > .ant-menu-submenu) {
     border-bottom: 3px solid transparent;
 }
 
 /* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item:hover), 
+:global(.ant-menu-horizontal > .ant-menu-item:hover),
 :global(.ant-menu-horizontal > .ant-menu-submenu:hover),
 :global(.ant-menu-horizontal > .ant-menu-item-active),
 :global(.ant-menu-horizontal > .ant-menu-submenu-active),
-:global(.ant-menu-horizontal > .ant-menu-item-open), 
+:global(.ant-menu-horizontal > .ant-menu-item-open),
 :global(.ant-menu-horizontal > .ant-menu-submenu-open),
 :global(.ant-menu-horizontal > .ant-menu-item-selected),
-:global(.ant-menu-horizontal > .ant-menu-submenu-selected)
-{
-  border-bottom: 3px solid #ffffff;
+:global(.ant-menu-horizontal > .ant-menu-submenu-selected) {
+    border-bottom: 3px solid #ffffff;
 }
 
 /* Icomoon icons */
