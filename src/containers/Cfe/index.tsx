@@ -13,6 +13,7 @@ import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
 import ThumbnailGallery from "../ThumbnailGallery";
 import PlotTab from "../../components/PlotTab";
+import AlignControl from "../../components/AlignControl";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
@@ -22,6 +23,9 @@ import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
+
+// TODO make it a prop or something
+const SHOW_ALIGN_BUTTON = true;
 
 interface CfeProps {
     galleryCollapsed: boolean;
@@ -46,6 +50,12 @@ interface CfeState {
 class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
 
+    // Weird hack to get align button into the viewer toolbar:
+    // 1. create this element as a container to hold the align control
+    // 2. render the align control into the container with a ReactDOM portal
+    // 3. inject the container into the toolbar with regular old DOM methods in componentDidUpdate
+    private alignContainer = document.createElement("span");
+
     public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
         dontShowSmallScreenWarningAgain: false,
@@ -62,6 +72,12 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
+        if (SHOW_ALIGN_BUTTON) {
+            const toolbar = document.querySelector(".viewer-toolbar");
+            if (toolbar) {
+                toolbar.prepend(this.alignContainer);
+            }
+        }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,
             // otherwise the 3D viewer canvas will have 0 height and 0 width.
@@ -201,6 +217,13 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                             onControlPanelToggle={this.onControlPanelToggle}
                             {...this.props.volumeViewerProps}
                         />
+                        {SHOW_ALIGN_BUTTON && (
+                            <AlignControl
+                                parent={this.alignContainer}
+                                aligned={false}
+                                setAligned={console.log}
+                            />
+                        )}
                     </Content>
                 </Layout>
             </Layout>
