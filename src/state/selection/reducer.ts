@@ -1,8 +1,4 @@
-import {
-    filter,
-    pickBy,
-    uniqBy,
-} from "lodash";
+import { filter, pickBy, uniqBy } from "lodash";
 import { AnyAction } from "redux";
 import { SelectedGroups } from "..";
 
@@ -35,6 +31,7 @@ import {
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
     CLEAR_DATASET,
     CHANGE_GROUP_BY_CATEGORY,
+    SET_ALIGN_ACTIVE,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -55,6 +52,7 @@ import {
     SelectAxisAction,
     SelectionStateBranch,
     SelectPointAction,
+    SetAlignActiveAction,
 } from "./types";
 
 export const initialState = {
@@ -87,6 +85,7 @@ export const initialState = {
     thumbnailRoot: "",
     downloadRoot: "",
     volumeViewerDataRoot: "",
+    alignActive: false,
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
@@ -266,6 +265,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
             selectedAlbumFileInfo: action.payload,
+        }),
+    },
+    [SET_ALIGN_ACTIVE]: {
+        accepts: (action: AnyAction): action is SetAlignActiveAction =>
+            action.type === SET_ALIGN_ACTIVE,
+        perform: (state: SelectionStateBranch, action: SetAlignActiveAction) => ({
+            ...state,
+            alignActive: action.payload,
         }),
     },
 };

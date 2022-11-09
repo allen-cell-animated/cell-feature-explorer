@@ -24,6 +24,7 @@ import {
     SELECT_ARRAY_OF_POINTS,
     CLEAR_DATASET,
     CHANGE_GROUP_BY_CATEGORY,
+    SET_ALIGN_ACTIVE,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -203,3 +204,9 @@ export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
     };
 }
 
+export function setAlignActive(payload: boolean) {
+    return {
+        payload,
+        type: SET_ALIGN_ACTIVE,
+    };
+}

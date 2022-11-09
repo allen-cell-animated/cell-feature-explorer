@@ -2,6 +2,7 @@ import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
 import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
 import {
+    getAlignActive,
     getDownloadRoot,
     getGroupByFeatureDef,
     getSelected3DCellFileInfo,
@@ -25,12 +26,28 @@ export interface VolumeViewerProps {
     fovDownloadHref: string;
     cellDownloadHref: string;
     viewerChannelSettings?: ViewerChannelSettings;
+    transform?: {
+        translate: [number, number, number];
+        rotate: [number, number, number];
+    };
     onControlPanelToggle?(collapsed: boolean): void;
 }
 
 export const getPropsForVolumeViewer = createSelector(
-    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getViewerChannelSettings],
-    (fileInfo: FileInfo, dataRoot, downloadRoot, viewerChannelSettings): VolumeViewerProps => {
+    [
+        getSelected3DCellFileInfo,
+        getVolumeViewerDataRoot,
+        getDownloadRoot,
+        getViewerChannelSettings,
+        getAlignActive,
+    ],
+    (
+        fileInfo: FileInfo,
+        dataRoot,
+        downloadRoot,
+        viewerChannelSettings,
+        alignActive
+    ): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
@@ -77,6 +94,12 @@ export const getPropsForVolumeViewer = createSelector(
             fovPath: parentCellPath,
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
+            transform: alignActive
+                ? {
+                      translate: [0, 0, 0] as [number, number, number],
+                      rotate: [0, Math.PI * 0.75, 0] as [number, number, number],
+                  }
+                : undefined,
             viewerChannelSettings,
         };
         return props;
@@ -97,10 +120,6 @@ export const getViewerHeader = createSelector(
         const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
         label = groupByFeatureDef.displayName;
         value = fileInfo[GROUP_BY_KEY] || "";
-        return {
-            cellId,
-            label,
-            value,
-        };
+        return { cellId, label, value };
     }
 );

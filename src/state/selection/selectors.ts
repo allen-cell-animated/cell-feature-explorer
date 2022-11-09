@@ -12,12 +12,7 @@ import {
 } from "lodash";
 import { createSelector } from "reselect";
 
-import {
-    ARRAY_OF_CELL_IDS_KEY,
-    CELL_ID_KEY,
-    FOV_ID_KEY,
-    GROUP_BY_KEY,
-} from "../../constants";
+import { ARRAY_OF_CELL_IDS_KEY, CELL_ID_KEY, FOV_ID_KEY, GROUP_BY_KEY } from "../../constants";
 import {
     getPerCellDataForPlot,
     getMeasuredFeaturesKeys,
@@ -75,6 +70,7 @@ export const getSelectedAlbumFileInfo = (state: State): FileInfo[] =>
 export const getDownloadRoot = (state: State): string => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State): string =>
     state.selection.volumeViewerDataRoot;
+export const getAlignActive = (state: State): boolean => state.selection.alignActive;
 
 export const getSelectedDatasetName = createSelector(
     [getSelectedDataset],
@@ -179,7 +175,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
     }
 );
 
-// =============================================================================================== 
+// ===============================================================================================
 
 // MAIN PLOT SELECTORS
 // ===================
@@ -203,9 +199,12 @@ export const getGroupingCategoryNamesAsArray = createSelector(
      * ["beta-actin", "beta-actin", "tom20", "tom20"]
      */
     [getPerCellDataForPlot, getGroupByFeatureDef],
-    (perCellDataForPlot: DataForPlot, groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef): string[] => {
+    (
+        perCellDataForPlot: DataForPlot,
+        groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef
+    ): string[] => {
         const categoryKey: string = groupByCategoryFeatureDef.key;
-        return map(perCellDataForPlot.values[categoryKey], (ele: (number | null)): string => {
+        return map(perCellDataForPlot.values[categoryKey], (ele: number | null): string => {
             const numeralRepresentationOfTheCategory = ele !== null ? ele.toString() : "";
             return getCategoryString(groupByCategoryFeatureDef, numeralRepresentationOfTheCategory);
         });

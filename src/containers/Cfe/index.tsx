@@ -8,7 +8,7 @@ import classNames from "classnames";
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
 import selectionStateBranch from "../../state/selection";
-import { BoolToggleAction } from "../../state/selection/types";
+import { BoolToggleAction, SetAlignActiveAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
 import ThumbnailGallery from "../ThumbnailGallery";
@@ -35,6 +35,8 @@ interface CfeProps {
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
+    alignActive: boolean;
+    setAlignActive: ActionCreator<SetAlignActiveAction>;
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
@@ -220,8 +222,8 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         {SHOW_ALIGN_BUTTON && (
                             <AlignControl
                                 parent={this.alignContainer}
-                                aligned={false}
-                                setAligned={console.log}
+                                aligned={this.props.alignActive}
+                                setAligned={this.props.setAlignActive}
                             />
                         )}
                     </Content>
@@ -238,6 +240,7 @@ function mapStateToProps(state: State) {
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
         viewerHeader: getViewerHeader(state),
+        alignActive: selectionStateBranch.selectors.getAlignActive(state),
     };
 }
 
@@ -245,6 +248,7 @@ const dispatchToPropsMap = {
     toggleGallery: selectionStateBranch.actions.toggleGallery,
     setShowSmallScreenWarning: metadataStateBranch.actions.setShowSmallScreenWarning,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
+    setAlignActive: selectionStateBranch.actions.setAlignActive,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(Cfe);
