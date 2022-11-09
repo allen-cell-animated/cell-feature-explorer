@@ -55,6 +55,7 @@ describe("Viewer selectors", () => {
                 fovDownloadHref: "&id=F12762",
                 fovPath: "fovVolumeviewerPath",
                 viewerChannelSettings: {},
+                transform: undefined,
             });
         });
         it("if there is no single cell data, returns fov info as main info", () => {
@@ -75,6 +76,7 @@ describe("Viewer selectors", () => {
                 fovDownloadHref: "",
                 fovPath: "",
                 viewerChannelSettings: {},
+                transform: undefined,
             });
         });
         it("if dataset has channelNameMapping data, it will be included", () => {
