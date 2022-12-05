@@ -24,9 +24,6 @@ const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
 
-// TODO make it a prop or something
-const SHOW_ALIGN_BUTTON = true;
-
 interface CfeProps {
     galleryCollapsed: boolean;
     toggleGallery: ActionCreator<BoolToggleAction>;
@@ -35,6 +32,7 @@ interface CfeProps {
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
+    showAlignControl: boolean;
     alignActive: boolean;
     setAlignActive: ActionCreator<SetAlignActiveAction>;
     viewerHeader: { cellId: string; label: string; value: string };
@@ -74,7 +72,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
-        if (SHOW_ALIGN_BUTTON) {
+        if (this.props.showAlignControl) {
             document.querySelector(".viewer-toolbar")?.prepend(this.alignContainer);
         }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
@@ -216,7 +214,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                             onControlPanelToggle={this.onControlPanelToggle}
                             {...this.props.volumeViewerProps}
                         />
-                        {SHOW_ALIGN_BUTTON && (
+                        {this.props.showAlignControl && (
                             <AlignControl
                                 parent={this.alignContainer}
                                 aligned={this.props.alignActive}
@@ -237,6 +235,7 @@ function mapStateToProps(state: State) {
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
         viewerHeader: getViewerHeader(state),
+        showAlignControl: selectionStateBranch.selectors.getSelected3DCelHasTransform(state),
         alignActive: selectionStateBranch.selectors.getAlignActive(state),
     };
 }

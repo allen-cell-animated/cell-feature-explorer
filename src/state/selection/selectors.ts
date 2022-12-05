@@ -447,6 +447,11 @@ export const getSelected3DCellFOV = createSelector(
     }
 );
 
+export const getSelected3DCelHasTransform = createSelector(
+    [getSelected3DCellFileInfo],
+    (fileInfo): boolean => !!fileInfo.transform
+);
+
 // ===============================================================================================
 
 // LASSOED or BOX SELECTED GROUPS SELECTORS

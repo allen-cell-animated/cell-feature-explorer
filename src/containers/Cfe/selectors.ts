@@ -41,13 +41,7 @@ export const getPropsForVolumeViewer = createSelector(
         getViewerChannelSettings,
         getAlignActive,
     ],
-    (
-        fileInfo: FileInfo,
-        dataRoot,
-        downloadRoot,
-        viewerChannelSettings,
-        alignActive
-    ): VolumeViewerProps => {
+    (fileInfo, dataRoot, downloadRoot, viewerChannelSettings, alignActive): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
@@ -94,12 +88,7 @@ export const getPropsForVolumeViewer = createSelector(
             fovPath: parentCellPath,
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
-            transform: alignActive
-                ? {
-                      translate: [0, 0, 0] as [number, number, number],
-                      rotate: [0, Math.PI * 0.75, 0] as [number, number, number],
-                  }
-                : undefined,
+            transform: alignActive ? fileInfo.transform : undefined,
             viewerChannelSettings,
         };
         return props;
