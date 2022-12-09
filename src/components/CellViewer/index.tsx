@@ -29,6 +29,8 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 fovPath={props.fovPath}
                 viewerChannelSettings={props.viewerChannelSettings}
                 onControlPanelToggle={props.onControlPanelToggle}
+                metadata={props.metadata}
+                metadataFormat={props.metadataFormat}
                 appHeight="100%"
                 canvasMargin="0 120px 0 0"
             />

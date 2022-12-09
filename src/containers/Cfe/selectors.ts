@@ -4,6 +4,7 @@ import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getDownloadRoot,
     getGroupByFeatureDef,
+    getSelected3DCellFeatureData,
     getSelected3DCellFileInfo,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
@@ -14,7 +15,7 @@ import {
 } from "../../state/util";
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { getViewerChannelSettings } from "../../state/metadata/selectors";
+import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
 export interface VolumeViewerProps {
@@ -25,12 +26,34 @@ export interface VolumeViewerProps {
     fovDownloadHref: string;
     cellDownloadHref: string;
     viewerChannelSettings?: ViewerChannelSettings;
+    metadata?: { [key: string]: string | number | null };
+    metadataFormat?: { [key: string]: { displayName?: string, unit?: string, tooltip?: string } };
     onControlPanelToggle?(collapsed: boolean): void;
 }
 
+const getCellMetadata = createSelector(
+    [getSelected3DCellFeatureData, getMeasuredFeaturesDefs],
+    (featureData, featureDefs) => {
+        const metadata: { [key: string]: number | string | null} = {};
+        const metadataFormat: {[key: string]: { displayName?: string, tooltip?: string, unit?: string }} = {};
+        for (const feature of featureDefs) {
+            const { key, displayName, tooltip, unit } = feature;
+            metadataFormat[key] = {
+                displayName,
+                tooltip,
+                unit: (unit === "unitless" || unit === "stage") ? undefined : unit,
+            };
+
+            const rawValue = featureData[key];
+            metadata[key] = (feature.discrete && rawValue !== null) ? feature.options[rawValue]?.name : rawValue;
+        }
+        return { metadata, metadataFormat };
+    }
+);
+
 export const getPropsForVolumeViewer = createSelector(
-    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getViewerChannelSettings],
-    (fileInfo: FileInfo, dataRoot, downloadRoot, viewerChannelSettings): VolumeViewerProps => {
+    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getViewerChannelSettings, getCellMetadata],
+    (fileInfo: FileInfo, dataRoot, downloadRoot, viewerChannelSettings, cellMetadata): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
@@ -70,16 +93,17 @@ export const getPropsForVolumeViewer = createSelector(
         if (!dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
-        const props = {
+        return {
             cellId: cellId,
             baseUrl: dataRoot,
             cellPath: mainCellPath,
             fovPath: parentCellPath,
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
+            metadata: cellMetadata.metadata,
+            metadataFormat: cellMetadata.metadataFormat,
             viewerChannelSettings,
         };
-        return props;
     }
 );
 
