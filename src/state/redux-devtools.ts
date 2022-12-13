@@ -18,12 +18,10 @@ const summarizeLongArray = <T>(arr: T[]): SummarizedArray<T> => {
     return slice;
 }
 
-const summarizeMapOfLongArrays = <T>(object: { [key: string]: T[] }) => mapValues(object, summarizeLongArray);
-
 const summarizeFeatureData = (data: MetadataStateBranch["featureData"]) => ({
     indices: summarizeLongArray(data.indices),
-    values: summarizeMapOfLongArrays(data.values),
-    labels: summarizeMapOfLongArrays(data.labels),
+    values: mapValues(data.values, summarizeLongArray),
+    labels: mapValues(data.labels, summarizeLongArray),
 });
 
 const actionSanitizer = (action: AnyAction) => (
@@ -33,7 +31,7 @@ const stateSanitizer = (state: State) => ({
     ...state,
     metadata: {
         ...state.metadata,
-        featureData: summarizeFeatureData(state.metadata.featureData)
+        featureData: summarizeFeatureData(state.metadata.featureData),
     }
 });
 
