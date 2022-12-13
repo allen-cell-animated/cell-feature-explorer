@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
-import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getAlignActive,
     getDownloadRoot,
@@ -27,8 +27,8 @@ export interface VolumeViewerProps {
     cellDownloadHref: string;
     viewerChannelSettings?: ViewerChannelSettings;
     transform?: {
-        translate: [number, number, number];
-        rotate: [number, number, number];
+        translation: [number, number, number];
+        rotation: [number, number, number];
     };
     onControlPanelToggle?(collapsed: boolean): void;
 }

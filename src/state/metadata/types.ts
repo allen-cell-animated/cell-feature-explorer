@@ -38,8 +38,8 @@ export interface FileInfo {
     [THUMBNAIL_PATH]: string;
     [VOLUME_VIEWER_PATH]: string;
     [TRANSFORM]?: {
-        translate: [number, number, number];
-        rotate: [number, number, number];
+        translation: [number, number, number];
+        rotation: [number, number, number];
     };
     [GROUP_BY_KEY]?: string;
     index?: number; // added to the data after it's loaded for fast lookup into other array
