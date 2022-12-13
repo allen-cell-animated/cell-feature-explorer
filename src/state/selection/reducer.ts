@@ -52,7 +52,6 @@ import {
     SelectAxisAction,
     SelectionStateBranch,
     SelectPointAction,
-    SetAlignActiveAction,
 } from "./types";
 
 export const initialState = {
@@ -268,9 +267,9 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_ALIGN_ACTIVE]: {
-        accepts: (action: AnyAction): action is SetAlignActiveAction =>
+        accepts: (action: AnyAction): action is BoolToggleAction =>
             action.type === SET_ALIGN_ACTIVE,
-        perform: (state: SelectionStateBranch, action: SetAlignActiveAction) => ({
+        perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             alignActive: action.payload,
         }),

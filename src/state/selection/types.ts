@@ -171,8 +171,3 @@ export interface ChangeGroupByCategory {
     payload: string;
     type: string;
 }
-
-export interface SetAlignActiveAction {
-    payload: boolean;
-    type: string;
-}

@@ -8,7 +8,7 @@ import classNames from "classnames";
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
 import selectionStateBranch from "../../state/selection";
-import { BoolToggleAction, SetAlignActiveAction } from "../../state/selection/types";
+import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
 import ThumbnailGallery from "../ThumbnailGallery";
@@ -34,7 +34,7 @@ interface CfeProps {
     requestFeatureData: ActionCreator<RequestAction>;
     showAlignControl: boolean;
     alignActive: boolean;
-    setAlignActive: ActionCreator<SetAlignActiveAction>;
+    setAlignActive: ActionCreator<BoolToggleAction>;
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
