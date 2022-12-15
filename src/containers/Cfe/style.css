@@ -79,7 +79,7 @@
     transition: left 0.2s;
 }
 
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 1000px) {
     .viewer-title-container {
         justify-content: right;
         padding-right: 12px;
