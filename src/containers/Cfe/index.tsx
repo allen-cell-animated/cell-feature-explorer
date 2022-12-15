@@ -73,7 +73,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
         if (this.props.showAlignControl) {
-            document.querySelector(".viewer-toolbar")?.prepend(this.alignContainer);
+            document.querySelector(".viewer-toolbar-left")?.prepend(this.alignContainer);
         }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,

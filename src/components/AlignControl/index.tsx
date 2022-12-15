@@ -18,7 +18,7 @@ type AlignControlProps = {
 
 const AlignControl: React.FC<AlignControlProps> = ({ aligned, setAligned, parent }) =>
     createPortal(
-        <span className="viewer-toolbar-left">
+        <>
             <span className="viewer-toolbar-group">
                 <span>Alignment</span>
                 <Tooltip title={infoText} placement="bottom">
@@ -39,7 +39,7 @@ const AlignControl: React.FC<AlignControlProps> = ({ aligned, setAligned, parent
                     </Tooltip>
                 </Radio.Group>
             </span>
-        </span>,
+        </>,
         parent
     );
 
