@@ -3,8 +3,7 @@
 
 .content {
     flex: 2;
-    padding: 20px 40px;
-    font-weight: 100;
+    padding: 20px 0;
 }
 
 .header {
@@ -12,11 +11,15 @@
     margin-right: 1em;
 }
 
-.subtitle {
+.title {
     text-align: center;
-    font-size: 24px;
     margin-top: 1em;
     margin-bottom: 0;
+}
+
+.subtitle {
+    composes: title;
+    font-size: 24px;
 }
 .alert {
     margin-right: 120px;
@@ -52,10 +55,17 @@
 }
 
 .section {
-    margin: 0.5em auto 2em auto;
+    font-size: 1.2rem;
+    line-height: 1.75;
+    margin: 0;
     column-gap: var(--dataset-card-gap-width);
-    max-width: var(--datasets-section-max-width);
     justify-content: center;
+}
+
+.section-content {
+    margin: 0.5em auto 2em auto;
+    max-width: 1010px;
+    max-width: var(--datasets-section-max-width);
 }
 
 .caption {
@@ -66,17 +76,15 @@
 }
 
 .light-section {
+    composes: section;
     background-color: var(--background-dim-gray);
-    margin: 0 -40px -20px -40px;
-    font-size: 1.2rem;
-    line-height: 1.75;
     color: var(--text-gray);
 }
 
-.light-section-content {
-    margin: 2em auto;
-    max-width: 1010px;
+.card-container {
+    column-gap: var(--dataset-card-gap-width);
 }
+
 
 .light-section .subtitle {
     margin-bottom: 1.2em;
