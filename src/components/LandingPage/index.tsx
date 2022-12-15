@@ -1,9 +1,10 @@
 import React from "react";
-import { Row, Col, Layout } from "antd";
+import { Row, Col, Layout, Descriptions } from "antd";
+const { Content } = Layout;
 
 import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
-const { Content } = Layout;
+import downloadData, { DownloadInfo } from "./download-data";
 
 import styles from "./style.css";
 
@@ -94,24 +95,34 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                     <Col className={styles.sectionContent}>
                         <h2 className={styles.subtitle}>Download cell feature data (via Quilt)</h2>
                         <Row type="flex" className={styles.section}>
-                            {megasets.map((megaset: Megaset) => {
-                                console.log(megaset);
-                                const date = new Date(megaset.dateCreated.seconds * 1000);
-                                return (
-                                    <>
-                                        <Col md={6}>
-                                            {date.getMonth() + 1}/{date.getDate()}/
-                                            {date.getFullYear()}
-                                        </Col>
-                                        <Col md={6}>megaset.download</Col>
-                                    </>
-                                );
-                            })}
+                            <Descriptions layout="horizontal" colon={false} column={1}>
+                                <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
+
+                                {downloadData.map((downloadInfo: DownloadInfo) => {
+                                    return (
+                                        <>
+                                            <Descriptions.Item label={downloadInfo.date}>
+                                                {" "}
+                                                <a
+                                                    target="_blank"
+                                                    href={downloadInfo.link}
+                                                    rel="noreferrer"
+                                                >
+                                                    {downloadInfo.title}
+                                                </a>
+                                            </Descriptions.Item>
+                                        </>
+                                    );
+                                })}
+                            </Descriptions>
                         </Row>
                         <div className={styles.paragraph}>
                             Once you navigate to Quilt, you can follow the instructions provided to
-                            access the cell feature data. If you need assistance, please visit the
-                            Allen Cell Discussion Forum.
+                            access the cell feature data. If you need assistance, please visit the{" "}
+                            <a href="https://forum.allencell.org/tags/c/software-code/11/cell-feature-explorer">
+                                Allen Cell Discussion Forum
+                            </a>
+                            .
                         </div>
                     </Col>
                 </Row>

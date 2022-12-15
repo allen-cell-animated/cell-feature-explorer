@@ -90,8 +90,24 @@
     margin-bottom: 1.2em;
 }
 
+.section .paragraph {
+    color: var(--text-gray);
+}
+
 .light-section .paragraph {
     padding: 0 20px;
+}
+
+.content :global(.ant-descriptions-view table) {
+    table-layout: initial
+}
+
+.content :global(.ant-descriptions-item-label) {
+    width: 168px;
+    color: var(--text-gray);
+}
+.content :global(.ant-descriptions-item-content) {
+    color: var(--text-gray);
 }
 
 @media screen and (max-width: 768px) {
