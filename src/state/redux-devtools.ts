@@ -1,9 +1,10 @@
 import { mapValues } from "lodash";
+import { AnyAction, compose } from "redux";
+
 import { BATCH_ACTIONS } from "./util";
 import { RECEIVE_DATA_FOR_PLOT } from "./metadata/constants";
 import { MetadataStateBranch } from "./metadata/types";
-import { AnyAction, compose } from "redux";
-import { State } from ".";
+import { State } from "./types";
 
 // Redux DevTools runs unusably slowly if forced to save large arrays of feature data over and over again
 // The point of this file is to ensure it doesn't have to
