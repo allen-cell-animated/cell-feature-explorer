@@ -235,7 +235,7 @@ function mapStateToProps(state: State) {
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
         viewerHeader: getViewerHeader(state),
-        showAlignControl: selectionStateBranch.selectors.getSelected3DCelHasTransform(state),
+        showAlignControl: selectionStateBranch.selectors.getSelected3DCellHasTransform(state),
         alignActive: selectionStateBranch.selectors.getAlignActive(state),
     };
 }

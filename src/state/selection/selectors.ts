@@ -447,7 +447,7 @@ export const getSelected3DCellFOV = createSelector(
     }
 );
 
-export const getSelected3DCelHasTransform = createSelector(
+export const getSelected3DCellHasTransform = createSelector(
     [getSelected3DCellFileInfo],
     (fileInfo): boolean => !!fileInfo.transform
 );
