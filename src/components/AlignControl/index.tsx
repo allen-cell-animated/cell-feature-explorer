@@ -27,12 +27,12 @@ const AlignControl: React.FC<AlignControlProps> = ({ aligned, setAligned, parent
             </span>
             <span className="viewer-toolbar-group">
                 <Radio.Group value={aligned} onChange={({ target }) => setAligned(target.value)}>
-                    <Tooltip title="Turn on alignment" placement="bottom">
+                    <Tooltip title="Turn off alignment" placement="bottom">
                         <Radio.Button key={0} value={false}>
                             Off
                         </Radio.Button>
                     </Tooltip>
-                    <Tooltip title="Turn off alignment" placement="bottom">
+                    <Tooltip title="Turn on alignment" placement="bottom">
                         <Radio.Button key={1} value={true}>
                             On
                         </Radio.Button>
