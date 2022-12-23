@@ -15,6 +15,7 @@ export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
 export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
 export const THUMBNAIL_PATH = "thumbnailPath";
 export const VOLUME_VIEWER_PATH = "volumeviewerPath";
+export const TRANSFORM = "transform";
 
 export type FILE_INFO_KEY =
     | typeof CELL_ID_KEY

@@ -13,6 +13,7 @@ import metadataStateBranch from "../../state/metadata";
 import { State } from "../../state/types";
 import ThumbnailGallery from "../ThumbnailGallery";
 import PlotTab from "../../components/PlotTab";
+import AlignControl from "../../components/AlignControl";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
@@ -31,6 +32,9 @@ interface CfeProps {
     showSmallScreenWarning: boolean;
     setShowSmallScreenWarning: ActionCreator<SetSmallScreenWarningAction>;
     requestFeatureData: ActionCreator<RequestAction>;
+    showAlignControl: boolean;
+    alignActive: boolean;
+    setAlignActive: ActionCreator<BoolToggleAction>;
     viewerHeader: { cellId: string; label: string; value: string };
 }
 
@@ -45,6 +49,12 @@ interface CfeState {
 
 class Cfe extends React.Component<CfeProps, CfeState> {
     private static panelKeys = ["groupings", "selections"];
+
+    // Weird hack to get align button into the viewer toolbar:
+    // 1. create this element as a container to hold the align control
+    // 2. render the align control into the container with a ReactDOM portal
+    // 3. inject the container into the toolbar with regular old DOM methods in componentDidUpdate
+    private alignContainer = document.createElement("span");
 
     public state: CfeState = {
         defaultActiveKey: [Cfe.panelKeys[0]],
@@ -62,6 +72,9 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
+        if (this.props.showAlignControl) {
+            document.querySelector(".viewer-toolbar-left")?.prepend(this.alignContainer);
+        }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
             // Need to manually trigger events that depend on the window resizing,
             // otherwise the 3D viewer canvas will have 0 height and 0 width.
@@ -201,6 +214,13 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                             onControlPanelToggle={this.onControlPanelToggle}
                             {...this.props.volumeViewerProps}
                         />
+                        {this.props.showAlignControl && (
+                            <AlignControl
+                                parent={this.alignContainer}
+                                aligned={this.props.alignActive}
+                                setAligned={this.props.setAlignActive}
+                            />
+                        )}
                     </Content>
                 </Layout>
             </Layout>
@@ -215,6 +235,8 @@ function mapStateToProps(state: State) {
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
         showSmallScreenWarning: metadataStateBranch.selectors.getShowSmallScreenWarning(state),
         viewerHeader: getViewerHeader(state),
+        showAlignControl: selectionStateBranch.selectors.getSelected3DCellHasTransform(state),
+        alignActive: selectionStateBranch.selectors.getAlignActive(state),
     };
 }
 
@@ -222,6 +244,7 @@ const dispatchToPropsMap = {
     toggleGallery: selectionStateBranch.actions.toggleGallery,
     setShowSmallScreenWarning: metadataStateBranch.actions.setShowSmallScreenWarning,
     requestFeatureData: metadataStateBranch.actions.requestFeatureData,
+    setAlignActive: selectionStateBranch.actions.setAlignActive,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(Cfe);

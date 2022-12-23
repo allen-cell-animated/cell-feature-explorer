@@ -5,6 +5,7 @@ import {
     FOV_VOLUME_VIEWER_PATH,
     GROUP_BY_KEY,
     THUMBNAIL_PATH,
+    TRANSFORM,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { Megaset } from "../image-dataset/types";
@@ -36,6 +37,10 @@ export interface FileInfo {
     [FOV_VOLUME_VIEWER_PATH]: string;
     [THUMBNAIL_PATH]: string;
     [VOLUME_VIEWER_PATH]: string;
+    [TRANSFORM]?: {
+        translation: [number, number, number];
+        rotation: [number, number, number];
+    };
     [GROUP_BY_KEY]?: string;
     index?: number; // added to the data after it's loaded for fast lookup into other array
 }
@@ -94,7 +99,7 @@ export interface DataForPlot {
 // ACTIONS
 
 export interface ReceiveAction {
-    payload: {[key: string]: any};
+    payload: { [key: string]: any };
     type: string;
 }
 

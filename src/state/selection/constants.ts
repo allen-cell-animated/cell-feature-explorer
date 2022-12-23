@@ -1,6 +1,4 @@
-import {
-    MY_SELECTIONS_ID,
-} from "../../constants/index";
+import { MY_SELECTIONS_ID } from "../../constants/index";
 import { makeConstant } from "../util";
 
 const makeSelectionConstant = (constant: string) => makeConstant("selection", constant);
@@ -11,7 +9,9 @@ export const SELECT_GROUP_VIA_PLOT = makeSelectionConstant("select_group");
 export const DESELECT_POINT = makeSelectionConstant("deselect-point");
 export const SELECT_POINT = makeSelectionConstant("select-point");
 export const DESELECT_ALL_POINTS = makeSelectionConstant("deselect-all-points");
-export const TOGGLE_FILTER_BY_CATEGORY_NAME = makeSelectionConstant("toggle-filter-by-category-name");
+export const TOGGLE_FILTER_BY_CATEGORY_NAME = makeSelectionConstant(
+    "toggle-filter-by-category-name"
+);
 export const OPEN_CELL_IN_3D = makeSelectionConstant("open-cell-in-3d");
 export const TOGGLE_APPLY_SELECTION_SET_COLOR = makeSelectionConstant("apply-selection-set-color");
 export const DESELECT_GROUP_OF_POINTS = makeSelectionConstant("deselect-group");
@@ -22,12 +22,11 @@ export const CHANGE_HOVERED_POINT_ID = makeSelectionConstant("change-hovered-poi
 export const CHANGE_HOVERED_GALLERY_CARD = makeSelectionConstant("change-hovered-gallery-card");
 export const CHANGE_SELECTED_ALBUM = makeSelectionConstant("change-selected-album");
 export const TOGGLE_GALLERY_OPEN_CLOSE = makeSelectionConstant("toggle-gallery");
+export const SET_ALIGN_ACTIVE = makeSelectionConstant("set-align-active");
 export const REQUEST_CELL_FILE_INFO_BY_CELL_ID = makeSelectionConstant(
     "REQUEST_CELL_FILE_INFO_BY_CELL_ID"
 );
-export const RECEIVE_FILE_INFO = makeSelectionConstant(
-    "RECEIVE_CELL_FILE_INFO"
-);
+export const RECEIVE_FILE_INFO = makeSelectionConstant("RECEIVE_CELL_FILE_INFO");
 export const RECEIVE_FILE_INFO_FOR_SELECTED_CELL = makeSelectionConstant(
     "RECEIVE_SELECTED_FILE_INFO"
 );
@@ -84,7 +83,7 @@ export const INITIAL_COLORS = [
     "#fddb02",
     "#f7db78",
     "#f9a558",
-    ];
+];
 
 export const INITIAL_SELECTION_COLORS = [
     "#8dd3c7",
