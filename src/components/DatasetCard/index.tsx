@@ -45,11 +45,13 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             hoverable
             bordered={false}
             cover={
-                <img
-                    className={styles.staticThumbnail}
-                    alt={`Snapshot of simulation for ${title}`}
-                    src={image}
-                />
+                image != "" ? (
+                    <img
+                        className={styles.staticThumbnail}
+                        alt={`Snapshot of simulation for ${title}`}
+                        src={image}
+                    />
+                ) : null
             }
             onClick={() => handleSelectDataset(id)}
         >
