@@ -2,6 +2,7 @@
 
 .cfe-home {
     color: var(--dark-theme-text-color);
+    font-size: 16px;
 }
 .page-header {
     position: relative;
