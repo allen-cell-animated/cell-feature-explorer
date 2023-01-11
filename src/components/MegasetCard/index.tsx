@@ -1,5 +1,5 @@
 import * as React from "react";
-import { map } from "lodash";
+import { map, reverse, sortBy } from "lodash";
 
 import { Megaset } from "../../state/image-dataset/types";
 import DatasetCard from "../../components/DatasetCard";
@@ -27,6 +27,8 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     // container instead of the container expanding to fit publications
     const maxWidth = numDatasets > 1 ? "100%" : datasetCardWidth;
 
+    // basic assumption here is that shorter titles may indicate primacy 
+    const datasets = reverse(sortBy(map(megaset.datasets), "title"))
     return (
         <div 
             key={megaset.name}
@@ -37,7 +39,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
                 <div className={styles.megasetTitle}>{megaset.title}</div>
             }
             <div className={styles.datasetCards}>
-                {map(megaset.datasets, (dataset) => (
+                {map(datasets, (dataset) => (
                     <DatasetCard key={dataset.id} {...dataset} handleSelectDataset={handleSelectDataset} />
                 ))}
             </div>
