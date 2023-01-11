@@ -27,8 +27,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     // container instead of the container expanding to fit publications
     const maxWidth = numDatasets > 1 ? "100%" : datasetCardWidth;
 
-    // basic assumption here is that shorter titles may indicate primacy 
-    const datasets = reverse(sortBy(map(megaset.datasets), "title"))
+    const datasets = map(megaset.datasets).sort((a, b) => b.title.localeCompare(a.title))
     return (
         <div 
             key={megaset.name}
