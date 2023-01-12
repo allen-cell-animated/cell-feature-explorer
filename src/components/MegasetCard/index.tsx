@@ -1,5 +1,5 @@
 import * as React from "react";
-import { map, reverse, sortBy } from "lodash";
+import { map } from "lodash";
 
 import { Megaset } from "../../state/image-dataset/types";
 import DatasetCard from "../../components/DatasetCard";
