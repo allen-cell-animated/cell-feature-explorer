@@ -22,6 +22,7 @@ export interface DatasetMetaData {
     id: string;
     description: string;
     image: string;
+    index: number;
     link?: string;
     manifest?: string;
     production?: boolean;
