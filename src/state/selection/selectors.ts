@@ -452,6 +452,16 @@ export const getSelected3DCellHasTransform = createSelector(
     (fileInfo): boolean => !!fileInfo.transform
 );
 
+export const getSelected3DCellFeatureData = createSelector(
+    [getSelected3DCellFileInfo, getMeasuredValues],
+    (
+        { index }: FileInfo,
+        values: MappingOfMeasuredValuesArrays
+    ): { [key: string]: number | null } => {
+        return index === undefined ? {} : mapValues(values, (data) => data[index]);
+    }
+);
+
 // ===============================================================================================
 
 // LASSOED or BOX SELECTED GROUPS SELECTORS
