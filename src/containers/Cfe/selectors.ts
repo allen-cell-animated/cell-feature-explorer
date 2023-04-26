@@ -32,30 +32,37 @@ export interface VolumeViewerProps {
         rotation: [number, number, number];
     };
     metadata?: { [key: string]: string | number | null };
-    metadataFormat?: { [key: string]: { displayName?: string; unit?: string; tooltip?: string } };
     onControlPanelToggle?(collapsed: boolean): void;
+}
+
+function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFeatureDef): string {
+    const { unit, discrete } = featureDef;
+
+    if (featureValue === null) {
+        return "null";
+    }
+    if (discrete) {
+        return featureDef.options[featureValue]?.name;
+    }
+
+    const unitSubstitutes: Record<string, string> = {
+        degrees: "deg",
+    };
+    if (unit && unit !== "unitless" && unit !== "stage") {
+        return `${featureValue} ${unitSubstitutes[unit] || unit}`;
+    }
+    return `${featureValue}`;
 }
 
 const getCellMetadata = createSelector(
     [getSelected3DCellFeatureData, getMeasuredFeaturesDefs],
     (featureData, featureDefs) => {
         const metadata: { [key: string]: number | string | null } = {};
-        const metadataFormat: {
-            [key: string]: { displayName?: string; tooltip?: string; unit?: string };
-        } = {};
-        for (const feature of featureDefs) {
-            const { key, displayName, tooltip, unit } = feature;
-            metadataFormat[key] = {
-                displayName,
-                tooltip,
-                unit: unit === "unitless" || unit === "stage" ? undefined : unit,
-            };
-
-            const rawValue = featureData[key];
-            metadata[key] =
-                feature.discrete && rawValue !== null ? feature.options[rawValue]?.name : rawValue;
+        for (const featureDef of featureDefs) {
+            const { key, displayName } = featureDef;
+            metadata[displayName] = formatFeatureValue(featureData[key], featureDef);
         }
-        return { metadata, metadataFormat };
+        return { metadata };
     }
 );
 
@@ -66,7 +73,6 @@ export const getPropsForVolumeViewer = createSelector(
         getDownloadRoot,
         getViewerChannelSettings,
         getAlignActive,
-        ,
         getCellMetadata,
     ],
     (
@@ -125,7 +131,6 @@ export const getPropsForVolumeViewer = createSelector(
             fovDownloadHref: parentDownloadHref,
             transform: alignActive ? fileInfo.transform : undefined,
             metadata: cellMetadata.metadata,
-            metadataFormat: cellMetadata.metadataFormat,
             viewerChannelSettings,
         };
     }
