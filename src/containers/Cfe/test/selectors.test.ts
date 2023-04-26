@@ -45,7 +45,7 @@ const stateWithSelections: State = {
 };
 describe("Viewer selectors", () => {
     describe("getPropsForVolumeViewer", () => {
-        it("for a cell with both sc and fov data, returns all the data in a format that can be passed to thee viewer as props ", () => {
+        it("for a cell with both sc and fov data, returns all the data in a format that can be passed to the viewer as props ", () => {
             const result = getPropsForVolumeViewer(stateWithSelections);
             expect(result).to.deep.equal({
                 cellId: "1",
@@ -55,6 +55,13 @@ describe("Viewer selectors", () => {
                 fovDownloadHref: "&id=F12762",
                 fovPath: "fovVolumeviewerPath",
                 viewerChannelSettings: {},
+                metadata: {
+                    "Anaphase segmentation complete": undefined,
+                    "Apical Proximity": "undefined",
+                    "Cell Surface area": "undefined",
+                    "Labeled Structure": undefined,
+                    "Missing data": "undefined",
+                },
                 transform: undefined,
             });
         });
@@ -76,6 +83,13 @@ describe("Viewer selectors", () => {
                 fovDownloadHref: "",
                 fovPath: "",
                 viewerChannelSettings: {},
+                metadata: {
+                    "Anaphase segmentation complete": undefined,
+                    "Apical Proximity": "undefined",
+                    "Cell Surface area": "undefined",
+                    "Labeled Structure": undefined,
+                    "Missing data": "undefined",
+                },
                 transform: undefined,
             });
         });

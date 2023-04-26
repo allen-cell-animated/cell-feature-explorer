@@ -48,7 +48,7 @@ function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFea
     const unitSubstitutes: Record<string, string> = {
         degrees: "deg",
     };
-    if (unit && unit !== "unitless" && unit !== "stage") {
+    if (unit && featureValue !== undefined && unit !== "unitless" && unit !== "stage") {
         return `${featureValue} ${unitSubstitutes[unit] || unit}`;
     }
     return `${featureValue}`;
