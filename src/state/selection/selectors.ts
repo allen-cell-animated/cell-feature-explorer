@@ -434,6 +434,7 @@ export const getSelected3DCellFileInfo = createSelector(
             index = plotData.labels.cellIds.indexOf(selected3DCellId);
         }
         return {
+            index,
             ...fileInfo,
             [GROUP_BY_KEY]: arrayOfCategoryNames[index],
         };
@@ -454,10 +455,7 @@ export const getSelected3DCellHasTransform = createSelector(
 
 export const getSelected3DCellFeatureData = createSelector(
     [getSelected3DCellFileInfo, getMeasuredValues],
-    (
-        { index }: FileInfo,
-        values: MappingOfMeasuredValuesArrays
-    ): { [key: string]: number | null } => {
+    ({ index }, values): { [key: string]: number | null } => {
         return index === undefined ? {} : mapValues(values, (data) => data[index]);
     }
 );

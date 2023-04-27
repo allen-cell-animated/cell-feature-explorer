@@ -38,17 +38,17 @@ export interface VolumeViewerProps {
 function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFeatureDef): string {
     const { unit, discrete } = featureDef;
 
-    if (featureValue === null) {
-        return "null";
+    if (featureValue === null || featureValue === undefined) {
+        return `${featureValue}`;
     }
     if (discrete) {
-        return featureDef.options[featureValue]?.name;
+        return `${featureDef.options[featureValue.toString()]?.name}`;
     }
 
     const unitSubstitutes: Record<string, string> = {
         degrees: "deg",
     };
-    if (unit && featureValue !== undefined && unit !== "unitless" && unit !== "stage") {
+    if (unit && unit !== "unitless" && unit !== "stage") {
         return `${featureValue} ${unitSubstitutes[unit] || unit}`;
     }
     return `${featureValue}`;
