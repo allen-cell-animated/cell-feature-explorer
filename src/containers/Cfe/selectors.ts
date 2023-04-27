@@ -59,8 +59,8 @@ const getCellMetadata = createSelector(
     (featureData, featureDefs) => {
         const metadata: { [key: string]: number | string | null } = {};
         for (const featureDef of featureDefs) {
-            const { key, displayName } = featureDef;
-            metadata[displayName] = formatFeatureValue(featureData[key], featureDef);
+            const featureValue = featureData[featureDef.key];
+            metadata[featureDef.displayName] = formatFeatureValue(featureValue, featureDef);
         }
         return { metadata };
     }
