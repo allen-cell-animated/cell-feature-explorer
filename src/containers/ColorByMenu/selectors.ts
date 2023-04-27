@@ -200,6 +200,9 @@ export const getListOfCellIdsByDownloadConfig = createSelector(
 export const createUrlFromListOfIds = createSelector(
     [getDownloadRoot, getListOfCellIdsByDownloadConfig],
     (downloadRoot: string, cellIdsToDownload): string[] => {
+        if (downloadRoot === "") {
+            return [];
+        }
         const chunkSize = 300;
         const chunksOfIds = chunk(cellIdsToDownload, chunkSize);
         return map(

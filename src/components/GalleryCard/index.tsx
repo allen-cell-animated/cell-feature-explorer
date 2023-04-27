@@ -55,6 +55,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             3D
         </Button>,
+        (props.downloadHref !== "" || props.downloadFullField !== "") &&
         <Dropdown key={`${props.cellID}-download`} overlay={menu} trigger={["click"]}>
             <Button icon="download" />
         </Dropdown>,

@@ -125,7 +125,7 @@ export default class DownloadDropDownMenu extends React.Component<
                 ))}
             </Menu>
         );
-        return (
+        return (downloadUrls.length > 0 &&
             <div className={styles.container}>
                 <Dropdown
                     overlay={menu}
