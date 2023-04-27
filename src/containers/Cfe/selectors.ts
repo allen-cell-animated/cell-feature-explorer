@@ -45,11 +45,15 @@ function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFea
         return `${featureDef.options[featureValue.toString()]?.name}`;
     }
 
-    const unitSubstitutes: Record<string, string> = {
+    /** Replace these unit names with a shorter symbol */
+    const unitSymbols: Record<string, string> = {
         degrees: "deg",
     };
-    if (unit && unit !== "unitless" && unit !== "stage") {
-        return `${featureValue} ${unitSubstitutes[unit] || unit}`;
+    /** Do not include these units at all */
+    const noSymbolUnits = ["unitless", "stage"];
+
+    if (unit && !noSymbolUnits.includes(unit)) {
+        return `${featureValue} ${unitSymbols[unit] || unit}`;
     }
     return `${featureValue}`;
 }
