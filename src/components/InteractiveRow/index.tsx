@@ -18,6 +18,7 @@ interface InteractiveRowProps {
     showTooltips: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
+    downloadRoot: string;
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
@@ -56,6 +57,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             checked,
             downloadUrls,
             downloadConfig,
+            downloadRoot,
             handleDownload,
         } = this.props;
 
@@ -103,6 +105,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                         total={total}
                         downloadConfig={downloadConfig}
                         downloadUrls={downloadUrls}
+                        downloadRoot={downloadRoot}
                         handleDownload={handleDownload}
                     />
                     {closeable && (

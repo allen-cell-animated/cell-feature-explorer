@@ -71,3 +71,5 @@ export const GENERAL_PLOT_SETTINGS = {
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
 };
+
+export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this dataset.";

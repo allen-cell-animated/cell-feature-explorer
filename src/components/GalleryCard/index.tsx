@@ -1,7 +1,8 @@
-import { Avatar, Button, Card, Dropdown, Icon, List, Menu } from "antd";
+import { Avatar, Button, Card, Dropdown, Icon, List, Menu, Tooltip } from "antd";
 import React from "react";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
+import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
 
@@ -46,7 +47,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             )}
         </Menu>
     );
-
+    const hasDownload = (props.downloadHref !== "" || props.downloadFullField !== "");
     const actions = [
         <Button
             className={props.selected ? styles.disabled : ""}
@@ -55,10 +56,10 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             3D
         </Button>,
-        (props.downloadHref !== "" || props.downloadFullField !== "") &&
-        <Dropdown key={`${props.cellID}-download`} overlay={menu} trigger={["click"]}>
+        <Tooltip key={`${props.cellID}-download`} title={hasDownload?null:NO_DOWNLOADS_TOOLTIP}>
+        <Dropdown  overlay={menu} trigger={["click"]}>
             <Button icon="download" />
-        </Dropdown>,
+        </Dropdown></Tooltip>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
             <Icon type="close" />
         </Button>,
