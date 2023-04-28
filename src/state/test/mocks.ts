@@ -173,6 +173,7 @@ export const mockState = {
             key: "",
             type: "",
         },
+        downloadRoot: "dlurl/",
         groupBy: INITIAL_COLOR_AND_GROUP_BY,
         filterExclude: [],
         plotByOnX: "apical-proximity",
