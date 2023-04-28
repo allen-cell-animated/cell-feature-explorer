@@ -13,6 +13,7 @@ const BASE_PLUGINS = [
     new webpack.DefinePlugin({
         "process.env.USE_JSON_DATASET": JSON.stringify(process.env.USE_JSON_DATASET) || false,
         "process.env.USE_DEV_DB": JSON.stringify(process.env.USE_DEV_DB) || false,
+        "process.env.USE_REDUX_DEVTOOLS": JSON.stringify(process.env.USE_REDUX_DEVTOOLS) || false,
     }),
     new ForkTsCheckerWebpackPlugin({
         typescript: {
