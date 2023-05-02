@@ -27,7 +27,7 @@ const MegasetCard: React.FunctionComponent<MegasetCardProps> = ({
     // container instead of the container expanding to fit publications
     const maxWidth = numDatasets > 1 ? "100%" : datasetCardWidth;
 
-    const datasets = map(megaset.datasets).sort((a, b) => b.title.localeCompare(a.title))
+    const datasets = map(megaset.datasets).sort((a, b) => a.index - b.index)
     return (
         <div 
             key={megaset.name}
