@@ -127,7 +127,10 @@ export default class DownloadDropDownMenu extends React.Component<
                 ))}
             </Menu>
         );
-        const noDownloads = downloadRoot === ""; // could be downloadUrls.length === 0;
+        // we can not check for downloadUrls.length because there are some conditions where
+        // downloadUrls is empty but we still want to show the download button due to 
+        // initialization order in the app / React lifecycle concerns.
+        const noDownloads = downloadRoot === "";
         return (
             <div className={styles.container}>
                 <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
