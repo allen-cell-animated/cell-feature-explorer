@@ -57,9 +57,10 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
             3D
         </Button>,
         <Tooltip key={`${props.cellID}-download`} title={hasDownload?null:NO_DOWNLOADS_TOOLTIP}>
-        <Dropdown  overlay={menu} trigger={["click"]}>
-            <Button icon="download" />
-        </Dropdown></Tooltip>,
+            <Dropdown  overlay={menu} trigger={["click"]}>
+                <Button icon="download" />
+            </Dropdown>
+        </Tooltip>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
             <Icon type="close" />
         </Button>,
