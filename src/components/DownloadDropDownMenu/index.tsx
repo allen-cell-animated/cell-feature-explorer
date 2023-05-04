@@ -140,8 +140,8 @@ export default class DownloadDropDownMenu extends React.Component<
                             size="small"
                             className={downloadUrls.length === 0 ? styles.disabledDownload : "ant-dropdown-link"}
                             id={id}
-                            onClick={this.onDownload}
-                            disabled={downloadUrls.length === 0}                        
+                            onClick={downloadUrls.length === 0 ? undefined : this.onDownload}
+                            disabled={downloadUrls.length === 0}
                         >
                             <Icon type="download" />
                         </Button>
