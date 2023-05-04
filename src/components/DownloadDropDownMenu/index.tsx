@@ -127,9 +127,10 @@ export default class DownloadDropDownMenu extends React.Component<
                 ))}
             </Menu>
         );
+        const noDownloads = downloadRoot === ""; // could be downloadUrls.length === 0;
         return (
             <div className={styles.container}>
-                <Tooltip title={downloadRoot === "" ? NO_DOWNLOADS_TOOLTIP : null}>
+                <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
                     <Dropdown
                         overlay={menu}
                         trigger={["click"]}
@@ -138,10 +139,10 @@ export default class DownloadDropDownMenu extends React.Component<
                     >
                         <Button
                             size="small"
-                            className={downloadUrls.length === 0 ? styles.disabledDownload : "ant-dropdown-link"}
+                            className={noDownloads ? styles.disabledDownload : "ant-dropdown-link"}
                             id={id}
-                            onClick={downloadUrls.length === 0 ? undefined : this.onDownload}
-                            disabled={downloadUrls.length === 0}
+                            onClick={noDownloads ? undefined : this.onDownload}
+                            disabled={noDownloads}
                         >
                             <Icon type="download" />
                         </Button>
