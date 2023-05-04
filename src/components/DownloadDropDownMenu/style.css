@@ -1,6 +1,10 @@
 .container {
     display: inline;
 }
+.container .disabled-download {
+    color: var(--dimgray);
+    opacity: 0.5;
+}
 
 .menu a{
     display: inline;
