@@ -14,6 +14,7 @@ interface InteractiveLegendProps {
     handleDownload: (key: string) => void;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
+    downloadRoot: string;
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }
@@ -26,6 +27,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
         handleCloseSelectionSet,
         handleDownload,
         downloadConfig,
+        downloadRoot,
         hideable,
         onBarClicked,
         panelData,
@@ -50,6 +52,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
                         handleDownload={handleDownload}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
+                        downloadRoot={downloadRoot}
                     />
                 );
             })}

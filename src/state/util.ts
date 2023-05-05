@@ -73,7 +73,8 @@ export function convertSingleImageIdToDownloadId(id: string): string {
 }
 
 export function formatDownloadOfIndividualFile(root: string, id: string): string {
-    return `${root}&id=${id}`;
+    // if no downloadRoot is present, then return empty string
+    return root === "" ? "" : `${root}&id=${id}`;
 }
 
 export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {

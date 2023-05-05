@@ -1,4 +1,4 @@
-import { Button, Dropdown, Icon, Menu } from "antd";
+import { Button, Dropdown, Icon, Menu, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { ClickParam } from "antd/es/menu";
 import { includes, uniq } from "lodash";
@@ -7,6 +7,7 @@ import React, { MouseEvent } from "react";
 import { DownloadConfig } from "../../state/selection/types";
 
 import styles from "./style.css";
+import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 interface DownloadDropDownMenuProps {
     color: string;
@@ -17,6 +18,7 @@ interface DownloadDropDownMenuProps {
     closeable?: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
+    downloadRoot: string;
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
@@ -109,7 +111,7 @@ export default class DownloadDropDownMenu extends React.Component<
     }
 
     public render() {
-        const { id, downloadUrls, downloadConfig } = this.props;
+        const { id, downloadUrls, downloadConfig, downloadRoot } = this.props;
         const alreadyDownloaded = this.state.alreadyDownloaded[downloadConfig.key];
         const menu = (
             <Menu className={styles.menu} onClick={this.handleMenuClick}>
@@ -125,23 +127,30 @@ export default class DownloadDropDownMenu extends React.Component<
                 ))}
             </Menu>
         );
+        // we can not check for downloadUrls.length because there are some conditions where
+        // downloadUrls is empty but we still want to show the download button due to 
+        // initialization order in the app / React lifecycle concerns.
+        const noDownloads = downloadRoot === "";
         return (
             <div className={styles.container}>
-                <Dropdown
-                    overlay={menu}
-                    trigger={["click"]}
-                    onVisibleChange={this.handleDownloadMenuVisibleChange}
-                    visible={this.state.downloadMenuVisible}
-                >
-                    <Button
-                        size="small"
-                        className="ant-dropdown-link"
-                        id={id}
-                        onClick={this.onDownload}
+                <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
+                    <Dropdown
+                        overlay={menu}
+                        trigger={["click"]}
+                        onVisibleChange={this.handleDownloadMenuVisibleChange}
+                        visible={this.state.downloadMenuVisible}
                     >
-                        <Icon type="download" />
-                    </Button>
-                </Dropdown>
+                        <Button
+                            size="small"
+                            className={noDownloads ? styles.disabledDownload : "ant-dropdown-link"}
+                            id={id}
+                            onClick={noDownloads ? undefined : this.onDownload}
+                            disabled={noDownloads}
+                        >
+                            <Icon type="download" />
+                        </Button>
+                    </Dropdown>
+                </Tooltip>
             </div>
         );
     }

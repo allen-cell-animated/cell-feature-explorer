@@ -17,7 +17,7 @@ import {
 import metadataStateBranch from "../../state/metadata";
 import { MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
-import { getFeatureDefTooltip } from "../../state/selection/selectors";
+import { getFeatureDefTooltip, getDownloadRoot } from "../../state/selection/selectors";
 
 import {
     BoolToggleAction,
@@ -52,6 +52,7 @@ interface PropsFromState {
     colorBy: keyof MappingOfMeasuredValuesArrays;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
+    downloadRoot: string;
     filtersToExclude: string[];
     interactivePanelData: PanelData[];
     selectionSetsPanelData: PanelData[];
@@ -138,6 +139,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const {
             downloadUrls,
             downloadConfig,
+            downloadRoot,
             handleApplyColorSwitchChange,
             selectionSetsPanelData,
             handleCloseSelectionSet,
@@ -164,6 +166,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         panelData={selectionSetsPanelData}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
+                        downloadRoot={downloadRoot}
                         handleDownload={this.onSelectionSetDownloadButtonClicked}
                     />
                 </div>
@@ -178,6 +181,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             interactivePanelData,
             downloadUrls,
             downloadConfig,
+            downloadRoot,
             colorBy,
             colorByMenuOptions,
             handleChangeAxis,
@@ -235,6 +239,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         panelData={interactivePanelData}
                         downloadUrls={downloadUrls}
                         downloadConfig={downloadConfig}
+                        downloadRoot={downloadRoot}
                         hideable={true}
                         onBarClicked={this.onBarClicked}
                         handleDownload={this.onCategorySetDownloadButtonClicked}
@@ -272,6 +277,7 @@ function mapStateToProps(state: State): PropsFromState {
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
         downloadUrls: createUrlFromListOfIds(state),
+        downloadRoot: getDownloadRoot(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         groupByTitle: getGroupByTitle(state),
         interactivePanelData: getInteractivePanelData(state),
