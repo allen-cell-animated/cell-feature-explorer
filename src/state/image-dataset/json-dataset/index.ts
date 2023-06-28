@@ -126,6 +126,7 @@ class JsonRequest implements ImageDataset {
                                 [id]: {
                                     ...topLevelJson,
                                     image: `${datasetdirpath}/${topLevelJson.image}`,
+                                    manifest: `${datasetdirpath}/dataset.json`,
                                 },
                             };
                             const initialDatasetObj: { [key: string]: DatasetMetaData } = {};
@@ -146,13 +147,42 @@ class JsonRequest implements ImageDataset {
         });
     };
 
+    private fixupPaths = (datasetInfo: DatasetInfo, datadir: string) => {
+        if (datasetInfo.albumPath && !datasetInfo.albumPath.startsWith("http")) {
+            datasetInfo.albumPath = `${datadir}/${datasetInfo.albumPath}`;
+        }
+        if (datasetInfo.featureDefsPath && !datasetInfo.featureDefsPath.startsWith("http")) {
+            datasetInfo.featureDefsPath = `${datadir}/${datasetInfo.featureDefsPath}`;
+        }
+        if (datasetInfo.featuresDataPath && !datasetInfo.featuresDataPath.startsWith("http")) {
+            datasetInfo.featuresDataPath = `${datadir}/${datasetInfo.featuresDataPath}`;
+        }
+        if (datasetInfo.viewerSettingsPath && !datasetInfo.viewerSettingsPath.startsWith("http")) {
+            datasetInfo.viewerSettingsPath = `${datadir}/${datasetInfo.viewerSettingsPath}`;
+        }
+        if (datasetInfo.thumbnailRoot && !datasetInfo.thumbnailRoot.startsWith("http")) {
+            datasetInfo.thumbnailRoot = `${datadir}/${datasetInfo.thumbnailRoot}`;
+        }
+        if (datasetInfo.downloadRoot && !datasetInfo.downloadRoot.startsWith("http")) {
+            datasetInfo.downloadRoot = `${datadir}/${datasetInfo.downloadRoot}`;
+        }
+        if (
+            datasetInfo.volumeViewerDataRoot &&
+            !datasetInfo.volumeViewerDataRoot.startsWith("http")
+        ) {
+            datasetInfo.volumeViewerDataRoot = `${datadir}/${datasetInfo.volumeViewerDataRoot}`;
+        }
+    };
     public selectDataset = (manifestPath: string) => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
 
+        const datadir = manifestPath.substring(0, manifestPath.lastIndexOf("/"));
+
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
+            this.fixupPaths(this.datasetInfo, datadir);
             return {
                 defaultXAxis: data.xAxis?.default || "",
                 defaultYAxis: data.yAxis?.default || "",
