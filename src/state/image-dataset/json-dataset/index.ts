@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { reduce } from "lodash";
 
 import {
     FILE_INFO_KEYS,
@@ -8,13 +9,9 @@ import {
     CELL_COUNT_KEY,
 } from "../../../constants";
 
-import {
-    DataForPlot,
-    FileInfo,
-    MappingOfMeasuredValuesArrays,
-} from "../../metadata/types";
+import { DataForPlot, FileInfo, MappingOfMeasuredValuesArrays } from "../../metadata/types";
 
-import { ImageDataset } from "../types";
+import { ImageDataset, DatasetMetaData, Megaset } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { find } from "lodash";
 
@@ -34,16 +31,16 @@ interface DatasetInfo {
     volumeViewerDataRoot: string;
     xAxis: {
         default: string;
-    }
+    };
     yAxis: {
         default: string;
-    }
+    };
     colorBy: {
         default: string;
-    }
+    };
     groupBy: {
         default: string;
-    }
+    };
     featuresDisplayOrder: string[];
     featuresDataOrder: string[];
 }
@@ -92,14 +89,61 @@ class JsonRequest implements ImageDataset {
 
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
+        // this datasets.json contains a list of the names of subdirectories,
+        // each of which is expected to contain a dataset.json file
         this.listOfDatasetsDoc =
-            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
+            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/cell-feature-data/datasets.json";
     }
 
     public getAvailableDatasets = () => {
-        return axios
-            .get(`${this.listOfDatasetsDoc}`)
-            .then((metadata: AxiosResponse) => metadata.data);
+        //const megasets: Megaset[] = [];
+        return axios.get(`${this.listOfDatasetsDoc}`).then((metadata: AxiosResponse) => {
+            const datadir = this.listOfDatasetsDoc.substring(
+                0,
+                this.listOfDatasetsDoc.lastIndexOf("/")
+            );
+
+            return Promise.all(
+                (metadata.data as string[]).map((datasetdir) => {
+                    const datasetdirpath = `${datadir}/${datasetdir}`;
+                    const fullurl = `${datasetdirpath}/dataset.json`;
+                    return axios.get(fullurl).then((dataset: AxiosResponse) => {
+                        const megaset = dataset.data as Megaset;
+                        if (megaset.datasets) {
+                            console.log("has datasets; unexpected; dropping");
+                            return {} as Megaset;
+                        } else {
+                            const topLevelJson = { ...megaset } as unknown as DatasetMetaData;
+                            const megasetInfo = { ...megaset };
+                            megasetInfo.title = topLevelJson.title;
+                            megasetInfo.publications = megaset.publications || [];
+                            megasetInfo.extra = megaset.extra || "";
+                            const id = `${topLevelJson.name}_v${topLevelJson.version}`;
+                            megasetInfo.name = id;
+                            // for single dataset sets we want to store the document with the whole id, to avoid
+                            // grouping versions of the same name together as if they're megasets
+                            megasetInfo.datasets = {
+                                [id]: {
+                                    ...topLevelJson,
+                                    image: `${datasetdirpath}/${topLevelJson.image}`,
+                                },
+                            };
+                            const initialDatasetObj: { [key: string]: DatasetMetaData } = {};
+                            megasetInfo.datasets = reduce(
+                                megasetInfo.datasets,
+                                (acc, dataset: DatasetMetaData, key) => {
+                                    dataset.id = key;
+                                    acc[key] = dataset;
+                                    return acc;
+                                },
+                                initialDatasetObj
+                            );
+                            return megasetInfo;
+                        }
+                    });
+                })
+            );
+        });
     };
 
     public selectDataset = (manifestPath: string) => {
@@ -110,13 +154,13 @@ class JsonRequest implements ImageDataset {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
             return {
-                defaultXAxis: data.xAxis.default,
-                defaultYAxis: data.yAxis.default,
-                defaultColorBy: data.colorBy.default,
-                defaultGroupBy: data.groupBy.default,
-                thumbnailRoot: data.thumbnailRoot,
-                downloadRoot: data.downloadRoot,
-                volumeViewerDataRoot: data.volumeViewerDataRoot,
+                defaultXAxis: data.xAxis?.default || "",
+                defaultYAxis: data.yAxis?.default || "",
+                defaultColorBy: data.colorBy?.default || "",
+                defaultGroupBy: data.groupBy?.default || "",
+                thumbnailRoot: data.thumbnailRoot || "",
+                downloadRoot: data.downloadRoot || "",
+                volumeViewerDataRoot: data.volumeViewerDataRoot || "",
             };
         });
     };
@@ -209,7 +253,6 @@ class JsonRequest implements ImageDataset {
                             key: this.datasetInfo.groupBy.default,
                         });
 
-            
                         // increment count in feature def
                         if (groupByFeatureDef[CELL_COUNT_KEY] !== undefined) {
                             (groupByFeatureDef[CELL_COUNT_KEY] as number)++;
