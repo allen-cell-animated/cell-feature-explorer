@@ -145,7 +145,7 @@ const featureData: DataForPlot = {
     values: {
         "cell-line": [5, 7],
         "apical-proximity": [-0.25868651080317, -0.1],
-        "cell-segmentation": [1, 0],
+        "anaphase-segmentation-complete": [1, 0],
         "cellular-surface-area": [702.3191, 702.3191],
         "missing-data": [null, null],
     },
@@ -177,7 +177,7 @@ export const mockState = {
         groupBy: INITIAL_COLOR_AND_GROUP_BY,
         filterExclude: [],
         plotByOnX: "apical-proximity",
-        plotByOnY: "cell-segmentation",
+        plotByOnY: "anaphase-segmentation-complete",
         defaultColors: INITIAL_COLORS,
         selectedGroupColors: {},
         selectedGroups: {},

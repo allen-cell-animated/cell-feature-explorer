@@ -5,6 +5,7 @@ import {
     getAlignActive,
     getDownloadRoot,
     getGroupByFeatureDef,
+    getSelected3DCellFeatureData,
     getSelected3DCellFileInfo,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
@@ -15,7 +16,7 @@ import {
 } from "../../state/util";
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { getViewerChannelSettings } from "../../state/metadata/selectors";
+import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
 export interface VolumeViewerProps {
@@ -30,8 +31,44 @@ export interface VolumeViewerProps {
         translation: [number, number, number];
         rotation: [number, number, number];
     };
+    metadata?: { [key: string]: string | number | null };
     onControlPanelToggle?(collapsed: boolean): void;
 }
+
+function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFeatureDef): string {
+    const { unit, discrete } = featureDef;
+
+    if (featureValue === null || featureValue === undefined) {
+        return `${featureValue}`;
+    }
+    if (discrete) {
+        return `${featureDef.options[featureValue.toString()]?.name}`;
+    }
+
+    /** Replace these unit names with a shorter symbol */
+    const unitSymbols: Record<string, string> = {
+        degrees: "deg",
+    };
+    /** Do not include these units at all */
+    const noSymbolUnits = ["unitless", "stage"];
+
+    if (unit && !noSymbolUnits.includes(unit)) {
+        return `${featureValue} ${unitSymbols[unit] || unit}`;
+    }
+    return `${featureValue}`;
+}
+
+const getCellMetadata = createSelector(
+    [getSelected3DCellFeatureData, getMeasuredFeaturesDefs],
+    (featureData, featureDefs) => {
+        const metadata: { [key: string]: number | string | null } = {};
+        for (const featureDef of featureDefs) {
+            const featureValue = featureData[featureDef.key];
+            metadata[featureDef.displayName] = formatFeatureValue(featureValue, featureDef);
+        }
+        return { metadata };
+    }
+);
 
 export const getPropsForVolumeViewer = createSelector(
     [
@@ -40,8 +77,16 @@ export const getPropsForVolumeViewer = createSelector(
         getDownloadRoot,
         getViewerChannelSettings,
         getAlignActive,
+        getCellMetadata,
     ],
-    (fileInfo, dataRoot, downloadRoot, viewerChannelSettings, alignActive): VolumeViewerProps => {
+    (
+        fileInfo,
+        dataRoot,
+        downloadRoot,
+        viewerChannelSettings,
+        alignActive,
+        cellMetadata
+    ): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
@@ -81,7 +126,7 @@ export const getPropsForVolumeViewer = createSelector(
         if (!dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
-        const props = {
+        return {
             cellId: cellId,
             baseUrl: dataRoot,
             cellPath: mainCellPath,
@@ -89,9 +134,9 @@ export const getPropsForVolumeViewer = createSelector(
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
             transform: alignActive ? fileInfo.transform : undefined,
+            metadata: cellMetadata.metadata,
             viewerChannelSettings,
         };
-        return props;
     }
 );
 
