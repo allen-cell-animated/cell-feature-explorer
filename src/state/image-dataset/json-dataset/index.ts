@@ -11,7 +11,7 @@ import {
 
 import { DataForPlot, FileInfo, MappingOfMeasuredValuesArrays } from "../../metadata/types";
 
-import { ImageDataset, DatasetMetaData, Megaset } from "../types";
+import { ImageDataset, DatasetMetaData, Megaset, InitialDatasetSelections } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { find } from "lodash";
 
@@ -89,7 +89,7 @@ class JsonRequest implements ImageDataset {
 
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
-        // this datasets.json contains a list of the names of subdirectories,
+        // this datasets.json contains a list of the names of subdirectories (strings),
         // each of which is expected to contain a dataset.json file
         this.listOfDatasetsDoc =
             "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/cell-feature-data/datasets.json";
@@ -110,6 +110,9 @@ class JsonRequest implements ImageDataset {
                     return axios.get(fullurl).then((dataset: AxiosResponse) => {
                         const megaset = dataset.data as Megaset;
                         if (megaset.datasets) {
+                            ///////////////////////////
+                            // TODO handle megasets from json flat file data
+                            ///////////////////////////
                             console.log("has datasets; unexpected; dropping");
                             return {} as Megaset;
                         } else {
@@ -173,7 +176,7 @@ class JsonRequest implements ImageDataset {
             datasetInfo.volumeViewerDataRoot = `${datadir}/${datasetInfo.volumeViewerDataRoot}`;
         }
     };
-    public selectDataset = (manifestPath: string) => {
+    public selectDataset = (manifestPath: string): Promise<InitialDatasetSelections> => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
 
