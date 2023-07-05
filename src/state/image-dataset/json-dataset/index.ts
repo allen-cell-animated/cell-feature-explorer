@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
-import { firestore } from "firebase";
-const { Timestamp } = firestore;
+import { Timestamp } from "firebase";
 
 import {
     FILE_INFO_KEYS,
