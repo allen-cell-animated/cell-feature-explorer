@@ -95,7 +95,6 @@
         "classnames": "^2.2.5",
         "core-js": "^2.5.5",
         "firebase": "^7.15.3",
-        "firebase-admin": "11.9.0",
         "history": "^4.7.2",
         "lodash": "^4.17.20",
         "plotly.js": "^1.54.5",
