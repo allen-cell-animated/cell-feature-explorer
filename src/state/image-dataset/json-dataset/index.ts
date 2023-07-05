@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
+import { Timestamp } from "@firebase/firestore-types";
 
 import {
     FILE_INFO_KEYS,
@@ -142,6 +143,11 @@ class JsonRequest implements ImageDataset {
                                 },
                                 initialDatasetObj
                             );
+                            // TODO this has introduced a firebase requirement over the whole app
+                            if (!megasetInfo.dateCreated) {
+                                console.log("no dateCreated; setting to now");
+                                megasetInfo.dateCreated = Timestamp.now();
+                            }
                             return megasetInfo;
                         }
                     });
