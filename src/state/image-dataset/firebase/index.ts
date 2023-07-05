@@ -8,11 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
 
 import { isDevOrStagingSite } from "../../../util";
-import {
-    FileInfo,
-    MappingOfMeasuredValuesArrays,
-    MeasuredFeatureDef,
-} from "../../metadata/types";
+import { FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../../metadata/types";
 import { Album } from "../../types";
 import { ImageDataset, DatasetMetaData, Megaset } from "../types";
 import { firestore } from "./configure-firebase";
@@ -65,21 +61,25 @@ class FirebaseRequest implements ImageDataset {
                 const megasets: Megaset[] = [];
                 snapShot.forEach((megasetDoc) => {
                     const megaset = megasetDoc.data() as Megaset;
-                    const initialDatasetObj: {[key: string]: DatasetMetaData} = {};
-                    megaset.datasets = reduce(megaset.datasets, (acc, dataset: DatasetMetaData, key) => {
-                        dataset.id = key;
-                        /** if running the site in a local development env or on staging.cfe.allencell.org
-                         * include all cards, otherwise, only include cards with a production flag.
-                         * this is based on hostname instead of a build time variable so we don't
-                         * need a separate build for staging and production
-                         */
-                        if (isDevOrStagingSite(location.hostname)) {
-                            acc[key] = dataset
-                        } else if (dataset.production) {
-                            acc[key] = dataset
-                        }
-                        return acc;
-                    }, initialDatasetObj)
+                    const initialDatasetObj: { [key: string]: DatasetMetaData } = {};
+                    megaset.datasets = reduce(
+                        megaset.datasets,
+                        (acc, dataset: DatasetMetaData, key) => {
+                            dataset.id = key;
+                            /** if running the site in a local development env or on staging.cfe.allencell.org
+                             * include all cards, otherwise, only include cards with a production flag.
+                             * this is based on hostname instead of a build time variable so we don't
+                             * need a separate build for staging and production
+                             */
+                            if (isDevOrStagingSite(location.hostname)) {
+                                acc[key] = dataset;
+                            } else if (dataset.production) {
+                                acc[key] = dataset;
+                            }
+                            return acc;
+                        },
+                        initialDatasetObj
+                    );
                     if (isDevOrStagingSite(location.hostname)) {
                         megasets.push(megaset);
                     } else if (megaset.production) {
@@ -90,7 +90,7 @@ class FirebaseRequest implements ImageDataset {
             });
     };
 
-    public setCollectionRef = (id: string) => {
+    private setCollectionRef = (id: string) => {
         this.collectionRef = firestore.collection("cfe-datasets").doc(id);
     };
 
@@ -220,9 +220,10 @@ class FirebaseRequest implements ImageDataset {
                         cellIds: ids,
                     },
                 };
-            }).catch(e => {
-                console.log("ERROR FETCHING FEATURE DATA:", e)
             })
+            .catch((e) => {
+                console.log("ERROR FETCHING FEATURE DATA:", e);
+            });
     };
 
     public getFileInfoByCellId = (cellId: string) => {

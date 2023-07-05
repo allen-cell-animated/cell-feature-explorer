@@ -95,6 +95,9 @@ export function getCategoryString(
     if (!optionKey) {
         return "";
     }
+    if (!groupByFeatureDef.options) {
+        return "" + optionKey;
+    }
     const groupCategoryInfo = groupByFeatureDef.options[optionKey];
     // key is the most specific but only used if the names are not unique.
     // name is the display name for the category.
