@@ -96,58 +96,55 @@ class JsonRequest implements ImageDataset {
             "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/cell-feature-data/datasets.json";
     }
 
-    public getAvailableDatasets = () => {
-        //const megasets: Megaset[] = [];
-        return axios.get(`${this.listOfDatasetsDoc}`).then((metadata: AxiosResponse) => {
-            const datadir = this.listOfDatasetsDoc.substring(
-                0,
-                this.listOfDatasetsDoc.lastIndexOf("/")
-            );
+    public getAvailableDatasets = async (): Promise<Megaset[]> => {
+        const metadata: AxiosResponse = await axios.get(`${this.listOfDatasetsDoc}`);
+        const datadir = this.listOfDatasetsDoc.substring(
+            0,
+            this.listOfDatasetsDoc.lastIndexOf("/")
+        );
 
-            return Promise.all(
-                (metadata.data as string[]).map((datasetdir) => {
-                    const datasetdirpath = `${datadir}/${datasetdir}`;
-                    const fullurl = `${datasetdirpath}/dataset.json`;
-                    return axios.get(fullurl).then((dataset: AxiosResponse) => {
-                        const megaset = dataset.data as Megaset;
-                        if (megaset.datasets) {
-                            ///////////////////////////
-                            // TODO handle megasets from json flat file data
-                            ///////////////////////////
-                            console.log("has datasets; unexpected; dropping");
-                            return {} as Megaset;
-                        } else {
-                            // If there is no `datasets` field, then megaset is a single dataset.
-                            // We need to convert it into a Megaset that has itself as the only dataset.
-                            const dataset = megaset as unknown as DatasetMetaData;
-                            const id = `${megaset.name}_v${dataset.version}`;
-                            const megasetInfo = {
-                                ...megaset,
-                                publications: megaset.publications || [],
-                                extra: megaset.extra || "",
-                                name: id,
-                                datasets: {
-                                    [id]: {
-                                        ...dataset,
-                                        id: id,
-                                        image: `${datasetdirpath}/${dataset.image}`,
-                                        manifest: `${datasetdirpath}/dataset.json`,
-                                    },
-                                },
-                            } as Megaset;
+        return Promise.all(
+            (metadata.data as string[]).map(async (datasetdir) => {
+                const datasetdirpath = `${datadir}/${datasetdir}`;
+                const fullurl = `${datasetdirpath}/dataset.json`;
+                const dataset: AxiosResponse = await axios.get(fullurl);
+                const megaset = dataset.data as Megaset;
+                if (megaset.datasets) {
+                    ///////////////////////////
+                    // TODO handle megasets from json flat file data
+                    ///////////////////////////
+                    console.log("has datasets; unexpected; dropping");
+                    return {} as Megaset;
+                } else {
+                    // If there is no `datasets` field, then megaset is a single dataset.
+                    // We need to convert it into a Megaset that has itself as the only dataset.
+                    const dataset = megaset as unknown as DatasetMetaData;
+                    const id = `${megaset.name}_v${dataset.version}`;
+                    const megasetInfo = {
+                        ...megaset,
+                        publications: megaset.publications || [],
+                        extra: megaset.extra || "",
+                        name: id,
+                        datasets: {
+                            [id]: {
+                                ...dataset,
+                                id: id,
+                                image: `${datasetdirpath}/${dataset.image}`,
+                                manifest: `${datasetdirpath}/dataset.json`,
+                            },
+                        },
+                    } as Megaset;
 
-                            if (!megasetInfo.dateCreated) {
-                                console.error(
-                                    "dataset has no dateCreated and jsonDataset doesn't know how to create one"
-                                );
-                            }
+                    if (!megasetInfo.dateCreated) {
+                        console.error(
+                            "dataset has no dateCreated and jsonDataset doesn't know how to create one"
+                        );
+                    }
 
-                            return megasetInfo;
-                        }
-                    });
-                })
-            );
-        });
+                    return megasetInfo;
+                }
+            })
+        );
     };
 
     private fixupPaths = (datasetInfo: DatasetInfo, datadir: string) => {
