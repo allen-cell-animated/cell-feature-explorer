@@ -27,7 +27,7 @@ describe("Selection selectors", () => {
                 ...state,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnX: "cell-segmentation",
+                    plotByOnX: "anaphase-segmentation-complete",
                 },
             };
             const feature1Values = [-0.25868651080317, -0.1];
@@ -53,7 +53,7 @@ describe("Selection selectors", () => {
                 ...state,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnY: "cell-segmentation",
+                    plotByOnY: "anaphase-segmentation-complete",
                 },
             };
             const newResult: (number | null)[] = getFilteredYValues(newState);

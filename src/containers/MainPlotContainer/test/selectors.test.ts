@@ -62,7 +62,7 @@ describe("Selection selectors", () => {
                 selection: {
                     ...newMockState.selection,
                     plotByOnX: "apical-proximity",
-                    plotByOnY: "cell-segmentation",
+                    plotByOnY: "anaphase-segmentation-complete",
                     selectedPoints: selectedCellFileInfo,
                 },
             };
