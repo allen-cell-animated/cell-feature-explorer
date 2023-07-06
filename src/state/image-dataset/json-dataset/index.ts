@@ -209,6 +209,10 @@ class JsonRequest implements ImageDataset {
         }
         return this.getJson(this.datasetInfo.viewerSettingsPath).then((data) => {
             this.viewerChannelSettings = data as ViewerChannelSettings;
+            // fixup for missing data
+            if (!this.viewerChannelSettings.groups) {
+                this.viewerChannelSettings.groups = [];
+            }
             return this.viewerChannelSettings;
         });
     };
