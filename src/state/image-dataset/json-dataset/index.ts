@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { reduce } from "lodash";
 
 import {
     FILE_INFO_KEYS,
