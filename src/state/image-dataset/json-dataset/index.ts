@@ -120,35 +120,28 @@ class JsonRequest implements ImageDataset {
                             console.log("has datasets; unexpected; dropping");
                             return {} as Megaset;
                         } else {
-                            const topLevelJson = { ...megaset } as unknown as DatasetMetaData;
-                            const megasetInfo = { ...megaset };
-                            megasetInfo.title = topLevelJson.title;
-                            megasetInfo.publications = megaset.publications || [];
-                            megasetInfo.extra = megaset.extra || "";
-                            const id = `${topLevelJson.name}_v${topLevelJson.version}`;
-                            megasetInfo.name = id;
-                            // for single dataset sets we want to store the document with the whole id, to avoid
-                            // grouping versions of the same name together as if they're megasets
-                            megasetInfo.datasets = {
-                                [id]: {
-                                    ...topLevelJson,
-                                    image: `${datasetdirpath}/${topLevelJson.image}`,
-                                    manifest: `${datasetdirpath}/dataset.json`,
+                            // If there is no `datasets` field, then megaset is a single dataset.
+                            // We need to convert it into a Megaset that has itself as the only dataset.
+                            const dataset = megaset as unknown as DatasetMetaData;
+                            const id = `${megaset.name}_v${dataset.version}`;
+                            const megasetInfo = {
+                                ...megaset,
+                                publications: megaset.publications || [],
+                                extra: megaset.extra || "",
+                                name: id,
+                                datasets: {
+                                    [id]: {
+                                        ...dataset,
+                                        image: `${datasetdirpath}/${dataset.image}`,
+                                        manifest: `${datasetdirpath}/dataset.json`,
+                                    },
                                 },
-                            };
-                            const initialDatasetObj: { [key: string]: DatasetMetaData } = {};
-                            megasetInfo.datasets = reduce(
-                                megasetInfo.datasets,
-                                (acc, dataset: DatasetMetaData, key) => {
-                                    dataset.id = key;
-                                    acc[key] = dataset;
-                                    return acc;
-                                },
-                                initialDatasetObj
-                            );
-                            // TODO this has introduced a firebase requirement over the whole app
+                            } as Megaset;
+
                             if (!megasetInfo.dateCreated) {
-                                console.error("no dateCreated; setting to now");
+                                console.error(
+                                    "dataset has no dateCreated and jsonDataset doesn't know how to create one"
+                                );
                             }
                             return megasetInfo;
                         }
