@@ -6,7 +6,6 @@ import {
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_COUNT_KEY,
 } from "../../../constants";
 
 import {
@@ -280,17 +279,6 @@ class JsonRequest implements ImageDataset {
                     if (featureDefs.length !== el.features.length) {
                         throw new Error("Bad number of feature entries in data");
                     }
-
-                    // const groupByFeatureDef = find(featureDefs, {
-                    //     key: this.datasetInfo.groupBy.default,
-                    // });
-
-                    // // increment count in feature def
-                    // if (groupByFeatureDef[CELL_COUNT_KEY] !== undefined) {
-                    //     (groupByFeatureDef[CELL_COUNT_KEY] as number)++;
-                    // } else {
-                    //     groupByFeatureDef[CELL_COUNT_KEY] = 1;
-                    // }
 
                     el.features.forEach((value: number, index: number) => {
                         const arrayOfValues = dataMappedByMeasuredFeatures[
