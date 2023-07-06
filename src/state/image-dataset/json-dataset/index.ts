@@ -132,6 +132,7 @@ class JsonRequest implements ImageDataset {
                                 datasets: {
                                     [id]: {
                                         ...dataset,
+                                        id: id,
                                         image: `${datasetdirpath}/${dataset.image}`,
                                         manifest: `${datasetdirpath}/dataset.json`,
                                     },
@@ -143,6 +144,7 @@ class JsonRequest implements ImageDataset {
                                     "dataset has no dateCreated and jsonDataset doesn't know how to create one"
                                 );
                             }
+
                             return megasetInfo;
                         }
                     });
