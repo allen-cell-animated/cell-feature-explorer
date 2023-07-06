@@ -207,7 +207,9 @@ class JsonRequest implements ImageDataset {
             this.viewerChannelSettings = data as ViewerChannelSettings;
             // fixup for missing data
             if (!this.viewerChannelSettings.groups) {
-                this.viewerChannelSettings.groups = [];
+                this.viewerChannelSettings.groups = [
+                    { name: "Channels", channels: [{ match: "(.+)", enabled: true }] },
+                ];
             }
             return this.viewerChannelSettings;
         });
