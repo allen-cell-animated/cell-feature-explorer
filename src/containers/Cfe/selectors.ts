@@ -42,6 +42,9 @@ function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFea
         return `${featureValue}`;
     }
     if (discrete) {
+        if (!featureDef.options) {
+            return featureValue.toString();
+        }
         return `${featureDef.options[featureValue.toString()]?.name}`;
     }
 

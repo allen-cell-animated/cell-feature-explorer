@@ -35,7 +35,6 @@ export const FILE_INFO_KEYS = Object.freeze([
     FOV_VOLUME_VIEWER_PATH,
 ]);
 
-export const CELL_COUNT_KEY = "cellCount";
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end

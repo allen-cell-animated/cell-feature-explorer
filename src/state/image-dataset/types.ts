@@ -45,9 +45,11 @@ export interface Megaset {
     name: string;
     title: string;
     production: boolean;
+    // TODO this has introduced a firebase requirement over the whole app.
+    // We should keep firebase dependencies only contained to the firebase imagedataset.
     dateCreated: Timestamp;
     datasets: {
-        [key: string]: DatasetMetaData
+        [key: string]: DatasetMetaData;
     };
     extra?: string;
     publications?: Publication[];

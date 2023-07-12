@@ -204,6 +204,10 @@ export const getGroupingCategoryNamesAsArray = createSelector(
         groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef
     ): string[] => {
         const categoryKey: string = groupByCategoryFeatureDef.key;
+        if (!categoryKey) {
+            console.log("Missing groupBy category key");
+            return [];
+        }
         return map(perCellDataForPlot.values[categoryKey], (ele: number | null): string => {
             const numeralRepresentationOfTheCategory = ele !== null ? ele.toString() : "";
             return getCategoryString(groupByCategoryFeatureDef, numeralRepresentationOfTheCategory);
