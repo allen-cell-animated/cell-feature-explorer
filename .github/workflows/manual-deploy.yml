@@ -1,6 +1,6 @@
 name: Manual Deploy Staging AWS
 env:
-    NODE_VERSION: "18"
+    NODE_VERSION: "16"
 on:
     workflow_dispatch:
         inputs:

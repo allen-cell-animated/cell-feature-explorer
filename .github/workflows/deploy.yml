@@ -1,6 +1,6 @@
 name: Deploy AWS
 env:
-    NODE_VERSION: "18"
+    NODE_VERSION: "16"
 on:
     push:
         # Sequence of patterns matched against refs/tags
