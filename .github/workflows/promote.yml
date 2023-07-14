@@ -1,6 +1,6 @@
 name: Promote to production AWS
 env:
-    NODE_VERSION: "18.x"
+    NODE_VERSION: "18"
 on:
     push:
         # Sequence of patterns matched against refs/tags
