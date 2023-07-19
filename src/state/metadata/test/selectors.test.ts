@@ -28,50 +28,50 @@ describe("Metadata branch selectors", () => {
         it("returns an array of Megaset objects sorted by dateCreated, newest first", () => {
             const megasetsFromState: Megaset[] = [
                 {
-                    "production": false,
-                    "name": "middle megaset",
-                    "datasets": {},
-                    "title": "Title for middle megaset",
-                    "dateCreated": new Timestamp(1700000000, 0)
+                    production: false,
+                    name: "middle megaset",
+                    datasets: {},
+                    title: "Title for middle megaset",
+                    dateCreated: new Timestamp(1700000000, 0).toMillis(),
                 },
                 {
-                    "production": false,
-                    "name": "oldest megaset",
-                    "datasets": {},
-                    "title": "Title for oldest megaset",
-                    "dateCreated": new Timestamp(1600000000, 0)
+                    production: false,
+                    name: "oldest megaset",
+                    datasets: {},
+                    title: "Title for oldest megaset",
+                    dateCreated: new Timestamp(1600000000, 0).toMillis(),
                 },
                 {
-                    "production": false,
-                    "name": "newest megaset",
-                    "datasets": {},
-                    "title": "Title for newest megaset",
-                    "dateCreated": new Timestamp(1800000000, 0)
+                    production: false,
+                    name: "newest megaset",
+                    datasets: {},
+                    title: "Title for newest megaset",
+                    dateCreated: new Timestamp(1800000000, 0).toMillis(),
                 },
             ];
             const expected: Megaset[] = [
                 {
-                    "production": false,
-                    "name": "newest megaset",
-                    "datasets": {},
-                    "title": "Title for newest megaset",
-                    "dateCreated": new Timestamp(1800000000, 0)
+                    production: false,
+                    name: "newest megaset",
+                    datasets: {},
+                    title: "Title for newest megaset",
+                    dateCreated: new Timestamp(1800000000, 0).toMillis(),
                 },
                 {
-                    "production": false,
-                    "name": "middle megaset",
-                    "datasets": {},
-                    "title": "Title for middle megaset",
-                    "dateCreated": new Timestamp(1700000000, 0)
+                    production: false,
+                    name: "middle megaset",
+                    datasets: {},
+                    title: "Title for middle megaset",
+                    dateCreated: new Timestamp(1700000000, 0).toMillis(),
                 },
                 {
-                    "production": false,
-                    "name": "oldest megaset",
-                    "datasets": {},
-                    "title": "Title for oldest megaset",
-                    "dateCreated": new Timestamp(1600000000, 0)
+                    production: false,
+                    name: "oldest megaset",
+                    datasets: {},
+                    title: "Title for oldest megaset",
+                    dateCreated: new Timestamp(1600000000, 0).toMillis(),
                 },
-            ]
+            ];
 
             const result = getMegasetsByNewest.resultFunc(megasetsFromState);
             expect(result).to.deep.equal(expected);

@@ -41,7 +41,7 @@ export const getDatasets = createSelector([getMegasets], (megasets): DatasetMeta
 
 export const getMegasetsByNewest = createSelector([getMegasets], (megasets): Megaset[] => {
     return megasets.sort((a: Megaset, b: Megaset) => {
-        return b.dateCreated.seconds - a.dateCreated.seconds;
+        return b.dateCreated - a.dateCreated;
     })
 });
 

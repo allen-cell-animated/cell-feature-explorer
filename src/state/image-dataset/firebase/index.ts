@@ -3,7 +3,9 @@ import {
     QueryDocumentSnapshot,
     QuerySnapshot,
     DocumentData,
+    Timestamp
 } from "@firebase/firestore-types";
+
 import axios, { AxiosResponse } from "axios";
 import { reduce } from "lodash";
 
@@ -13,6 +15,10 @@ import { Album } from "../../types";
 import { ImageDataset, DatasetMetaData, Megaset } from "../types";
 import { firestore } from "./configure-firebase";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+
+interface FirebaseMegaset extends Omit<Megaset, "dateCreated"> {
+    dateCreated: Timestamp;
+}
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;
@@ -60,7 +66,12 @@ class FirebaseRequest implements ImageDataset {
             .then((snapShot: QuerySnapshot) => {
                 const megasets: Megaset[] = [];
                 snapShot.forEach((megasetDoc) => {
-                    const megaset = megasetDoc.data() as Megaset;
+                    const firebaseMegaset = megasetDoc.data() as FirebaseMegaset;
+                    const megaset: Megaset = {
+                        ...firebaseMegaset,
+                        dateCreated: firebaseMegaset.dateCreated.toMillis(),
+                    };
+        
                     const initialDatasetObj: { [key: string]: DatasetMetaData } = {};
                     megaset.datasets = reduce(
                         megaset.datasets,

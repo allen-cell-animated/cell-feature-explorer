@@ -1,4 +1,3 @@
-import { Timestamp } from "@firebase/firestore-types";
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
@@ -45,9 +44,7 @@ export interface Megaset {
     name: string;
     title: string;
     production: boolean;
-    // TODO this has introduced a firebase requirement over the whole app.
-    // We should keep firebase dependencies only contained to the firebase imagedataset.
-    dateCreated: Timestamp;
+    dateCreated: number;
     datasets: {
         [key: string]: DatasetMetaData;
     };

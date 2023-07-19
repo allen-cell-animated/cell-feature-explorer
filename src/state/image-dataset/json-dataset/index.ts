@@ -124,6 +124,7 @@ class JsonRequest implements ImageDataset {
                         ...megaset,
                         publications: megaset.publications || [],
                         extra: megaset.extra || "",
+                        dateCreated: megaset.dateCreated || Date.now(),
                         name: id,
                         datasets: {
                             [id]: {
@@ -134,13 +135,6 @@ class JsonRequest implements ImageDataset {
                             },
                         },
                     } as Megaset;
-
-                    if (!megasetInfo.dateCreated) {
-                        console.error(
-                            "dataset has no dateCreated and jsonDataset doesn't know how to create one"
-                        );
-                    }
-
                     return megasetInfo;
                 }
             })
