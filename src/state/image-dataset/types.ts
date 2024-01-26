@@ -21,17 +21,17 @@ export interface DatasetMetaData {
     version: string;
     id: string;
     description: string;
-    image: string;
+    image?: string;
     index: number;
     link?: string;
     manifest?: string;
     production?: boolean;
     userData: {
-        isNew: boolean;
-        inReview: boolean;
-        totalTaggedStructures: number;
-        totalCells: number;
-        totalFOVs: number;
+        isNew?: boolean;
+        inReview?: boolean;
+        totalTaggedStructures?: number;
+        totalCells?: number;
+        totalFOVs?: number;
     };
 }
 
