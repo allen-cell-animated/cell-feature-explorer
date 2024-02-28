@@ -14,7 +14,7 @@
         "build:internal": "cross-env USE_JSON_DATASET=true webpack --config ./webpack/webpack.config.js  --env env=development",
         "start": "webpack serve --config ./webpack/webpack.config.js --env env=development",
         "start:internal": "cross-env USE_JSON_DATASET=true webpack-dev-server --config ./webpack/webpack.config.js --env env=development",
-        "start:dev-db": "cross-env USE_DEV_DB=true webpack serve --config ./webpack/webpack.config.js  --env env=development",
+        "start:dev": "cross-env USE_DEV_DB=true USE_REDUX_DEVTOOLS=true webpack serve --config ./webpack/webpack.config.js  --env env=development",
         "lint": "eslint src/**/*.{ts,tsx}",
         "typeCheck": "tsc -p tsconfig.json --noEmit",
         "test": "cross-env BABEL_ENV=commonjs TS_NODE_FILES=true TS_NODE_PROJECT=tsconfig.commonjs.json NODE_ENV=production mocha --opts mocha.opts src/**/*.test.ts",
