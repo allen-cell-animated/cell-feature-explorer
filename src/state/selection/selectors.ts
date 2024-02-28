@@ -182,9 +182,10 @@ export const getCategoryGroupColorsAndNames = createSelector(
 
 // not truly a selector, it just seemed cleaner to make this one function instead of 3
 // (2 for each axis and one for the color by)
+// tooltip won't render if sent an empty string
 export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[]): string {
     const data = find(options, { key: key });
-    if (data) {
+    if (data && data.tooltip) {
         return data.tooltip;
     }
     return "";

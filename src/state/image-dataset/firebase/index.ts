@@ -134,7 +134,9 @@ class FirebaseRequest implements ImageDataset {
         if (this.viewerChannelSettings) {
             return Promise.resolve(this.viewerChannelSettings);
         }
-
+        if (!this.viewerSettingsPath) { 
+            return Promise.resolve({} as ViewerChannelSettings);
+        }
         return axios
             .get(this.viewerSettingsPath)
             .then((metadata: AxiosResponse) => metadata.data)
