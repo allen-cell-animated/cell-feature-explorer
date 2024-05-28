@@ -19,4 +19,9 @@
     & :global(.channel-visibility-controls) > :global(.ant-btn-icon-only) {
         border-color: transparent !important;
     }
+
+    & :global(.ant-drawer.ant-drawer-bottom) {
+        height: 100% !important;
+        position: relative !important;
+    }
 }
