@@ -1,0 +1,22 @@
+/* Style overrides to fix alignment caused by an Ant version + font mismatch.
+ * TODO: Remove this when Ant version is upgraded?
+*/
+
+.cell-viewer-container {
+    & :global(.ant-collapse-header) {
+        align-items: center !important;
+        cursor: auto !important;
+
+        & :global(.ant-collapse-arrow) > span {
+            cursor: pointer !important;
+        }
+
+        & :global(.ant-collapse-extra) {
+            width: 45% !important;
+        }
+    }
+
+    & :global(.channel-visibility-controls) > :global(.ant-btn-icon-only) {
+        border-color: transparent !important;
+    }
+}
