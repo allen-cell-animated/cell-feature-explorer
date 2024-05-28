@@ -16,6 +16,6 @@ jobs:
               with:
                   node-version: 20
             - run: npm ci
-            - run: npm test --if-present
             - run: npm run lint --if-present
             - run: npm run typeCheck --if-present
+            - run: npm test --if-present
