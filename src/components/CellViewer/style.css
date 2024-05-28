@@ -3,6 +3,9 @@
 */
 
 .cell-viewer-container {
+    /* Align header items; fix a bug where the entire div would show pointer-interactive
+     * when only the icon (span) was clickable.
+    */
     & :global(.ant-collapse-header) {
         align-items: center !important;
         cursor: auto !important;
@@ -16,12 +19,19 @@
         }
     }
 
+    /* Remove outlines on channel settings toggles  */
     & :global(.channel-visibility-controls) > :global(.ant-btn-icon-only) {
         border-color: transparent !important;
     }
 
+    /* Fix missing bottom drawer */
     & :global(.ant-drawer.ant-drawer-bottom) {
         height: 100% !important;
         position: relative !important;
+    }
+
+    /* Fix icons in toolbar not being centered */
+    & :global(.viewer-toolbar-group) > button:global(.ant-btn-icon-only) {
+        padding: 0 !important;
     }
 }
