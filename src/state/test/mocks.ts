@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/web-3d-viewer";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
