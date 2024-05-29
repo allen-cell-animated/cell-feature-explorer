@@ -1,6 +1,6 @@
 import { Affix, Layout, Menu } from "antd";
-import { ClickParam } from "antd/lib/menu";
 import { uniq } from "lodash";
+import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 import classNames from "classnames";
@@ -115,7 +115,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     };
 
-    private handleTabClick = (event: ClickParam) => {
+    private handleTabClick = (event: MenuInfo) => {
         this.setState({ currentTab: event.key });
     };
 

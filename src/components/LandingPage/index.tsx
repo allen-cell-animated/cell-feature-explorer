@@ -34,7 +34,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                 <Row className={styles.section}>
                     <div className={styles.sectionContent}>
                         <h2 className={styles.subtitle}>Load a dataset to get started</h2>
-                        <Row type="flex" className={styles.cardContainer}>
+                        <Row className={styles.cardContainer}>
                             {megasets.map((megaset: Megaset) => (
                                 <MegasetCard
                                     key={megaset.name}
@@ -94,7 +94,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                 <Row className={styles.section}>
                     <Col className={styles.sectionContent}>
                         <h2 className={styles.subtitle}>Download cell feature data (via Quilt)</h2>
-                        <Row type="flex" className={styles.section}>
+                        <Row className={styles.section}>
                             <Descriptions layout="horizontal" colon={false} column={1}>
                                 <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
 

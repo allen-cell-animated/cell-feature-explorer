@@ -1,10 +1,11 @@
-import { Avatar, Button, Card, Dropdown, Icon, List, Menu, Tooltip } from "antd";
+import { Avatar, Button, Card, Dropdown, List, Menu, Tooltip } from "antd";
 import React from "react";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
+import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
 
 interface GalleryCardProps {
     category: string;
@@ -27,27 +28,27 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
     };
 
     const openCellIn3D = () => {
-        props.handleOpenIn3D({id: props.cellID});
+        props.handleOpenIn3D({ id: props.cellID });
     };
     const menu = (
         <Menu className="download-dropdown">
             {props.downloadHref && (
                 <Menu.Item key="1">
                     <a href={props.downloadHref}>
-                        <Icon type="download" /> Segmented cell
+                        <DownloadOutlined /> Segmented cell
                     </a>
                 </Menu.Item>
             )}
             {props.downloadFullField && (
                 <Menu.Item key="2">
                     <a href={props.downloadFullField}>
-                        <Icon type="download" /> Full field image
+                        <DownloadOutlined /> Full field image
                     </a>
                 </Menu.Item>
             )}
         </Menu>
     );
-    const hasDownload = (props.downloadHref !== "" || props.downloadFullField !== "");
+    const hasDownload = props.downloadHref !== "" || props.downloadFullField !== "";
     const actions = [
         <Button
             className={props.selected ? styles.disabled : ""}
@@ -56,13 +57,13 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             3D
         </Button>,
-        <Tooltip key={`${props.cellID}-download`} title={hasDownload?null:NO_DOWNLOADS_TOOLTIP}>
-            <Dropdown  overlay={menu} trigger={["click"]}>
+        <Tooltip key={`${props.cellID}-download`} title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}>
+            <Dropdown overlay={menu} trigger={["click"]}>
                 <Button icon="download" />
             </Dropdown>
         </Tooltip>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
-            <Icon type="close" />
+            <CloseOutlined />
         </Button>,
     ];
 

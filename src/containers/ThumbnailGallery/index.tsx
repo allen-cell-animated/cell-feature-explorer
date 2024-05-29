@@ -1,4 +1,4 @@
-import { Button, Col, Form, Icon, Input, List, Popconfirm, Radio, Row } from "antd";
+import { Button, Col, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -39,6 +39,7 @@ const Search = Input.Search;
 const FormItem = Form.Item;
 
 import styles from "./style.css";
+import { CloseOutlined } from "@ant-design/icons";
 
 interface PropsFromState {
     albumData: Album[];
@@ -135,7 +136,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             });
         }
         if (includes(ids, value)) {
-            addSearchedCell({id: value});
+            addSearchedCell({ id: value });
             return this.setState({
                 inputStatus: "success",
                 message: messages.success,
@@ -191,7 +192,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
-    public selectCell(cellId: {id: string}) {
+    public selectCell(cellId: { id: string }) {
         const { handleOpenIn3D } = this.props;
         this.closeGallery();
         this.props.openViewerTab();
@@ -205,13 +206,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         const dataSource: any = data.length > 0 ? data : [{ empty: true }];
 
         return (
-            <Row
-                id="gallery"
-                className={styles.container}
-                type="flex"
-                gutter={32}
-                justify="space-between"
-            >
+            <Row id="gallery" className={styles.container} gutter={32} justify="space-between">
                 <Col className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
@@ -222,9 +217,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button icon="close">
-                                    Clear All
-                                </Button>
+                                <Button icon="close">Clear All</Button>
                             </Popconfirm>
                         )}
                     </div>
@@ -242,11 +235,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
                         <h2>Gallery</h2>
-                        <Icon
-                            type="close"
-                            style={{ fontSize: "2em" }}
-                            onClick={this.closeGallery}
-                        />
+                        {/* TODO: Make this a button for accessibility reasons */}
+                        <CloseOutlined onClick={this.closeGallery} style={{ fontSize: "2em" }} />
                     </div>
                     <FormItem
                         hasFeedback={true}

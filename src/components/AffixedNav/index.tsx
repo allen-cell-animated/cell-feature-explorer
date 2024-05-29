@@ -1,8 +1,9 @@
-import { Anchor, Icon } from "antd";
+import { Anchor } from "antd";
 import React from "react";
 const { Link } = Anchor;
 
 import styles from "./style.css";
+import { DotChartOutlined, PictureOutlined, SyncOutlined } from "@ant-design/icons";
 const offsetTop = 65;
 
 const AffixedNav: React.SFC = () => {
@@ -12,7 +13,7 @@ const AffixedNav: React.SFC = () => {
                 href="#main-plot"
                 title={
                     <React.Fragment>
-                        <Icon type="dot-chart" />
+                        <DotChartOutlined />
                         <span> Plot </span>
                     </React.Fragment>
                 }
@@ -21,7 +22,7 @@ const AffixedNav: React.SFC = () => {
                 href="#gallery"
                 title={
                     <React.Fragment>
-                        <Icon type="picture" />
+                        <PictureOutlined />
                         <span> Gallery </span>
                     </React.Fragment>
                 }
@@ -30,7 +31,7 @@ const AffixedNav: React.SFC = () => {
                 href="#three-d-viewer"
                 title={
                     <React.Fragment>
-                        <Icon type="sync" />
+                        <SyncOutlined />
                         <span> 3D viewer </span>
                     </React.Fragment>
                 }

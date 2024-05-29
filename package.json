@@ -90,7 +90,7 @@
         "@aics/browsing-context-messaging": "~1.1",
         "@aics/web-3d-viewer": "^2.9.0",
         "@ant-design/icons": "^4.2.2",
-        "antd": "^3.26.20",
+        "antd": "^5.17.4",
         "axios": "^0.21.1",
         "classnames": "^2.2.5",
         "core-js": "^2.5.5",
