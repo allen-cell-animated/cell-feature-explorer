@@ -187,7 +187,17 @@
 .tabbed-menu {
     font-size: 19px;
 
-    & :global(.ant-menu-title-content) span {
+    /* Align tab labels and icons */
+    & :global(.ant-menu-title-content) {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        align-items: center;
+
+        & :first-child {
+            font-size: 16px;
+            padding: 3px 0 0 0;
+        }
     }
 }
 
