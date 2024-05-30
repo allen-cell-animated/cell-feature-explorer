@@ -1,26 +1,13 @@
 {
-  "plugins": [
-    "@babel/plugin-proposal-class-properties",
-    "@babel/transform-runtime",
-    ["babel-plugin-import", {
-      "camel2DashComponentName": false,
-      "libraryDirectory": "",
-      "libraryName": "lodash"
-    }, "lodash"
+    "plugins": ["@babel/plugin-proposal-class-properties", "@babel/transform-runtime"],
+    "presets": [
+        "@babel/preset-react",
+        ["@babel/preset-env", { "modules": false }],
+        "@babel/preset-typescript"
     ],
-    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }, "ant"],
-    ["import", { "libraryName": "antd-mobile", "libraryDirectory": "lib"}, "antd-mobile"]
-
-  ],
-  "presets": [
-    "@babel/preset-react",
-    ["@babel/preset-env", { "modules": false }],
-    "@babel/preset-typescript"
-  ],
-  "env": {
-    "commonjs": {
-      "presets": [["@babel/preset-env", { "modules": true }]]
+    "env": {
+        "commonjs": {
+            "presets": [["@babel/preset-env", { "modules": true }]]
+        }
     }
-  }
 }
-
