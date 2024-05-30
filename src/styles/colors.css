@@ -16,4 +16,5 @@
     --dark-theme-text-color: var(--off-white);
     --megacard-background: var(--background-dim-gray);
     --link-text: var(--bright-blue);
+    --white: #ffffff;
 }

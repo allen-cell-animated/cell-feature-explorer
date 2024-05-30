@@ -72,6 +72,10 @@ class App extends React.Component<AppProps> {
                         colorLinkHover: PALETTE.linkHover,
                     },
                     components: {
+                        Button: {
+                            colorPrimary: PALETTE.purple,
+                            primaryShadow: "0 0px 0 transparent",
+                        },
                         Layout: {
                             headerBg: PALETTE.headerGray,
                             headerColor: PALETTE.white,

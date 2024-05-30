@@ -90,6 +90,7 @@
 
 .section .paragraph {
     color: var(--text-gray);
+    font-size: 1rem;
 }
 
 .light-section .paragraph {
