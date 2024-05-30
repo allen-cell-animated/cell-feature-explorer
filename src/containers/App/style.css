@@ -1,5 +1,9 @@
 @import "../../styles/colors.css";
 
+body {
+    background-color: var(--page-background-gray);
+}
+
 .nav-bar {
     padding: 0;
 }
@@ -94,4 +98,8 @@
 :global(.ant-btn-background-ghost) {
     color: var(--text-gray);
     border-color: var(--text-gray);
+}
+
+h2 {
+    font-weight: 600;
 }

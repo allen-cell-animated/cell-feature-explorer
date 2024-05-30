@@ -78,13 +78,11 @@
 .light-section {
     composes: section;
     background-color: var(--background-dim-gray);
-    color: var(--text-gray);
 }
 
 .card-container {
     column-gap: var(--dataset-card-gap-width);
 }
-
 
 .light-section .subtitle {
     margin-bottom: 1.2em;
@@ -99,7 +97,7 @@
 }
 
 .content :global(.ant-descriptions-view table) {
-    table-layout: initial
+    table-layout: initial;
 }
 
 .content :global(.ant-descriptions-item-label) {

@@ -26,6 +26,18 @@ interface AppProps {
     megasets: Megaset[];
 }
 
+const PALETTE = {
+    purple: "#8950d9",
+    darkGray: "#313131",
+    mediumGray: "#6e6e6e",
+    lightGray: "#a0a0a0",
+    headerGray: "#4b4b4b",
+    brightGreen: "#b2d030",
+    brightBlue: "#00a0ff",
+    linkHover: "#69b1ff",
+    white: "#ffffff",
+};
+
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
         this.props.requestAvailableDatasets();
@@ -50,16 +62,19 @@ class App extends React.Component<AppProps> {
                 theme={{
                     algorithm: darkAlgorithm,
                     token: {
-                        colorPrimary: "#8950d9",
-                        colorBgBase: "#313131",
-                        colorTextHeading: "#ffffff",
+                        colorPrimary: PALETTE.purple,
+                        colorBgBase: PALETTE.darkGray,
+                        colorTextHeading: PALETTE.white,
                         fontWeightStrong: 600,
                         borderRadius: 4,
                         borderRadiusLG: 2,
+                        colorLink: PALETTE.brightBlue,
+                        colorLinkHover: PALETTE.linkHover,
                     },
                     components: {
                         Layout: {
-                            headerBg: "#6e6e6e",
+                            headerBg: PALETTE.headerGray,
+                            headerColor: PALETTE.white,
                         },
                     },
                 }}
