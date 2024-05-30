@@ -28,7 +28,7 @@ class PlotTab extends React.Component {
     public render() {
         const { openKeys, defaultActiveKey } = this.state;
         return (
-            <>
+            <Layout>
                 <Sider
                     className={styles.colorMenu}
                     width={500}
@@ -48,8 +48,8 @@ class PlotTab extends React.Component {
                     </div>
                 </Content>
                 {/* spacer for the gallery overlay */}
-                <Sider width={120} />
-            </>
+                <Sider width={20} />
+            </Layout>
         );
     }
 }

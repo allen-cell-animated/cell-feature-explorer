@@ -30,7 +30,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 onControlPanelToggle={props.onControlPanelToggle}
                 metadata={props.metadata}
                 appHeight="100%"
-                canvasMargin="0 120px 0 0"
+                canvasMargin="0 20px 0 0"
             />
         </div>
     );

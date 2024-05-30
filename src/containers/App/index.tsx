@@ -31,7 +31,9 @@ const PALETTE = {
     darkGray: "#313131",
     mediumGray: "#6e6e6e",
     lightGray: "#a0a0a0",
+    extraLightGray: "#d8d8d8",
     headerGray: "#4b4b4b",
+    siderGray: "#464646",
     brightGreen: "#b2d030",
     brightBlue: "#00a0ff",
     linkHover: "#69b1ff",
@@ -67,9 +69,11 @@ class App extends React.Component<AppProps> {
                         colorTextHeading: PALETTE.white,
                         fontWeightStrong: 600,
                         borderRadius: 4,
+                        borderRadiusSM: 2,
                         borderRadiusLG: 2,
                         colorLink: PALETTE.brightBlue,
                         colorLinkHover: PALETTE.linkHover,
+                        colorIcon: PALETTE.white,
                     },
                     components: {
                         Button: {
@@ -79,6 +83,12 @@ class App extends React.Component<AppProps> {
                         Layout: {
                             headerBg: PALETTE.headerGray,
                             headerColor: PALETTE.white,
+                            siderBg: PALETTE.siderGray,
+                        },
+                        Modal: {
+                            contentBg: PALETTE.extraLightGray,
+                            headerBg: PALETTE.extraLightGray,
+                            colorIcon: PALETTE.mediumGray,
                         },
                     },
                 }}

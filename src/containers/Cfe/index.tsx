@@ -20,6 +20,7 @@ import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./s
 const { Content, Sider } = Layout;
 
 import styles from "./style.css";
+import { Header } from "antd/es/layout/layout";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
@@ -132,8 +133,89 @@ class Cfe extends React.Component<CfeProps, CfeState> {
 
         return (
             <Layout>
+                <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
+                    <Header>
+                        <div
+                            className={
+                                controlPanelCollapsed
+                                    ? classNames([
+                                          styles.viewerMenuBar,
+                                          styles.viewerMenuBarCollapsed,
+                                      ])
+                                    : styles.viewerMenuBar
+                            }
+                        >
+                            <span className={styles.viewerTitleContainer}>
+                                <h4
+                                    className={styles.viewerTitle}
+                                    style={
+                                        this.state.currentTab !== VIEWER_TAB_KEY
+                                            ? { display: "none" }
+                                            : {}
+                                    }
+                                >
+                                    <span className={styles.label}>Viewing cell: </span>
+                                    {this.props.viewerHeader.cellId}
+                                    <span className={styles.label}>, {viewerHeader.label}: </span>
+                                    {this.props.viewerHeader.value}
+                                </h4>
+                            </span>
+                            <Menu
+                                className={styles.tabbedMenu}
+                                onClick={this.handleTabClick}
+                                selectedKeys={[this.state.currentTab]}
+                                mode="horizontal"
+                            >
+                                <Menu.Item key={PLOT_TAB_KEY}>
+                                    <span
+                                        className={classNames([
+                                            "icon-moon",
+                                            "anticon",
+                                            styles.plotIcon,
+                                        ])}
+                                    />
+                                    Plot
+                                </Menu.Item>
+                                <Menu.Item key={VIEWER_TAB_KEY}>
+                                    <span
+                                        className={classNames([
+                                            "icon-moon",
+                                            "anticon",
+                                            styles.cubeIcon,
+                                        ])}
+                                    />
+                                    3D Viewer
+                                </Menu.Item>
+                            </Menu>
+                        </div>
+                    </Header>
+                    <Layout>
+                        <SmallScreenWarning
+                            handleClose={this.handleClose}
+                            onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                            visible={showSmallScreenWarning}
+                        />
+                        <Content className={plotClassNames}>
+                            <PlotTab />
+                        </Content>
+                        <Content className={viewerClassNames}>
+                            <CellViewer
+                                onControlPanelToggle={this.onControlPanelToggle}
+                                {...this.props.volumeViewerProps}
+                            />
+                            {this.props.showAlignControl && (
+                                <AlignControl
+                                    parent={this.alignContainer}
+                                    aligned={this.props.alignActive}
+                                    setAligned={this.props.setAlignActive}
+                                />
+                            )}
+                        </Content>
+                    </Layout>
+                </Layout>
                 <Affix>
                     <Sider
+                        style={{ right: "0" }}
                         width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
@@ -150,79 +232,6 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         />
                     </Sider>
                 </Affix>
-                <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <div
-                        className={
-                            controlPanelCollapsed
-                                ? classNames([styles.viewerMenuBar, styles.viewerMenuBarCollapsed])
-                                : styles.viewerMenuBar
-                        }
-                    >
-                        <span className={styles.viewerTitleContainer}>
-                            <h4
-                                className={styles.viewerTitle}
-                                style={
-                                    this.state.currentTab !== VIEWER_TAB_KEY
-                                        ? { display: "none" }
-                                        : {}
-                                }
-                            >
-                                <span className={styles.label}>Viewing cell: </span>
-                                {this.props.viewerHeader.cellId}
-                                <span className={styles.label}>, {viewerHeader.label}: </span>
-                                {this.props.viewerHeader.value}
-                            </h4>
-                        </span>
-                        <Menu
-                            className={styles.tabbedMenu}
-                            onClick={this.handleTabClick}
-                            selectedKeys={[this.state.currentTab]}
-                            mode="horizontal"
-                        >
-                            <Menu.Item key={PLOT_TAB_KEY}>
-                                <span
-                                    className={classNames([
-                                        "icon-moon",
-                                        "anticon",
-                                        styles.plotIcon,
-                                    ])}
-                                />
-                                Plot
-                            </Menu.Item>
-                            <Menu.Item key={VIEWER_TAB_KEY}>
-                                <span
-                                    className={classNames([
-                                        "icon-moon",
-                                        "anticon",
-                                        styles.cubeIcon,
-                                    ])}
-                                />
-                                3D Viewer
-                            </Menu.Item>
-                        </Menu>
-                    </div>
-                    <SmallScreenWarning
-                        handleClose={this.handleClose}
-                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                        visible={showSmallScreenWarning}
-                    />
-                    <Layout className={plotClassNames}>
-                        <PlotTab />
-                    </Layout>
-                    <Content className={viewerClassNames}>
-                        <CellViewer
-                            onControlPanelToggle={this.onControlPanelToggle}
-                            {...this.props.volumeViewerProps}
-                        />
-                        {this.props.showAlignControl && (
-                            <AlignControl
-                                parent={this.alignContainer}
-                                aligned={this.props.alignActive}
-                                setAligned={this.props.setAlignActive}
-                            />
-                        )}
-                    </Content>
-                </Layout>
             </Layout>
         );
     }
