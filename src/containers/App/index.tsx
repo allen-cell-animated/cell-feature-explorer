@@ -16,6 +16,7 @@ import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
 import styles from "./style.css";
+import { PALETTE } from "../../constants";
 
 interface AppProps {
     isLoading: boolean;
@@ -25,20 +26,6 @@ interface AppProps {
     requestAvailableDatasets: () => RequestAction;
     megasets: Megaset[];
 }
-
-const PALETTE = {
-    purple: "#8950d9",
-    darkGray: "#313131",
-    mediumGray: "#6e6e6e",
-    lightGray: "#a0a0a0",
-    extraLightGray: "#d8d8d8",
-    headerGray: "#4b4b4b",
-    siderGray: "#464646",
-    brightGreen: "#b2d030",
-    brightBlue: "#00a0ff",
-    linkHover: "#69b1ff",
-    white: "#ffffff",
-};
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
@@ -89,6 +76,9 @@ class App extends React.Component<AppProps> {
                             contentBg: PALETTE.extraLightGray,
                             headerBg: PALETTE.extraLightGray,
                             colorIcon: PALETTE.mediumGray,
+                        },
+                        Menu: {
+                            colorBgElevated: PALETTE.darkGray,
                         },
                     },
                 }}

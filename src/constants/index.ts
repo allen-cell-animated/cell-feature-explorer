@@ -72,3 +72,17 @@ export const GENERAL_PLOT_SETTINGS = {
 };
 
 export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this dataset.";
+
+export const PALETTE = {
+    purple: "#8950d9",
+    darkGray: "#313131",
+    mediumGray: "#6e6e6e",
+    lightGray: "#a0a0a0",
+    extraLightGray: "#d8d8d8",
+    headerGray: "#4b4b4b",
+    siderGray: "#464646",
+    brightGreen: "#b2d030",
+    brightBlue: "#00a0ff",
+    linkHover: "#69b1ff",
+    white: "#ffffff",
+} as const;
