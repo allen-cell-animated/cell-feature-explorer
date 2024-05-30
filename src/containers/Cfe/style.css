@@ -39,15 +39,6 @@
     margin-right: 120px;
 }
 
-.viewer-title {
-    font-weight: 600;
-    margin-bottom: 0;
-}
-
-.viewer-title .label {
-    color: var(--text-gray);
-}
-
 .header-main {
     text-align: left;
     background-color: var(--background-dim-gray);
@@ -66,19 +57,34 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-right: 30px;
+    background-color: var(--viewer-header-background-gray);
+    border-bottom: 1px solid var(--layout-borders);
 }
 
 .viewer-title-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    margin: 0 0;
-    top: 0;
-    bottom: 0;
-    right: 30px;
-    transition: left 0.2s;
     height: 57px;
+    width: 100%;
+
+    & .viewer-title {
+        max-width: 100%;
+        overflow: ellipsis;
+        font-weight: 600;
+        margin-bottom: 0;
+        line-height: 20px;
+        height: auto;
+        white-space: nowrap;
+
+        & .label {
+            color: var(--text-gray);
+        }
+    }
 }
 
 @media screen and (max-width: 1000px) {
@@ -89,7 +95,7 @@
 }
 
 .viewer-menu-bar-collapsed > .viewer-title-container {
-    left: 0;
+    /* left: 0; */
 }
 
 :global(.allencell-header) {

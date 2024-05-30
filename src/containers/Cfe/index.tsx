@@ -174,7 +174,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                     </Menu.Item>
                                 </Menu>
                             </ConfigProvider>
-                            <span className={styles.viewerTitleContainer}>
+                            <div className={styles.viewerTitleContainer}>
                                 <p
                                     className={styles.viewerTitle}
                                     style={
@@ -188,7 +188,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                     <span className={styles.label}>, {viewerHeader.label}: </span>
                                     {this.props.viewerHeader.value}
                                 </p>
-                            </span>
+                            </div>
                         </div>
                     </Header>
                     <Layout>
