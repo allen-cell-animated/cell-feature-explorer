@@ -41,7 +41,6 @@
 
 .header-main {
     text-align: left;
-    background-color: var(--background-dim-gray);
     padding: 15px 50px;
     height: initial;
     display: flex;
@@ -207,8 +206,8 @@
     }
 }
 
-:global(.ant-menu-horizontal) {
-    border-bottom: 1px solid var(--border-gray);
+:global(.ant-menu) {
+    background-color: var(--viewer-header-background-gray);
 }
 
 :global(.ant-menu-horizontal .ant-menu-item) {
@@ -216,24 +215,6 @@
     margin-left: 30px;
     padding: 0 10px;
     color: #ffffff;
-}
-
-/* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item),
-:global(.ant-menu-horizontal > .ant-menu-submenu) {
-    border-bottom: 3px solid transparent;
-}
-
-/* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item:hover),
-:global(.ant-menu-horizontal > .ant-menu-submenu:hover),
-:global(.ant-menu-horizontal > .ant-menu-item-active),
-:global(.ant-menu-horizontal > .ant-menu-submenu-active),
-:global(.ant-menu-horizontal > .ant-menu-item-open),
-:global(.ant-menu-horizontal > .ant-menu-submenu-open),
-:global(.ant-menu-horizontal > .ant-menu-item-selected),
-:global(.ant-menu-horizontal > .ant-menu-submenu-selected) {
-    border-bottom: 3px solid #ffffff;
 }
 
 /* Icomoon icons */

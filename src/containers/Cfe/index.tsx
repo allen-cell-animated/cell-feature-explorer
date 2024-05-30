@@ -1,4 +1,4 @@
-import { Affix, ConfigProvider, Layout, Menu } from "antd";
+import { Affix, ConfigProvider, Layout, Menu, MenuProps } from "antd";
 import { uniq } from "lodash";
 import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
@@ -131,6 +131,28 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         ]);
         const plotClassNames = classNames([{ [styles.hidden]: currentTab === VIEWER_TAB_KEY }]);
 
+        type MenuItem = Required<MenuProps>["items"][number];
+        const menuItems: MenuItem[] = [
+            {
+                label: (
+                    <>
+                        <span className={classNames(["icon-moon", "anticon", styles.plotIcon])} />
+                        Plot
+                    </>
+                ),
+                key: PLOT_TAB_KEY,
+            },
+            {
+                label: (
+                    <>
+                        <span className={classNames(["icon-moon", "anticon", styles.cubeIcon])} />
+                        3D Viewer
+                    </>
+                ),
+                key: VIEWER_TAB_KEY,
+            },
+        ];
+
         return (
             <Layout>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
@@ -145,34 +167,21 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                     : styles.viewerMenuBar
                             }
                         >
-                            <ConfigProvider theme={{ token: { colorPrimary: "#fff" } }}>
+                            <ConfigProvider
+                                theme={{
+                                    token: {
+                                        colorPrimary: "#fff",
+                                        colorSplit: "transparent",
+                                    },
+                                }}
+                            >
                                 <Menu
                                     className={styles.tabbedMenu}
                                     onClick={this.handleTabClick}
                                     selectedKeys={[this.state.currentTab]}
                                     mode="horizontal"
-                                >
-                                    <Menu.Item key={PLOT_TAB_KEY}>
-                                        <span
-                                            className={classNames([
-                                                "icon-moon",
-                                                "anticon",
-                                                styles.plotIcon,
-                                            ])}
-                                        />
-                                        Plot
-                                    </Menu.Item>
-                                    <Menu.Item key={VIEWER_TAB_KEY}>
-                                        <span
-                                            className={classNames([
-                                                "icon-moon",
-                                                "anticon",
-                                                styles.cubeIcon,
-                                            ])}
-                                        />
-                                        3D Viewer
-                                    </Menu.Item>
-                                </Menu>
+                                    items={menuItems}
+                                ></Menu>
                             </ConfigProvider>
                             <div className={styles.viewerTitleContainer}>
                                 <p
