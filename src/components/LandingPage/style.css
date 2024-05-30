@@ -15,11 +15,13 @@
     text-align: center;
     margin-top: 1em;
     margin-bottom: 0;
+    color: var(--white);
 }
 
 .subtitle {
     composes: title;
     font-size: 24px;
+    font-weight: 500;
 }
 .alert {
     margin-right: 120px;
@@ -78,6 +80,8 @@
 .light-section {
     composes: section;
     background-color: var(--background-dim-gray);
+    display: flex;
+    flex-direction: column;
 }
 
 .card-container {
@@ -91,6 +95,7 @@
 .section .paragraph {
     color: var(--text-gray);
     font-size: 1rem;
+    padding: 0 20px;
 }
 
 .light-section .paragraph {

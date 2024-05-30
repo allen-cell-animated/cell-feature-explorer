@@ -95,7 +95,12 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                     <Col className={styles.sectionContent}>
                         <h2 className={styles.subtitle}>Download cell feature data (via Quilt)</h2>
                         <Row className={styles.section}>
-                            <Descriptions layout="horizontal" colon={false} column={1}>
+                            <Descriptions
+                                layout="horizontal"
+                                colon={false}
+                                column={1}
+                                style={{ margin: "10px 0" }}
+                            >
                                 <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
 
                                 {downloadData.map((downloadInfo: DownloadInfo) => {
