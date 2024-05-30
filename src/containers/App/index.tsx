@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { ConfigProvider, Layout, theme } from "antd";
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
@@ -42,27 +42,52 @@ class App extends React.Component<AppProps> {
             styles.container,
             { [styles.isLoading]: showLoadingOverlay },
         ]);
+
+        const { darkAlgorithm } = theme;
+
         return (
-            <div
-                className={classNames([styles.wrapper, { [styles.isLoading]: showLoadingOverlay }])}
+            <ConfigProvider
+                theme={{
+                    algorithm: darkAlgorithm,
+                    token: {
+                        colorPrimary: "#8950d9",
+                        colorBgBase: "#313131",
+                        colorTextHeading: "#ffffff",
+                        fontWeightStrong: 600,
+                        borderRadius: 4,
+                        borderRadiusLG: 2,
+                    },
+                    components: {
+                        Layout: {
+                            headerBg: "#6e6e6e",
+                        },
+                    },
+                }}
             >
-                <Layout className={layoutClassnames}>
-                    <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
-                    <Header className={styles.navBar}>
-                        <AllenCellHeader selectedDataset={selectedDataset} />
-                    </Header>
-                    <Layout>
-                        {!!selectedDataset ? (
-                            <Cfe />
-                        ) : (
-                            <LandingPage
-                                megasets={megasets}
-                                handleSelectDataset={this.handleSelectDataset}
-                            />
-                        )}
+                <div
+                    className={classNames([
+                        styles.wrapper,
+                        { [styles.isLoading]: showLoadingOverlay },
+                    ])}
+                >
+                    <Layout className={layoutClassnames}>
+                        <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
+                        <Header className={styles.navBar}>
+                            <AllenCellHeader selectedDataset={selectedDataset} />
+                        </Header>
+                        <Layout>
+                            {!!selectedDataset ? (
+                                <Cfe />
+                            ) : (
+                                <LandingPage
+                                    megasets={megasets}
+                                    handleSelectDataset={this.handleSelectDataset}
+                                />
+                            )}
+                        </Layout>
                     </Layout>
-                </Layout>
-            </div>
+                </div>
+            </ConfigProvider>
         );
     }
 }
