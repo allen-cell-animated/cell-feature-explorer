@@ -40,6 +40,7 @@
 }
 
 .viewer-title {
+    font-weight: 600;
     margin-bottom: 0;
 }
 
@@ -64,6 +65,7 @@
 .viewer-menu-bar {
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .viewer-title-container {
@@ -71,12 +73,12 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    margin: auto;
+    margin: 0 0;
     top: 0;
     bottom: 0;
-    left: 450px;
-    right: 120px;
+    right: 30px;
     transition: left 0.2s;
+    height: 57px;
 }
 
 @media screen and (max-width: 1000px) {
@@ -184,6 +186,9 @@
 
 .tabbed-menu {
     font-size: 19px;
+
+    & :global(.ant-menu-title-content) span {
+    }
 }
 
 :global(.ant-menu-horizontal) {
