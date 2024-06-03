@@ -56,7 +56,7 @@ class App extends React.Component<AppProps> {
                         colorTextHeading: PALETTE.white,
                         fontWeightStrong: 600,
                         borderRadius: 4,
-                        borderRadiusSM: 2,
+                        borderRadiusSM: 4,
                         borderRadiusLG: 2,
                         colorLink: PALETTE.brightBlue,
                         colorLinkHover: PALETTE.linkHover,
@@ -67,10 +67,17 @@ class App extends React.Component<AppProps> {
                             colorPrimary: PALETTE.purple,
                             primaryShadow: "0 0px 0 transparent",
                         },
+                        Checkbox: {
+                            borderRadiusSM: 2,
+                        },
+                        Collapse: {
+                            contentBg: PALETTE.collapseContentGray,
+                            headerBg: PALETTE.collapseHeaderGray,
+                        },
                         Layout: {
                             headerBg: PALETTE.headerGray,
                             headerColor: PALETTE.white,
-                            siderBg: PALETTE.siderGray,
+                            siderBg: PALETTE.collapseContentGray,
                         },
                         Modal: {
                             contentBg: PALETTE.extraLightGray,
@@ -79,6 +86,9 @@ class App extends React.Component<AppProps> {
                         },
                         Menu: {
                             colorBgElevated: PALETTE.darkGray,
+                        },
+                        Tooltip: {
+                            colorBgSpotlight: "rgba(0, 0, 0, 0.85)",
                         },
                     },
                 }}
