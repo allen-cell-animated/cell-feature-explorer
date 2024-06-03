@@ -217,7 +217,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button icon="close">Clear All</Button>
+                                <Button>
+                                    <CloseOutlined /> Clear All
+                                </Button>
                             </Popconfirm>
                         )}
                     </div>
@@ -235,8 +237,9 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
                         <h2>Gallery</h2>
-                        {/* TODO: Make this a button for accessibility reasons */}
-                        <CloseOutlined onClick={this.closeGallery} style={{ fontSize: "2em" }} />
+                        <Button type="text" onClick={this.closeGallery} style={{ padding: 0 }}>
+                            <CloseOutlined style={{ fontSize: "2em" }} />
+                        </Button>
                     </div>
                     <FormItem
                         hasFeedback={true}
