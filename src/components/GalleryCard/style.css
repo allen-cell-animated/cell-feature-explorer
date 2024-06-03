@@ -30,6 +30,13 @@
     padding-left: 0;
 }
 
+.actionList {
+    display: inline;
+    flex-direction: row;
+    gap: 4px;
+    margin-left: auto;
+}
+
 .actionList button {
     border: none;
     border-right: 1px solid white;
@@ -43,11 +50,11 @@
     color: white;
 }
 
-.actionList button:first-of-type{
+.actionList button:first-of-type {
     padding-left: 0;
 }
 
-.actionList button:last-of-type{
+.actionList button:last-of-type {
     border-right: none;
 }
 
@@ -56,7 +63,7 @@
 }
 
 .actionList .disabled {
-    color: var(--text-gray)
+    color: var(--text-gray);
 }
 
 .container :global(.ant-avatar) {
