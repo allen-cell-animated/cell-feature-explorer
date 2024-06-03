@@ -82,6 +82,7 @@ export const PALETTE = {
     headerGray: "#4b4b4b",
     collapseHeaderGray: "#464646",
     collapseContentGray: "#313131",
+    galleryBackground: "#4b4b4bd1",
     brightGreen: "#b2d030",
     brightBlue: "#00a0ff",
     linkHover: "#69b1ff",

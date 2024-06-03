@@ -160,6 +160,7 @@
 
 .sider :global(.ant-layout-sider-children) {
     padding-left: 10%;
+    overflow: clip;
 }
 
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-children) {

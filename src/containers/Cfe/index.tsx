@@ -21,6 +21,7 @@ const { Content, Sider } = Layout;
 
 import styles from "./style.css";
 import { Header } from "antd/es/layout/layout";
+import { PALETTE } from "../../constants";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
@@ -204,7 +205,8 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         <SmallScreenWarning
                             handleClose={this.handleClose}
                             onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                            visible={showSmallScreenWarning}
+                            // TODO: Remove this, I temporarily disabled this for testing
+                            visible={false && showSmallScreenWarning}
                         />
                         <Content className={plotClassNames}>
                             <PlotTab />
@@ -226,7 +228,12 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                 </Layout>
                 <Affix>
                     <Sider
-                        style={{ right: "0" }}
+                        style={{
+                            right: "0",
+                            width: "100%",
+                            position: "absolute",
+                            backgroundColor: PALETTE.galleryBackground,
+                        }}
                         width="100%"
                         collapsible={true}
                         collapsed={galleryCollapsed}
