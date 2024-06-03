@@ -59,7 +59,9 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         </Button>,
         <Tooltip key={`${props.cellID}-download`} title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}>
             <Dropdown overlay={menu} trigger={["click"]}>
-                <Button icon="download" />
+                <Button>
+                    <DownloadOutlined />
+                </Button>
             </Dropdown>
         </Tooltip>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
@@ -92,10 +94,17 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                             </div>
                         )
                     }
-                    description={props.cellID}
+                    description={
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            {props.cellID}
+
+                            {props.mitoticStage && (
+                                <span className={styles.stage}>{props.mitoticStage}</span>
+                            )}
+                            {!props.empty && <div className={styles.actionList}>{actions}</div>}
+                        </div>
+                    }
                 />
-                {props.mitoticStage && <span className={styles.stage}>{props.mitoticStage}</span>}
-                {!props.empty && <div className={styles.actionList}>{actions}</div>}
             </Card>
         </List.Item>
     );
