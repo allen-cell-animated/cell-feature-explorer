@@ -205,8 +205,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         <SmallScreenWarning
                             handleClose={this.handleClose}
                             onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                            // TODO: Remove this, I temporarily disabled this for testing
-                            visible={false && showSmallScreenWarning}
+                            visible={showSmallScreenWarning}
                         />
                         <Content className={plotClassNames}>
                             <PlotTab />

@@ -1,4 +1,6 @@
-import { Button, Dropdown, Menu, Tooltip } from "antd";
+import { Button, Dropdown, Menu, MenuProps, Tooltip } from "antd";
+import { CheckOutlined, DownloadOutlined } from "@ant-design/icons";
+import { ItemType } from "antd/es/menu/interface";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { MenuInfo } from "rc-menu/lib/interface";
 
@@ -9,7 +11,6 @@ import { DownloadConfig } from "../../state/selection/types";
 
 import styles from "./style.css";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
-import { CheckOutlined, DownloadOutlined } from "@ant-design/icons";
 
 interface DownloadDropDownMenuProps {
     color: string;
@@ -115,20 +116,27 @@ export default class DownloadDropDownMenu extends React.Component<
     public render() {
         const { id, downloadUrls, downloadConfig, downloadRoot } = this.props;
         const alreadyDownloaded = this.state.alreadyDownloaded[downloadConfig.key];
-        const menu = (
-            <Menu className={styles.menu} onClick={this.handleMenuClick}>
-                {downloadUrls.map((url, index) => (
-                    <Menu.Item key={index} onClick={this.saveDownloadUrl}>
+
+        // TODO: Parts of list are cut off by the edges of the screen when there are
+        // too many items
+        const menuItems: ItemType[] = downloadUrls.map((url, index) => {
+            return {
+                key: index,
+                onClick: this.saveDownloadUrl,
+                label: (
+                    <>
                         {includes(alreadyDownloaded, index.toString()) ? (
                             <CheckOutlined />
                         ) : (
                             <DownloadOutlined />
                         )}
                         <a href={url}> data chunk {index + 1} </a>
-                    </Menu.Item>
-                ))}
-            </Menu>
-        );
+                    </>
+                ),
+            };
+        });
+        const menu: MenuProps = { items: menuItems, onClick: this.handleMenuClick };
+
         // we can not check for downloadUrls.length because there are some conditions where
         // downloadUrls is empty but we still want to show the download button due to
         // initialization order in the app / React lifecycle concerns.
@@ -137,10 +145,12 @@ export default class DownloadDropDownMenu extends React.Component<
             <div className={styles.container}>
                 <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
                     <Dropdown
-                        overlay={menu}
+                        // TODO: change to menu
+                        menu={menu}
                         trigger={["click"]}
-                        onVisibleChange={this.handleDownloadMenuVisibleChange}
-                        visible={this.state.downloadMenuVisible}
+                        onOpenChange={this.handleDownloadMenuVisibleChange}
+                        open={this.state.downloadMenuVisible}
+                        placement="bottomRight"
                     >
                         <Button
                             size="small"

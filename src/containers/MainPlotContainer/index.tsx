@@ -205,7 +205,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                 <Popover
                     placement="right"
                     content={popover}
-                    visible={!!popover}
+                    open={!!popover}
                     {...{
                         // props not in ant.d component, but do exist
                         // needed to style this component since it's out of the DOM structure
