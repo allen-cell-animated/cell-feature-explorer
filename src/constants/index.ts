@@ -76,6 +76,7 @@ export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this d
 export const PALETTE = {
     purple: "#8950d9",
     darkGray: "#313131",
+    mediumDarkGray: "#4b4b4b",
     mediumGray: "#6e6e6e",
     lightGray: "#a0a0a0",
     extraLightGray: "#d8d8d8",

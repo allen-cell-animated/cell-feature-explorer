@@ -259,6 +259,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         Layout: {
                             headerHeight: 56,
                         },
+                        Checkbox: {
+                            colorPrimary: PALETTE.mediumDarkGray,
+                            colorPrimaryHover: PALETTE.mediumGray,
+                        },
                     },
                 }}
             >
