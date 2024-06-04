@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, List, Popconfirm, Radio, Row } from "antd";
+import { Button, Col, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -280,7 +280,21 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public render() {
         const { collapsed } = this.props;
-        return collapsed ? this.renderCollapsedView() : this.renderFullView();
+        return (
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Radio: {
+                            colorPrimary: "#fffffa",
+                            colorPrimaryActive: "#fffc",
+                            colorPrimaryHover: "#fff",
+                        },
+                    },
+                }}
+            >
+                {collapsed ? this.renderCollapsedView() : this.renderFullView()}
+            </ConfigProvider>
+        );
     }
 
     private hoverCard({ currentTarget }: React.MouseEvent<HTMLElement>) {

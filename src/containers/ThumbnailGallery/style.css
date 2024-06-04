@@ -12,16 +12,16 @@
 .gallery-header {
     margin: auto;
     padding: 1em 1em 1em 0em;
-    margin-right:  var(--side-bar-width);
+    margin-right: var(--side-bar-width);
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     & :global(.ant-btn) {
-          margin-top: 3px;
-          align-self: flex-end;
+        margin-top: 3px;
+        align-self: flex-end;
     }
-    &  :global(.ant-form-item) {
-             margin: auto;
+    & :global(.ant-form-item) {
+        margin: auto;
     }
 }
 
@@ -41,20 +41,20 @@
     border-left: 1px solid var(--border-gray);
     position: fixed;
     right: 0;
-}
 
-.album-side-bar :global(.ant-radio-button-wrapper:first-child) {
-    border-radius: 0;
-}
+    & :global(.ant-radio-button-wrapper) {
+        border-radius: 0 !important;
+    }
 
-.album-side-bar :global(.ant-radio-button-wrapper-checked:first-child) {
-    box-shadow: -1px 0 0 0 #f2edfe !important;
+    & :global(.ant-radio-button-wrapper-checked) {
+        box-shadow: -1px 0 0 0 #f2edfe !important;
+    }
 }
 
 .list {
     margin-right: var(--side-bar-width);
 }
-.list :global(.ant-row){
+.list :global(.ant-row) {
     display: flex;
     flex-flow: wrap;
     margin: auto;
@@ -66,7 +66,7 @@
     justify-content: flex-end;
     & input {
         background-color: var(--header-gray);
-      }
+    }
 }
 
 /*not in the dom tree but seems ok to be global*/
@@ -97,7 +97,7 @@
 
 .search-for-cell :global(.ant-form-item-children-icon) {
     /* to keep feedback icon from overlapping search icon*/
-    right: 20px!important;
+    right: 20px !important;
 }
 
 /*LIST STYLES*/
@@ -141,7 +141,6 @@
 
 :global(.ant-layout-sider-collapsed) .gallery-header {
     padding: 1em;
-
 }
 
 :global(.ant-layout-sider-collapsed .ant-btn span) {
@@ -169,15 +168,15 @@
     padding: 5px;
 }
 
-:global(.ant-layout-sider-collapsed .ant-form-item){
+:global(.ant-layout-sider-collapsed .ant-form-item) {
     margin-bottom: 0;
 }
 
-@media screen and (max-width:733px) {
+@media screen and (max-width: 733px) {
     .container {
         flex-flow: column;
     }
-    .album-side-bar{
+    .album-side-bar {
         position: initial;
         border-color: transparent;
     }
