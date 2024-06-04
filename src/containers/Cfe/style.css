@@ -113,11 +113,11 @@
 
 .sider {
     background-color: #4b4b4bd1;
-    height: 100vh;
+    height: calc(100vh - var(--header-height));
     position: fixed;
     right: 0;
     z-index: 10;
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
 }
 
 .sider :global(.ant-layout-sider-children) {
@@ -142,7 +142,7 @@
 
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger) {
     width: 20px !important;
-    height: 100%;
+    height: calc(100vh - var(--header-height));
     position: absolute;
     left: -20px;
     top: 0px;
@@ -160,7 +160,8 @@
 
 .sider :global(.ant-layout-sider-children) {
     padding-left: 10%;
-    overflow: clip;
+    overflow-y: auto;
+    overflow-x: clip;
 }
 
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-children) {
@@ -170,7 +171,7 @@
 /*expanded */
 .sider :global(.ant-layout-sider-trigger) {
     width: 10% !important;
-    height: 100%;
+    height: calc(100vh - var(--header-height));
     position: absolute;
     left: -20px;
     top: 0px;

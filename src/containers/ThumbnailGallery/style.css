@@ -7,6 +7,8 @@
 .container {
     padding: 0em 1em;
     flex-flow: row;
+    overflow-y: auto;
+    overflow-x: clip;
 }
 
 .gallery-header {
