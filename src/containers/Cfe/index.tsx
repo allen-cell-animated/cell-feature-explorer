@@ -154,7 +154,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             },
         ];
 
-        return (
+        const layout = (
             <Layout>
                 <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
                     <Header style={{ margin: "0", padding: "0", width: "100%" }}>
@@ -251,6 +251,20 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                     </Sider>
                 </Affix>
             </Layout>
+        );
+
+        return (
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Layout: {
+                            headerHeight: 56,
+                        },
+                    },
+                }}
+            >
+                {layout}
+            </ConfigProvider>
         );
     }
 }
