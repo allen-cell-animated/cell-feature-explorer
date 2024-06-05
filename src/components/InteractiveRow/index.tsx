@@ -106,7 +106,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                         handleDownload={handleDownload}
                     />
                     {closeable && (
-                        <Button size="small" id={id} ghost={true} onClick={this.onClose}>
+                        <Button size="small" id={id} onClick={this.onClose}>
                             <CloseOutlined />
                         </Button>
                     )}
