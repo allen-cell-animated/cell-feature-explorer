@@ -57,15 +57,17 @@ class App extends React.Component<AppProps> {
                         fontWeightStrong: 600,
                         borderRadius: 4,
                         borderRadiusSM: 4,
-                        borderRadiusLG: 2,
+                        borderRadiusLG: 4,
                         colorLink: PALETTE.brightBlue,
                         colorLinkHover: PALETTE.linkHover,
                         colorIcon: PALETTE.white,
+                        colorBgElevated: PALETTE.darkGray,
                     },
                     components: {
                         Button: {
                             colorPrimary: PALETTE.purple,
                             primaryShadow: "0 0px 0 transparent",
+                            defaultShadow: "0 0px 0 transparent",
                         },
                         Checkbox: {
                             borderRadiusSM: 2,
