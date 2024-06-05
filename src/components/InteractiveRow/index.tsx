@@ -1,3 +1,4 @@
+import { CloseOutlined } from "@ant-design/icons";
 import { Badge, Button, Checkbox, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
@@ -61,11 +62,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             handleDownload,
         } = this.props;
 
-        const tooltip = (
-            <div>
-                {id}
-            </div>
-        );
+        const tooltip = <div>{id}</div>;
 
         const labelClassName = disabled ? styles.labelDisabled : styles.label;
 
@@ -109,13 +106,9 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                         handleDownload={handleDownload}
                     />
                     {closeable && (
-                        <Button
-                            icon="close"
-                            size="small"
-                            id={id}
-                            ghost={true}
-                            onClick={this.onClose}
-                        />
+                        <Button size="small" id={id} ghost={true} onClick={this.onClose}>
+                            <CloseOutlined />
+                        </Button>
                     )}
                 </div>
             </div>
