@@ -36,7 +36,6 @@ import { Album, State, Thumbnail } from "../../state/types";
 import { getSelectedAlbumName, getThumbnails } from "./selectors";
 
 const Search = Input.Search;
-const FormItem = Form.Item;
 
 import styles from "./style.css";
 import { CloseOutlined } from "@ant-design/icons";
@@ -165,25 +164,31 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     public renderAlbumButtons() {
         const { albumData, selectedAlbum, clickedPoints } = this.props;
         return (
-            <FormItem label="ALBUMS">
-                <Radio.Group defaultValue={selectedAlbum} onChange={this.selectAlbum} size="large">
-                    <Radio.Button key="my-selections" value={MY_SELECTIONS_ID}>
-                        {`My Selections (${clickedPoints.length})`}
-                    </Radio.Button>
-                    {map(albumData, (album) => {
-                        if (!album.cell_ids) {
-                            return;
-                        }
-                        return (
-                            album.cell_ids.length > 0 && (
-                                <Radio.Button key={album.album_id} value={album.album_id}>
-                                    {album.title} ({album.cell_ids.length})
-                                </Radio.Button>
-                            )
-                        );
-                    })}
-                </Radio.Group>
-            </FormItem>
+            <Form layout="vertical" colon={true}>
+                <Form.Item label="ALBUMS">
+                    <Radio.Group
+                        defaultValue={selectedAlbum}
+                        onChange={this.selectAlbum}
+                        size="large"
+                    >
+                        <Radio.Button key="my-selections" value={MY_SELECTIONS_ID}>
+                            {`My Selections (${clickedPoints.length})`}
+                        </Radio.Button>
+                        {map(albumData, (album) => {
+                            if (!album.cell_ids) {
+                                return;
+                            }
+                            return (
+                                album.cell_ids.length > 0 && (
+                                    <Radio.Button key={album.album_id} value={album.album_id}>
+                                        {album.title} ({album.cell_ids.length})
+                                    </Radio.Button>
+                                )
+                            );
+                        })}
+                    </Radio.Group>
+                </Form.Item>
+            </Form>
         );
     }
 
@@ -241,7 +246,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             <CloseOutlined style={{ fontSize: "2em" }} />
                         </Button>
                     </div>
-                    <FormItem
+                    <Form.Item
                         hasFeedback={true}
                         className={styles.searchForCell}
                         validateStatus={this.state.inputStatus}
@@ -252,7 +257,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             onSearch={this.searchValidate}
                             onChange={this.resetSearch}
                         />
-                    </FormItem>
+                    </Form.Item>
                     {this.renderAlbumButtons()}
                 </Col>
             </Row>
