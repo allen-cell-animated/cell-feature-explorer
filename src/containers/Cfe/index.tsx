@@ -130,7 +130,10 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             styles.content,
             { [styles.hidden]: currentTab !== VIEWER_TAB_KEY },
         ]);
-        const plotClassNames = classNames([{ [styles.hidden]: currentTab === VIEWER_TAB_KEY }]);
+        const plotClassNames = classNames([
+            styles.content,
+            { [styles.hidden]: currentTab === VIEWER_TAB_KEY },
+        ]);
 
         type MenuItem = Required<MenuProps>["items"][number];
         const menuItems: MenuItem[] = [
@@ -225,30 +228,28 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                         </Content>
                     </Layout>
                 </Layout>
-                <Affix>
-                    <Sider
-                        style={{
-                            right: "0",
-                            width: "100%",
-                            position: "absolute",
-                            backgroundColor: PALETTE.galleryBackground,
-                        }}
-                        width="100%"
-                        collapsible={true}
+                <Sider
+                    style={{
+                        right: "0",
+                        width: "100px",
+                        position: "absolute",
+                        backgroundColor: PALETTE.galleryBackground,
+                    }}
+                    width="100%"
+                    collapsible={true}
+                    collapsed={galleryCollapsed}
+                    onCollapse={toggleGallery}
+                    defaultCollapsed={true}
+                    collapsedWidth={100}
+                    className={styles.sider}
+                    reverseArrow={true}
+                >
+                    <ThumbnailGallery
                         collapsed={galleryCollapsed}
-                        onCollapse={toggleGallery}
-                        defaultCollapsed={true}
-                        collapsedWidth={100}
-                        className={styles.sider}
-                        reverseArrow={true}
-                    >
-                        <ThumbnailGallery
-                            collapsed={galleryCollapsed}
-                            toggleGallery={toggleGallery}
-                            openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
-                        />
-                    </Sider>
-                </Affix>
+                        toggleGallery={toggleGallery}
+                        openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
+                    />
+                </Sider>
             </Layout>
         );
 

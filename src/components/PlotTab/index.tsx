@@ -47,8 +47,6 @@ class PlotTab extends React.Component {
                         <MainPlotContainer handleSelectionToolUsed={this.onSelectionToolUsed} />
                     </div>
                 </Content>
-                {/* spacer for the gallery overlay */}
-                <Sider width={20} />
             </Layout>
         );
     }
