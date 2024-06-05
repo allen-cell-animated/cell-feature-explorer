@@ -1,7 +1,5 @@
 import React from "react";
 
-import styles from "./style.css";
-
 interface MouseFollowerProps {
     pageX: number;
     pageY: number;
@@ -12,8 +10,11 @@ const MouseFollower = React.forwardRef<HTMLDivElement, React.PropsWithChildren<M
         return (
             <div
                 ref={ref}
-                className={styles.follower}
-                style={{ left: `${props.pageX + 10}px`, top: `${props.pageY}px` }}
+                style={{
+                    left: `${props.pageX + 10}px`,
+                    top: `${props.pageY}px`,
+                    position: "absolute",
+                }}
             >
                 {props.children}
             </div>
