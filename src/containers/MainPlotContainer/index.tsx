@@ -82,8 +82,13 @@ interface PropsFromApp {
 type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps> {
+    private popoverContainer: React.RefObject<HTMLDivElement>;
+
     constructor(props: MainPlotContainerProps) {
         super(props);
+
+        this.popoverContainer = React.createRef();
+
         this.onPointClicked = this.onPointClicked.bind(this);
         this.onPointHovered = this.onPointHovered.bind(this);
         this.onPointUnhovered = this.onPointUnhovered.bind(this);
@@ -202,18 +207,27 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
         return (
             <React.Fragment>
-                <Popover
-                    placement="right"
-                    content={popover}
-                    open={!!popover}
-                    {...{
-                        // props not in ant.d component, but do exist
-                        // needed to style this component since it's out of the DOM structure
-                        id: "thumbnail-popover",
-                    }}
+                <MouseFollower
+                    ref={this.popoverContainer}
+                    pageX={mousePosition.pageX}
+                    pageY={mousePosition.pageY}
                 >
-                    <MouseFollower pageX={mousePosition.pageX} pageY={mousePosition.pageY} />
-                </Popover>
+                    <Popover
+                        placement="right"
+                        content={popover}
+                        open={!!popover}
+                        getPopupContainer={
+                            this.popoverContainer.current
+                                ? () => this.popoverContainer.current!
+                                : undefined
+                        }
+                        {...{
+                            // props not in ant.d component, but do exist
+                            // needed to style this component since it's out of the DOM structure
+                            id: "thumbnail-popover",
+                        }}
+                    ></Popover>
+                </MouseFollower>
                 <div
                     id="main-plot"
                     className={styles.container}
