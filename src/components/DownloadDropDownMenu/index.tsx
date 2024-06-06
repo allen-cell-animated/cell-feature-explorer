@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu, MenuProps, Tooltip } from "antd";
+import { Button, Dropdown, MenuProps, Tooltip } from "antd";
 import { CheckOutlined, DownloadOutlined } from "@ant-design/icons";
 import { ItemType } from "antd/es/menu/interface";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -48,6 +48,9 @@ export default class DownloadDropDownMenu extends React.Component<
         downloadUrls: [],
         hideable: true,
     };
+
+    private popupRef: React.RefObject<HTMLDivElement>;
+
     constructor(props: DownloadDropDownMenuProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
@@ -62,6 +65,8 @@ export default class DownloadDropDownMenu extends React.Component<
                 : {},
             downloadMenuVisible: false,
         };
+
+        this.popupRef = React.createRef();
     }
 
     public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
@@ -142,7 +147,7 @@ export default class DownloadDropDownMenu extends React.Component<
         // initialization order in the app / React lifecycle concerns.
         const noDownloads = downloadRoot === "";
         return (
-            <div className={styles.container}>
+            <div className={styles.container} ref={this.popupRef}>
                 <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
                     <Dropdown
                         // TODO: change to menu
@@ -151,6 +156,8 @@ export default class DownloadDropDownMenu extends React.Component<
                         onOpenChange={this.handleDownloadMenuVisibleChange}
                         open={this.state.downloadMenuVisible}
                         placement="bottomRight"
+                        autoAdjustOverflow={false}
+                        getPopupContainer={() => this.popupRef.current || document.body}
                     >
                         <Button
                             size="small"
