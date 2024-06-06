@@ -1,9 +1,9 @@
 import { Anchor } from "antd";
+import { DotChartOutlined, PictureOutlined, SyncOutlined } from "@ant-design/icons";
 import React from "react";
 const { Link } = Anchor;
 
 import styles from "./style.css";
-import { DotChartOutlined, PictureOutlined, SyncOutlined } from "@ant-design/icons";
 const offsetTop = 65;
 
 const AffixedNav: React.SFC = () => {

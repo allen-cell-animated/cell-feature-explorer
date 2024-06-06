@@ -49,7 +49,7 @@ export default class DownloadDropDownMenu extends React.Component<
         hideable: true,
     };
 
-    private popupRef: React.RefObject<HTMLDivElement>;
+    private popupContainerRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: DownloadDropDownMenuProps) {
         super(props);
@@ -66,7 +66,7 @@ export default class DownloadDropDownMenu extends React.Component<
             downloadMenuVisible: false,
         };
 
-        this.popupRef = React.createRef();
+        this.popupContainerRef = React.createRef();
     }
 
     public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
@@ -147,7 +147,7 @@ export default class DownloadDropDownMenu extends React.Component<
         // initialization order in the app / React lifecycle concerns.
         const noDownloads = downloadRoot === "";
         return (
-            <div className={styles.container} ref={this.popupRef}>
+            <div className={styles.container} ref={this.popupContainerRef}>
                 <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
                     <Dropdown
                         // TODO: change to menu
@@ -157,7 +157,7 @@ export default class DownloadDropDownMenu extends React.Component<
                         open={this.state.downloadMenuVisible}
                         placement="bottomRight"
                         autoAdjustOverflow={false}
-                        getPopupContainer={() => this.popupRef.current || document.body}
+                        getPopupContainer={() => this.popupContainerRef.current || document.body}
                     >
                         <Button
                             size="small"

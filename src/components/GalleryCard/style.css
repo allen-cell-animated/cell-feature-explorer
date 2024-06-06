@@ -56,6 +56,7 @@
 
 .actionList button:not(:last-of-type),
 .actionList button:not(:last-of-type):hover {
+    /* Add a white vertical divider between the buttons */
     border-right: 1px solid white;
     border-color: white !important;
 }

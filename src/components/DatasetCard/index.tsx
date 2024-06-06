@@ -65,23 +65,17 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
                 }
             />
             {/* Spacer div to push `Descriptions` to the bottom of the card */}
-            <div className={styles.spacer} />
+            <div className={styles.spacer}/>
             <Descriptions column={1} size="small" colon={false}>
-                {userData.totalCells && (
-                    <Descriptions.Item label="Number of Cells:">
-                        {userData.totalCells.toLocaleString("en")}
-                    </Descriptions.Item>
-                )}
-                {userData.totalFOVs && (
-                    <Descriptions.Item label="Number of FOVs:">
-                        {userData.totalFOVs.toLocaleString("en")}
-                    </Descriptions.Item>
-                )}
-                {userData.totalTaggedStructures && (
-                    <Descriptions.Item label="Number of tagged structures:">
-                        {userData.totalTaggedStructures}
-                    </Descriptions.Item>
-                )}
+                {userData.totalCells && <Descriptions.Item label="Number of Cells:">
+                    {userData.totalCells.toLocaleString("en")}
+                </Descriptions.Item>}
+                {userData.totalFOVs && <Descriptions.Item label="Number of FOVs:">
+                    {userData.totalFOVs.toLocaleString("en")}
+                </Descriptions.Item>}
+                {userData.totalTaggedStructures && <Descriptions.Item label="Number of tagged structures:">
+                    {userData.totalTaggedStructures}
+                </Descriptions.Item>}
             </Descriptions>
             <Button type="primary" className={styles.loadButton}>
                 Load
