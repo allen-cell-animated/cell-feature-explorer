@@ -216,11 +216,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                         placement="right"
                         content={popover}
                         open={!!popover}
-                        getPopupContainer={
-                            this.popoverContainer.current
-                                ? () => this.popoverContainer.current!
-                                : undefined
-                        }
+                        getPopupContainer={() => this.popoverContainer.current || document.body}
                         {...{
                             // props not in ant.d component, but do exist
                             // needed to style this component since it's out of the DOM structure

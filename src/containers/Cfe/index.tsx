@@ -1,4 +1,4 @@
-import { Affix, ConfigProvider, Layout, Menu, MenuProps } from "antd";
+import { ConfigProvider, Layout, Menu, MenuProps } from "antd";
 import { uniq } from "lodash";
 import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";

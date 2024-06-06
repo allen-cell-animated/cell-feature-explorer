@@ -21,5 +21,6 @@ const MouseFollower = React.forwardRef<HTMLDivElement, React.PropsWithChildren<M
         );
     }
 );
+MouseFollower.displayName = "MouseFollower";
 
 export default MouseFollower;
