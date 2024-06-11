@@ -1,8 +1,6 @@
 import { ImageViewerApp } from "@aics/web-3d-viewer";
 import React from "react";
 
-import styles from "./style.css";
-
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
 const CONTAINER_STYLE = {
@@ -18,7 +16,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     }
 
     return (
-        <div className={styles.cellViewerContainer} style={CONTAINER_STYLE}>
+        <div style={CONTAINER_STYLE}>
             <ImageViewerApp
                 cellId={props.cellId}
                 imageUrl={props.baseUrl + props.cellPath}
