@@ -8,7 +8,7 @@
     padding: 5em 1.5em 5em 5em;
     flex: 1;
     margin-bottom: 2em;
-    height: calc(100vh - var(--header-height) - var(--tab-bar-height) - 4em);
+    height: calc(100vh - var(--header-height) - var(--tab-bar-height) - 28px);
 }
 
 .glossary-link {

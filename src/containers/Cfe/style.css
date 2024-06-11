@@ -80,6 +80,7 @@
         line-height: 20px;
         height: auto;
         white-space: nowrap;
+        margin-top: 0;
 
         & .label {
             color: var(--text-gray);
