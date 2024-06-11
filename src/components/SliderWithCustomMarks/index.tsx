@@ -34,7 +34,6 @@ export default class SliderWithCustomMarks extends React.Component<
 
     public onChange = (value: number) => {
         const { valueOptions } = this.props;
-        // SliderValue can be [number, number]
         this.setState({
             inputValue: value,
         });

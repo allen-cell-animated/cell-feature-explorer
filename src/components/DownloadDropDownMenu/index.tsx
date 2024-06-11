@@ -150,7 +150,6 @@ export default class DownloadDropDownMenu extends React.Component<
             <div className={styles.container} ref={this.popupContainerRef}>
                 <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
                     <Dropdown
-                        // TODO: change to menu
                         menu={menu}
                         trigger={["click"]}
                         onOpenChange={this.handleDownloadMenuVisibleChange}
