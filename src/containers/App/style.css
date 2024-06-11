@@ -15,8 +15,7 @@ body {
 }
 
 :global(.ant-select-dropdown) {
-    /* TODO: Fix this */
-    width: 200px !important;
+    min-width: 250px !important;
 }
 
 .container {

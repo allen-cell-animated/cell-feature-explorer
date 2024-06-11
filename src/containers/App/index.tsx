@@ -89,6 +89,10 @@ class App extends React.Component<AppProps> {
                         Menu: {
                             colorBgElevated: PALETTE.darkGray,
                         },
+                        Select: {
+                            // Dropdown arrow color
+                            colorTextQuaternary: PALETTE.white,
+                        },
                         Tooltip: {
                             colorBgSpotlight: "rgba(0, 0, 0, 0.85)",
                         },
