@@ -18,9 +18,10 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    align-items: center;
+
     & :global(.ant-btn) {
         margin-top: 3px;
-        align-self: flex-end;
     }
     & :global(.ant-form-item) {
         margin: auto;
