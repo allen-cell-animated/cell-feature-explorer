@@ -56,20 +56,20 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
 
     const hasDownload = props.downloadHref !== "" || props.downloadFullField !== "";
     const actions = [
-        <Button
-            className={props.selected ? styles.disabled : ""}
-            key={`${props.cellID}-load`}
-            onClick={openCellIn3D}
-        >
+        <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
-        <Tooltip key={`${props.cellID}-download`} title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}>
-            <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-                <Button className={hasDownload ? "" : styles.disabled}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]} disabled={!hasDownload}>
+            <Tooltip
+                key={`${props.cellID}-download`}
+                title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}
+                trigger={["hover", "focus"]}
+            >
+                <Button disabled={!hasDownload}>
                     <DownloadOutlined />
                 </Button>
-            </Dropdown>
-        </Tooltip>,
+            </Tooltip>
+        </Dropdown>,
         <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
             <CloseOutlined />
         </Button>,
