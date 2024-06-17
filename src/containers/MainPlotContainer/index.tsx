@@ -222,7 +222,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                             // needed to style this component since it's out of the DOM structure
                             id: "thumbnail-popover",
                         }}
-                    ></Popover>
+                    />
                 </MouseFollower>
                 <div
                     id="main-plot"
