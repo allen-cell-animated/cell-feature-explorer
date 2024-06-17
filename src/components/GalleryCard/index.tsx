@@ -59,7 +59,12 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
-        <Dropdown menu={{ items: menuItems }} trigger={["click"]} disabled={!hasDownload}>
+        <Dropdown
+            key={`${props.cellID}-download`}
+            menu={{ items: menuItems }}
+            trigger={["click"]}
+            disabled={!hasDownload}
+        >
             <Tooltip
                 key={`${props.cellID}-download`}
                 title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}
@@ -70,7 +75,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 </Button>
             </Tooltip>
         </Dropdown>,
-        <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
+        <Button key={`${props.cellID}-close`} onClick={deselectPoint}>
             <CloseOutlined />
         </Button>,
     ];
