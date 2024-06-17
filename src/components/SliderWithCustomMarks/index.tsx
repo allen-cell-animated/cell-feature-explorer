@@ -1,5 +1,4 @@
 import { Col, Row, Slider } from "antd";
-import { reduce } from "lodash";
 import React, { ReactNode } from "react";
 
 interface SliderWithCustomMarksProps {
@@ -13,6 +12,8 @@ interface SliderWithCustomMarksProps {
 interface SliderState {
     inputValue: number;
 }
+
+// TODO: Delete this component? It seems to be unused.
 export default class SliderWithCustomMarks extends React.Component<
     SliderWithCustomMarksProps,
     SliderState
@@ -49,8 +50,7 @@ export default class SliderWithCustomMarks extends React.Component<
             return null;
         }
         const accInit: { [key: string]: number } = {};
-        const marks: { [key: string]: number } = reduce(
-            valueOptions,
+        const marks: { [key: string]: number } = valueOptions.reduce(
             (acc, cur: string, index: number) => {
                 acc[index] = Math.round(Number(cur));
                 return acc;
