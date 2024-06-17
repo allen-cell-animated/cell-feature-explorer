@@ -95,10 +95,6 @@
     }
 }
 
-.viewer-menu-bar-collapsed > .viewer-title-container {
-    /* left: 0; */
-}
-
 :global(.allencell-header) {
     /* disabling absolute positioning */
     position: initial;

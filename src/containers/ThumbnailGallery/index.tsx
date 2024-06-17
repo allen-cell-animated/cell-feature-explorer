@@ -1,3 +1,4 @@
+import { CloseOutlined } from "@ant-design/icons";
 import { Button, Col, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
@@ -38,7 +39,6 @@ import { getSelectedAlbumName, getThumbnails } from "./selectors";
 const Search = Input.Search;
 
 import styles from "./style.css";
-import { CloseOutlined } from "@ant-design/icons";
 
 interface PropsFromState {
     albumData: Album[];

@@ -1,4 +1,6 @@
-import { ConfigProvider, Layout, Menu, MenuProps } from "antd";
+import { ConfigProvider, Layout, Menu } from "antd";
+import { Header } from "antd/es/layout/layout";
+import { ItemType } from "antd/es/menu/interface";
 import { uniq } from "lodash";
 import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
@@ -7,6 +9,7 @@ import classNames from "classnames";
 
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
+import { PALETTE } from "../../constants";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
@@ -17,11 +20,10 @@ import AlignControl from "../../components/AlignControl";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
+import styles from "./style.css";
+
 const { Content, Sider } = Layout;
 
-import styles from "./style.css";
-import { Header } from "antd/es/layout/layout";
-import { PALETTE } from "../../constants";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
@@ -135,8 +137,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             { [styles.hidden]: currentTab === VIEWER_TAB_KEY },
         ]);
 
-        type MenuItem = Required<MenuProps>["items"][number];
-        const menuItems: MenuItem[] = [
+        const menuItems: ItemType[] = [
             {
                 label: (
                     <>
