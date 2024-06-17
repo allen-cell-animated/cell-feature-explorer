@@ -1,12 +1,12 @@
+import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Avatar, Button, Card, Dropdown, List, Tooltip } from "antd";
+import { ItemType } from "antd/es/menu/interface";
 import React from "react";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
-import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
-import { ItemType } from "antd/es/menu/interface";
 
 interface GalleryCardProps {
     category: string;
