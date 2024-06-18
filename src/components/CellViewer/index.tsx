@@ -4,6 +4,8 @@ import React from "react";
 // TODO: Fix viewer so this is unnecessary?
 import "antd/lib/drawer/style/index.less";
 
+import styles from "./style.css";
+
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
 const CONTAINER_STYLE = {
@@ -19,14 +21,13 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     }
 
     return (
-        <div style={CONTAINER_STYLE}>
+        <div className={styles.cellViewerContainer} style={CONTAINER_STYLE}>
             <ImageViewerApp
                 cellId={props.cellId}
-                baseUrl={props.baseUrl}
-                cellPath={props.cellPath}
-                fovDownloadHref={props.fovDownloadHref}
-                cellDownloadHref={props.cellDownloadHref}
-                fovPath={props.fovPath}
+                imageUrl={props.baseUrl + props.cellPath}
+                parentImageDownloadHref={props.fovDownloadHref}
+                imageDownloadHref={props.cellDownloadHref}
+                parentImageUrl={props.baseUrl + props.fovPath}
                 viewerChannelSettings={props.viewerChannelSettings}
                 transform={props.transform}
                 onControlPanelToggle={props.onControlPanelToggle}
