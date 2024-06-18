@@ -1,5 +1,5 @@
 import { Select, Tooltip } from "antd";
-import { SelectValue } from "antd/es/select";
+import { SelectProps, SelectValue } from "antd/es/select";
 import React from "react";
 import { ActionCreator } from "react-redux";
 
@@ -16,8 +16,6 @@ interface AxisDropDownProps {
     tooltip: string;
 }
 
-const Option = Select.Option;
-
 export default class AxisDropDown extends React.Component<AxisDropDownProps> {
     constructor(props: AxisDropDownProps) {
         super(props);
@@ -32,18 +30,28 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps> {
 
     public render() {
         const { axisId, value, options, tooltip } = this.props;
+
+        const selectOptions: SelectProps["options"] = options.map((option) => {
+            return {
+                label: `${option.displayName} ${option.unit ? `(${option.unit})` : ""}`,
+                key: option.key,
+                value: option.key,
+                tooltip: option.tooltip,
+            };
+        });
+
+        const selectedOptionLabel = selectOptions
+            .find((option) => option.key === value)
+            ?.label?.toString();
+
         return (
             <div className={styles[axisId]}>
                 <Tooltip title={tooltip}>
-                    <Select onChange={this.handleChange} value={value}>
-                        {options.map((option) => {
-                            return (
-                                <Option value={option.key} key={option.key}>
-                                    {option.displayName} {option.unit ? `(${option.unit})` : ""}
-                                </Option>
-                            );
-                        })}
-                    </Select>
+                    <Select
+                        onChange={this.handleChange}
+                        value={selectedOptionLabel || value}
+                        options={selectOptions}
+                    ></Select>
                 </Tooltip>
             </div>
         );

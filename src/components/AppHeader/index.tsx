@@ -1,3 +1,4 @@
+import { Row } from "antd";
 import * as React from "react";
 
 import { AicsLogo } from "../Icons";
@@ -14,15 +15,19 @@ class AppHeader extends React.Component<AppHeaderProps> {
 
         return (
             <div className={styles.pageHeader}>
-                <div>
-                    <a href="https://allencell.org" title="Allen Cell Explorer">
+                <Row align={"middle"}>
+                    <a
+                        href="https://allencell.org"
+                        title="Allen Institute for Cell Science"
+                        style={{ height: "41px" }}
+                    >
                         {AicsLogo}
                     </a>
                     <span className={styles.verticalBar}>|</span>
                     <a href="/" className={styles.cfeHome}>
                         Cell Feature Explorer
                     </a>
-                </div>
+                </Row>
                 <div className={styles.viewerTitle}>{selectedDataset}</div>
                 <div className={styles.buttons}></div>
             </div>

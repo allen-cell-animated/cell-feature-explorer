@@ -72,3 +72,24 @@ export const GENERAL_PLOT_SETTINGS = {
 };
 
 export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this dataset.";
+
+const BASE_PALETTE_COLORS = {
+    purple: "#8950d9",
+    darkGray: "#313131",
+    mediumDarkGray: "#4b4b4b",
+    mediumGray: "#6e6e6e",
+    lightGray: "#a0a0a0",
+    extraLightGray: "#d8d8d8",
+    brightGreen: "#b2d030",
+    brightBlue: "#00a0ff",
+    white: "#ffffff",
+} as const;
+
+export const PALETTE = {
+    ...BASE_PALETTE_COLORS,
+    headerGray: BASE_PALETTE_COLORS.mediumDarkGray,
+    collapseHeaderGray: "#464646",
+    collapseContentGray: BASE_PALETTE_COLORS.darkGray,
+    galleryBackground: BASE_PALETTE_COLORS.mediumDarkGray + "d1",
+    linkHover: BASE_PALETTE_COLORS.brightBlue,
+} as const;

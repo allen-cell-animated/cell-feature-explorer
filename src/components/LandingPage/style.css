@@ -15,11 +15,13 @@
     text-align: center;
     margin-top: 1em;
     margin-bottom: 0;
+    color: var(--white);
 }
 
 .subtitle {
     composes: title;
     font-size: 24px;
+    font-weight: 500;
 }
 .alert {
     margin-right: 120px;
@@ -60,6 +62,8 @@
     margin: 0;
     column-gap: var(--dataset-card-gap-width);
     justify-content: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .section-content {
@@ -78,13 +82,11 @@
 .light-section {
     composes: section;
     background-color: var(--background-dim-gray);
-    color: var(--text-gray);
 }
 
 .card-container {
     column-gap: var(--dataset-card-gap-width);
 }
-
 
 .light-section .subtitle {
     margin-bottom: 1.2em;
@@ -92,6 +94,8 @@
 
 .section .paragraph {
     color: var(--text-gray);
+    font-size: 1rem;
+    padding: 0 20px;
 }
 
 .light-section .paragraph {
@@ -99,7 +103,7 @@
 }
 
 .content :global(.ant-descriptions-view table) {
-    table-layout: initial
+    table-layout: initial;
 }
 
 .content :global(.ant-descriptions-item-label) {
