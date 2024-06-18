@@ -1,8 +1,5 @@
 import { ImageViewerApp } from "@aics/web-3d-viewer";
 import React from "react";
-// Need to import this stylesheet for the Drawer component used by the viewer
-// TODO: Fix viewer so this is unnecessary?
-import "antd/lib/drawer/style/index.less";
 
 import styles from "./style.css";
 
@@ -33,7 +30,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 onControlPanelToggle={props.onControlPanelToggle}
                 metadata={props.metadata}
                 appHeight="100%"
-                canvasMargin="0 120px 0 0"
+                canvasMargin="0 0 0 0"
             />
         </div>
     );

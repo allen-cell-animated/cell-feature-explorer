@@ -21,15 +21,11 @@ const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({
         <Modal
             centered={true}
             title="Small Screen Warning"
-            visible={visible}
+            open={visible}
             onOk={handleClose}
             onCancel={handleClose}
             footer={null}
-            maskStyle={{
-                background: "#000000d9",
-            }}
-            bodyStyle={{
-                backgroundColor: "#d8d8d8",
+            style={{
                 color: "#0a0a0a",
             }}
         >

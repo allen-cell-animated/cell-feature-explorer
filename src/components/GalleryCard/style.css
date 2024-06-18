@@ -30,25 +30,35 @@
     padding-left: 0;
 }
 
+.actionList {
+    display: flex;
+    flex-direction: row;
+    margin-top: 6px;
+    margin-bottom: 10px;
+}
+
 .actionList button {
     border: none;
-    border-right: 1px solid white;
     border-radius: 0;
-    background-color: transparent;
+    background-color: transparent !important;
     height: inherit;
     color: white;
+    padding: 2px 10px;
 }
 
 .actionList a {
     color: white;
 }
 
-.actionList button:first-of-type{
+.actionList button:first-of-type {
     padding-left: 0;
 }
 
-.actionList button:last-of-type{
-    border-right: none;
+.actionList button:not(:last-of-type),
+.actionList button:not(:last-of-type):hover {
+    /* Add a white vertical divider between the buttons */
+    border-right: 1px solid white;
+    border-color: white !important;
 }
 
 .title {
@@ -56,12 +66,13 @@
 }
 
 .actionList .disabled {
-    color: var(--text-gray)
+    color: var(--text-gray);
 }
 
 .container :global(.ant-avatar) {
     border: 1px solid var(--dimgray);
     cursor: pointer;
+    margin-top: 2px;
 }
 
 .container .selected {

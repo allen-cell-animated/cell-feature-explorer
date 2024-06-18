@@ -1,4 +1,5 @@
-import { Button, Col, Form, Icon, Input, List, Popconfirm, Radio, Row } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+import { Button, Col, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -36,7 +37,6 @@ import { Album, State, Thumbnail } from "../../state/types";
 import { getSelectedAlbumName, getThumbnails } from "./selectors";
 
 const Search = Input.Search;
-const FormItem = Form.Item;
 
 import styles from "./style.css";
 
@@ -135,7 +135,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
             });
         }
         if (includes(ids, value)) {
-            addSearchedCell({id: value});
+            addSearchedCell({ id: value });
             return this.setState({
                 inputStatus: "success",
                 message: messages.success,
@@ -164,25 +164,31 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
     public renderAlbumButtons() {
         const { albumData, selectedAlbum, clickedPoints } = this.props;
         return (
-            <FormItem label="ALBUMS">
-                <Radio.Group defaultValue={selectedAlbum} onChange={this.selectAlbum} size="large">
-                    <Radio.Button key="my-selections" value={MY_SELECTIONS_ID}>
-                        {`My Selections (${clickedPoints.length})`}
-                    </Radio.Button>
-                    {map(albumData, (album) => {
-                        if (!album.cell_ids) {
-                            return;
-                        }
-                        return (
-                            album.cell_ids.length > 0 && (
-                                <Radio.Button key={album.album_id} value={album.album_id}>
-                                    {album.title} ({album.cell_ids.length})
-                                </Radio.Button>
-                            )
-                        );
-                    })}
-                </Radio.Group>
-            </FormItem>
+            <Form layout="vertical" colon={true}>
+                <Form.Item label="ALBUMS">
+                    <Radio.Group
+                        defaultValue={selectedAlbum}
+                        onChange={this.selectAlbum}
+                        size="large"
+                    >
+                        <Radio.Button key="my-selections" value={MY_SELECTIONS_ID}>
+                            {`My Selections (${clickedPoints.length})`}
+                        </Radio.Button>
+                        {map(albumData, (album) => {
+                            if (!album.cell_ids) {
+                                return;
+                            }
+                            return (
+                                album.cell_ids.length > 0 && (
+                                    <Radio.Button key={album.album_id} value={album.album_id}>
+                                        {album.title} ({album.cell_ids.length})
+                                    </Radio.Button>
+                                )
+                            );
+                        })}
+                    </Radio.Group>
+                </Form.Item>
+            </Form>
         );
     }
 
@@ -191,7 +197,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         toggleGallery(true);
     }
 
-    public selectCell(cellId: {id: string}) {
+    public selectCell(cellId: { id: string }) {
         const { handleOpenIn3D } = this.props;
         this.closeGallery();
         this.props.openViewerTab();
@@ -205,13 +211,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         const dataSource: any = data.length > 0 ? data : [{ empty: true }];
 
         return (
-            <Row
-                id="gallery"
-                className={styles.container}
-                type="flex"
-                gutter={32}
-                justify="space-between"
-            >
+            <Row id="gallery" className={styles.container} gutter={32} justify="space-between">
                 <Col className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
@@ -222,8 +222,8 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <Button icon="close">
-                                    Clear All
+                                <Button>
+                                    <CloseOutlined /> Clear All
                                 </Button>
                             </Popconfirm>
                         )}
@@ -242,13 +242,11 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <Col className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
                         <h2>Gallery</h2>
-                        <Icon
-                            type="close"
-                            style={{ fontSize: "2em" }}
-                            onClick={this.closeGallery}
-                        />
+                        <Button type="text" onClick={this.closeGallery} style={{ padding: 0 }}>
+                            <CloseOutlined style={{ fontSize: "2em" }} />
+                        </Button>
                     </div>
-                    <FormItem
+                    <Form.Item
                         hasFeedback={true}
                         className={styles.searchForCell}
                         validateStatus={this.state.inputStatus}
@@ -259,7 +257,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                             onSearch={this.searchValidate}
                             onChange={this.resetSearch}
                         />
-                    </FormItem>
+                    </Form.Item>
                     {this.renderAlbumButtons()}
                 </Col>
             </Row>
@@ -287,7 +285,21 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
     public render() {
         const { collapsed } = this.props;
-        return collapsed ? this.renderCollapsedView() : this.renderFullView();
+        return (
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Radio: {
+                            colorPrimary: "#fffffa",
+                            colorPrimaryActive: "#fffc",
+                            colorPrimaryHover: "#fff",
+                        },
+                    },
+                }}
+            >
+                {collapsed ? this.renderCollapsedView() : this.renderFullView()}
+            </ConfigProvider>
+        );
     }
 
     private hoverCard({ currentTarget }: React.MouseEvent<HTMLElement>) {

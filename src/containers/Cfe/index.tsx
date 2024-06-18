@@ -1,12 +1,15 @@
-import { Affix, Layout, Menu } from "antd";
-import { ClickParam } from "antd/lib/menu";
+import { ConfigProvider, Layout, Menu } from "antd";
+import { Header } from "antd/es/layout/layout";
+import { ItemType } from "antd/es/menu/interface";
 import { uniq } from "lodash";
+import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
 import { ActionCreator, connect } from "react-redux";
 import classNames from "classnames";
 
 import CellViewer from "../../components/CellViewer/index";
 import SmallScreenWarning from "../../components/SmallScreenWarning";
+import { PALETTE } from "../../constants";
 import selectionStateBranch from "../../state/selection";
 import { BoolToggleAction } from "../../state/selection/types";
 import metadataStateBranch from "../../state/metadata";
@@ -17,9 +20,10 @@ import AlignControl from "../../components/AlignControl";
 import { SetSmallScreenWarningAction, RequestAction } from "../../state/metadata/types";
 import { getPropsForVolumeViewer, getViewerHeader, VolumeViewerProps } from "./selectors";
 
+import styles from "./style.css";
+
 const { Content, Sider } = Layout;
 
-import styles from "./style.css";
 const SMALL_SCREEN_WARNING_BREAKPOINT = 768;
 const PLOT_TAB_KEY = "plot";
 const VIEWER_TAB_KEY = "3d-viewer";
@@ -115,7 +119,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     };
 
-    private handleTabClick = (event: ClickParam) => {
+    private handleTabClick = (event: MenuInfo) => {
         this.setState({ currentTab: event.key });
     };
 
@@ -128,102 +132,144 @@ class Cfe extends React.Component<CfeProps, CfeState> {
             styles.content,
             { [styles.hidden]: currentTab !== VIEWER_TAB_KEY },
         ]);
-        const plotClassNames = classNames([{ [styles.hidden]: currentTab === VIEWER_TAB_KEY }]);
+        const plotClassNames = classNames([
+            styles.content,
+            { [styles.hidden]: currentTab === VIEWER_TAB_KEY },
+        ]);
+
+        const menuItems: ItemType[] = [
+            {
+                label: (
+                    <>
+                        <span className={classNames(["icon-moon", "anticon", styles.plotIcon])} />
+                        Plot
+                    </>
+                ),
+                key: PLOT_TAB_KEY,
+            },
+            {
+                label: (
+                    <>
+                        <span className={classNames(["icon-moon", "anticon", styles.cubeIcon])} />
+                        3D Viewer
+                    </>
+                ),
+                key: VIEWER_TAB_KEY,
+            },
+        ];
+
+        const layout = (
+            <Layout>
+                <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
+                    <Header style={{ margin: "0", padding: "0", width: "100%" }}>
+                        <div
+                            className={
+                                controlPanelCollapsed
+                                    ? classNames([
+                                          styles.viewerMenuBar,
+                                          styles.viewerMenuBarCollapsed,
+                                      ])
+                                    : styles.viewerMenuBar
+                            }
+                        >
+                            <ConfigProvider
+                                theme={{
+                                    token: {
+                                        colorPrimary: "#fff",
+                                        colorSplit: "transparent",
+                                    },
+                                }}
+                            >
+                                <Menu
+                                    className={styles.tabbedMenu}
+                                    onClick={this.handleTabClick}
+                                    selectedKeys={[this.state.currentTab]}
+                                    mode="horizontal"
+                                    items={menuItems}
+                                ></Menu>
+                            </ConfigProvider>
+                            <div className={styles.viewerTitleContainer}>
+                                <p
+                                    className={styles.viewerTitle}
+                                    style={
+                                        this.state.currentTab !== VIEWER_TAB_KEY
+                                            ? { display: "none" }
+                                            : {}
+                                    }
+                                >
+                                    <span className={styles.label}>Viewing cell: </span>
+                                    {this.props.viewerHeader.cellId}
+                                    <span className={styles.label}>, {viewerHeader.label}: </span>
+                                    {this.props.viewerHeader.value}
+                                </p>
+                            </div>
+                        </div>
+                    </Header>
+                    <Layout>
+                        <SmallScreenWarning
+                            handleClose={this.handleClose}
+                            onDismissCheckboxChecked={this.onDismissCheckboxChecked}
+                            visible={showSmallScreenWarning}
+                        />
+                        <Content className={plotClassNames}>
+                            <PlotTab />
+                        </Content>
+                        <Content className={viewerClassNames}>
+                            <CellViewer
+                                onControlPanelToggle={this.onControlPanelToggle}
+                                {...this.props.volumeViewerProps}
+                            />
+                            {this.props.showAlignControl && (
+                                <AlignControl
+                                    parent={this.alignContainer}
+                                    aligned={this.props.alignActive}
+                                    setAligned={this.props.setAlignActive}
+                                />
+                            )}
+                        </Content>
+                    </Layout>
+                </Layout>
+                <Sider
+                    style={{
+                        right: "0",
+                        width: "100px",
+                        position: "absolute",
+                        backgroundColor: PALETTE.galleryBackground,
+                    }}
+                    width="100%"
+                    collapsible={true}
+                    collapsed={galleryCollapsed}
+                    onCollapse={toggleGallery}
+                    defaultCollapsed={true}
+                    collapsedWidth={100}
+                    className={styles.sider}
+                    reverseArrow={true}
+                >
+                    <ThumbnailGallery
+                        collapsed={galleryCollapsed}
+                        toggleGallery={toggleGallery}
+                        openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
+                    />
+                </Sider>
+            </Layout>
+        );
 
         return (
-            <Layout>
-                <Affix>
-                    <Sider
-                        width="100%"
-                        collapsible={true}
-                        collapsed={galleryCollapsed}
-                        onCollapse={toggleGallery}
-                        defaultCollapsed={true}
-                        collapsedWidth={100}
-                        className={styles.sider}
-                        reverseArrow={true}
-                    >
-                        <ThumbnailGallery
-                            collapsed={galleryCollapsed}
-                            toggleGallery={toggleGallery}
-                            openViewerTab={() => this.setState({ currentTab: VIEWER_TAB_KEY })}
-                        />
-                    </Sider>
-                </Affix>
-                <Layout className={galleryCollapsed ? styles.noBlur : styles.blur}>
-                    <div
-                        className={
-                            controlPanelCollapsed
-                                ? classNames([styles.viewerMenuBar, styles.viewerMenuBarCollapsed])
-                                : styles.viewerMenuBar
-                        }
-                    >
-                        <span className={styles.viewerTitleContainer}>
-                            <h4
-                                className={styles.viewerTitle}
-                                style={
-                                    this.state.currentTab !== VIEWER_TAB_KEY
-                                        ? { display: "none" }
-                                        : {}
-                                }
-                            >
-                                <span className={styles.label}>Viewing cell: </span>
-                                {this.props.viewerHeader.cellId}
-                                <span className={styles.label}>, {viewerHeader.label}: </span>
-                                {this.props.viewerHeader.value}
-                            </h4>
-                        </span>
-                        <Menu
-                            className={styles.tabbedMenu}
-                            onClick={this.handleTabClick}
-                            selectedKeys={[this.state.currentTab]}
-                            mode="horizontal"
-                        >
-                            <Menu.Item key={PLOT_TAB_KEY}>
-                                <span
-                                    className={classNames([
-                                        "icon-moon",
-                                        "anticon",
-                                        styles.plotIcon,
-                                    ])}
-                                />
-                                Plot
-                            </Menu.Item>
-                            <Menu.Item key={VIEWER_TAB_KEY}>
-                                <span
-                                    className={classNames([
-                                        "icon-moon",
-                                        "anticon",
-                                        styles.cubeIcon,
-                                    ])}
-                                />
-                                3D Viewer
-                            </Menu.Item>
-                        </Menu>
-                    </div>
-                    <SmallScreenWarning
-                        handleClose={this.handleClose}
-                        onDismissCheckboxChecked={this.onDismissCheckboxChecked}
-                        visible={showSmallScreenWarning}
-                    />
-                    <Layout className={plotClassNames}>
-                        <PlotTab />
-                    </Layout>
-                    <Content className={viewerClassNames}>
-                        <CellViewer
-                            onControlPanelToggle={this.onControlPanelToggle}
-                            {...this.props.volumeViewerProps}
-                        />
-                        {this.props.showAlignControl && (
-                            <AlignControl
-                                parent={this.alignContainer}
-                                aligned={this.props.alignActive}
-                                setAligned={this.props.setAlignActive}
-                            />
-                        )}
-                    </Content>
-                </Layout>
-            </Layout>
+            <ConfigProvider
+                theme={{
+                    components: {
+                        Layout: {
+                            headerHeight: 56,
+                        },
+                        Checkbox: {
+                            colorPrimary: PALETTE.mediumDarkGray,
+                            colorPrimaryHover: PALETTE.mediumGray,
+                        },
+                    },
+                }}
+            >
+                {layout}
+            </ConfigProvider>
         );
     }
 }

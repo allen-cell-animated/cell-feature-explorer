@@ -28,7 +28,7 @@ class PlotTab extends React.Component {
     public render() {
         const { openKeys, defaultActiveKey } = this.state;
         return (
-            <>
+            <Layout>
                 <Sider
                     className={styles.colorMenu}
                     width={500}
@@ -47,9 +47,7 @@ class PlotTab extends React.Component {
                         <MainPlotContainer handleSelectionToolUsed={this.onSelectionToolUsed} />
                     </div>
                 </Content>
-                {/* spacer for the gallery overlay */}
-                <Sider width={120} />
-            </>
+            </Layout>
         );
     }
 }
