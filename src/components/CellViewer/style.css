@@ -1,0 +1,37 @@
+/* Style overrides to fix alignment caused by an Ant version + font mismatch.
+ * TODO: Remove this when Ant version is upgraded?
+*/
+
+.cell-viewer-container {
+    /* Align header items; fix a bug where the entire div would show pointer-interactive
+     * when only the icon (span) was clickable.
+    */
+    & :global(.ant-collapse-header) {
+        align-items: center !important;
+        cursor: auto !important;
+
+        & :global(.ant-collapse-arrow) > span {
+            cursor: pointer !important;
+        }
+
+        & :global(.ant-collapse-extra) {
+            width: 45% !important;
+        }
+    }
+
+    /* Remove outlines on channel settings toggles  */
+    & :global(.channel-visibility-controls) > :global(.ant-btn-icon-only) {
+        border-color: transparent !important;
+    }
+
+    /* Fix missing bottom drawer */
+    & :global(.ant-drawer.ant-drawer-bottom) {
+        height: 100% !important;
+        position: relative !important;
+    }
+
+    /* Fix icons in toolbar not being centered */
+    & :global(.viewer-toolbar-group) > button:global(.ant-btn-icon-only) {
+        padding: 0 !important;
+    }
+}
