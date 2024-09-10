@@ -3,6 +3,8 @@ import React from "react";
 
 import styles from "./style.css";
 
+import styles from "./style.css";
+
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
 const CONTAINER_STYLE = {
