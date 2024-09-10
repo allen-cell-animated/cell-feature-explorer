@@ -1,7 +1,5 @@
-import { ImageViewerApp } from "@aics/web-3d-viewer";
+import { ImageViewerApp, ViewerStateProvider } from "@aics/web-3d-viewer";
 import React from "react";
-
-import styles from "./style.css";
 
 import styles from "./style.css";
 
@@ -21,19 +19,21 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
 
     return (
         <div className={styles.cellViewerContainer} style={CONTAINER_STYLE}>
-            <ImageViewerApp
-                cellId={props.cellId}
-                imageUrl={props.baseUrl + props.cellPath}
-                parentImageDownloadHref={props.fovDownloadHref}
-                imageDownloadHref={props.cellDownloadHref}
-                parentImageUrl={props.baseUrl + props.fovPath}
-                viewerChannelSettings={props.viewerChannelSettings}
-                transform={props.transform}
-                onControlPanelToggle={props.onControlPanelToggle}
-                metadata={props.metadata}
-                appHeight="100%"
-                canvasMargin="0 0 0 0"
-            />
+            <ViewerStateProvider>
+                <ImageViewerApp
+                    cellId={props.cellId}
+                    imageUrl={props.baseUrl + props.cellPath}
+                    parentImageDownloadHref={props.fovDownloadHref}
+                    imageDownloadHref={props.cellDownloadHref}
+                    parentImageUrl={props.baseUrl + props.fovPath}
+                    viewerChannelSettings={props.viewerChannelSettings}
+                    transform={props.transform}
+                    onControlPanelToggle={props.onControlPanelToggle}
+                    metadata={props.metadata}
+                    appHeight="100%"
+                    canvasMargin="0 120px 0 0"
+                />
+            </ViewerStateProvider>
         </div>
     );
 };
