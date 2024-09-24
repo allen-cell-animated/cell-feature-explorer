@@ -23,9 +23,9 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                 <ImageViewerApp
                     cellId={props.cellId}
                     imageUrl={props.baseUrl + props.cellPath}
-                    parentImageDownloadHref={props.fovDownloadHref}
                     imageDownloadHref={props.cellDownloadHref}
-                    parentImageUrl={props.baseUrl + props.fovPath}
+                    parentImageUrl={props.fovPath ? props.baseUrl + props.fovPath : ""}
+                    parentImageDownloadHref={props.fovDownloadHref}
                     viewerChannelSettings={props.viewerChannelSettings}
                     transform={props.transform}
                     onControlPanelToggle={props.onControlPanelToggle}
