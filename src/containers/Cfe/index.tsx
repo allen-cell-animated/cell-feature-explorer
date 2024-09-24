@@ -77,6 +77,9 @@ class Cfe extends React.Component<CfeProps, CfeState> {
     public componentDidUpdate = (prevProps: CfeProps, prevState: CfeState) => {
         const { currentTab } = this.state;
         if (this.props.showAlignControl) {
+            this.alignContainer.style.setProperty("display", "flex");
+            this.alignContainer.style.setProperty("text-wrap", "nowrap");
+            this.alignContainer.style.setProperty("margin-right", "6px");
             document.querySelector(".viewer-toolbar-left")?.prepend(this.alignContainer);
         }
         if (prevState.currentTab !== currentTab && currentTab === VIEWER_TAB_KEY) {
