@@ -83,7 +83,7 @@
     },
     "dependencies": {
         "@aics/browsing-context-messaging": "~1.1",
-        "@aics/web-3d-viewer": "^2.9.0",
+        "@aics/web-3d-viewer": "^2.9.2",
         "@ant-design/icons": "^4.2.2",
         "antd": "^5.17.4",
         "axios": "^0.21.1",
