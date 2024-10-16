@@ -28,7 +28,7 @@ export function makeReducer<S>(
     };
 }
 
-const BATCH_ACTIONS = makeConstant("batch", "batch-actions");
+export const BATCH_ACTIONS = makeConstant("batch", "batch-actions");
 
 export function batchActions(actions: AnyAction[], type: string = BATCH_ACTIONS): BatchedAction {
     return { type, batch: true, payload: actions };
