@@ -1,7 +1,13 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer";
 import { Album } from "../..";
 import * as Papa from "papaparse";
-import { DataForPlot, MeasuredFeatureDef, FileInfo, PerCellLabels } from "../../metadata/types";
+import {
+    DataForPlot,
+    MeasuredFeatureDef,
+    FileInfo,
+    PerCellLabels,
+    MeasuredFeaturesOption,
+} from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
 import firebase from "firebase";
 import {
@@ -9,6 +15,7 @@ import {
     FOV_ID_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
+    GROUP_BY_KEY,
     THUMBNAIL_PATH,
     TRANSFORM,
     VOLUME_VIEWER_PATH,
@@ -16,14 +23,14 @@ import {
 
 // Some example CSV as a const here?
 
-const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},feature1,feature2,feature3
-1,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,1,2,3, 
-2,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,4,5,6`;
+const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},feature1,feature2,feature3,discretefeature
+1,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,1,2,3,yowie
+2,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,4,5,6,yummy`;
 
 type CsvData = {
-    cell_id: number;
-    url: string;
-};
+    [CELL_ID_KEY]: number;
+    [VOLUME_VIEWER_PATH]: string;
+} & Record<string, string>;
 
 const reservedKeys = new Set([
     CELL_ID_KEY,
@@ -35,21 +42,32 @@ const reservedKeys = new Set([
     TRANSFORM,
 ]);
 
+function isNumeric(value: string): boolean {
+    if (typeof value != "string") {
+        return false;
+    }
+    return !isNaN(Number(value)) && !isNaN(parseFloat(value));
+}
+
 class CsvRequest implements ImageDataset {
-    csvData: Record<string, string>[];
+    rawCsvData: Record<string, string>[];
+    cellIdToData: Record<string, CsvData>;
     featureKeys: string[];
+    featureDefs: Map<string, MeasuredFeatureDef>;
 
     constructor() {
         // CSV parsing library?
-        this.csvData = [];
+        this.cellIdToData = {};
+        this.rawCsvData = [];
         this.featureKeys = [];
+        this.featureDefs = new Map();
     }
 
     getFeatureColumns(): string[] {
-        if (!this.csvData || this.csvData.length === 0) {
+        if (!this.rawCsvData || this.rawCsvData.length === 0) {
             return [];
         }
-        const keys = Object.keys(this.csvData[0]);
+        const keys = Object.keys(this.rawCsvData[0]);
         return keys.filter((key) => !reservedKeys.has(key));
     }
 
@@ -58,28 +76,118 @@ class CsvRequest implements ImageDataset {
         return this.featureKeys[Math.min(Math.max(index, 0), lastIndex)];
     }
 
-    selectDataset(manifest: string): Promise<InitialDatasetSelections> {
-        // Load the CSV data from the "manifest" param
-        // this.csvData = manifest;
-        const result = Papa.parse(exampleCsv, { header: true }).data;
-        this.csvData = result as Record<string, string>[];
+    // Invert from row-ordered to column-ordered data
+    // This won't know if a feature is continuous or discrete, so we'll need to handle that later
+    // and then parse the values as needed
+    stripFeatureData(
+        rawCsvData: Record<string, string>[],
+        featureKeys: string[]
+    ): Map<string, string[] | number[]> {
+        const featureData = new Map<string, string[] | number[]>();
+        for (const key of featureKeys) {
+            const rawValues: string[] = [];
+            let isContinuous = true;
+            for (const row of rawCsvData) {
+                rawValues.push(row[key]);
+                if (!isNumeric(row[key])) {
+                    isContinuous = false;
+                }
+            }
+
+            if (isContinuous) {
+                // Feature is continuous, parse all values as numeric
+                const values = rawValues.map((val) => Number.parseFloat(val));
+                featureData.set(key, values);
+            } else {
+                // Feature is discrete, return directly
+                featureData.set(key, rawValues);
+            }
+        }
+        return featureData;
+    }
+
+    getFeatureDefs(
+        rawCsvData: Record<string, string>[],
+        featureKeys: string[]
+    ): Map<string, MeasuredFeatureDef> {
+        const featureDefs: Map<string, MeasuredFeatureDef> = new Map();
+        const featureData = this.stripFeatureData(rawCsvData, featureKeys);
+
+        for (const key of featureKeys) {
+            const data = featureData.get(key);
+            if (!data) {
+                continue;
+            }
+            if (typeof data[0] === "string") {
+                // Treat as discrete feature, create options objects
+                const options: Record<string, MeasuredFeaturesOption> = {};
+                const featureValues = new Set<string>(data as string[]);
+                for (const value of featureValues) {
+                    options[value] = {
+                        color: "#aaa",
+                        name: value,
+                        key: value,
+                    };
+                }
+                featureDefs.set(key, {
+                    discrete: true,
+                    displayName: key,
+                    description: key,
+                    key,
+                    options,
+                    tooltip: key,
+                });
+            } else {
+                featureDefs.set(key, {
+                    discrete: false,
+                    displayName: key,
+                    description: key,
+                    key,
+                    tooltip: key,
+                });
+            }
+        }
+
+        return featureDefs;
+    }
+
+    parseCsvData(csvDataSrc: string): void {
+        // TODO: handle URLs here
+        const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
+        this.rawCsvData = result as Record<string, string>[];
+
+        // Index data by cell ID
+        for (const row of this.rawCsvData) {
+            const cellId = row[CELL_ID_KEY];
+            this.cellIdToData[cellId] = row as unknown as CsvData;
+        }
 
         // TODO: Recognize BFF format and convert it to expected values?
         // Some assertion tests, throw errors if data can't be parsed
-        if (this.csvData.length === 0) {
+        if (this.rawCsvData.length === 0) {
             throw new Error("No data found in CSV");
         }
-        if (this.csvData[0][CELL_ID_KEY] === undefined) {
+        if (this.rawCsvData[0][CELL_ID_KEY] === undefined) {
             throw new Error(`No ${CELL_ID_KEY} column found in CSV.`);
         }
 
+        // Determine if features are continuous or discrete
+
         this.featureKeys = this.getFeatureColumns();
+        this.featureDefs = this.getFeatureDefs(this.rawCsvData, this.featureKeys);
+    }
+
+    selectDataset(manifest: string): Promise<InitialDatasetSelections> {
+        console.log("Selecting dataset: ", manifest);
+        this.parseCsvData(exampleCsv);
+
+        // TODO: Add a discrete feature for grouping if none is available in the dataset.
 
         return Promise.resolve({
             defaultXAxis: this.getFeatureKeyClamped(0),
             defaultYAxis: this.getFeatureKeyClamped(1),
             defaultColorBy: this.getFeatureKeyClamped(2),
-            defaultGroupBy: "",
+            defaultGroupBy: "discretefeature",
             thumbnailRoot: "",
             downloadRoot: "",
             volumeViewerDataRoot: "",
@@ -115,7 +223,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getFeatureData(): Promise<DataForPlot | void> {
-        const indices = this.csvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
+        const indices = this.rawCsvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
 
         const values: Record<string, number[]> = {};
         const labels: PerCellLabels = {
@@ -124,7 +232,7 @@ class CsvRequest implements ImageDataset {
         };
 
         for (let i = 0; i < indices.length; i++) {
-            const row = this.csvData[i];
+            const row = this.rawCsvData[i];
 
             // Copy feature values
             for (const key of this.featureKeys) {
@@ -145,17 +253,39 @@ class CsvRequest implements ImageDataset {
             labels,
         });
     }
+
     getAlbumData(): Promise<Album[]> {
         return Promise.resolve([]);
     }
+
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]> {
-        return Promise.resolve([]);
+        return Promise.resolve(Array.from(this.featureDefs.values()));
     }
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
-        throw new Error("Method not implemented.");
+        // return Promise.resolve(undefined);
+        const data = this.cellIdToData[id];
+
+        console.log(data);
+
+        if (!data) {
+            return Promise.resolve(undefined);
+        }
+        const fileInfo = {
+            [CELL_ID_KEY]: data[CELL_ID_KEY].toString(),
+            [FOV_ID_KEY]: data[FOV_ID_KEY] || "",
+            [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH] || "",
+            [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
+            [THUMBNAIL_PATH]: data[THUMBNAIL_PATH] || "",
+            [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
+            [GROUP_BY_KEY]: data[GROUP_BY_KEY] || "",
+        };
+        console.log(fileInfo);
+        return Promise.resolve(fileInfo);
     }
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
-        throw new Error("Method not implemented.");
+        const promises = ids.map((id) => this.getFileInfoByCellId(id));
+        const result = Promise.all(promises);
+        return Promise.resolve(result);
     }
 }
 
