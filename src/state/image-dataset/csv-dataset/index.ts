@@ -25,11 +25,12 @@ import {
 // Some example CSV as a const here?
 
 const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
-1,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
-2,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy`;
+potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
+garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yay
+turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy
+rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2,4,yowza`;
 
 type CsvData = {
-    [CELL_ID_KEY]: number;
     [VOLUME_VIEWER_PATH]: string;
 } & Record<string, string>;
 
@@ -51,16 +52,16 @@ function isNumeric(value: string): boolean {
 }
 
 class CsvRequest implements ImageDataset {
-    rawCsvData: Record<string, string>[];
-    cellIdToData: Record<string, CsvData>;
+    csvData: Record<string, string>[];
+    idToIndex: Record<string, number>;
     featureKeys: string[];
     featureDefs: Map<string, MeasuredFeatureDef>;
     featureData: Record<string, (number | null)[]>;
 
     constructor() {
         // CSV parsing library?
-        this.cellIdToData = {};
-        this.rawCsvData = [];
+        this.csvData = [];
+        this.idToIndex = {};
         this.featureKeys = [];
         this.featureDefs = new Map();
         this.featureData = {};
@@ -71,11 +72,11 @@ class CsvRequest implements ImageDataset {
      * Returns all of the column names that are not reserved for metadata, with the
      * assumption that they are features.
      */
-    private getNonReservedFeatureColumns(): string[] {
-        if (!this.rawCsvData || this.rawCsvData.length === 0) {
+    private getNonReservedFeatureColumns(csvData: Record<string, string>[]): string[] {
+        if (!csvData || csvData.length === 0) {
             return [];
         }
-        const keys = Object.keys(this.rawCsvData[0]);
+        const keys = Object.keys(csvData[0]);
         return keys.filter((key) => !reservedKeys.has(key));
     }
 
@@ -91,19 +92,19 @@ class CsvRequest implements ImageDataset {
     /**
      * Returns the feature data as a map from the feature name to a array of either
      * numeric or string values.
-     * @param rawCsvData
+     * @param csvData
      * @param featureKeys
      * @returns
      */
     private getFeatureDataAsColumns(
-        rawCsvData: Record<string, string>[],
+        csvData: Record<string, string>[],
         featureKeys: string[]
     ): Map<string, string[] | number[]> {
         const featureData = new Map<string, string[] | number[]>();
         for (const key of featureKeys) {
             const rawValues: string[] = [];
             let isContinuous = true;
-            for (const row of rawCsvData) {
+            for (const row of csvData) {
                 rawValues.push(row[key]);
                 if (!isNumeric(row[key])) {
                     isContinuous = false;
@@ -160,10 +161,10 @@ class CsvRequest implements ImageDataset {
         };
     }
 
-    private parseFeatures(rawCsvData: Record<string, string>[]): void {
-        const featureKeys = this.getNonReservedFeatureColumns();
+    private parseFeatures(csvData: Record<string, string>[]): void {
+        const featureKeys = this.getNonReservedFeatureColumns(csvData);
         const featureDefs: Map<string, MeasuredFeatureDef> = new Map();
-        const rawFeatureData = this.getFeatureDataAsColumns(rawCsvData, featureKeys);
+        const rawFeatureData = this.getFeatureDataAsColumns(csvData, featureKeys);
         const newFeatureData: Record<string, (number | null)[]> = {};
 
         for (const key of featureKeys) {
@@ -172,8 +173,6 @@ class CsvRequest implements ImageDataset {
                 continue;
             }
             if (typeof data[0] === "string") {
-                console.log("Discrete feature: ", key);
-
                 const { def, data: discreteData } = this.parseDiscreteFeature(
                     key,
                     data as string[]
@@ -202,24 +201,27 @@ class CsvRequest implements ImageDataset {
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs here
         const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
-        this.rawCsvData = result as Record<string, string>[];
+        this.csvData = result as Record<string, string>[];
 
-        // Index data by cell ID
-        for (const row of this.rawCsvData) {
-            const cellId = row[CELL_ID_KEY];
-            this.cellIdToData[cellId] = row as unknown as CsvData;
+        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+            if (row[CELL_ID_KEY] === undefined) {
+                // Substitute with index if no cell ID is provided
+                row[CELL_ID_KEY] = i.toString();
+                this.idToIndex[i.toString()] = i;
+            } else {
+                this.idToIndex[row[CELL_ID_KEY]] = i;
+            }
         }
 
         // TODO: Recognize BFF format and convert it to expected values?
         // Some assertion tests, throw errors if data can't be parsed
-        if (this.rawCsvData.length === 0) {
+        if (this.csvData.length === 0) {
             throw new Error("No data found in CSV");
         }
-        if (this.rawCsvData[0][CELL_ID_KEY] === undefined) {
-            throw new Error(`No ${CELL_ID_KEY} column found in CSV.`);
-        }
 
-        this.parseFeatures(this.rawCsvData);
+        this.parseFeatures(this.csvData);
     }
 
     selectDataset(manifest: string): Promise<InitialDatasetSelections> {
@@ -282,7 +284,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getFeatureData(): Promise<DataForPlot | void> {
-        const indices = this.rawCsvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
+        const indices = this.csvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
 
         const values: Record<string, (number | null)[]> = this.featureData;
         const labels: PerCellLabels = {
@@ -292,7 +294,7 @@ class CsvRequest implements ImageDataset {
 
         for (let i = 0; i < indices.length; i++) {
             // TODO: Calculate in advance
-            const row = this.rawCsvData[i];
+            const row = this.csvData[i];
             // Copy label data
             labels.cellIds.push(row[CELL_ID_KEY]);
             labels.thumbnailPaths.push(row[THUMBNAIL_PATH] || "");
@@ -306,7 +308,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getAlbumData(): Promise<Album[]> {
-        return Promise.resolve([{ album_id: 1, cell_ids: [1, 2], title: "Album 1" }]);
+        return Promise.resolve([]);
     }
 
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]> {
@@ -314,15 +316,18 @@ class CsvRequest implements ImageDataset {
     }
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
         // return Promise.resolve(undefined);
-        const data = this.cellIdToData[id];
-
-        console.log(data);
+        console.log("Getting file info for cell ID: ", id);
+        const rowIndex = this.idToIndex[id];
+        if (rowIndex === undefined) {
+            return Promise.resolve(undefined);
+        }
+        const data = this.csvData[rowIndex];
 
         if (!data) {
             return Promise.resolve(undefined);
         }
         const fileInfo = {
-            [CELL_ID_KEY]: data[CELL_ID_KEY].toString(),
+            [CELL_ID_KEY]: data[CELL_ID_KEY],
             [FOV_ID_KEY]: data[FOV_ID_KEY] || "",
             [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH] || "",
             [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
@@ -333,6 +338,7 @@ class CsvRequest implements ImageDataset {
         console.log(fileInfo);
         return Promise.resolve(fileInfo);
     }
+
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
         const promises = ids.map((id) => this.getFileInfoByCellId(id));
         const result = Promise.all(promises);
