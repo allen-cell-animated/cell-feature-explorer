@@ -55,7 +55,7 @@ class CsvRequest implements ImageDataset {
     cellIdToData: Record<string, CsvData>;
     featureKeys: string[];
     featureDefs: Map<string, MeasuredFeatureDef>;
-    featureData: Record<string, number[]>;
+    featureData: Record<string, (number | null)[]>;
 
     constructor() {
         // CSV parsing library?
@@ -126,7 +126,7 @@ class CsvRequest implements ImageDataset {
     private parseDiscreteFeature(
         key: string,
         data: string[]
-    ): { def: DiscreteMeasuredFeatureDef; data: number[] } {
+    ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
         // Treat as discrete feature, create options objects
         const options: Record<string, MeasuredFeaturesOption> = {};
         const uniqueValuesSet = new Set<string>(data as string[]);
@@ -145,7 +145,7 @@ class CsvRequest implements ImageDataset {
             };
         }
 
-        const mappedData = data.map((val) => valueNameToIndex.get(val) || -1);
+        const mappedData = data.map((val) => valueNameToIndex.get(val) ?? null);
 
         return {
             def: {
@@ -164,7 +164,7 @@ class CsvRequest implements ImageDataset {
         const featureKeys = this.getNonReservedFeatureColumns();
         const featureDefs: Map<string, MeasuredFeatureDef> = new Map();
         const rawFeatureData = this.getFeatureDataAsColumns(rawCsvData, featureKeys);
-        const newFeatureData: Record<string, number[]> = {};
+        const newFeatureData: Record<string, (number | null)[]> = {};
 
         for (const key of featureKeys) {
             const data = rawFeatureData.get(key);
@@ -269,23 +269,15 @@ class CsvRequest implements ImageDataset {
     getFeatureData(): Promise<DataForPlot | void> {
         const indices = this.rawCsvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
 
-        const values: Record<string, number[]> = this.featureData;
+        const values: Record<string, (number | null)[]> = this.featureData;
         const labels: PerCellLabels = {
             thumbnailPaths: [],
             cellIds: [],
         };
 
         for (let i = 0; i < indices.length; i++) {
+            // TODO: Calculate in advance
             const row = this.rawCsvData[i];
-
-            // Copy feature values
-            for (const key of this.featureKeys) {
-                if (!values[key]) {
-                    values[key] = [];
-                }
-                values[key].push(Number.parseFloat(row[key]));
-            }
-
             // Copy label data
             labels.cellIds.push(row[CELL_ID_KEY]);
             labels.thumbnailPaths.push(row[THUMBNAIL_PATH] || "");
