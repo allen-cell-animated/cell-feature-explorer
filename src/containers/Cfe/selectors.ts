@@ -126,7 +126,10 @@ export const getPropsForVolumeViewer = createSelector(
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
         }
-        if (!dataRoot.endsWith("/")) {
+
+        // Discard data root if it's an empty string; otherwise it appends a "/" to
+        // all URLs which breaks the links.
+        if (dataRoot !== "" && !dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
         return {

@@ -24,9 +24,9 @@ import {
 
 // Some example CSV as a const here?
 
-const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},feature1,feature2,feature3,discretefeature
-1,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,1,2,3,yowie
-2,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,4,5,6,yummy`;
+const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
+1,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
+2,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy`;
 
 type CsvData = {
     [CELL_ID_KEY]: number;
@@ -232,6 +232,9 @@ class CsvRequest implements ImageDataset {
             defaultYAxis: this.getFeatureKeyClamped(this.featureKeys, 1),
             defaultColorBy: this.getFeatureKeyClamped(this.featureKeys, 2),
             defaultGroupBy: "discretefeature",
+            // TODO: Provide thumbnail root as folder of the CSV URL.
+            // TODO: Discard thumbnail/download/volumeviewer root if the
+            // path is a HTTP(S) URL.
             thumbnailRoot: "",
             downloadRoot: "",
             volumeViewerDataRoot: "",
@@ -263,7 +266,19 @@ class CsvRequest implements ImageDataset {
     }
 
     getViewerChannelSettings(): Promise<ViewerChannelSettings> {
-        return Promise.resolve({ groups: [] });
+        // By default, enable first three channels
+        // TODO: Have this constant exposed by w3cv?
+        return Promise.resolve({
+            groups: [
+                {
+                    name: "Channels",
+                    channels: [
+                        { match: [0, 1, 2], enabled: true },
+                        { match: "(.+)", enabled: false },
+                    ],
+                },
+            ],
+        });
     }
 
     getFeatureData(): Promise<DataForPlot | void> {

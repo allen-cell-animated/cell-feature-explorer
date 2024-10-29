@@ -6,6 +6,8 @@ import { APP_ID, CELL_ID_KEY } from "../constants";
 import { DiscreteMeasuredFeatureDef, FileInfo, MeasuredFeatureDef } from "./metadata/types";
 import { BatchedAction, TypeToDescriptionMap } from "./types";
 
+const HTTP_REGEX = /^https?:\/\//;
+
 export function makeConstant(associatedReducer: string, actionType: string) {
     return `${APP_ID}/${associatedReducer.toUpperCase()}/${actionType.toUpperCase()}`;
 }
@@ -77,11 +79,15 @@ export function formatDownloadOfIndividualFile(root: string, id: string): string
     return root === "" ? "" : `${root}&id=${id}`;
 }
 
-export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
-    if (!thumbnailRoot || !item || !item.thumbnailPath) {
+export function formatThumbnailSrc(thumbnailRoot: string, thumbnailPath: string): string {
+    // Don't modify HTTP(S) thumbnail paths
+    if (HTTP_REGEX.test(thumbnailPath)) {
+        return thumbnailPath;
+    }
+    if (!thumbnailRoot || !thumbnailPath) {
         return "";
     }
-    return `${thumbnailRoot}/${item.thumbnailPath}`;
+    return `${thumbnailRoot}/${thumbnailPath}`;
 }
 
 export function findFeature(features: MeasuredFeatureDef[], searchKey: string) {
