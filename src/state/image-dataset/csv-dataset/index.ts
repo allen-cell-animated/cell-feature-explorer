@@ -7,6 +7,7 @@ import {
     FileInfo,
     PerCellLabels,
     MeasuredFeaturesOption,
+    DiscreteMeasuredFeatureDef,
 } from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
 import firebase from "firebase";
@@ -54,6 +55,7 @@ class CsvRequest implements ImageDataset {
     cellIdToData: Record<string, CsvData>;
     featureKeys: string[];
     featureDefs: Map<string, MeasuredFeatureDef>;
+    featureData: Record<string, number[]>;
 
     constructor() {
         // CSV parsing library?
@@ -61,9 +63,15 @@ class CsvRequest implements ImageDataset {
         this.rawCsvData = [];
         this.featureKeys = [];
         this.featureDefs = new Map();
+        this.featureData = {};
+        this.parseCsvData(exampleCsv);
     }
 
-    getFeatureColumns(): string[] {
+    /**
+     * Returns all of the column names that are not reserved for metadata, with the
+     * assumption that they are features.
+     */
+    private getNonReservedFeatureColumns(): string[] {
         if (!this.rawCsvData || this.rawCsvData.length === 0) {
             return [];
         }
@@ -71,15 +79,23 @@ class CsvRequest implements ImageDataset {
         return keys.filter((key) => !reservedKeys.has(key));
     }
 
-    getFeatureKeyClamped(index: number): string {
+    /**
+     * Used for default initialization. Returns the feature key at the given index,
+     * clamped to the length of the features array.
+     */
+    private getFeatureKeyClamped(featureKeys: string[], index: number): string {
         const lastIndex = this.featureKeys.length - 1;
-        return this.featureKeys[Math.min(Math.max(index, 0), lastIndex)];
+        return featureKeys[Math.min(Math.max(index, 0), lastIndex)];
     }
 
-    // Invert from row-ordered to column-ordered data
-    // This won't know if a feature is continuous or discrete, so we'll need to handle that later
-    // and then parse the values as needed
-    stripFeatureData(
+    /**
+     * Returns the feature data as a map from the feature name to a array of either
+     * numeric or string values.
+     * @param rawCsvData
+     * @param featureKeys
+     * @returns
+     */
+    private getFeatureDataAsColumns(
         rawCsvData: Record<string, string>[],
         featureKeys: string[]
     ): Map<string, string[] | number[]> {
@@ -98,6 +114,7 @@ class CsvRequest implements ImageDataset {
                 // Feature is continuous, parse all values as numeric
                 const values = rawValues.map((val) => Number.parseFloat(val));
                 featureData.set(key, values);
+                // TODO: Create additional feature metadata for continuous vs discrete features?
             } else {
                 // Feature is discrete, return directly
                 featureData.set(key, rawValues);
@@ -106,38 +123,66 @@ class CsvRequest implements ImageDataset {
         return featureData;
     }
 
-    getFeatureDefs(
-        rawCsvData: Record<string, string>[],
-        featureKeys: string[]
-    ): Map<string, MeasuredFeatureDef> {
+    private parseDiscreteFeature(
+        key: string,
+        data: string[]
+    ): { def: DiscreteMeasuredFeatureDef; data: number[] } {
+        // Treat as discrete feature, create options objects
+        const options: Record<string, MeasuredFeaturesOption> = {};
+        const uniqueValuesSet = new Set<string>(data as string[]);
+        const colors = ["#e9ebee", "#c51b8a", "#fed98e", "#66c2a4", "#7f48f3", "#838383"];
+        const uniqueValues = Array.from(uniqueValuesSet);
+
+        const valueNameToIndex = new Map<string, number>();
+        for (let i = 0; i < uniqueValues.length; i++) {
+            const value = uniqueValues[i];
+            valueNameToIndex.set(value, i);
+            // Options must be indexed by string integer
+            options[i.toString()] = {
+                color: colors[i % colors.length],
+                name: value,
+                key: value,
+            };
+        }
+
+        const mappedData = data.map((val) => valueNameToIndex.get(val) || -1);
+
+        return {
+            def: {
+                discrete: true,
+                displayName: key,
+                description: key,
+                key,
+                options,
+                tooltip: key,
+            },
+            data: mappedData,
+        };
+    }
+
+    private parseFeatures(rawCsvData: Record<string, string>[]): void {
+        const featureKeys = this.getNonReservedFeatureColumns();
         const featureDefs: Map<string, MeasuredFeatureDef> = new Map();
-        const featureData = this.stripFeatureData(rawCsvData, featureKeys);
+        const rawFeatureData = this.getFeatureDataAsColumns(rawCsvData, featureKeys);
+        const newFeatureData: Record<string, number[]> = {};
 
         for (const key of featureKeys) {
-            const data = featureData.get(key);
+            const data = rawFeatureData.get(key);
             if (!data) {
                 continue;
             }
             if (typeof data[0] === "string") {
-                // Treat as discrete feature, create options objects
-                const options: Record<string, MeasuredFeaturesOption> = {};
-                const featureValues = new Set<string>(data as string[]);
-                for (const value of featureValues) {
-                    options[value] = {
-                        color: "#aaa",
-                        name: value,
-                        key: value,
-                    };
-                }
-                featureDefs.set(key, {
-                    discrete: true,
-                    displayName: key,
-                    description: key,
+                console.log("Discrete feature: ", key);
+
+                const { def, data: discreteData } = this.parseDiscreteFeature(
                     key,
-                    options,
-                    tooltip: key,
-                });
+                    data as string[]
+                );
+                featureDefs.set(key, def);
+                // Overwrite string data with new mapped indices
+                newFeatureData[key] = discreteData;
             } else {
+                // TODO: same as above, but for continuous features
                 featureDefs.set(key, {
                     discrete: false,
                     displayName: key,
@@ -145,13 +190,16 @@ class CsvRequest implements ImageDataset {
                     key,
                     tooltip: key,
                 });
+                newFeatureData[key] = data as number[];
             }
         }
 
-        return featureDefs;
+        this.featureDefs = featureDefs;
+        this.featureKeys = featureKeys;
+        this.featureData = newFeatureData;
     }
 
-    parseCsvData(csvDataSrc: string): void {
+    private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs here
         const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
         this.rawCsvData = result as Record<string, string>[];
@@ -171,22 +219,18 @@ class CsvRequest implements ImageDataset {
             throw new Error(`No ${CELL_ID_KEY} column found in CSV.`);
         }
 
-        // Determine if features are continuous or discrete
-
-        this.featureKeys = this.getFeatureColumns();
-        this.featureDefs = this.getFeatureDefs(this.rawCsvData, this.featureKeys);
+        this.parseFeatures(this.rawCsvData);
     }
 
     selectDataset(manifest: string): Promise<InitialDatasetSelections> {
         console.log("Selecting dataset: ", manifest);
-        this.parseCsvData(exampleCsv);
 
         // TODO: Add a discrete feature for grouping if none is available in the dataset.
 
         return Promise.resolve({
-            defaultXAxis: this.getFeatureKeyClamped(0),
-            defaultYAxis: this.getFeatureKeyClamped(1),
-            defaultColorBy: this.getFeatureKeyClamped(2),
+            defaultXAxis: this.getFeatureKeyClamped(this.featureKeys, 0),
+            defaultYAxis: this.getFeatureKeyClamped(this.featureKeys, 1),
+            defaultColorBy: this.getFeatureKeyClamped(this.featureKeys, 2),
             defaultGroupBy: "discretefeature",
             thumbnailRoot: "",
             downloadRoot: "",
@@ -225,7 +269,7 @@ class CsvRequest implements ImageDataset {
     getFeatureData(): Promise<DataForPlot | void> {
         const indices = this.rawCsvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
 
-        const values: Record<string, number[]> = {};
+        const values: Record<string, number[]> = this.featureData;
         const labels: PerCellLabels = {
             thumbnailPaths: [],
             cellIds: [],
@@ -255,7 +299,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getAlbumData(): Promise<Album[]> {
-        return Promise.resolve([]);
+        return Promise.resolve([{ album_id: 1, cell_ids: [1, 2], title: "Album 1" }]);
     }
 
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]> {
@@ -277,7 +321,7 @@ class CsvRequest implements ImageDataset {
             [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
             [THUMBNAIL_PATH]: data[THUMBNAIL_PATH] || "",
             [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
-            [GROUP_BY_KEY]: data[GROUP_BY_KEY] || "",
+            [GROUP_BY_KEY]: data[GROUP_BY_KEY] || "discretefeature",
         };
         console.log(fileInfo);
         return Promise.resolve(fileInfo);

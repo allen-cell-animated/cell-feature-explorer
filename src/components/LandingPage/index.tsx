@@ -103,10 +103,13 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                             >
                                 <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
 
-                                {downloadData.map((downloadInfo: DownloadInfo) => {
+                                {downloadData.map((downloadInfo: DownloadInfo, index) => {
                                     return (
                                         <>
-                                            <Descriptions.Item label={downloadInfo.date}>
+                                            <Descriptions.Item
+                                                label={downloadInfo.date}
+                                                key={index}
+                                            >
                                                 {" "}
                                                 <a
                                                     target="_blank"
