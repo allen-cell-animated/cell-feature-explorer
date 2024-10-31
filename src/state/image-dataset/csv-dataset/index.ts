@@ -145,25 +145,34 @@ class CsvRequest implements ImageDataset {
         key: string,
         data: string[]
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
-        // Treat as discrete feature, create options objects
-        const options: Record<string, MeasuredFeaturesOption> = {};
-        const uniqueValuesSet = new Set<string>(data as string[]);
-        const colors = ["#e9ebee", "#c51b8a", "#fed98e", "#66c2a4", "#7f48f3", "#838383"];
-        const uniqueValues = Array.from(uniqueValuesSet);
+        const seenValues = new Map<string, { index: number; count: number }>();
+        const remappedValues: (number | null)[] = [];
 
-        const valueNameToIndex = new Map<string, number>();
-        for (let i = 0; i < uniqueValues.length; i++) {
-            const value = uniqueValues[i];
-            valueNameToIndex.set(value, i);
-            // Options must be indexed by string integer
-            options[i.toString()] = {
-                color: colors[i % colors.length],
-                name: value,
-                key: value,
-            };
+        // Iterate through all values and count them. Replace the values with their
+        // corresponding index.
+        for (let i = 0; i < data.length; i++) {
+            const value = data[i];
+
+            if (!seenValues.has(value)) {
+                // Assign new index to this value
+                seenValues.set(value, { index: seenValues.size, count: 0 });
+            }
+
+            seenValues.get(value)!.count++;
+            remappedValues.push(seenValues.get(value)!.index);
         }
 
-        const mappedData = data.map((val) => valueNameToIndex.get(val) ?? null);
+        const options: Record<string, MeasuredFeaturesOption> = {};
+        const colors = ["#e9ebee", "#c51b8a", "#fed98e", "#66c2a4", "#7f48f3", "#838383"];
+
+        for (const [value, { index, count }] of seenValues.entries()) {
+            options[index.toString()] = {
+                color: colors[index % colors.length],
+                name: value,
+                key: value,
+                count: count,
+            };
+        }
 
         return {
             def: {
@@ -174,7 +183,7 @@ class CsvRequest implements ImageDataset {
                 options,
                 tooltip: key,
             },
-            data: mappedData,
+            data: remappedValues,
         };
     }
 
