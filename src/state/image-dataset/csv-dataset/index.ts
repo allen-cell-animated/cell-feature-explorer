@@ -8,6 +8,7 @@ import {
     PerCellLabels,
     MeasuredFeaturesOption,
     DiscreteMeasuredFeatureDef,
+    ContinuousMeasuredFeatureDef,
 } from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
 import firebase from "firebase";
@@ -26,13 +27,9 @@ import {
 
 const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
 potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
-garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yay
+garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yowza
 turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy
-rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2,4,yowza`;
-
-type CsvData = {
-    [VOLUME_VIEWER_PATH]: string;
-} & Record<string, string>;
+rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4,yowza`;
 
 const reservedKeys = new Set([
     CELL_ID_KEY,
@@ -51,21 +48,41 @@ function isNumeric(value: string): boolean {
     return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
+function isStringArray(data: string[] | (number | null)[]): data is string[] {
+    return data.length > 0 && typeof data[0] === "string";
+}
+
+const enum FeatureType {
+    CONTINUOUS,
+    DISCRETE,
+}
+
+type FeatureInfo =
+    | {
+          type: FeatureType.CONTINUOUS;
+          def: ContinuousMeasuredFeatureDef;
+          data: (number | null)[];
+      }
+    | {
+          type: FeatureType.DISCRETE;
+          def: DiscreteMeasuredFeatureDef;
+          data: (number | null)[];
+      };
+
 class CsvRequest implements ImageDataset {
     csvData: Record<string, string>[];
     idToIndex: Record<string, number>;
-    featureKeys: string[];
-    featureDefs: Map<string, MeasuredFeatureDef>;
-    featureData: Record<string, (number | null)[]>;
+    featureInfo: Map<string, FeatureInfo>;
+
+    defaultGroupByFeatureKey: string | null;
 
     constructor() {
         // CSV parsing library?
         this.csvData = [];
         this.idToIndex = {};
-        this.featureKeys = [];
-        this.featureDefs = new Map();
-        this.featureData = {};
+        this.featureInfo = new Map();
         this.parseCsvData(exampleCsv);
+        this.defaultGroupByFeatureKey = null;
     }
 
     /**
@@ -85,7 +102,7 @@ class CsvRequest implements ImageDataset {
      * clamped to the length of the features array.
      */
     private getFeatureKeyClamped(featureKeys: string[], index: number): string {
-        const lastIndex = this.featureKeys.length - 1;
+        const lastIndex = featureKeys.length - 1;
         return featureKeys[Math.min(Math.max(index, 0), lastIndex)];
     }
 
@@ -162,40 +179,43 @@ class CsvRequest implements ImageDataset {
     }
 
     private parseFeatures(csvData: Record<string, string>[]): void {
+        this.featureInfo.clear();
+
         const featureKeys = this.getNonReservedFeatureColumns(csvData);
-        const featureDefs: Map<string, MeasuredFeatureDef> = new Map();
         const rawFeatureData = this.getFeatureDataAsColumns(csvData, featureKeys);
-        const newFeatureData: Record<string, (number | null)[]> = {};
 
         for (const key of featureKeys) {
             const data = rawFeatureData.get(key);
             if (!data) {
                 continue;
             }
-            if (typeof data[0] === "string") {
-                const { def, data: discreteData } = this.parseDiscreteFeature(
-                    key,
-                    data as string[]
-                );
-                featureDefs.set(key, def);
-                // Overwrite string data with new mapped indices
-                newFeatureData[key] = discreteData;
+            if (isStringArray(data)) {
+                const { def, data: discreteData } = this.parseDiscreteFeature(key, data);
+                this.featureInfo.set(key, {
+                    type: FeatureType.DISCRETE,
+                    def,
+                    data: discreteData,
+                });
             } else {
-                // TODO: same as above, but for continuous features
-                featureDefs.set(key, {
+                const def: ContinuousMeasuredFeatureDef = {
                     discrete: false,
                     displayName: key,
                     description: key,
                     key,
                     tooltip: key,
+                };
+                this.featureInfo.set(key, {
+                    type: FeatureType.CONTINUOUS,
+                    def,
+                    data: data,
                 });
-                newFeatureData[key] = data as number[];
             }
         }
 
-        this.featureDefs = featureDefs;
-        this.featureKeys = featureKeys;
-        this.featureData = newFeatureData;
+        // TODO: Feature defs can include units. Should we strip that from the feature column name?
+
+        // Assign the first discrete feature as the default group-by feature. If none exists, construct
+        // an artificial discrete feature for grouping.
     }
 
     private parseCsvData(csvDataSrc: string): void {
@@ -228,15 +248,14 @@ class CsvRequest implements ImageDataset {
         console.log("Selecting dataset: ", manifest);
 
         // TODO: Add a discrete feature for grouping if none is available in the dataset.
-
+        const featureKeys = Array.from(this.featureInfo.keys());
         return Promise.resolve({
-            defaultXAxis: this.getFeatureKeyClamped(this.featureKeys, 0),
-            defaultYAxis: this.getFeatureKeyClamped(this.featureKeys, 1),
-            defaultColorBy: this.getFeatureKeyClamped(this.featureKeys, 2),
+            defaultXAxis: this.getFeatureKeyClamped(featureKeys, 0),
+            defaultYAxis: this.getFeatureKeyClamped(featureKeys, 1),
+            defaultColorBy: this.getFeatureKeyClamped(featureKeys, 2),
             defaultGroupBy: "discretefeature",
-            // TODO: Provide thumbnail root as folder of the CSV URL.
-            // TODO: Discard thumbnail/download/volumeviewer root if the
-            // path is a HTTP(S) URL.
+            // TODO: Provide the containing folder of the CSV if the values for the columns (thumbnails,
+            // downloads, volumes) are relative paths and not HTTPS URLs.
             thumbnailRoot: "",
             downloadRoot: "",
             volumeViewerDataRoot: "",
@@ -283,10 +302,18 @@ class CsvRequest implements ImageDataset {
         });
     }
 
+    private getFeatureKeyToData(): Record<string, (number | null)[]> {
+        const featureKeyToData: Record<string, (number | null)[]> = {};
+        for (const [key, info] of this.featureInfo.entries()) {
+            featureKeyToData[key] = info.data;
+        }
+        return featureKeyToData;
+    }
+
     getFeatureData(): Promise<DataForPlot | void> {
         const indices = this.csvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
 
-        const values: Record<string, (number | null)[]> = this.featureData;
+        const values: Record<string, (number | null)[]> = this.getFeatureKeyToData();
         const labels: PerCellLabels = {
             thumbnailPaths: [],
             cellIds: [],
@@ -312,8 +339,10 @@ class CsvRequest implements ImageDataset {
     }
 
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]> {
-        return Promise.resolve(Array.from(this.featureDefs.values()));
+        const featureDefsArray = Array.from(this.featureInfo.values()).map((info) => info.def);
+        return Promise.resolve(featureDefsArray);
     }
+
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
         // return Promise.resolve(undefined);
         console.log("Getting file info for cell ID: ", id);
