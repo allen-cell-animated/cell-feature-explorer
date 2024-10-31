@@ -40,7 +40,8 @@ import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
+        const { getState } = deps;
+        const imageDataSet = getState().metadata.imageDataset;
         return imageDataSet
             .getAvailableDatasets()
             .then((data: Megaset[]) => dispatch(receiveAvailableDatasets(data)))
@@ -83,7 +84,8 @@ export const findVisibleDataPoint = (
 
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { getState, imageDataSet } = deps;
+        const { getState } = deps;
+        const imageDataSet = getState().metadata.imageDataset;
 
         const showSmallScreenWarning = getShowSmallScreenWarning(getState());
         if (showSmallScreenWarning) return;
@@ -152,7 +154,8 @@ const requestFeatureDataLogic = createLogic({
 
 const requestAlbumData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
+        const { getState } = deps;
+        const imageDataSet = getState().metadata.imageDataset;
         dispatch(setLoadingText("Loading album data..."));
         return imageDataSet
             .getAlbumData()
@@ -170,7 +173,8 @@ const requestAlbumData = createLogic({
 
 const requestViewerChannelSettings = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
-        const { imageDataSet } = deps;
+        const { getState } = deps;
+        const imageDataSet = getState().metadata.imageDataset;
         return imageDataSet
             .getViewerChannelSettings()
             .then((data: ViewerChannelSettings) => {

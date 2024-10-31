@@ -8,11 +8,12 @@ import {
     TRANSFORM,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { Megaset } from "../image-dataset/types";
+import { ImageDataset, Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 export interface MetadataStateBranch {
+    imageDataset: ImageDataset;
     albums: Album[];
     cellFileInfo: FileInfo[];
     isLoading: boolean;

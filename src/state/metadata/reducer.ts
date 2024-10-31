@@ -1,6 +1,7 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { AnyAction } from "redux";
 import { Megaset } from "../image-dataset/types";
+import RequestImageDatasetToUse from "../image-dataset";
 import { ReceiveCellFileInfoAction } from "../selection/types";
 
 import { TypeToDescriptionMap } from "../types";
@@ -33,7 +34,8 @@ import {
     FileInfo,
 } from "./types";
 
-export const initialState = {
+export const initialState: MetadataStateBranch = {
+    imageDataset: RequestImageDatasetToUse(),
     albums: [],
     cellFileInfo: [] as FileInfo[],
     isLoading: true,
@@ -51,7 +53,8 @@ export const initialState = {
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_DATA_FOR_PLOT]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
+        accepts: (action: AnyAction): action is ReceiveAction =>
+            action.type === RECEIVE_DATA_FOR_PLOT,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,

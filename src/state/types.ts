@@ -22,7 +22,6 @@ export interface BatchedAction {
 export interface ReduxLogicDeps {
     action: AnyAction;
     httpClient: AxiosInstance;
-    imageDataSet: ImageDataset;
     getState: () => State;
     ctx?: any;
 }
@@ -65,13 +64,13 @@ export interface SelectedGroupDatum {
 }
 
 export interface PlotlyCustomData {
-    thumbnailPath: string; 
+    thumbnailPath: string;
     index: number;
 }
 
 export enum DataType {
     CONTINUOUS = "continuous",
-    GROUPED = "grouped"
+    GROUPED = "grouped",
 }
 
 export interface ContinuousPlotData {
