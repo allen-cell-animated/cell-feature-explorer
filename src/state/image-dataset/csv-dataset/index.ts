@@ -25,11 +25,16 @@ import {
 
 // Some example CSV as a const here?
 
-const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
-potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
-garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yowza
-turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy
-rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4,yowza`;
+// const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
+// potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
+// garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yowza
+// turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy
+// rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4,yowza`;
+const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3
+potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3
+garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1
+turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6
+rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4`;
 
 const reservedKeys = new Set([
     CELL_ID_KEY,
@@ -74,15 +79,15 @@ class CsvRequest implements ImageDataset {
     idToIndex: Record<string, number>;
     featureInfo: Map<string, FeatureInfo>;
 
-    defaultGroupByFeatureKey: string | null;
+    defaultGroupByFeatureKey: string;
 
     constructor() {
         // CSV parsing library?
         this.csvData = [];
         this.idToIndex = {};
         this.featureInfo = new Map();
+        this.defaultGroupByFeatureKey = "";
         this.parseCsvData(exampleCsv);
-        this.defaultGroupByFeatureKey = null;
     }
 
     /**
@@ -163,6 +168,7 @@ class CsvRequest implements ImageDataset {
         }
 
         const options: Record<string, MeasuredFeaturesOption> = {};
+        // TODO: replace with Adobe categorical colors?
         const colors = ["#e9ebee", "#c51b8a", "#fed98e", "#66c2a4", "#7f48f3", "#838383"];
 
         for (const [value, { index, count }] of seenValues.entries()) {
@@ -225,6 +231,47 @@ class CsvRequest implements ImageDataset {
 
         // Assign the first discrete feature as the default group-by feature. If none exists, construct
         // an artificial discrete feature for grouping.
+        const firstDiscreteFeature = Array.from(this.featureInfo.values()).find(
+            (info) => info.type === FeatureType.DISCRETE
+        );
+        if (firstDiscreteFeature) {
+            this.defaultGroupByFeatureKey = firstDiscreteFeature.def.key;
+        }
+
+        // No discrete feature was found so we need to make one. Bin by row number, splitting into
+        // bins that are exponents of 10.
+        // So 1000 values should be 10 bins of 100, 100 values should be bins of 10, etc.
+        // values 1-10 should be a single bin.
+        const binSize = Math.max(Math.ceil(Math.log10(csvData.length)), 1) * 10;
+        const numBins = Math.ceil(csvData.length / binSize);
+        const options: Record<string, MeasuredFeaturesOption> = {};
+        for (let i = 0; i < numBins; i++) {
+            const minIndex = i * binSize;
+            const maxIndex = Math.min((i + 1) * binSize - 1, csvData.length - 1);
+            options[i.toString()] = {
+                // TODO: Assign color palette here
+                color: "#000000",
+                name: `Rows ${minIndex}-${maxIndex}`,
+                key: i.toString(),
+                count: maxIndex - minIndex + 1,
+            };
+        }
+        const rowNumberData = new Array(csvData.length).fill(0).map((_, i) => {
+            return Math.floor(i / binSize);
+        });
+        this.featureInfo.set("_rowNumber", {
+            type: FeatureType.DISCRETE,
+            def: {
+                discrete: true,
+                displayName: "Row Number",
+                description: "Row Number (auto-calculated)",
+                key: "_rowNumber",
+                tooltip: "Row Number",
+                options,
+            },
+            data: rowNumberData,
+        });
+        this.defaultGroupByFeatureKey = "_rowNumber";
     }
 
     private parseCsvData(csvDataSrc: string): void {
@@ -258,11 +305,12 @@ class CsvRequest implements ImageDataset {
 
         // TODO: Add a discrete feature for grouping if none is available in the dataset.
         const featureKeys = Array.from(this.featureInfo.keys());
+        console.log("Feature keys: ", featureKeys);
         return Promise.resolve({
             defaultXAxis: this.getFeatureKeyClamped(featureKeys, 0),
             defaultYAxis: this.getFeatureKeyClamped(featureKeys, 1),
             defaultColorBy: this.getFeatureKeyClamped(featureKeys, 2),
-            defaultGroupBy: "discretefeature",
+            defaultGroupBy: this.defaultGroupByFeatureKey,
             // TODO: Provide the containing folder of the CSV if the values for the columns (thumbnails,
             // downloads, volumes) are relative paths and not HTTPS URLs.
             thumbnailRoot: "",
@@ -371,7 +419,7 @@ class CsvRequest implements ImageDataset {
             [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
             [THUMBNAIL_PATH]: data[THUMBNAIL_PATH] || "",
             [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
-            [GROUP_BY_KEY]: data[GROUP_BY_KEY] || "discretefeature",
+            [GROUP_BY_KEY]: data[GROUP_BY_KEY] || this.defaultGroupByFeatureKey,
         };
         console.log(fileInfo);
         return Promise.resolve(fileInfo);
