@@ -18,6 +18,7 @@ import {
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
+    REPLACE_IMAGE_DATASET,
 } from "./constants";
 import {
     MetadataStateBranch,
@@ -52,6 +53,14 @@ export const initialState: MetadataStateBranch = {
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
+    [REPLACE_IMAGE_DATASET]: {
+        accepts: (action: AnyAction): action is ReceiveAction =>
+            action.type === REPLACE_IMAGE_DATASET,
+        perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
+            ...state,
+            imageDataset: action.payload,
+        }),
+    },
     [RECEIVE_DATA_FOR_PLOT]: {
         accepts: (action: AnyAction): action is ReceiveAction =>
             action.type === RECEIVE_DATA_FOR_PLOT,

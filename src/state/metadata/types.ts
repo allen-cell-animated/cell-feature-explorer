@@ -99,6 +99,11 @@ export interface DataForPlot {
 
 // ACTIONS
 
+export interface ReceiveImageDatasetAction {
+    payload: ImageDataset;
+    type: string;
+}
+
 export interface ReceiveAction {
     payload: { [key: string]: any };
     type: string;

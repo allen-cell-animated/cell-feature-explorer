@@ -25,6 +25,8 @@ import {
 
 // Some example CSV as a const here?
 
+const DEFAULT_CSV_DATASET_KEY = "csv";
+
 // const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
 // potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
 // garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yowza
@@ -81,13 +83,13 @@ class CsvRequest implements ImageDataset {
 
     defaultGroupByFeatureKey: string;
 
-    constructor() {
+    constructor(csvFileContents?: string) {
         // CSV parsing library?
         this.csvData = [];
         this.idToIndex = {};
         this.featureInfo = new Map();
         this.defaultGroupByFeatureKey = "";
-        this.parseCsvData(exampleCsv);
+        this.parseCsvData(csvFileContents ?? exampleCsv);
     }
 
     /**
@@ -275,7 +277,8 @@ class CsvRequest implements ImageDataset {
     }
 
     private parseCsvData(csvDataSrc: string): void {
-        // TODO: handle URLs here
+        // TODO: handle URLs and files here: they need to be handled via async callbacks.
+        // https://www.papaparse.com/docs#strings
         const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
 
@@ -332,7 +335,7 @@ class CsvRequest implements ImageDataset {
                     name: "csv",
                     title: "CSV Dataset",
                     version: "1",
-                    id: "csv",
+                    id: DEFAULT_CSV_DATASET_KEY,
                     description: "A dataset imported from a CSV file",
                     index: 0,
                     userData: {},

@@ -1,6 +1,6 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
-import { Megaset } from "../image-dataset/types";
+import { ImageDataset, Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 
 import {
@@ -19,6 +19,7 @@ import {
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
+    REPLACE_IMAGE_DATASET,
 } from "./constants";
 import {
     DataForPlot,
@@ -28,6 +29,7 @@ import {
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
     ReceiveCellFileInfoAction,
+    ReceiveImageDatasetAction,
     ReceiveMeasuredFeaturesAction,
     ReceiveViewerChannelSettingsAction,
     RequestAction,
@@ -35,12 +37,15 @@ import {
     SetSmallScreenWarningAction,
 } from "./types";
 
+export function replaceImageDataset(payload: ImageDataset): ReceiveImageDatasetAction {
+    return { payload, type: REPLACE_IMAGE_DATASET };
+}
+
 export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };
 }
-export function receiveAvailableDatasets(
-    payload: Megaset[]
-): ReceiveAvailableDatasetsAction {
+
+export function receiveAvailableDatasets(payload: Megaset[]): ReceiveAvailableDatasetsAction {
     return {
         payload,
         type: RECEIVE_AVAILABLE_DATASETS,
