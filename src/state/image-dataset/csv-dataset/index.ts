@@ -48,6 +48,21 @@ const reservedKeys = new Set([
     TRANSFORM,
 ]);
 
+const DEFAULT_COLORS = [
+    "#27B4AE",
+    "#4047C4",
+    "#F48730",
+    "#DB4281",
+    "#7E84F4",
+    "#78DF76",
+    "#1C7AED",
+    "#7129CD",
+    "#E7C73B",
+    "#C95F1E",
+    "#188E61",
+    "#BEE952",
+];
+
 function isNumeric(value: string): boolean {
     if (typeof value != "string") {
         return false;
@@ -83,13 +98,13 @@ class CsvRequest implements ImageDataset {
 
     defaultGroupByFeatureKey: string;
 
-    constructor(csvFileContents?: string) {
+    constructor(csvFileContents: string) {
         // CSV parsing library?
         this.csvData = [];
         this.idToIndex = {};
         this.featureInfo = new Map();
         this.defaultGroupByFeatureKey = "";
-        this.parseCsvData(csvFileContents ?? exampleCsv);
+        this.parseCsvData(csvFileContents);
     }
 
     /**
@@ -170,12 +185,9 @@ class CsvRequest implements ImageDataset {
         }
 
         const options: Record<string, MeasuredFeaturesOption> = {};
-        // TODO: replace with Adobe categorical colors?
-        const colors = ["#e9ebee", "#c51b8a", "#fed98e", "#66c2a4", "#7f48f3", "#838383"];
-
         for (const [value, { index, count }] of seenValues.entries()) {
             options[index.toString()] = {
-                color: colors[index % colors.length],
+                color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
                 name: value,
                 key: value,
                 count: count,
