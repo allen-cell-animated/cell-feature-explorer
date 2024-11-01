@@ -127,8 +127,8 @@ export const getPropsForVolumeViewer = createSelector(
             );
         }
 
-        // Discard data root if it's an empty string; otherwise it appends a "/" to
-        // all URLs which breaks the links.
+        // Discard data root if it's an empty string so it doesn't add a "/" to
+        // the front of all HTTP(S) URLs. (ex: "/http://example.com" is invalid)
         if (dataRoot !== "" && !dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }

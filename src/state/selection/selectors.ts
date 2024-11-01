@@ -193,10 +193,10 @@ export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[])
 
 /**
  * Returns an array the length of the data that has the string representation of the
- * current "groupBy" category name for each cell in the data.
+ * current `groupBy` category name for each cell in the data.
  * For example, if the the perCellDataForPlot
- * has value["cell-line"] = [2, 2, 12, 12], and the groupBy = "cell-line", then this will return
- * ["beta-actin", "beta-actin", "tom20", "tom20"]
+ * has `value["cell-line"] = [2, 2, 12, 12]`, and the `groupBy = "cell-line"`, then this will return
+ * `["beta-actin", "beta-actin", "tom20", "tom20"]`
  */
 export const getGroupingCategoryNamesAsArray = createSelector(
     [getPerCellDataForPlot, getGroupByFeatureDef],
@@ -204,7 +204,6 @@ export const getGroupingCategoryNamesAsArray = createSelector(
         perCellDataForPlot: DataForPlot,
         groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef
     ): string[] => {
-        console.log("groupByCategoryFeatureDef", groupByCategoryFeatureDef);
         const categoryKey: string = groupByCategoryFeatureDef.key;
         if (!categoryKey) {
             console.log("Missing groupBy category key");

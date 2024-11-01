@@ -4,7 +4,6 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
-import { ImageDataset } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
