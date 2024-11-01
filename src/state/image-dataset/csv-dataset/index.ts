@@ -25,7 +25,7 @@ import {
 
 // Some example CSV as a const here?
 
-const DEFAULT_CSV_DATASET_KEY = "csv";
+export const DEFAULT_CSV_DATASET_KEY = "csv";
 
 // const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
 // potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
@@ -244,13 +244,13 @@ class CsvRequest implements ImageDataset {
 
         // TODO: Feature defs can include units. Should we strip that from the feature column name?
 
-        // Assign the first discrete feature as the default group-by feature. If none exists, construct
-        // an artificial discrete feature for grouping.
+        // Assign the first discrete feature as the default group-by feature.
         const firstDiscreteFeature = Array.from(this.featureInfo.values()).find(
             (info) => info.type === FeatureType.DISCRETE
         );
         if (firstDiscreteFeature) {
             this.defaultGroupByFeatureKey = firstDiscreteFeature.def.key;
+            return;
         }
 
         // No discrete feature was found so we need to make one. Bin by row number, splitting into

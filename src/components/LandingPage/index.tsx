@@ -5,7 +5,7 @@ const { Content } = Layout;
 import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
 import downloadData, { DownloadInfo } from "./download-data";
-import CsvUploadButton from "../CsvUploadButton";
+import CsvUpload from "../CsvUpload";
 
 import styles from "./style.css";
 
@@ -47,7 +47,7 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                     </div>
 
                     <div className={styles.sectionContent}>
-                        <CsvUploadButton />
+                        <CsvUpload />
                     </div>
                 </Row>
                 <Row className={styles.lightSection}>

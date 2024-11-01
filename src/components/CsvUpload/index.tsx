@@ -2,34 +2,36 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Flex } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
-import React, { ReactElement } from "react";
-import metadataStateBranch from "../../state/metadata";
-import selectionStateBranch from "../../state/selection";
-import { ImageDataset, Megaset } from "../../state/image-dataset/types";
-import CsvRequest from "../../state/image-dataset/csv-dataset";
 import { connect } from "react-redux";
+import React, { ReactElement } from "react";
+
+import CsvRequest, { DEFAULT_CSV_DATASET_KEY } from "../../state/image-dataset/csv-dataset";
+import { ImageDataset, Megaset } from "../../state/image-dataset/types";
+import metadataStateBranch from "../../state/metadata";
 import {
     ReceiveAvailableDatasetsAction,
     ReceiveImageDatasetAction,
 } from "../../state/metadata/types";
+import selectionStateBranch from "../../state/selection";
 import { ChangeSelectionAction } from "../../state/selection/types";
 
-type CsvUploadButtonProps = {
+type CsvUploadProps = {
     replaceImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
     receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
     changeDataset: (id: string) => ChangeSelectionAction;
 };
 
-function CsvUploadButton(props: CsvUploadButtonProps): ReactElement {
+function CsvUpload(props: CsvUploadProps): ReactElement {
     const action = async (file: RcFile): Promise<string> => {
         // TODO: handle other file types here and async/loading?
         const fileContents = await file.text();
         const dataset = new CsvRequest(fileContents);
-        // dispatch these?
         props.replaceImageDataset(dataset);
+
+        // Should be synchronous because there's only one mock dataset
         const megasets = await dataset.getAvailableDatasets();
         props.receiveAvailableDatasets(megasets);
-        props.changeDataset("csv");
+        props.changeDataset(DEFAULT_CSV_DATASET_KEY);
 
         return Promise.resolve("");
     };
@@ -57,4 +59,4 @@ const dispatchToPropsMap = {
     replaceImageDataset: metadataStateBranch.actions.replaceImageDataset,
 };
 
-export default connect(undefined, dispatchToPropsMap)(CsvUploadButton);
+export default connect(undefined, dispatchToPropsMap)(CsvUpload);
