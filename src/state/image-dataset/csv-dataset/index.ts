@@ -26,6 +26,13 @@ import {
 // Some example CSV as a const here?
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
+const BFF_FILE_ID_KEY = "File ID";
+const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
+const BFF_FILE_PATH_KEY = "File Path";
+const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
+const BFF_FILENAME_KEY = "File Name";
+const BFF_FILE_SIZE_KEY = "File Size";
+const BFF_UPLOADED_KEY = "Uploaded";
 
 // const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
 // potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
@@ -46,6 +53,12 @@ const reservedKeys = new Set([
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
     TRANSFORM,
+    BFF_FILE_ID_KEY,
+    BFF_THUMBNAIL_PATH_KEY,
+    BFF_FILE_PATH_KEY,
+    BFF_FILENAME_KEY,
+    BFF_FILE_SIZE_KEY,
+    BFF_UPLOADED_KEY,
 ]);
 
 const DEFAULT_COLORS = [
@@ -244,7 +257,14 @@ class CsvRequest implements ImageDataset {
 
         // TODO: Feature defs can include units. Should we strip that from the feature column name?
 
-        // Assign the first discrete feature as the default group-by feature.
+        // Check if a default group by feature exists.
+        const firstRow = csvData[0];
+        if (firstRow && firstRow[BFF_DEFAULT_GROUP_BY_KEY] !== undefined) {
+            this.defaultGroupByFeatureKey = BFF_DEFAULT_GROUP_BY_KEY;
+            return;
+        }
+
+        // If not, assign the first discrete feature as the default group-by feature if it exists.
         const firstDiscreteFeature = Array.from(this.featureInfo.values()).find(
             (info) => info.type === FeatureType.DISCRETE
         );
@@ -295,22 +315,40 @@ class CsvRequest implements ImageDataset {
         const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
 
-        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
-        for (let i = 0; i < this.csvData.length; i++) {
-            const row = this.csvData[i];
-            if (row[CELL_ID_KEY] === undefined) {
-                // Substitute with index if no cell ID is provided
-                row[CELL_ID_KEY] = i.toString();
-                this.idToIndex[i.toString()] = i;
-            } else {
-                this.idToIndex[row[CELL_ID_KEY]] = i;
-            }
-        }
-
-        // TODO: Recognize BFF format and convert it to expected values?
         // Some assertion tests, throw errors if data can't be parsed
         if (this.csvData.length === 0) {
             throw new Error("No data found in CSV");
+        }
+
+        // Map certain BFF keys to the standard keys
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+
+            // Map File ID to Cell ID
+            // also file name?
+            if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
+                row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
+            }
+            // Map thumbnail
+            if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
+                row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
+            }
+            // Volume
+            if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
+                row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
+            }
+        }
+
+        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+            if (row[CELL_ID_KEY] !== undefined) {
+                this.idToIndex[row[CELL_ID_KEY]] = i;
+            } else {
+                // Substitute with index if no cell ID is provided
+                row[CELL_ID_KEY] = i.toString();
+                this.idToIndex[i.toString()] = i;
+            }
         }
 
         this.parseFeatures(this.csvData);
@@ -325,7 +363,7 @@ class CsvRequest implements ImageDataset {
         return Promise.resolve({
             defaultXAxis: this.getFeatureKeyClamped(featureKeys, 0),
             defaultYAxis: this.getFeatureKeyClamped(featureKeys, 1),
-            defaultColorBy: this.getFeatureKeyClamped(featureKeys, 2),
+            defaultColorBy: this.defaultGroupByFeatureKey,
             defaultGroupBy: this.defaultGroupByFeatureKey,
             // TODO: Provide the containing folder of the CSV if the values for the columns (thumbnails,
             // downloads, volumes) are relative paths and not HTTPS URLs.
@@ -384,8 +422,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getFeatureData(): Promise<DataForPlot | void> {
-        const indices = this.csvData.map((row) => Number.parseInt(row[CELL_ID_KEY]));
-
+        const indices = this.csvData.map((_row, index) => index);
         const values: Record<string, (number | null)[]> = this.getFeatureKeyToData();
         const labels: PerCellLabels = {
             thumbnailPaths: [],
@@ -429,7 +466,7 @@ class CsvRequest implements ImageDataset {
             return Promise.resolve(undefined);
         }
         const fileInfo = {
-            [CELL_ID_KEY]: data[CELL_ID_KEY],
+            [CELL_ID_KEY]: data[CELL_ID_KEY] || "",
             [FOV_ID_KEY]: data[FOV_ID_KEY] || "",
             [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH] || "",
             [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
