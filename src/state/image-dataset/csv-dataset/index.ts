@@ -54,6 +54,9 @@ function isNumeric(value: string): boolean {
     if (typeof value != "string") {
         return false;
     }
+    if (value.trim().toLowerCase() === "nan") {
+        return true;
+    }
     return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
@@ -154,6 +157,7 @@ class CsvRequest implements ImageDataset {
 
             if (isContinuous) {
                 // Feature is continuous, parse all values as numeric
+                // TODO: Handle empty/blank values
                 const values = rawValues.map((val) => Number.parseFloat(val));
                 featureData.set(key, values);
             } else {
