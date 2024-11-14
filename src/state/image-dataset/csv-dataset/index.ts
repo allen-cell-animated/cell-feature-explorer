@@ -24,7 +24,8 @@ import {
 } from "../../../constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
-const reservedKeys = new Set([
+
+const METADATA_KEYS = new Set([
     CELL_ID_KEY,
     FOV_ID_KEY,
     FOV_THUMBNAIL_PATH,
@@ -124,7 +125,7 @@ class CsvRequest implements ImageDataset {
      */
     private getNonReservedFeatureColumns(csvData: Record<string, string>[]): string[] {
         const keys = Object.keys(csvData[0]);
-        return keys.filter((key) => !reservedKeys.has(key));
+        return keys.filter((key) => !METADATA_KEYS.has(key));
     }
 
     /**
@@ -346,7 +347,6 @@ class CsvRequest implements ImageDataset {
         };
 
         for (let i = 0; i < indices.length; i++) {
-            // TODO: Calculate in advance
             const row = this.csvData[i];
             // Copy label data
             labels.cellIds.push(row[CELL_ID_KEY]);

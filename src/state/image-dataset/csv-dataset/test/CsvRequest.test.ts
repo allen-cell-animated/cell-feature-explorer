@@ -43,6 +43,7 @@ describe("CsvRequest", () => {
      * - Check for null/NaN values in CSV input
      * - Check for behavior when there is no discrete feature column -> validate groupby
      * - Check for handling of BFF-specific column names (they should be remapped)
+     * - Check that metadata columns are parsed correctly
      * - Check that metadata-related columns are not parsed as features
      */
 });
