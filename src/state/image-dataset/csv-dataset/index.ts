@@ -24,6 +24,13 @@ import {
 } from "../../../constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
+const BFF_FILE_ID_KEY = "File ID";
+const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
+const BFF_FILE_PATH_KEY = "File Path";
+const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
+const BFF_FILENAME_KEY = "File Name";
+const BFF_FILE_SIZE_KEY = "File Size";
+const BFF_UPLOADED_KEY = "Uploaded";
 
 const METADATA_KEYS = new Set([
     CELL_ID_KEY,
@@ -33,6 +40,12 @@ const METADATA_KEYS = new Set([
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
     TRANSFORM,
+    BFF_FILE_ID_KEY,
+    BFF_THUMBNAIL_PATH_KEY,
+    BFF_FILE_PATH_KEY,
+    BFF_FILENAME_KEY,
+    BFF_FILE_SIZE_KEY,
+    BFF_UPLOADED_KEY,
 ]);
 
 // From Adobe categorical colors
@@ -86,17 +99,20 @@ type FeatureInfo =
  * Parses and mocks an ImageDataset from a provided CSV string with a header row.
  *
  * The CSV must contain:
- * - URL paths to volume data, under the column name "volumeViewerPath"
+ * - URL paths to volume data, under the column name "volumeViewerPath" or "File Path"
  *
  * Optionally, the CSV can contain:
- * - Thumbnail paths, under the column name "thumbnailPath"
- * - Cell IDs, under the column name "CellId"
+ * - Thumbnail paths, under the column name "thumbnailPath" or "Thumbnail"
+ * - Cell IDs, under the column name "CellId" or "File ID"
  * - FOV IDs, under the column name "FOVId"
  * - FOV thumbnail paths, under the column name "fovThumbnailPath"
  * - FOV volume data, under the column name "fovVolumeviewerPath"
  *
  * Some data will be ignored by default:
  * - Transform data, under the column name "transform"
+ * - Filename, under the column name "File Name"
+ * - File size, under the column name "File Size"
+ * - Uploaded, a 0/1 flag stored under the column name "Uploaded"
  *
  * Any other columns will be interpreted as features:
  * - Columns containing only numbers will be treated as numeric data.
@@ -113,9 +129,7 @@ class CsvRequest implements ImageDataset {
         this.csvData = [];
         this.idToIndex = {};
         this.featureInfo = new Map();
-        // TODO: Automatically detect a discrete feature and replace the group
-        // by feature with it.
-        this.defaultGroupByFeatureKey = "CellId";
+        this.defaultGroupByFeatureKey = "";
         this.parseCsvData(csvFileContents);
     }
 
@@ -251,14 +265,100 @@ class CsvRequest implements ImageDataset {
         // TODO: Feature defs can include units. Should we strip that from the feature column name?
     }
 
+    /**
+     * Assigns a default group-by feature key for the dataset. Datasets must have a
+     * discrete group-by feature or CFE will crash.
+     *
+     * Key is chosen in the following order:
+     * 1. Default BFF group by key ("Cell ID") if it exists
+     * 2. First discrete feature key if it exists
+     * 3. Binned row number if no discrete feature exists
+     */
+    private assignDefaultGroupByFeatureKey(csvData: Record<string, string>[]): void {
+        // Check if the BFF-specific default group-by feature exists.
+        const firstRow = csvData[0];
+        if (firstRow && firstRow[BFF_DEFAULT_GROUP_BY_KEY] !== undefined) {
+            this.defaultGroupByFeatureKey = BFF_DEFAULT_GROUP_BY_KEY;
+            return;
+        }
+
+        // If not, assign the first discrete feature as the default group-by feature if it exists.
+        const firstDiscreteFeature = Array.from(this.featureInfo.values()).find(
+            (info) => info.type === FeatureType.DISCRETE
+        );
+        if (firstDiscreteFeature) {
+            this.defaultGroupByFeatureKey = firstDiscreteFeature.def.key;
+            return;
+        }
+
+        // TODO: Would it be easier to just make a single bin for all rows?
+        // No discrete feature was found so we need to make one. Bin by row number, splitting into
+        // bins that are exponents of 10.
+        // So 1000 values should be 10 bins of 100, 100 values should be bins of 10, etc.
+        // values 1-10 should be a single bin.
+        const binSize = Math.pow(10, Math.max(Math.ceil(Math.log10(csvData.length)), 1) - 1);
+        const numBins = Math.ceil(csvData.length / binSize);
+        const options: Record<string, MeasuredFeaturesOption> = {};
+        for (let i = 0; i < numBins; i++) {
+            const minIndex = i * binSize;
+            const maxIndex = Math.min((i + 1) * binSize - 1, csvData.length - 1);
+            options[i.toString()] = {
+                color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
+                name: `Rows ${minIndex}-${maxIndex}`,
+                key: i.toString(),
+                count: maxIndex - minIndex + 1,
+            };
+        }
+        const rowNumberData = new Array(csvData.length).fill(0).map((_, i) => {
+            return Math.floor(i / binSize);
+        });
+        this.featureInfo.set("_rowNumber", {
+            type: FeatureType.DISCRETE,
+            def: {
+                discrete: true,
+                displayName: "Row Number Bin (auto)",
+                description: "Row Number Bin (auto)",
+                key: "_rowNumber",
+                tooltip: "Row Number Bin (auto)",
+                options,
+            },
+            data: rowNumberData,
+        });
+        this.defaultGroupByFeatureKey = "_rowNumber";
+    }
+
+    private remapBffKeys = (row: Record<string, string>): void => {
+        // Map File ID to Cell ID
+        // also file name?
+        if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
+            row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
+        } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
+            row[CELL_ID_KEY] = row[BFF_FILENAME_KEY];
+        }
+        // Map thumbnail
+        if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
+            row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
+        }
+        // Volume
+        if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
+            row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
+        }
+    };
+
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
         // https://www.papaparse.com/docs#strings
         const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
 
+        // Some assertion tests, throw errors if data can't be parsed
         if (this.csvData.length === 0) {
             throw new Error("No data found in CSV");
+        }
+
+        // Map certain BFF keys to the standard keys
+        for (let i = 0; i < this.csvData.length; i++) {
+            this.remapBffKeys(this.csvData[i]);
         }
 
         // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
@@ -271,6 +371,7 @@ class CsvRequest implements ImageDataset {
         }
 
         this.parseFeatures(this.csvData);
+        this.assignDefaultGroupByFeatureKey(this.csvData);
     }
 
     selectDataset(): Promise<InitialDatasetSelections> {
