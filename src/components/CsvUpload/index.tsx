@@ -21,14 +21,18 @@ type CsvUploadProps = {
     changeDataset: (id: string) => ChangeSelectionAction;
 };
 
+/**
+ * An upload area for CSV data. When CSV data is provided, replaces the current image dataset
+ * with a new `CsvRequest` image dataset and triggers the loading of the CSV data.
+ */
 function CsvUpload(props: CsvUploadProps): ReactElement {
     const action = async (file: RcFile): Promise<string> => {
-        // TODO: handle other file types here and async/loading?
+        // TODO: handle loading via URL
         const fileContents = await file.text();
         const dataset = new CsvRequest(fileContents);
         props.replaceImageDataset(dataset);
 
-        // Should be synchronous because there's only one mock dataset
+        // CSV Request mocks up a single dataset
         const megasets = await dataset.getAvailableDatasets();
         props.receiveAvailableDatasets(megasets);
         props.changeDataset(DEFAULT_CSV_DATASET_KEY);
@@ -37,13 +41,7 @@ function CsvUpload(props: CsvUploadProps): ReactElement {
     };
 
     return (
-        <Dragger
-            // showUploadList={false}
-            action={action}
-            accept=".csv"
-            multiple={false}
-            style={{ width: "50vw" }}
-        >
+        <Dragger action={action} accept=".csv" multiple={false} style={{ width: "50vw" }}>
             <Flex vertical={true} align={"center"}>
                 <p style={{ fontSize: "30px" }}>
                     <PlusOutlined />

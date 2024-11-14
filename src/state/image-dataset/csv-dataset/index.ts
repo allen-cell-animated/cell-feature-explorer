@@ -23,8 +23,6 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
 
-// Some example CSV as a const here?
-
 export const DEFAULT_CSV_DATASET_KEY = "csv";
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
@@ -33,17 +31,6 @@ const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
 const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
-
-// const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3,discretefeature
-// potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3,yowie
-// garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1,yowza
-// turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6,yummy
-// rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4,yowza`;
-// const exampleCsv = `${CELL_ID_KEY},${VOLUME_VIEWER_PATH},${THUMBNAIL_PATH},feature1,feature2,feature3
-// potato,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/qYDFpxw.png,1,2,3
-// garbanzo,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_09_small/raw.ome.zarr,https://i.imgur.com/JNVwCaF.jpeg,7,3.4,1
-// turnip,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.pinimg.com/474x/59/79/64/59796458a1b0374d9860f4a62cf92cf1.jpg,4,5,6
-// rutabaga,https://allencell.s3.amazonaws.com/aics/nuc-morph-dataset/hipsc_fov_nuclei_timelapse_dataset/hipsc_fov_nuclei_timelapse_data_used_for_analysis/baseline_colonies_fov_timelapse_dataset/20200323_05_large/raw.ome.zarr,https://i.imgur.com/lA6dvOe.jpeg,9,2.8,4`;
 
 const reservedKeys = new Set([
     CELL_ID_KEY,
@@ -61,6 +48,7 @@ const reservedKeys = new Set([
     BFF_UPLOADED_KEY,
 ]);
 
+// From Adobe categorical colors
 const DEFAULT_COLORS = [
     "#27B4AE",
     "#4047C4",
@@ -104,6 +92,29 @@ type FeatureInfo =
           data: (number | null)[];
       };
 
+/**
+ * Parses and mocks an ImageDataset from a provided CSV string with a header row.
+ *
+ * The CSV must contain:
+ * - URL paths to volume data, under the column name "volumeViewerPath" or "File Path"
+ *
+ * Optionally, the CSV can contain:
+ * - Thumbnail paths, under the column name "thumbnailPath" or "Thumbnail"
+ * - Cell IDs, under the column name "CellId" or "File ID"
+ * - FOV IDs, under the column name "FOVId"
+ * - FOV thumbnail paths, under the column name "fovThumbnailPath"
+ * - FOV volume data, under the column name "fovVolumeviewerPath"
+ *
+ * Some data will be ignored by default:
+ * - Transform data, under the column name "transform"
+ * - Filename, under the column name "File Name"
+ * - File size, under the column name "File Size"
+ * - Uploaded, a 0/1 flag stored under the column name "Uploaded"
+ *
+ * Any other columns will be interpreted as features:
+ * - Columns containing only numbers will be treated as numeric data.
+ * - Columns containing any non-numeric data will be treated as category ("discrete") data.
+ */
 class CsvRequest implements ImageDataset {
     csvData: Record<string, string>[];
     idToIndex: Record<string, number>;
@@ -112,7 +123,6 @@ class CsvRequest implements ImageDataset {
     defaultGroupByFeatureKey: string;
 
     constructor(csvFileContents: string) {
-        // CSV parsing library?
         this.csvData = [];
         this.idToIndex = {};
         this.featureInfo = new Map();
@@ -144,9 +154,6 @@ class CsvRequest implements ImageDataset {
     /**
      * Returns the feature data as a map from the feature name to a array of either
      * numeric or string values.
-     * @param csvData
-     * @param featureKeys
-     * @returns
      */
     private getFeatureDataAsColumns(
         csvData: Record<string, string>[],
@@ -167,7 +174,6 @@ class CsvRequest implements ImageDataset {
                 // Feature is continuous, parse all values as numeric
                 const values = rawValues.map((val) => Number.parseFloat(val));
                 featureData.set(key, values);
-                // TODO: Create additional feature metadata for continuous vs discrete features?
             } else {
                 // Feature is discrete, return directly
                 featureData.set(key, rawValues);
@@ -180,26 +186,26 @@ class CsvRequest implements ImageDataset {
         key: string,
         data: string[]
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
-        const seenValues = new Map<string, { index: number; count: number }>();
+        const strValueToIndex = new Map<string, { index: number; count: number }>();
         const remappedValues: (number | null)[] = [];
 
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
         for (let i = 0; i < data.length; i++) {
             const value = data[i];
-            let seenValue = seenValues.get(value);
-            if (!seenValue) {
+            let indexInfo = strValueToIndex.get(value);
+            if (!indexInfo) {
                 // Assign new index to this value
-                seenValue = { index: seenValues.size, count: 0 };
-                seenValues.set(value, seenValue);
+                indexInfo = { index: strValueToIndex.size, count: 0 };
+                strValueToIndex.set(value, indexInfo);
             }
 
-            seenValue.count++;
-            remappedValues.push(seenValue.index);
+            indexInfo.count++;
+            remappedValues.push(indexInfo.index);
         }
 
         const options: Record<string, MeasuredFeaturesOption> = {};
-        for (const [value, { index, count }] of seenValues.entries()) {
+        for (const [value, { index, count }] of strValueToIndex.entries()) {
             options[index.toString()] = {
                 color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
                 name: value,
@@ -256,8 +262,19 @@ class CsvRequest implements ImageDataset {
         }
 
         // TODO: Feature defs can include units. Should we strip that from the feature column name?
+    }
 
-        // Check if a default group by feature exists.
+    /**
+     * Assigns a default group-by feature key for the dataset. Datasets must have a
+     * discrete group-by feature or CFE will crash.
+     *
+     * Key is chosen in the following order:
+     * 1. Default BFF group by key ("Cell ID") if it exists
+     * 2. First discrete feature key if it exists
+     * 3. Binned row number if no discrete feature exists
+     */
+    private assignDefaultGroupByFeatureKey(csvData: Record<string, string>[]): void {
+        // Check if the BFF-specific default group-by feature exists.
         const firstRow = csvData[0];
         if (firstRow && firstRow[BFF_DEFAULT_GROUP_BY_KEY] !== undefined) {
             this.defaultGroupByFeatureKey = BFF_DEFAULT_GROUP_BY_KEY;
@@ -273,19 +290,19 @@ class CsvRequest implements ImageDataset {
             return;
         }
 
+        // TODO: Would it be easier to just make a single bin for all rows?
         // No discrete feature was found so we need to make one. Bin by row number, splitting into
         // bins that are exponents of 10.
         // So 1000 values should be 10 bins of 100, 100 values should be bins of 10, etc.
         // values 1-10 should be a single bin.
-        const binSize = Math.max(Math.ceil(Math.log10(csvData.length)), 1) * 10;
+        const binSize = Math.pow(10, Math.max(Math.ceil(Math.log10(csvData.length)), 1) - 1);
         const numBins = Math.ceil(csvData.length / binSize);
         const options: Record<string, MeasuredFeaturesOption> = {};
         for (let i = 0; i < numBins; i++) {
             const minIndex = i * binSize;
             const maxIndex = Math.min((i + 1) * binSize - 1, csvData.length - 1);
             options[i.toString()] = {
-                // TODO: Assign color palette here
-                color: "#000000",
+                color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
                 name: `Rows ${minIndex}-${maxIndex}`,
                 key: i.toString(),
                 count: maxIndex - minIndex + 1,
@@ -298,16 +315,34 @@ class CsvRequest implements ImageDataset {
             type: FeatureType.DISCRETE,
             def: {
                 discrete: true,
-                displayName: "Row Number",
-                description: "Row Number (auto-calculated)",
+                displayName: "Row Number Bin (auto)",
+                description: "Row Number Bin (auto)",
                 key: "_rowNumber",
-                tooltip: "Row Number",
+                tooltip: "Row Number Bin (auto)",
                 options,
             },
             data: rowNumberData,
         });
         this.defaultGroupByFeatureKey = "_rowNumber";
     }
+
+    private remapBffKeys = (row: Record<string, string>): void => {
+        // Map File ID to Cell ID
+        // also file name?
+        if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
+            row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
+        } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
+            row[CELL_ID_KEY] = row[BFF_FILENAME_KEY];
+        }
+        // Map thumbnail
+        if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
+            row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
+        }
+        // Volume
+        if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
+            row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
+        }
+    };
 
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
@@ -322,21 +357,7 @@ class CsvRequest implements ImageDataset {
 
         // Map certain BFF keys to the standard keys
         for (let i = 0; i < this.csvData.length; i++) {
-            const row = this.csvData[i];
-
-            // Map File ID to Cell ID
-            // also file name?
-            if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
-                row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
-            }
-            // Map thumbnail
-            if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
-                row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
-            }
-            // Volume
-            if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
-                row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
-            }
+            this.remapBffKeys(this.csvData[i]);
         }
 
         // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
@@ -352,14 +373,11 @@ class CsvRequest implements ImageDataset {
         }
 
         this.parseFeatures(this.csvData);
+        this.assignDefaultGroupByFeatureKey(this.csvData);
     }
 
     selectDataset(manifest: string): Promise<InitialDatasetSelections> {
-        console.log("Selecting dataset: ", manifest);
-
-        // TODO: Add a discrete feature for grouping if none is available in the dataset.
         const featureKeys = Array.from(this.featureInfo.keys());
-        console.log("Feature keys: ", featureKeys);
         return Promise.resolve({
             defaultXAxis: this.getFeatureKeyClamped(featureKeys, 0),
             defaultYAxis: this.getFeatureKeyClamped(featureKeys, 1),
@@ -374,8 +392,7 @@ class CsvRequest implements ImageDataset {
     }
 
     getAvailableDatasets(): Promise<Megaset[]> {
-        // Only has the one dataset (imported CSV)
-
+        // Only has one dataset (imported CSV)
         const fakeSet: Megaset = {
             name: "csv",
             title: "CSV Dataset",
@@ -399,7 +416,7 @@ class CsvRequest implements ImageDataset {
 
     getViewerChannelSettings(): Promise<ViewerChannelSettings> {
         // By default, enable first three channels
-        // TODO: Have this constant exposed by w3cv?
+        // TODO: Have this constant be exposed by w3cv?
         return Promise.resolve({
             groups: [
                 {
@@ -454,8 +471,6 @@ class CsvRequest implements ImageDataset {
     }
 
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
-        // return Promise.resolve(undefined);
-        console.log("Getting file info for cell ID: ", id);
         const rowIndex = this.idToIndex[id];
         if (rowIndex === undefined) {
             return Promise.resolve(undefined);
@@ -474,7 +489,6 @@ class CsvRequest implements ImageDataset {
             [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
             [GROUP_BY_KEY]: data[GROUP_BY_KEY] || this.defaultGroupByFeatureKey,
         };
-        console.log(fileInfo);
         return Promise.resolve(fileInfo);
     }
 
