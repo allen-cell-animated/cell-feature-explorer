@@ -123,7 +123,7 @@ class CsvRequest implements ImageDataset {
      * Returns all of the column names that are not reserved for metadata, with the
      * assumption that they are features.
      */
-    private getNonReservedFeatureColumns(csvData: Record<string, string>[]): string[] {
+    private getFeatureKeysFromColumnNames(csvData: Record<string, string>[]): string[] {
         const keys = Object.keys(csvData[0]);
         return keys.filter((key) => !METADATA_KEYS.has(key));
     }
@@ -217,7 +217,7 @@ class CsvRequest implements ImageDataset {
     private parseFeatures(csvData: Record<string, string>[]): void {
         this.featureInfo.clear();
 
-        const featureKeys = this.getNonReservedFeatureColumns(csvData);
+        const featureKeys = this.getFeatureKeysFromColumnNames(csvData);
         const rawFeatureData = this.getFeatureDataAsColumns(csvData, featureKeys);
 
         for (const key of featureKeys) {
@@ -264,13 +264,10 @@ class CsvRequest implements ImageDataset {
         // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
-            if (row[CELL_ID_KEY] !== undefined) {
-                this.idToIndex[row[CELL_ID_KEY]] = i;
-            } else {
-                // Substitute with index if no cell ID is provided
+            if (row[CELL_ID_KEY] === undefined) {
                 row[CELL_ID_KEY] = i.toString();
-                this.idToIndex[i.toString()] = i;
             }
+            this.idToIndex[row[CELL_ID_KEY]] = i;
         }
 
         this.parseFeatures(this.csvData);
