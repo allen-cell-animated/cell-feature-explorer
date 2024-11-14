@@ -24,6 +24,8 @@ import {
 } from "../../../constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
+const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
+
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
 const BFF_FILE_PATH_KEY = "File Path";
@@ -272,7 +274,7 @@ class CsvRequest implements ImageDataset {
      * Key is chosen in the following order:
      * 1. Default BFF group by key ("Cell ID") if it exists
      * 2. First discrete feature key if it exists
-     * 3. Binned row number if no discrete feature exists
+     * 3. A default bin feature if no discrete feature exists
      */
     private assignDefaultGroupByFeatureKey(csvData: Record<string, string>[]): void {
         // Check if the BFF-specific default group-by feature exists.
@@ -291,40 +293,29 @@ class CsvRequest implements ImageDataset {
             return;
         }
 
-        // TODO: Would it be easier to just make a single bin for all rows?
-        // No discrete feature was found so we need to make one. Bin by row number, splitting into
-        // bins that are exponents of 10.
-        // So 1000 values should be 10 bins of 100, 100 values should be bins of 10, etc.
-        // values 1-10 should be a single bin.
-        const binSize = Math.pow(10, Math.max(Math.ceil(Math.log10(csvData.length)), 1) - 1);
-        const numBins = Math.ceil(csvData.length / binSize);
-        const options: Record<string, MeasuredFeaturesOption> = {};
-        for (let i = 0; i < numBins; i++) {
-            const minIndex = i * binSize;
-            const maxIndex = Math.min((i + 1) * binSize - 1, csvData.length - 1);
-            options[i.toString()] = {
-                color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
-                name: `Rows ${minIndex}-${maxIndex}`,
-                key: i.toString(),
-                count: maxIndex - minIndex + 1,
-            };
-        }
-        const rowNumberData = new Array(csvData.length).fill(0).map((_, i) => {
-            return Math.floor(i / binSize);
-        });
-        this.featureInfo.set("_rowNumber", {
+        // If no discrete feature is found, assign a default group-by feature.
+        const options: Record<string, MeasuredFeaturesOption> = {
+            "0": {
+                color: DEFAULT_COLORS[0],
+                name: "Default",
+                key: "0",
+                count: csvData.length,
+            },
+        };
+        const rowNumberData = new Array(csvData.length).fill(0);
+        this.featureInfo.set(DEFAULT_GROUPBY_NONE, {
             type: FeatureType.DISCRETE,
             def: {
                 discrete: true,
-                displayName: "Row Number Bin (auto)",
-                description: "Row Number Bin (auto)",
-                key: "_rowNumber",
-                tooltip: "Row Number Bin (auto)",
+                displayName: "(None)",
+                description: "(None)",
+                key: DEFAULT_GROUPBY_NONE,
+                tooltip: "(None)",
                 options,
             },
             data: rowNumberData,
         });
-        this.defaultGroupByFeatureKey = "_rowNumber";
+        this.defaultGroupByFeatureKey = DEFAULT_GROUPBY_NONE;
     }
 
     private remapBffKeys = (row: Record<string, string>): void => {
