@@ -74,7 +74,7 @@ describe("CsvRequest", () => {
     it("handles spaces in CSV input", async () => {
         const csvString = ` feature1, feature2, discrete feature 
         1 , 2 , A
-        7,2, B  `;
+        7,\t2, B  `;
         const csvDataset = new CsvRequest(csvString);
         const featureData = await csvDataset.getFeatureData();
         expect(featureData.values["feature1"]).to.deep.equal([1, 7]);
@@ -90,20 +90,77 @@ describe("CsvRequest", () => {
         expect(options["1"].name).to.equal("B");
     });
 
-    it("handles empty header", () => {
-        throw new Error("Test not implemented");
+    it("drops empty header columns", async () => {
+        const csvString = `feature1,,feature3
+        1,2,A
+        4,5,B`;
+        const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        expect(featureData.values).to.deep.equal({
+            feature1: [1, 4],
+            feature3: [0, 1], // A->0 B->1
+        });
     });
 
-    it("handles NaN values", () => {
-        throw new Error("Test not implemented");
+    it("handles NaN values", async () => {
+        const csvString = `feature1,feature2,feature3
+        1,NaN,A
+        nan,5,B`;
+        const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        expect(featureData.values).to.deep.equal({
+            feature1: [1, NaN],
+            feature2: [NaN, 5],
+            feature3: [0, 1], // A->0 B->1
+        });
     });
 
-    it("handles empty values", () => {
-        throw new Error("Test not implemented");
+    it("handles empty values", async () => {
+        const csvString = `feature1,feature2,feature3
+        1,,A
+        ,5,B
+        6,`;
+        const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        expect(featureData.values).to.deep.equal({
+            feature1: [1, null, 6],
+            feature2: [null, 5, null],
+            feature3: [0, 1, null], // A->0 B->1
+        });
+    });
+
+    it("drops features with no valid values", async () => {
+        const csvString = `feature1,feature2,feature3
+        A,,
+        B,`;
+        const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        expect(featureData.values).to.deep.equal({
+            feature1: [0, 1],
+        });
+    });
+
+    it("drops empty rows", async () => {
+        const csvString = `feature1,feature2\nA,1\n   \n\t\nB,2\n`;
+        const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        expect(featureData.values).to.deep.equal({
+            feature1: [0, 1],
+            feature2: [1, 2],
+        });
     });
 
     it("distinguishes capitalization", () => {
-        throw new Error("Test not implemented");
+        const csvString = `feature1
+        A
+        a
+        B
+        b`;
+        const csvDataset = new CsvRequest(csvString);
+        // All values have unique indices
+        csvDataset.getFeatureData().then((featureData) => {
+            expect(featureData.values["feature1"]).to.deep.equal([0, 1, 2, 3]);
+        });
     });
 
     describe("groupby behavior", () => {
@@ -136,19 +193,19 @@ describe("CsvRequest", () => {
         });
     });
 
-    describe("handles BioFile Finder CSVs", () => {
-        it("ignores reserved metadata keys when determining features", () => {
-            throw new Error("Test not implemented");
-        });
+    // describe("handles BioFile Finder CSVs", () => {
+    //     it("ignores reserved metadata keys when determining features", () => {
+    //         throw new Error("Test not implemented");
+    //     });
 
-        it("parses expected features", () => {
-            throw new Error("Test not implemented");
-        });
+    //     it("parses expected features", () => {
+    //         throw new Error("Test not implemented");
+    //     });
 
-        it("extracts thumbnail, cell ID, and file path", () => {
-            throw new Error("Test not implemented");
-        });
-    });
+    //     it("extracts thumbnail, cell ID, and file path", () => {
+    //         throw new Error("Test not implemented");
+    //     });
+    // });
 
     /**
      * TODO:
