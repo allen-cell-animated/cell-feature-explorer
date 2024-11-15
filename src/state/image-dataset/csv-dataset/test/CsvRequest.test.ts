@@ -10,10 +10,27 @@ rutabaga,https://example.com/4/raw.ome.zarr,https://example.com/4.jpeg,9,2.8,NaN
 
 const bffCsv = `File ID,File Name,Cell Line,Structure,Gene,Colony Position,Instrument Id,Plate Barcode,Well Name,File Path,Thumbnail,File Size,Uploaded
 35,3500000635_100X_20170227_F07_P23.ome.tiff,AICS-12,Microtubules,TUBA1B,center,5,3500000635,F7,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/35.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png,0,0
-37,3500000635_100X_20170227_F06_P30.ome.tiff,AICS-12,Microtubules,TUBA1B,Center,5,3500000635,F6,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/37.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_37.png,0,0
-40,3500000635_100X_20170227_E08_P12.ome.tiff,AICS-12,Microtubules,TUBA1B,center,5,3500000635,E8,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/40.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_40.png,0,0
-44,3500000635_100X_20170227_F07_P25.ome.tiff,AICS-12,Microtubules,TUBA1B,center,5,3500000635,F7,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/44.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_44.png,0,0"
-`;
+2655,3500000943_100X_20170530_2-Scene-4-P8-E04.ome.tiff,AICS-13,Nuclear envelope,LMNB1,center,5,3500000943,E4,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/2655.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-13/AICS-13_2655.png,0,0
+141128,3500002823_100X_20190322_1r-Scene-20-P60-F09.ome.tiff,AICS-61,Heterochromatin,HIST1H2BJ,Ridge,6,3500002823,F9,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/141128.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-61/AICS-61_141128.png,0,0
+4557,3500001130_100X_20170728_1-Scene-37-P37-F05.ome.tiff,AICS-10,Endoplasmic reticulum,SEC61B,center,5,3500001130,F5,https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/4557.zarr,https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-10/AICS-10_4557.png,0,0`;
+
+const checkForMatchingDiscreteFeatureDef = (
+    featureDefs: MeasuredFeatureDef[],
+    key: string,
+    options: string[],
+    counts: number[]
+) => {
+    const def = featureDefs.find((def) => def.key === key) as DiscreteMeasuredFeatureDef;
+    expect(def.discrete).to.be.true;
+    const defOptions = def.options;
+    expect(Object.values(defOptions).length).to.equal(options.length);
+
+    for (let i = 0; i < options.length; i++) {
+        expect(defOptions[i].key).to.equal(options[i]);
+        expect(defOptions[i].name).to.equal(options[i]);
+        expect(defOptions[i].count).to.equal(counts[i]);
+    }
+};
 
 describe("CsvRequest", () => {
     it("can be initialized with test data", () => {
@@ -47,28 +64,23 @@ describe("CsvRequest", () => {
     it("detects discrete vs. numeric features", async () => {
         const csvDataset = new CsvRequest(testCsv);
 
-        const featureDefs = (await csvDataset.getMeasuredFeatureDefs()).reduce((acc, def) => {
+        const featureDefs = await csvDataset.getMeasuredFeatureDefs();
+        const keyToFeatureDefs = featureDefs.reduce((acc, def) => {
             acc[def.key] = def;
             return acc;
-        }, {} as Record<string, MeasuredFeatureDef>);
-        expect(featureDefs["feature1"].discrete).to.be.false;
-        expect(featureDefs["feature2"].discrete).to.be.false;
-        expect(featureDefs["feature3"].discrete).to.be.false;
-        expect(featureDefs["discretefeature"].discrete).to.be.true;
+        }, {} as { [key: string]: MeasuredFeatureDef });
 
-        const discreteDef = featureDefs["discretefeature"] as DiscreteMeasuredFeatureDef;
-        const options = discreteDef.options;
-        expect(options["0"].name).to.equal("A");
-        expect(options["0"].key).to.equal("A");
-        expect(options["0"].count).to.equal(1);
+        expect(keyToFeatureDefs["feature1"].discrete).to.be.false;
+        expect(keyToFeatureDefs["feature2"].discrete).to.be.false;
+        expect(keyToFeatureDefs["feature3"].discrete).to.be.false;
+        expect(keyToFeatureDefs["discretefeature"].discrete).to.be.true;
 
-        expect(options["1"].name).to.equal("B");
-        expect(options["1"].key).to.equal("B");
-        expect(options["1"].count).to.equal(2);
-
-        expect(options["2"].name).to.equal("C");
-        expect(options["2"].key).to.equal("C");
-        expect(options["2"].count).to.equal(1);
+        checkForMatchingDiscreteFeatureDef(
+            featureDefs,
+            "discretefeature",
+            ["A", "B", "C"],
+            [1, 2, 1]
+        );
     });
 
     it("handles spaces in CSV input", async () => {
@@ -190,29 +202,108 @@ describe("CsvRequest", () => {
             const csvDataset = new CsvRequest(csvString);
             const selectedDataset = await csvDataset.selectDataset();
             expect(selectedDataset.defaultGroupBy).to.equal(DEFAULT_GROUPBY_NONE);
+            // Check that the default groupby feature has been added
+            const featureData = await csvDataset.getFeatureData();
+            expect(featureData.values[DEFAULT_GROUPBY_NONE]).to.deep.equal([0, 0, 0]);
         });
     });
 
-    // describe("handles BioFile Finder CSVs", () => {
-    //     it("ignores reserved metadata keys when determining features", () => {
-    //         throw new Error("Test not implemented");
-    //     });
+    describe("handles BioFile Finder CSVs", () => {
+        it("ignores reserved metadata keys when determining features", async () => {
+            const csvString = `File ID,File Name,File Path,Thumbnail,File Size,Uploaded,feature1
+            35,something.png,https://example.com/1.png,https://example.com/1.png,0,0,A
+            `;
+            const csvDataset = new CsvRequest(csvString);
+            const featureData = await csvDataset.getFeatureData();
+            expect(featureData.values).to.deep.equal({
+                feature1: [0],
+            });
+        });
 
-    //     it("parses expected features", () => {
-    //         throw new Error("Test not implemented");
-    //     });
+        it("extracts expected features from BFF data", async () => {
+            const csvDataset = new CsvRequest(bffCsv);
+            const featureData = await csvDataset.getFeatureData();
+            expect(featureData).to.deep.equal({
+                indices: [0, 1, 2, 3],
+                values: {
+                    "Cell Line": [0, 1, 2, 3],
+                    Structure: [0, 1, 2, 3],
+                    Gene: [0, 1, 2, 3],
+                    "Colony Position": [0, 0, 1, 0],
+                    "Instrument Id": [5, 5, 6, 5],
+                    "Plate Barcode": [3500000635, 3500000943, 3500002823, 3500001130],
+                    "Well Name": [0, 1, 2, 3],
+                },
+                labels: {
+                    cellIds: ["35", "2655", "141128", "4557"],
+                    thumbnailPaths: [
+                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png",
+                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-13/AICS-13_2655.png",
+                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-61/AICS-61_141128.png",
+                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-10/AICS-10_4557.png",
+                    ],
+                },
+            });
 
-    //     it("extracts thumbnail, cell ID, and file path", () => {
-    //         throw new Error("Test not implemented");
-    //     });
-    // });
+            const featureDefs = await csvDataset.getMeasuredFeatureDefs();
+            expect(featureDefs.length).to.equal(7);
 
-    /**
-     * TODO:
-     * - Check for empty values in CSV input
-     * - Check for null/NaN values in CSV input
-     * - Check for handling of BFF-specific column names (they should be remapped)
-     * - Check that metadata columns are parsed correctly
-     * - Check that metadata-related columns are not parsed as features
-     */
+            checkForMatchingDiscreteFeatureDef(
+                featureDefs,
+                "Structure",
+                ["Microtubules", "Nuclear envelope", "Heterochromatin", "Endoplasmic reticulum"],
+                [1, 1, 1, 1]
+            );
+            checkForMatchingDiscreteFeatureDef(
+                featureDefs,
+                "Cell Line",
+                ["AICS-12", "AICS-13", "AICS-61", "AICS-10"],
+                [1, 1, 1, 1]
+            );
+            checkForMatchingDiscreteFeatureDef(
+                featureDefs,
+                "Gene",
+                ["TUBA1B", "LMNB1", "HIST1H2BJ", "SEC61B"],
+                [1, 1, 1, 1]
+            );
+            checkForMatchingDiscreteFeatureDef(
+                featureDefs,
+                "Colony Position",
+                ["center", "Ridge"],
+                [3, 1]
+            );
+        });
+
+        it("extracts thumbnail, cell line, and file path", async () => {
+            const csvDataset = new CsvRequest(bffCsv);
+            const featureData = await csvDataset.getFeatureData();
+            expect(featureData.labels).to.deep.equal({
+                cellIds: ["35", "2655", "141128", "4557"],
+                thumbnailPaths: [
+                    "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png",
+                    "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-13/AICS-13_2655.png",
+                    "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-61/AICS-61_141128.png",
+                    "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-10/AICS-10_4557.png",
+                ],
+            });
+            // Check volume viewer paths
+            const fileInfo = await csvDataset.getFileInfoByArrayOfCellIds([
+                "35",
+                "2655",
+                "141128",
+                "4557",
+            ]);
+            expect(fileInfo[0]).to.deep.equal({
+                CellId: "35",
+                volumeviewerPath:
+                    "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/35.zarr",
+                groupBy: "Cell Line",
+                fovThumbnailPath: "",
+                fovVolumeviewerPath: "",
+                thumbnailPath:
+                    "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png",
+                FOVId: "",
+            });
+        });
+    });
 });
