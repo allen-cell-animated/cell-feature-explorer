@@ -24,7 +24,7 @@ import {
 } from "../../../constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
-const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
+export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
 
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
@@ -195,7 +195,7 @@ class CsvRequest implements ImageDataset {
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
         for (let i = 0; i < data.length; i++) {
-            const value = data[i];
+            const value = data[i].trim();
             let indexInfo = strValueToIndex.get(value);
             if (!indexInfo) {
                 // Assign new index to this value
@@ -339,7 +339,13 @@ class CsvRequest implements ImageDataset {
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
         // https://www.papaparse.com/docs#strings
-        const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
+        const config: Papa.ParseConfig = {
+            header: true,
+            transformHeader: (header: string) => header.trim(),
+            skipEmptyLines: true,
+            // dynamicTyping: true,
+        };
+        const result = Papa.parse(csvDataSrc, config).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
 
         // Some assertion tests, throw errors if data can't be parsed
@@ -427,7 +433,7 @@ class CsvRequest implements ImageDataset {
         return featureKeyToData;
     }
 
-    getFeatureData(): Promise<DataForPlot | void> {
+    getFeatureData(): Promise<DataForPlot> {
         const indices = this.csvData.map((_row, index) => index);
         const values: Record<string, (number | null)[]> = this.getFeatureKeyToData();
         const labels: PerCellLabels = {
