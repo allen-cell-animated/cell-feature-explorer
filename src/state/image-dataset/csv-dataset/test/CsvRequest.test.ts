@@ -85,7 +85,7 @@ describe("CsvRequest", () => {
 
     it("handles spaces in CSV input", async () => {
         const csvString = ` feature1, feature2, discrete feature 
-        1 , 2 , A
+        1 , 2 \t, A\t\t\t
         7,\t2, B  `;
         const csvDataset = new CsvRequest(csvString);
         const featureData = await csvDataset.getFeatureData();
@@ -153,7 +153,12 @@ describe("CsvRequest", () => {
     });
 
     it("drops empty rows", async () => {
-        const csvString = `feature1,feature2\nA,1\n   \n\t\nB,2\n`;
+        const csvString = `feature1,feature2
+        A,1
+           
+        \t
+        B,2
+        `;
         const csvDataset = new CsvRequest(csvString);
         const featureData = await csvDataset.getFeatureData();
         expect(featureData.values).to.deep.equal({
@@ -162,17 +167,24 @@ describe("CsvRequest", () => {
         });
     });
 
-    it("distinguishes capitalization", () => {
+    it("distinguishes capitalization", async () => {
         const csvString = `feature1
         A
         a
         B
         b`;
         const csvDataset = new CsvRequest(csvString);
+        const featureData = await csvDataset.getFeatureData();
+        const featureDefs = await csvDataset.getMeasuredFeatureDefs();
+
         // All values have unique indices
-        csvDataset.getFeatureData().then((featureData) => {
-            expect(featureData.values["feature1"]).to.deep.equal([0, 1, 2, 3]);
-        });
+        expect(featureData.values["feature1"]).to.deep.equal([0, 1, 2, 3]);
+        checkForMatchingDiscreteFeatureDef(
+            featureDefs,
+            "feature1",
+            ["A", "a", "B", "b"],
+            [1, 1, 1, 1]
+        );
     });
 
     describe("groupby behavior", () => {
@@ -190,7 +202,6 @@ describe("CsvRequest", () => {
         it("uses first discrete feature as groupby feature", async () => {
             const csvDataset = new CsvRequest(testCsv);
             const selectedDataset = await csvDataset.selectDataset();
-
             expect(selectedDataset.defaultGroupBy).to.equal("discretefeature");
         });
 
@@ -223,26 +234,14 @@ describe("CsvRequest", () => {
         it("extracts expected features from BFF data", async () => {
             const csvDataset = new CsvRequest(bffCsv);
             const featureData = await csvDataset.getFeatureData();
-            expect(featureData).to.deep.equal({
-                indices: [0, 1, 2, 3],
-                values: {
-                    "Cell Line": [0, 1, 2, 3],
-                    Structure: [0, 1, 2, 3],
-                    Gene: [0, 1, 2, 3],
-                    "Colony Position": [0, 0, 1, 0],
-                    "Instrument Id": [5, 5, 6, 5],
-                    "Plate Barcode": [3500000635, 3500000943, 3500002823, 3500001130],
-                    "Well Name": [0, 1, 2, 3],
-                },
-                labels: {
-                    cellIds: ["35", "2655", "141128", "4557"],
-                    thumbnailPaths: [
-                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png",
-                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-13/AICS-13_2655.png",
-                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-61/AICS-61_141128.png",
-                        "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-10/AICS-10_4557.png",
-                    ],
-                },
+            expect(featureData.values).to.deep.equal({
+                "Cell Line": [0, 1, 2, 3],
+                Structure: [0, 1, 2, 3],
+                Gene: [0, 1, 2, 3],
+                "Colony Position": [0, 0, 1, 0],
+                "Instrument Id": [5, 5, 6, 5],
+                "Plate Barcode": [3500000635, 3500000943, 3500002823, 3500001130],
+                "Well Name": [0, 1, 2, 3],
             });
 
             const featureDefs = await csvDataset.getMeasuredFeatureDefs();

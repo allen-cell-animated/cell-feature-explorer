@@ -305,7 +305,7 @@ class CsvRequest implements ImageDataset {
      * discrete group-by feature or CFE will crash.
      *
      * Key is chosen in the following order:
-     * 1. Default BFF group by key ("Cell ID") if it exists
+     * 1. Default BFF group by key ("Cell Line") if it exists
      * 2. First discrete feature key if it exists
      * 3. A default bin feature if no discrete feature exists
      */
@@ -335,7 +335,6 @@ class CsvRequest implements ImageDataset {
                 count: csvData.length,
             },
         };
-        const rowNumberData = new Array(csvData.length).fill(0);
         this.featureInfo.set(DEFAULT_GROUPBY_NONE, {
             type: FeatureType.DISCRETE,
             def: {
@@ -346,14 +345,13 @@ class CsvRequest implements ImageDataset {
                 tooltip: "(None)",
                 options,
             },
-            data: rowNumberData,
+            data: new Array(csvData.length).fill(0),
         });
         this.defaultGroupByFeatureKey = DEFAULT_GROUPBY_NONE;
     }
 
     private remapBffKeys = (row: Record<string, string>): void => {
-        // Map File ID to Cell ID
-        // also file name?
+        // Map File ID to Cell ID, or File Name if File ID is not provided.
         if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
             row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
         } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
@@ -376,7 +374,6 @@ class CsvRequest implements ImageDataset {
             header: true,
             transformHeader: (header: string) => header.trim(),
             skipEmptyLines: "greedy", // skips whitespace-only lines
-            // dynamicTyping: true,
         };
         const result = Papa.parse(csvDataSrc, config).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
