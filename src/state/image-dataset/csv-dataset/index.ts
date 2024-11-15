@@ -24,6 +24,8 @@ import {
 } from "../../../constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
+export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
+
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
 const BFF_FILE_PATH_KEY = "File Path";
@@ -32,7 +34,7 @@ const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
 
-const reservedKeys = new Set([
+const METADATA_KEYS = new Set([
     CELL_ID_KEY,
     FOV_ID_KEY,
     FOV_THUMBNAIL_PATH,
@@ -64,15 +66,39 @@ const DEFAULT_COLORS = [
     "#BEE952",
 ];
 
-function isNumeric(value: string): boolean {
-    if (typeof value != "string") {
+function isNumeric(value: string | null): boolean {
+    if (value === null) {
+        return true;
+    } else if (typeof value != "string") {
         return false;
+    } else if (value.trim().toLowerCase() === "nan") {
+        return true;
     }
+
     return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
-function isStringArray(data: string[] | (number | null)[]): data is string[] {
-    return data.length > 0 && typeof data[0] === "string";
+/**
+ * Determines whether a feature data object is a string array (vs. a number array).
+ * If all values are `null`, returns false.
+ */
+function isStringArray(data: FeatureData): data is (string | null)[] {
+    // Find first non-null value and determine type from it
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] !== null) {
+            return typeof data[i] === "string";
+        }
+    }
+    return false;
+}
+
+function isNullArray(data: FeatureData): data is null[] {
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] !== null) {
+            return false;
+        }
+    }
+    return true;
 }
 
 const enum FeatureType {
@@ -91,6 +117,8 @@ type FeatureInfo =
           def: DiscreteMeasuredFeatureDef;
           data: (number | null)[];
       };
+
+type FeatureData = (number | null)[] | (string | null)[];
 
 /**
  * Parses and mocks an ImageDataset from a provided CSV string with a header row.
@@ -131,15 +159,12 @@ class CsvRequest implements ImageDataset {
     }
 
     /**
-     * Returns all of the column names that are not reserved for metadata, with the
-     * assumption that they are features.
+     * Returns all of the column names that are not empty or reserved for metadata,
+     * with the assumption that they are features.
      */
-    private getNonReservedFeatureColumns(csvData: Record<string, string>[]): string[] {
-        if (!csvData || csvData.length === 0) {
-            return [];
-        }
+    private getFeatureKeysFromColumnNames(csvData: Record<string, string>[]): string[] {
         const keys = Object.keys(csvData[0]);
-        return keys.filter((key) => !reservedKeys.has(key));
+        return keys.filter((key) => !METADATA_KEYS.has(key) && key !== "");
     }
 
     /**
@@ -158,21 +183,27 @@ class CsvRequest implements ImageDataset {
     private getFeatureDataAsColumns(
         csvData: Record<string, string>[],
         featureKeys: string[]
-    ): Map<string, string[] | number[]> {
-        const featureData = new Map<string, string[] | number[]>();
+    ): Map<string, FeatureData> {
+        const featureData = new Map<string, FeatureData>();
         for (const key of featureKeys) {
-            const rawValues: string[] = [];
+            const rawValues: (string | null)[] = [];
             let isContinuous = true;
             for (const row of csvData) {
-                rawValues.push(row[key]);
-                if (!isNumeric(row[key])) {
-                    isContinuous = false;
+                const value = row[key] ?? null;
+                if (value === null || value.trim() === "") {
+                    rawValues.push(null);
+                } else {
+                    rawValues.push(value);
+                    if (!isNumeric(value)) {
+                        isContinuous = false;
+                    }
                 }
             }
 
             if (isContinuous) {
                 // Feature is continuous, parse all values as numeric
-                const values = rawValues.map((val) => Number.parseFloat(val));
+                // TODO: Handle empty/blank values
+                const values = rawValues.map((val) => (val ? Number.parseFloat(val) : null));
                 featureData.set(key, values);
             } else {
                 // Feature is discrete, return directly
@@ -184,7 +215,7 @@ class CsvRequest implements ImageDataset {
 
     private parseDiscreteFeature(
         key: string,
-        data: string[]
+        data: (string | null)[]
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
         const strValueToIndex = new Map<string, { index: number; count: number }>();
         const remappedValues: (number | null)[] = [];
@@ -192,7 +223,12 @@ class CsvRequest implements ImageDataset {
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
         for (let i = 0; i < data.length; i++) {
-            const value = data[i];
+            let value = data[i];
+            if (value === null) {
+                remappedValues.push(null);
+                continue;
+            }
+            value = value.trim();
             let indexInfo = strValueToIndex.get(value);
             if (!indexInfo) {
                 // Assign new index to this value
@@ -230,12 +266,12 @@ class CsvRequest implements ImageDataset {
     private parseFeatures(csvData: Record<string, string>[]): void {
         this.featureInfo.clear();
 
-        const featureKeys = this.getNonReservedFeatureColumns(csvData);
+        const featureKeys = this.getFeatureKeysFromColumnNames(csvData);
         const rawFeatureData = this.getFeatureDataAsColumns(csvData, featureKeys);
 
         for (const key of featureKeys) {
             const data = rawFeatureData.get(key);
-            if (!data) {
+            if (!data || isNullArray(data)) {
                 continue;
             }
             if (isStringArray(data)) {
@@ -269,9 +305,9 @@ class CsvRequest implements ImageDataset {
      * discrete group-by feature or CFE will crash.
      *
      * Key is chosen in the following order:
-     * 1. Default BFF group by key ("Cell ID") if it exists
+     * 1. Default BFF group by key ("Cell Line") if it exists
      * 2. First discrete feature key if it exists
-     * 3. Binned row number if no discrete feature exists
+     * 3. A default bin feature if no discrete feature exists
      */
     private assignDefaultGroupByFeatureKey(csvData: Record<string, string>[]): void {
         // Check if the BFF-specific default group-by feature exists.
@@ -290,45 +326,32 @@ class CsvRequest implements ImageDataset {
             return;
         }
 
-        // TODO: Would it be easier to just make a single bin for all rows?
-        // No discrete feature was found so we need to make one. Bin by row number, splitting into
-        // bins that are exponents of 10.
-        // So 1000 values should be 10 bins of 100, 100 values should be bins of 10, etc.
-        // values 1-10 should be a single bin.
-        const binSize = Math.pow(10, Math.max(Math.ceil(Math.log10(csvData.length)), 1) - 1);
-        const numBins = Math.ceil(csvData.length / binSize);
-        const options: Record<string, MeasuredFeaturesOption> = {};
-        for (let i = 0; i < numBins; i++) {
-            const minIndex = i * binSize;
-            const maxIndex = Math.min((i + 1) * binSize - 1, csvData.length - 1);
-            options[i.toString()] = {
-                color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
-                name: `Rows ${minIndex}-${maxIndex}`,
-                key: i.toString(),
-                count: maxIndex - minIndex + 1,
-            };
-        }
-        const rowNumberData = new Array(csvData.length).fill(0).map((_, i) => {
-            return Math.floor(i / binSize);
-        });
-        this.featureInfo.set("_rowNumber", {
+        // If no discrete feature is found, assign a default group-by feature.
+        const options: Record<string, MeasuredFeaturesOption> = {
+            "0": {
+                color: DEFAULT_COLORS[0],
+                name: "Default",
+                key: "0",
+                count: csvData.length,
+            },
+        };
+        this.featureInfo.set(DEFAULT_GROUPBY_NONE, {
             type: FeatureType.DISCRETE,
             def: {
                 discrete: true,
-                displayName: "Row Number Bin (auto)",
-                description: "Row Number Bin (auto)",
-                key: "_rowNumber",
-                tooltip: "Row Number Bin (auto)",
+                displayName: "(None)",
+                description: "(None)",
+                key: DEFAULT_GROUPBY_NONE,
+                tooltip: "(None)",
                 options,
             },
-            data: rowNumberData,
+            data: new Array(csvData.length).fill(0),
         });
-        this.defaultGroupByFeatureKey = "_rowNumber";
+        this.defaultGroupByFeatureKey = DEFAULT_GROUPBY_NONE;
     }
 
     private remapBffKeys = (row: Record<string, string>): void => {
-        // Map File ID to Cell ID
-        // also file name?
+        // Map File ID to Cell ID, or File Name if File ID is not provided.
         if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
             row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
         } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
@@ -347,7 +370,12 @@ class CsvRequest implements ImageDataset {
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
         // https://www.papaparse.com/docs#strings
-        const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
+        const config: Papa.ParseConfig = {
+            header: true,
+            transformHeader: (header: string) => header.trim(),
+            skipEmptyLines: "greedy", // skips whitespace-only lines
+        };
+        const result = Papa.parse(csvDataSrc, config).data as Record<string, string>[];
         this.csvData = result as Record<string, string>[];
 
         // Some assertion tests, throw errors if data can't be parsed
@@ -363,20 +391,17 @@ class CsvRequest implements ImageDataset {
         // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
-            if (row[CELL_ID_KEY] !== undefined) {
-                this.idToIndex[row[CELL_ID_KEY]] = i;
-            } else {
-                // Substitute with index if no cell ID is provided
+            if (row[CELL_ID_KEY] === undefined) {
                 row[CELL_ID_KEY] = i.toString();
-                this.idToIndex[i.toString()] = i;
             }
+            this.idToIndex[row[CELL_ID_KEY]] = i;
         }
 
         this.parseFeatures(this.csvData);
         this.assignDefaultGroupByFeatureKey(this.csvData);
     }
 
-    selectDataset(manifest: string): Promise<InitialDatasetSelections> {
+    selectDataset(): Promise<InitialDatasetSelections> {
         const featureKeys = Array.from(this.featureInfo.keys());
         return Promise.resolve({
             defaultXAxis: this.getFeatureKeyClamped(featureKeys, 0),
@@ -438,7 +463,7 @@ class CsvRequest implements ImageDataset {
         return featureKeyToData;
     }
 
-    getFeatureData(): Promise<DataForPlot | void> {
+    getFeatureData(): Promise<DataForPlot> {
         const indices = this.csvData.map((_row, index) => index);
         const values: Record<string, (number | null)[]> = this.getFeatureKeyToData();
         const labels: PerCellLabels = {
@@ -447,7 +472,6 @@ class CsvRequest implements ImageDataset {
         };
 
         for (let i = 0; i < indices.length; i++) {
-            // TODO: Calculate in advance
             const row = this.csvData[i];
             // Copy label data
             labels.cellIds.push(row[CELL_ID_KEY]);
