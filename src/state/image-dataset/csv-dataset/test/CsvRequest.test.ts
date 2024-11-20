@@ -35,7 +35,26 @@ describe("CsvRequest", () => {
                 cellIds: ["potato", "garbanzo", "turnip", "rutabaga"],
             },
         });
+
+        it("handles cell id vs. row index collisions when data is incomplete.", async () => {
+            const csvString = `CellId,feature1
+            0,A
+            2,B,
+            ,C
+            5,D`;
+            // Note that in the above CSV, if we directly used the cell ID with
+            // row index as a fallback for undefined values, we would end up with
+            // two rows that have index 2. Instead, the CSV parser should detect
+            // that data is missing and use the row index for all cell IDs instead.
+            const csvData = new CsvRequest(csvString);
+            expect(await csvData.getFileInfoByCellId("0")).to.not.be.undefined;
+            expect(await csvData.getFileInfoByCellId("1")).to.not.be.undefined;
+            expect(await csvData.getFileInfoByCellId("2")).to.not.be.undefined;
+            expect(await csvData.getFileInfoByCellId("3")).to.not.be.undefined;
+            expect(await csvData.getFileInfoByCellId("5")).to.be.undefined;
+        });
     });
+
     /**
      * TODO:
      * - Check for spaces in CSV input

@@ -262,10 +262,21 @@ class CsvRequest implements ImageDataset {
             throw new Error("No data found in CSV");
         }
 
-        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        let useOriginalKey = true;
+        // Check if all rows have a cell ID. If not, we must use the row index
+        // instead to prevent duplicate values from being added to the map.
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
             if (row[CELL_ID_KEY] === undefined) {
+                useOriginalKey = false;
+                break;
+            }
+        }
+
+        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+            if (!useOriginalKey) {
                 row[CELL_ID_KEY] = i.toString();
             }
             this.idToIndex[row[CELL_ID_KEY]] = i;
