@@ -50,7 +50,8 @@ const METADATA_KEYS = new Set([
     BFF_UPLOADED_KEY,
 ]);
 
-// From Adobe categorical colors
+// Adobe palette of high-contrast colors for denoting different categories
+// Used for categorical data
 const DEFAULT_COLORS = [
     "#27B4AE",
     "#4047C4",
@@ -108,15 +109,15 @@ const enum FeatureType {
 
 type FeatureInfo =
     | {
-          type: FeatureType.CONTINUOUS;
-          def: ContinuousMeasuredFeatureDef;
-          data: (number | null)[];
-      }
+        type: FeatureType.CONTINUOUS;
+        def: ContinuousMeasuredFeatureDef;
+        data: (number | null)[];
+    }
     | {
-          type: FeatureType.DISCRETE;
-          def: DiscreteMeasuredFeatureDef;
-          data: (number | null)[];
-      };
+        type: FeatureType.DISCRETE;
+        def: DiscreteMeasuredFeatureDef;
+        data: (number | null)[];
+    };
 
 type FeatureData = (number | null)[] | (string | null)[];
 
@@ -388,10 +389,21 @@ class CsvRequest implements ImageDataset {
             this.remapBffKeys(this.csvData[i]);
         }
 
-        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        // Check if all rows have a cell ID. If not, we must use the row index
+        // instead to prevent duplicate values from being added to the map.
+        let useOriginalKey = true;
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
             if (row[CELL_ID_KEY] === undefined) {
+                useOriginalKey = false;
+                break;
+            }
+        }
+
+        // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+            if (!useOriginalKey) {
                 row[CELL_ID_KEY] = i.toString();
             }
             this.idToIndex[row[CELL_ID_KEY]] = i;
