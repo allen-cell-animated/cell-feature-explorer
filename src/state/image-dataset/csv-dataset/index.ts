@@ -35,7 +35,8 @@ const METADATA_KEYS = new Set([
     TRANSFORM,
 ]);
 
-// From Adobe categorical colors
+// Adobe palette of high-contrast colors for denoting different categories
+// Used for categorical data
 const DEFAULT_COLORS = [
     "#27B4AE",
     "#4047C4",
@@ -99,7 +100,7 @@ type FeatureInfo =
  * - Transform data, under the column name "transform"
  *
  * Any other columns will be interpreted as features:
- * - Columns containing only numbers will be treated as numeric data.
+ * - Columns containing only numbers will be treated as numeric ("continuous") data.
  * - Columns containing any non-numeric data will be treated as category ("discrete") data.
  */
 class CsvRequest implements ImageDataset {
@@ -115,7 +116,7 @@ class CsvRequest implements ImageDataset {
         this.featureInfo = new Map();
         // TODO: Automatically detect a discrete feature and replace the group
         // by feature with it.
-        this.defaultGroupByFeatureKey = "CellId";
+        this.defaultGroupByFeatureKey = CELL_ID_KEY;
         this.parseCsvData(csvFileContents);
     }
 
@@ -254,7 +255,7 @@ class CsvRequest implements ImageDataset {
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
         // https://www.papaparse.com/docs#strings
-        const result = Papa.parse(csvDataSrc, { header: true }).data as Record<string, string>[];
+        const result = Papa.parse(csvDataSrc, { header: true }).data;
         this.csvData = result as Record<string, string>[];
 
         if (this.csvData.length === 0) {
