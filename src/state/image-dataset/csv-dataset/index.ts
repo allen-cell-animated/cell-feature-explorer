@@ -109,15 +109,15 @@ const enum FeatureType {
 
 type FeatureInfo =
     | {
-        type: FeatureType.CONTINUOUS;
-        def: ContinuousMeasuredFeatureDef;
-        data: (number | null)[];
-    }
+          type: FeatureType.CONTINUOUS;
+          def: ContinuousMeasuredFeatureDef;
+          data: (number | null)[];
+      }
     | {
-        type: FeatureType.DISCRETE;
-        def: DiscreteMeasuredFeatureDef;
-        data: (number | null)[];
-    };
+          type: FeatureType.DISCRETE;
+          def: DiscreteMeasuredFeatureDef;
+          data: (number | null)[];
+      };
 
 type FeatureData = (number | null)[] | (string | null)[];
 
@@ -394,7 +394,7 @@ class CsvRequest implements ImageDataset {
         let useOriginalKey = true;
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
-            if (row[CELL_ID_KEY] === undefined) {
+            if (row[CELL_ID_KEY] === undefined || row[CELL_ID_KEY].trim() === "") {
                 useOriginalKey = false;
                 break;
             }
@@ -406,7 +406,7 @@ class CsvRequest implements ImageDataset {
             if (!useOriginalKey) {
                 row[CELL_ID_KEY] = i.toString();
             }
-            this.idToIndex[row[CELL_ID_KEY]] = i;
+            this.idToIndex[row[CELL_ID_KEY].trim()] = i;
         }
 
         this.parseFeatures(this.csvData);
