@@ -2,24 +2,27 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Flex } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
-import { connect } from "react-redux";
 import React, { ReactElement } from "react";
+import { connect } from "react-redux";
 
+import imageDatasetBranch from "../../state/image-dataset";
 import CsvRequest, { DEFAULT_CSV_DATASET_KEY } from "../../state/image-dataset/csv-dataset";
-import { ImageDataset, Megaset } from "../../state/image-dataset/types";
+import { ImageDataset, Megaset, ReceiveImageDatasetAction } from "../../state/image-dataset/types";
 import metadataStateBranch from "../../state/metadata";
-import {
-    ReceiveAvailableDatasetsAction,
-    ReceiveImageDatasetAction,
-} from "../../state/metadata/types";
+import { ReceiveAvailableDatasetsAction } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import { ChangeSelectionAction } from "../../state/selection/types";
-import { receiveImageDataset } from "../../state/metadata/actions";
 
 type CsvInputProps = {
     receiveImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
     receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
     changeDataset: (id: string) => ChangeSelectionAction;
+};
+
+type DispatchProps = {
+    receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
+    changeDataset: (id: string) => ChangeSelectionAction;
+    receiveImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
 };
 
 /**
@@ -55,7 +58,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
 const dispatchToPropsMap = {
     receiveAvailableDatasets: metadataStateBranch.actions.receiveAvailableDatasets,
     changeDataset: selectionStateBranch.actions.changeDataset,
-    receiveImageDataset: metadataStateBranch.actions.receiveImageDataset,
+    receiveImageDataset: imageDatasetBranch.actions.receiveImageDataset,
 };
 
 export default connect(undefined, dispatchToPropsMap)(CsvInput);

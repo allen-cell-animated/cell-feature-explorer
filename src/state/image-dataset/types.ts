@@ -5,6 +5,15 @@ import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
+export interface ImageDatasetStateBranch {
+    imageDataset: ImageDataset;
+}
+
+export interface ReceiveAction {
+    payload: { [key: string]: any };
+    type: string;
+}
+
 export interface InitialDatasetSelections {
     defaultXAxis: string;
     defaultYAxis: string;
@@ -64,4 +73,9 @@ export interface ImageDataset {
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
+} // ACTIONS
+
+export interface ReceiveImageDatasetAction {
+    payload: ImageDataset;
+    type: string;
 }

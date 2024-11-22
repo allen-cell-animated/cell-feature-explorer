@@ -23,6 +23,7 @@ import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis, changeGroupByCategory } from "./actions";
 import { FileInfo } from "../metadata/types";
 import { DatasetMetaData } from "../image-dataset/types";
+import { getImageDataset } from "../image-dataset/selectors";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
@@ -43,7 +44,9 @@ const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { action, getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
+
         if (!action.payload) {
             return dispatch({
                 type: SET_DATASET,
@@ -102,7 +105,8 @@ const changeDatasetLogic = createLogic({
 const requestCellFileInfoForSelectedPoint = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
         return imageDataSet
             .getFileInfoByCellId(action.payload.id.toString())
             .then((data?: FileInfo) => {
@@ -140,7 +144,7 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, getState } = deps;
         const state = getState();
-        const imageDataSet = state.metadata.imageDataset;
+        const imageDataSet = getImageDataset(state);
         const plotData = getPerCellDataForPlot(state);
         const indices = getIndicesForCellIds(action.payload, plotData.labels.cellIds);
 
@@ -171,7 +175,8 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
 const selectAlbum = createLogic({
     process(deps: ReduxLogicDeps) {
         const { action, getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
         if (!imageDataSet.getFileInfoByArrayOfCellIds) {
             return Promise.resolve({});
         }

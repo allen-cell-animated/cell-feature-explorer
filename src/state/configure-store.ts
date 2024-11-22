@@ -3,11 +3,12 @@ import { merge } from "lodash";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { createLogicMiddleware } from "redux-logic";
 
-import { enableBatching, initialState, metadata, selection, State } from "./";
+import { enableBatching, initialState, imageDataset, metadata, selection, State } from "./";
 
 const reducers = {
     metadata: metadata.reducer,
     selection: selection.reducer,
+    imageDataset: imageDataset.reducer,
 };
 
 const logics = [...metadata.logics, ...selection.logics];

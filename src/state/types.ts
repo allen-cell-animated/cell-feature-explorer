@@ -4,6 +4,7 @@ import { AnyAction } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
+import { ImageDatasetStateBranch } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
@@ -30,6 +31,7 @@ export type ReduxLogicNextCb = (action: AnyAction) => void;
 export interface State {
     metadata: MetadataStateBranch;
     selection: SelectionStateBranch;
+    imageDataset: ImageDatasetStateBranch;
 }
 
 export interface TypeToDescriptionMap {

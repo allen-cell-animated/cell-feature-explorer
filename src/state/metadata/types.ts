@@ -8,12 +8,11 @@ import {
     TRANSFORM,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { ImageDataset, Megaset } from "../image-dataset/types";
+import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 
 export interface MetadataStateBranch {
-    imageDataset: ImageDataset;
     albums: Album[];
     cellFileInfo: FileInfo[];
     isLoading: boolean;
@@ -95,13 +94,6 @@ export interface DataForPlot {
     indices: number[];
     values: MappingOfMeasuredValuesArrays;
     labels: PerCellLabels;
-}
-
-// ACTIONS
-
-export interface ReceiveImageDatasetAction {
-    payload: ImageDataset;
-    type: string;
 }
 
 export interface ReceiveAction {

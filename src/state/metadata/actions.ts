@@ -19,7 +19,6 @@ import {
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
-    RECEIVE_IMAGE_DATASET,
 } from "./constants";
 import {
     DataForPlot,
@@ -29,17 +28,13 @@ import {
     ReceiveAlbumDataAction,
     ReceiveAvailableDatasetsAction,
     ReceiveCellFileInfoAction,
-    ReceiveImageDatasetAction,
     ReceiveMeasuredFeaturesAction,
     ReceiveViewerChannelSettingsAction,
     RequestAction,
     SetLoadingAction,
     SetSmallScreenWarningAction,
 } from "./types";
-
-export function receiveImageDataset(payload: ImageDataset): ReceiveImageDatasetAction {
-    return { payload, type: RECEIVE_IMAGE_DATASET };
-}
+import { ReceiveImageDatasetAction } from "../image-dataset/types";
 
 export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };

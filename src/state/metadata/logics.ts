@@ -37,11 +37,13 @@ import {
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { getImageDataset } from "../image-dataset/selectors";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
         return imageDataSet
             .getAvailableDatasets()
             .then((data: Megaset[]) => dispatch(receiveAvailableDatasets(data)))
@@ -85,7 +87,8 @@ export const findVisibleDataPoint = (
 const requestFeatureDataLogic = createLogic({
     async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
 
         const showSmallScreenWarning = getShowSmallScreenWarning(getState());
         if (showSmallScreenWarning) return;
@@ -112,7 +115,6 @@ const requestFeatureDataLogic = createLogic({
                 }
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
-                const state = getState();
                 const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
                 let selectedCellIndex = 0;
                 if (selectedCellIdsFromUrls.length) {
@@ -155,7 +157,9 @@ const requestFeatureDataLogic = createLogic({
 const requestAlbumData = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
+
         dispatch(setLoadingText("Loading album data..."));
         return imageDataSet
             .getAlbumData()
@@ -174,7 +178,9 @@ const requestAlbumData = createLogic({
 const requestViewerChannelSettings = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
         const { getState } = deps;
-        const imageDataSet = getState().metadata.imageDataset;
+        const state = getState();
+        const imageDataSet = getImageDataset(state);
+
         return imageDataSet
             .getViewerChannelSettings()
             .then((data: ViewerChannelSettings) => {

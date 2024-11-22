@@ -1,11 +1,11 @@
+import { Col, Descriptions, Layout, Row } from "antd";
 import React from "react";
-import { Row, Col, Layout, Descriptions } from "antd";
 const { Content } = Layout;
 
 import MegasetCard from "../../components/MegasetCard";
+import CsvInput from "../../containers/CsvInput";
 import { Megaset } from "../../state/image-dataset/types";
 import downloadData, { DownloadInfo } from "./download-data";
-import CsvInput from "../CsvInput";
 
 import styles from "./style.css";
 

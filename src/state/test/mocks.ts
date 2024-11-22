@@ -1,17 +1,18 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import {
+    ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,
     FOV_ID_KEY,
-    ARRAY_OF_CELL_IDS_KEY,
     FOV_THUMBNAIL_PATH,
     FOV_VOLUME_VIEWER_PATH,
     THUMBNAIL_PATH,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
+import { initialState as initialImageDataset } from "../image-dataset/reducer";
 import { initialState as initialMetaData } from "../metadata/reducer";
-import { initialState as initialSelectionState } from "../selection/reducer";
 import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { INITIAL_COLORS } from "../selection/constants";
+import { initialState as initialSelectionState } from "../selection/reducer";
 
 export const selectedCellFileInfo: FileInfo[] = [
     {
@@ -159,6 +160,7 @@ const displayableGroups: string[] = ["Paxillin", "Alpha-actinin-1"];
 const INITIAL_COLOR_AND_GROUP_BY = "cell-line";
 
 export const mockState = {
+    imageDataset: initialImageDataset,
     metadata: {
         ...initialMetaData,
         cellFileInfo: fileInfo,
