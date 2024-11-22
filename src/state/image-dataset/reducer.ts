@@ -1,22 +1,37 @@
 import { TypeToDescriptionMap } from "..";
 import { AnyAction } from "redux";
-import { RECEIVE_IMAGE_DATASET } from "./constants";
-import { ImageDatasetStateBranch, ReceiveAction } from "./types";
+import { CHANGE_IMAGE_DATASET_TYPE, LOAD_CSV_DATASET } from "./constants";
+import {
+    ImageDataset,
+    ImageDatasetStateBranch,
+    LoadCsvDatasetAction,
+    ReceiveImageDatasetAction,
+} from "./types";
 import { makeReducer } from "../util";
-import { GetImageDatasetInstance } from ".";
+import FirebaseRequest from "./firebase";
+import JsonRequest from "./json-dataset";
+
+// by default will use Firebase for dataset, can be switched to JSON dataset using ENV
+// variable
+function getImageDatasetInstance(): ImageDataset {
+    return process.env.USE_JSON_DATASET ? new JsonRequest() : new FirebaseRequest();
+}
 
 export const initialState: ImageDatasetStateBranch = {
-    imageDataset: GetImageDatasetInstance(),
+    imageDataset: getImageDatasetInstance(),
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [RECEIVE_IMAGE_DATASET]: {
-        accepts: (action: AnyAction): action is ReceiveAction =>
-            action.type === RECEIVE_IMAGE_DATASET,
-        perform: (state: ImageDatasetStateBranch, action: ReceiveAction) => ({
-            ...state,
-            imageDataset: action.payload,
-        }),
+    [CHANGE_IMAGE_DATASET_TYPE]: {
+        accepts: (action: AnyAction): action is ReceiveImageDatasetAction =>
+            action.type === CHANGE_IMAGE_DATASET_TYPE,
+        perform: (state: ImageDatasetStateBranch, action: ReceiveImageDatasetAction) => {
+            console.log("Changing dataset type", action.payload);
+            return {
+                ...state,
+                imageDataset: action.payload,
+            };
+        },
     },
 };
 

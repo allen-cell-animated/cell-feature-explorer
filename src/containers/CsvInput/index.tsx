@@ -3,27 +3,17 @@ import { Flex } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import React, { ReactElement } from "react";
-import { connect } from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 
-import imageDatasetBranch from "../../state/image-dataset";
-import CsvRequest, { DEFAULT_CSV_DATASET_KEY } from "../../state/image-dataset/csv-dataset";
-import { ImageDataset, Megaset, ReceiveImageDatasetAction } from "../../state/image-dataset/types";
-import metadataStateBranch from "../../state/metadata";
-import { ReceiveAvailableDatasetsAction } from "../../state/metadata/types";
-import selectionStateBranch from "../../state/selection";
-import { ChangeSelectionAction } from "../../state/selection/types";
-
-type CsvInputProps = {
-    receiveImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
-    receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
-    changeDataset: (id: string) => ChangeSelectionAction;
-};
+import { State } from "../../state";
+import imageDatasetStateBranch from "../../state/image-dataset";
+import { LoadCsvDatasetAction } from "../../state/image-dataset/types";
 
 type DispatchProps = {
-    receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
-    changeDataset: (id: string) => ChangeSelectionAction;
-    receiveImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
+    loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
 };
+
+type CsvInputProps = DispatchProps;
 
 /**
  * An input area for CSV files. When CSV data is provided, replaces the current image dataset
@@ -31,16 +21,8 @@ type DispatchProps = {
  */
 function CsvInput(props: CsvInputProps): ReactElement {
     const action = async (file: RcFile): Promise<string> => {
-        // TODO: handle loading via URL
-        const fileContents = await file.text();
-        const dataset = new CsvRequest(fileContents);
-        props.receiveImageDataset(dataset);
-
-        // CSV Request mocks up a single dataset
-        const megasets = await dataset.getAvailableDatasets();
-        props.receiveAvailableDatasets(megasets);
-        props.changeDataset(DEFAULT_CSV_DATASET_KEY);
-
+        const fileText = await file.text();
+        props.loadCsvDataset(fileText);
         return Promise.resolve("");
     };
 
@@ -55,10 +37,9 @@ function CsvInput(props: CsvInputProps): ReactElement {
         </Dragger>
     );
 }
-const dispatchToPropsMap = {
-    receiveAvailableDatasets: metadataStateBranch.actions.receiveAvailableDatasets,
-    changeDataset: selectionStateBranch.actions.changeDataset,
-    receiveImageDataset: imageDatasetBranch.actions.receiveImageDataset,
+
+const dispatchToPropsMap: DispatchProps = {
+    loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
 };
 
-export default connect(undefined, dispatchToPropsMap)(CsvInput);
+export default connect<{}, DispatchProps, {}, State>(null, dispatchToPropsMap)(CsvInput);

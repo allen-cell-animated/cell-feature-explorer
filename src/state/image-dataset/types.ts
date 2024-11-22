@@ -9,8 +9,13 @@ export interface ImageDatasetStateBranch {
     imageDataset: ImageDataset;
 }
 
-export interface ReceiveAction {
-    payload: { [key: string]: any };
+export interface ReceiveImageDatasetAction {
+    payload: ImageDataset;
+    type: string;
+}
+
+export interface LoadCsvDatasetAction {
+    payload: string; // CSV contents
     type: string;
 }
 
@@ -75,7 +80,7 @@ export interface ImageDataset {
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
 } // ACTIONS
 
-export interface ReceiveImageDatasetAction {
+export interface ChangeImageDatasetTypeAction {
     payload: ImageDataset;
     type: string;
 }

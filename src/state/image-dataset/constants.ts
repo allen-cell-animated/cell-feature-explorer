@@ -1,3 +1,7 @@
 import { makeConstant } from "../util";
 
-export const RECEIVE_IMAGE_DATASET = makeConstant("metadata", "receive-image-dataset");
+const makeImageDatasetConstant = (constant: string) => makeConstant("image-dataset", constant);
+
+export const LOAD_CSV_DATASET = makeImageDatasetConstant("load-csv-dataset");
+
+export const CHANGE_IMAGE_DATASET_TYPE = makeImageDatasetConstant("change-image-dataset-type");

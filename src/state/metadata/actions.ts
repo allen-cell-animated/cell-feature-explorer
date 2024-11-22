@@ -34,7 +34,6 @@ import {
     SetLoadingAction,
     SetSmallScreenWarningAction,
 } from "./types";
-import { ReceiveImageDatasetAction } from "../image-dataset/types";
 
 export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };

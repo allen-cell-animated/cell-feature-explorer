@@ -11,7 +11,7 @@ const reducers = {
     imageDataset: imageDataset.reducer,
 };
 
-const logics = [...metadata.logics, ...selection.logics];
+const logics = [...metadata.logics, ...selection.logics, ...imageDataset.logics];
 
 const reduxLogicDependencies = {
     httpClient: axios,
