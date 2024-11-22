@@ -78,7 +78,9 @@ export interface ImageDataset {
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
-} // ACTIONS
+}
+
+// ACTIONS
 
 export interface ChangeImageDatasetTypeAction {
     payload: ImageDataset;

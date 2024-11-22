@@ -96,6 +96,8 @@ export interface DataForPlot {
     labels: PerCellLabels;
 }
 
+// ACTIONS
+
 export interface ReceiveAction {
     payload: { [key: string]: any };
     type: string;

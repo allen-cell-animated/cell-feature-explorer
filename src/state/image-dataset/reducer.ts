@@ -21,7 +21,6 @@ const actionToConfigMap: TypeToDescriptionMap = {
         accepts: (action: AnyAction): action is ReceiveImageDatasetAction =>
             action.type === CHANGE_IMAGE_DATASET_TYPE,
         perform: (state: ImageDatasetStateBranch, action: ReceiveImageDatasetAction) => {
-            console.log("Changing dataset type", action.payload);
             return {
                 ...state,
                 imageDataset: action.payload,
