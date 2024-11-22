@@ -67,7 +67,7 @@ const DEFAULT_COLORS = [
     "#BEE952",
 ];
 
-function isNumeric(value: string | null): boolean {
+function isNullOrNumericString(value: string | null): boolean {
     if (value === null) {
         return true;
     } else if (typeof value != "string") {
@@ -93,13 +93,20 @@ function isStringArray(data: FeatureData): data is (string | null)[] {
     return false;
 }
 
-function isNullArray(data: FeatureData): data is null[] {
+/**
+ * Returns true if the feature data array contains at least one non-null value.
+ * If all values are `null` (or the array is empty), returns false.
+ */
+function isValidFeatureArray(data: FeatureData): boolean {
+    if (data.length === 0) {
+        return false;
+    }
     for (let i = 0; i < data.length; i++) {
         if (data[i] !== null) {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 const enum FeatureType {
@@ -195,7 +202,7 @@ class CsvRequest implements ImageDataset {
                     rawValues.push(null);
                 } else {
                     rawValues.push(value);
-                    if (!isNumeric(value)) {
+                    if (!isNullOrNumericString(value)) {
                         isContinuous = false;
                     }
                 }
@@ -272,7 +279,7 @@ class CsvRequest implements ImageDataset {
 
         for (const key of featureKeys) {
             const data = rawFeatureData.get(key);
-            if (!data || isNullArray(data)) {
+            if (!data || !isValidFeatureArray(data)) {
                 continue;
             }
             if (isStringArray(data)) {
