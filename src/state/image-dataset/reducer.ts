@@ -1,12 +1,7 @@
 import { TypeToDescriptionMap } from "..";
 import { AnyAction } from "redux";
-import { CHANGE_IMAGE_DATASET_TYPE, LOAD_CSV_DATASET } from "./constants";
-import {
-    ImageDataset,
-    ImageDatasetStateBranch,
-    LoadCsvDatasetAction,
-    ReceiveImageDatasetAction,
-} from "./types";
+import { CHANGE_IMAGE_DATASET_TYPE } from "./constants";
+import { ImageDataset, ImageDatasetStateBranch, ReceiveImageDatasetAction } from "./types";
 import { makeReducer } from "../util";
 import FirebaseRequest from "./firebase";
 import JsonRequest from "./json-dataset";

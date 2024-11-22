@@ -42,4 +42,4 @@ const dispatchToPropsMap: DispatchProps = {
     loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
 };
 
-export default connect<{}, DispatchProps, {}, State>(null, dispatchToPropsMap)(CsvInput);
+export default connect<any, DispatchProps, any, State>(null, dispatchToPropsMap)(CsvInput);
