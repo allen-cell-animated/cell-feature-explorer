@@ -19,7 +19,7 @@ import {
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
-    REPLACE_IMAGE_DATASET,
+    RECEIVE_IMAGE_DATASET,
 } from "./constants";
 import {
     DataForPlot,
@@ -37,8 +37,8 @@ import {
     SetSmallScreenWarningAction,
 } from "./types";
 
-export function replaceImageDataset(payload: ImageDataset): ReceiveImageDatasetAction {
-    return { payload, type: REPLACE_IMAGE_DATASET };
+export function receiveImageDataset(payload: ImageDataset): ReceiveImageDatasetAction {
+    return { payload, type: RECEIVE_IMAGE_DATASET };
 }
 
 export function requestAvailableDatasets() {

@@ -14,23 +14,24 @@ import {
 } from "../../state/metadata/types";
 import selectionStateBranch from "../../state/selection";
 import { ChangeSelectionAction } from "../../state/selection/types";
+import { receiveImageDataset } from "../../state/metadata/actions";
 
-type CsvUploadProps = {
-    replaceImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
+type CsvInputProps = {
+    receiveImageDataset: (dataset: ImageDataset) => ReceiveImageDatasetAction;
     receiveAvailableDatasets: (megasets: Megaset[]) => ReceiveAvailableDatasetsAction;
     changeDataset: (id: string) => ChangeSelectionAction;
 };
 
 /**
- * An upload area for CSV data. When CSV data is provided, replaces the current image dataset
+ * An input area for CSV files. When CSV data is provided, replaces the current image dataset
  * with a new `CsvRequest` image dataset and triggers the loading of the CSV data.
  */
-function CsvUpload(props: CsvUploadProps): ReactElement {
+function CsvInput(props: CsvInputProps): ReactElement {
     const action = async (file: RcFile): Promise<string> => {
         // TODO: handle loading via URL
         const fileContents = await file.text();
         const dataset = new CsvRequest(fileContents);
-        props.replaceImageDataset(dataset);
+        props.receiveImageDataset(dataset);
 
         // CSV Request mocks up a single dataset
         const megasets = await dataset.getAvailableDatasets();
@@ -54,7 +55,7 @@ function CsvUpload(props: CsvUploadProps): ReactElement {
 const dispatchToPropsMap = {
     receiveAvailableDatasets: metadataStateBranch.actions.receiveAvailableDatasets,
     changeDataset: selectionStateBranch.actions.changeDataset,
-    replaceImageDataset: metadataStateBranch.actions.replaceImageDataset,
+    receiveImageDataset: metadataStateBranch.actions.receiveImageDataset,
 };
 
-export default connect(undefined, dispatchToPropsMap)(CsvUpload);
+export default connect(undefined, dispatchToPropsMap)(CsvInput);

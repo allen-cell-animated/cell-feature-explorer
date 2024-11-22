@@ -1,7 +1,7 @@
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { AnyAction } from "redux";
 import { Megaset } from "../image-dataset/types";
-import RequestImageDatasetToUse from "../image-dataset";
+import GetImageDatasetInstance from "../image-dataset";
 import { ReceiveCellFileInfoAction } from "../selection/types";
 
 import { TypeToDescriptionMap } from "../types";
@@ -18,7 +18,7 @@ import {
     SET_IS_LOADING,
     SET_LOADING_TEXT,
     SET_SHOW_SMALL_SCREEN_WARNING,
-    REPLACE_IMAGE_DATASET,
+    RECEIVE_IMAGE_DATASET,
 } from "./constants";
 import {
     MetadataStateBranch,
@@ -36,7 +36,7 @@ import {
 } from "./types";
 
 export const initialState: MetadataStateBranch = {
-    imageDataset: RequestImageDatasetToUse(),
+    imageDataset: GetImageDatasetInstance(),
     albums: [],
     cellFileInfo: [] as FileInfo[],
     isLoading: true,
@@ -53,9 +53,9 @@ export const initialState: MetadataStateBranch = {
 };
 
 const actionToConfigMap: TypeToDescriptionMap = {
-    [REPLACE_IMAGE_DATASET]: {
+    [RECEIVE_IMAGE_DATASET]: {
         accepts: (action: AnyAction): action is ReceiveAction =>
-            action.type === REPLACE_IMAGE_DATASET,
+            action.type === RECEIVE_IMAGE_DATASET,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             imageDataset: action.payload,
