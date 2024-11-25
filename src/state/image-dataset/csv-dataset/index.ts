@@ -358,21 +358,29 @@ class CsvRequest implements ImageDataset {
         this.defaultGroupByFeatureKey = DEFAULT_GROUPBY_NONE;
     }
 
+    /**
+     * Copies the value of a column to another column if the destination column is empty.
+     * Returns whether the column was copied.
+     */
+    private copyColumnIfEmpty(
+        row: Record<string, string>,
+        columnSrc: string,
+        columnDst: string
+    ): boolean {
+        if (row[columnSrc] !== undefined && row[columnDst] === undefined) {
+            row[columnDst] = row[columnSrc];
+            return true;
+        }
+        return false;
+    }
+
     private remapBffKeys = (row: Record<string, string>): void => {
-        // Map File ID to Cell ID, or File Name if File ID is not provided.
-        if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
-            row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
-        } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
-            row[CELL_ID_KEY] = row[BFF_FILENAME_KEY];
+        // Use File ID preferentially, but fall back to Filename if File ID is empty
+        if (!this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY)) {
+            this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
         }
-        // Map thumbnail
-        if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
-            row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
-        }
-        // Volume
-        if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
-            row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
-        }
+        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     };
 
     private parseCsvData(csvDataSrc: string): void {
