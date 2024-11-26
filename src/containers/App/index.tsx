@@ -1,22 +1,25 @@
 import { ConfigProvider, Layout, theme } from "antd";
+import classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
-import classNames from "classnames";
 
 import AllenCellHeader from "../../components/AppHeader";
-import { PALETTE } from "../../constants";
-import metadataStateBranch from "../../state/metadata";
-import selectionStateBranch from "../../state/selection";
 import LandingPage from "../../components/LandingPage";
-import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { State } from "../../state/types";
-import { ChangeSelectionAction } from "../../state/selection/types";
+import { PALETTE } from "../../constants";
+import { imageDataset } from "../../state";
+import CsvRequest from "../../state/image-dataset/csv-dataset";
 import { Megaset } from "../../state/image-dataset/types";
+import metadataStateBranch from "../../state/metadata";
 import { RequestAction } from "../../state/metadata/types";
+import selectionStateBranch from "../../state/selection";
+import { ChangeSelectionAction } from "../../state/selection/types";
+import { State } from "../../state/types";
+import Cfe from "../Cfe";
+
+import styles from "./style.css";
 
 const { Header } = Layout;
-import styles from "./style.css";
 
 interface AppProps {
     isLoading: boolean;
@@ -80,55 +83,59 @@ const configProviderTheme = {
     },
 };
 
-class App extends React.Component<AppProps> {
-    public componentDidMount = () => {
-        this.props.requestAvailableDatasets();
-    };
+const App: React.FC<AppProps> = (props) => {
+    const { isLoading, loadingText, selectedDataset, megasets } = props;
+    const showLoadingOverlay = isLoading && !!selectedDataset;
+    const layoutClassnames = classNames([
+        styles.container,
+        { [styles.isLoading]: showLoadingOverlay },
+    ]);
 
-    public handleSelectDataset = (id: string) => {
-        this.props.changeDataset(id);
-    };
+    React.useEffect(() => {
+        props.requestAvailableDatasets();
+    }, []);
 
-    public render() {
-        const { isLoading, loadingText, selectedDataset, megasets } = this.props;
-        const showLoadingOverlay = isLoading && !!selectedDataset;
-        const layoutClassnames = classNames([
-            styles.container,
-            { [styles.isLoading]: showLoadingOverlay },
-        ]);
+    const handleSelectDataset = React.useCallback(
+        (id: string) => {
+            props.changeDataset(id);
+        },
+        [props.changeDataset]
+    );
 
-        return (
-            <ConfigProvider theme={configProviderTheme}>
-                <div
-                    className={classNames([
-                        styles.wrapper,
-                        { [styles.isLoading]: showLoadingOverlay },
-                    ])}
-                >
-                    <Layout className={layoutClassnames}>
-                        <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
-                        <Header className={styles.navBar}>
-                            <AllenCellHeader selectedDataset={selectedDataset} />
-                        </Header>
-                        <Layout>
-                            {!!selectedDataset ? (
-                                <Cfe />
-                            ) : (
-                                <LandingPage
-                                    megasets={megasets}
-                                    handleSelectDataset={this.handleSelectDataset}
-                                />
-                            )}
-                        </Layout>
-                    </Layout>
-                </div>
-            </ConfigProvider>
-        );
+    if (imageDataset instanceof CsvRequest) {
+        // TODO: detect when the `dataset` URL param is empty and show the default
+        // landing page again.
     }
-}
+
+    return (
+        <ConfigProvider theme={configProviderTheme}>
+            <div
+                className={classNames([styles.wrapper, { [styles.isLoading]: showLoadingOverlay }])}
+            >
+                <Layout className={layoutClassnames}>
+                    <LoadingOverlay isLoading={showLoadingOverlay} loadingText={loadingText} />
+                    <Header className={styles.navBar}>
+                        <AllenCellHeader selectedDataset={selectedDataset} />
+                    </Header>
+                    <Layout>
+                        {!!selectedDataset ? (
+                            <Cfe />
+                        ) : (
+                            <LandingPage
+                                megasets={megasets}
+                                handleSelectDataset={handleSelectDataset}
+                            />
+                        )}
+                    </Layout>
+                </Layout>
+            </div>
+        </ConfigProvider>
+    );
+};
 
 function mapStateToProps(state: State) {
     return {
+        imageDataset: imageDataset.selectors.getImageDataset(state),
         isLoading: metadataStateBranch.selectors.getIsLoading(state),
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
