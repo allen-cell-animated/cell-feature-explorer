@@ -125,6 +125,12 @@ module.exports = ({ analyze, env } = {}) => ({
         symlinks: false,
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
         mainFields: ["module", "main", "browser"],
+        // Papaparse relies on `stream` which is a Node.js module that's not available in the browser.
+        // Webpack configuration will fail unless we tell it to ignore the `stream` module and not
+        // to try and find a fallback/pollyfill for it.
+        fallback: {
+            stream: false,
+        },
         // When running with local builds of website-3d-cell-viewer
         // (using "file:../website-3d-cell-viewer"),
         // we have an extraneous react coming from the viewer's node_modules.

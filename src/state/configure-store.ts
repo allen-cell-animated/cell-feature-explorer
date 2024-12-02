@@ -3,19 +3,18 @@ import { merge } from "lodash";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { createLogicMiddleware } from "redux-logic";
 
-import { enableBatching, initialState, metadata, selection, State } from "./";
-import RequestClassToUse from "./image-dataset";
+import { enableBatching, initialState, imageDataset, metadata, selection, State } from "./";
 
 const reducers = {
     metadata: metadata.reducer,
     selection: selection.reducer,
+    imageDataset: imageDataset.reducer,
 };
 
-const logics = [...metadata.logics, ...selection.logics];
+const logics = [...metadata.logics, ...selection.logics, ...imageDataset.logics];
 
 const reduxLogicDependencies = {
     httpClient: axios,
-    imageDataSet: RequestClassToUse(),
 };
 
 export default function createReduxStore(preloadedState?: Partial<State>) {
