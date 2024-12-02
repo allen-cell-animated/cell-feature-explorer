@@ -50,7 +50,8 @@ const METADATA_KEYS = new Set([
     BFF_UPLOADED_KEY,
 ]);
 
-// From Adobe categorical colors
+// Adobe palette of high-contrast colors for denoting different categories
+// Used for categorical data
 const DEFAULT_COLORS = [
     "#27B4AE",
     "#4047C4",
@@ -66,7 +67,26 @@ const DEFAULT_COLORS = [
     "#BEE952",
 ];
 
-function isNumeric(value: string | null): boolean {
+const enum FeatureType {
+    CONTINUOUS,
+    DISCRETE,
+}
+
+type FeatureInfo =
+    | {
+          type: FeatureType.CONTINUOUS;
+          def: ContinuousMeasuredFeatureDef;
+          data: (number | null)[];
+      }
+    | {
+          type: FeatureType.DISCRETE;
+          def: DiscreteMeasuredFeatureDef;
+          data: (number | null)[];
+      };
+
+type FeatureData = (number | null)[] | (string | null)[];
+
+function isNullOrNumericString(value: string | null): boolean {
     if (value === null) {
         return true;
     } else if (typeof value != "string") {
@@ -92,33 +112,21 @@ function isStringArray(data: FeatureData): data is (string | null)[] {
     return false;
 }
 
-function isNullArray(data: FeatureData): data is null[] {
+/**
+ * Returns true if the feature data array contains at least one non-null value.
+ * If all values are `null` (or the array is empty), returns false.
+ */
+function isValidFeatureArray(data: FeatureData): boolean {
+    if (data.length === 0) {
+        return false;
+    }
     for (let i = 0; i < data.length; i++) {
         if (data[i] !== null) {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
 }
-
-const enum FeatureType {
-    CONTINUOUS,
-    DISCRETE,
-}
-
-type FeatureInfo =
-    | {
-          type: FeatureType.CONTINUOUS;
-          def: ContinuousMeasuredFeatureDef;
-          data: (number | null)[];
-      }
-    | {
-          type: FeatureType.DISCRETE;
-          def: DiscreteMeasuredFeatureDef;
-          data: (number | null)[];
-      };
-
-type FeatureData = (number | null)[] | (string | null)[];
 
 /**
  * Parses and mocks an ImageDataset from a provided CSV string with a header row.
@@ -140,8 +148,10 @@ type FeatureData = (number | null)[] | (string | null)[];
  * - Uploaded, a 0/1 flag stored under the column name "Uploaded"
  *
  * Any other columns will be interpreted as features:
- * - Columns containing only numbers will be treated as numeric data.
- * - Columns containing any non-numeric data will be treated as category ("discrete") data.
+ * - Columns containing only number and `null` values will be treated as numeric ("continuous") data.
+ *   (note: `NaN` values are allowed.)
+ * - Columns containing ANY non-numeric or non-null data will be treated as
+ *   category ("discrete") data.
  */
 class CsvRequest implements ImageDataset {
     csvData: Record<string, string>[];
@@ -194,7 +204,7 @@ class CsvRequest implements ImageDataset {
                     rawValues.push(null);
                 } else {
                     rawValues.push(value);
-                    if (!isNumeric(value)) {
+                    if (!isNullOrNumericString(value)) {
                         isContinuous = false;
                     }
                 }
@@ -223,12 +233,12 @@ class CsvRequest implements ImageDataset {
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
         for (let i = 0; i < data.length; i++) {
-            let value = data[i];
-            if (value === null) {
+            const rawValue = data[i];
+            if (rawValue === null) {
                 remappedValues.push(null);
                 continue;
             }
-            value = value.trim();
+            const value = rawValue.trim();
             let indexInfo = strValueToIndex.get(value);
             if (!indexInfo) {
                 // Assign new index to this value
@@ -271,7 +281,7 @@ class CsvRequest implements ImageDataset {
 
         for (const key of featureKeys) {
             const data = rawFeatureData.get(key);
-            if (!data || isNullArray(data)) {
+            if (!data || !isValidFeatureArray(data)) {
                 continue;
             }
             if (isStringArray(data)) {
@@ -350,21 +360,29 @@ class CsvRequest implements ImageDataset {
         this.defaultGroupByFeatureKey = DEFAULT_GROUPBY_NONE;
     }
 
+    /**
+     * Copies the value of a column to another column if the destination column is empty.
+     * Returns whether the column was copied.
+     */
+    private copyColumnIfEmpty(
+        row: Record<string, string>,
+        columnSrc: string,
+        columnDst: string
+    ): boolean {
+        if (row[columnSrc] !== undefined && row[columnDst] === undefined) {
+            row[columnDst] = row[columnSrc];
+            return true;
+        }
+        return false;
+    }
+
     private remapBffKeys = (row: Record<string, string>): void => {
-        // Map File ID to Cell ID, or File Name if File ID is not provided.
-        if (row[CELL_ID_KEY] === undefined && row[BFF_FILE_ID_KEY] !== undefined) {
-            row[CELL_ID_KEY] = row[BFF_FILE_ID_KEY];
-        } else if (row[CELL_ID_KEY] === undefined && row[BFF_FILENAME_KEY] !== undefined) {
-            row[CELL_ID_KEY] = row[BFF_FILENAME_KEY];
+        // Use File ID preferentially, but fall back to Filename if File ID is empty
+        if (!this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY)) {
+            this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
         }
-        // Map thumbnail
-        if (row[BFF_THUMBNAIL_PATH_KEY] !== undefined && row[THUMBNAIL_PATH] === undefined) {
-            row[THUMBNAIL_PATH] = row[BFF_THUMBNAIL_PATH_KEY];
-        }
-        // Volume
-        if (row[BFF_FILE_PATH_KEY] !== undefined && row[VOLUME_VIEWER_PATH] === undefined) {
-            row[VOLUME_VIEWER_PATH] = row[BFF_FILE_PATH_KEY];
-        }
+        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     };
 
     private parseCsvData(csvDataSrc: string): void {
@@ -388,13 +406,24 @@ class CsvRequest implements ImageDataset {
             this.remapBffKeys(this.csvData[i]);
         }
 
+        // Check if all rows have a cell ID. If not, we must use the row index
+        // instead to prevent duplicate values from being added to the map.
+        let useOriginalKey = true;
+        for (let i = 0; i < this.csvData.length; i++) {
+            const row = this.csvData[i];
+            if (row[CELL_ID_KEY] === undefined || row[CELL_ID_KEY].trim() === "") {
+                useOriginalKey = false;
+                break;
+            }
+        }
+
         // Map from cell IDs to row index. If no cell ID is provided, assign the row number.
         for (let i = 0; i < this.csvData.length; i++) {
             const row = this.csvData[i];
-            if (row[CELL_ID_KEY] === undefined) {
+            if (!useOriginalKey) {
                 row[CELL_ID_KEY] = i.toString();
             }
-            this.idToIndex[row[CELL_ID_KEY]] = i;
+            this.idToIndex[row[CELL_ID_KEY].trim()] = i;
         }
 
         this.parseFeatures(this.csvData);
