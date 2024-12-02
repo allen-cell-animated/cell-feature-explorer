@@ -67,6 +67,25 @@ const DEFAULT_COLORS = [
     "#BEE952",
 ];
 
+const enum FeatureType {
+    CONTINUOUS,
+    DISCRETE,
+}
+
+type FeatureInfo =
+    | {
+          type: FeatureType.CONTINUOUS;
+          def: ContinuousMeasuredFeatureDef;
+          data: (number | null)[];
+      }
+    | {
+          type: FeatureType.DISCRETE;
+          def: DiscreteMeasuredFeatureDef;
+          data: (number | null)[];
+      };
+
+type FeatureData = (number | null)[] | (string | null)[];
+
 function isNullOrNumericString(value: string | null): boolean {
     if (value === null) {
         return true;
@@ -109,25 +128,6 @@ function isValidFeatureArray(data: FeatureData): boolean {
     return false;
 }
 
-const enum FeatureType {
-    CONTINUOUS,
-    DISCRETE,
-}
-
-type FeatureInfo =
-    | {
-          type: FeatureType.CONTINUOUS;
-          def: ContinuousMeasuredFeatureDef;
-          data: (number | null)[];
-      }
-    | {
-          type: FeatureType.DISCRETE;
-          def: DiscreteMeasuredFeatureDef;
-          data: (number | null)[];
-      };
-
-type FeatureData = (number | null)[] | (string | null)[];
-
 /**
  * Parses and mocks an ImageDataset from a provided CSV string with a header row.
  *
@@ -148,8 +148,10 @@ type FeatureData = (number | null)[] | (string | null)[];
  * - Uploaded, a 0/1 flag stored under the column name "Uploaded"
  *
  * Any other columns will be interpreted as features:
- * - Columns containing only numbers will be treated as numeric data.
- * - Columns containing any non-numeric data will be treated as category ("discrete") data.
+ * - Columns containing only number and `null` values will be treated as numeric ("continuous") data.
+ *   (note: `NaN` values are allowed.)
+ * - Columns containing ANY non-numeric or non-null data will be treated as
+ *   category ("discrete") data.
  */
 class CsvRequest implements ImageDataset {
     csvData: Record<string, string>[];
@@ -231,12 +233,12 @@ class CsvRequest implements ImageDataset {
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
         for (let i = 0; i < data.length; i++) {
-            let value = data[i];
-            if (value === null) {
+            const rawValue = data[i];
+            if (rawValue === null) {
                 remappedValues.push(null);
                 continue;
             }
-            value = value.trim();
+            const value = rawValue.trim();
             let indexInfo = strValueToIndex.get(value);
             if (!indexInfo) {
                 // Assign new index to this value
