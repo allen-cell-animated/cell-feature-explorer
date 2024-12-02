@@ -3,7 +3,7 @@ import React from "react";
 const { Content } = Layout;
 
 import MegasetCard from "../../components/MegasetCard";
-import CsvInput from "../../containers/CsvInput";
+// import CsvInput from "../../containers/CsvInput";
 import { Megaset } from "../../state/image-dataset/types";
 import downloadData, { DownloadInfo } from "./download-data";
 
@@ -46,9 +46,9 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                         </Row>
                     </div>
 
-                    <div className={styles.sectionContent}>
+                    {/* <div className={styles.sectionContent}>
                         <CsvInput />
-                    </div>
+                    </div> */}
                 </Row>
                 <Row className={styles.lightSection}>
                     <Col className={styles.sectionContent}>
