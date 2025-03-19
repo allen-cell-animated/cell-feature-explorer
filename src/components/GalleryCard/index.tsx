@@ -1,7 +1,10 @@
-import { Avatar, Button, Card, Dropdown, Icon, List, Menu } from "antd";
+import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
+import { Avatar, Button, Card, Dropdown, List, Tooltip } from "antd";
+import { ItemType } from "antd/es/menu/interface";
 import React from "react";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
+import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
 
@@ -26,40 +29,54 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
     };
 
     const openCellIn3D = () => {
-        props.handleOpenIn3D({id: props.cellID});
+        props.handleOpenIn3D({ id: props.cellID });
     };
-    const menu = (
-        <Menu className="download-dropdown">
-            {props.downloadHref && (
-                <Menu.Item key="1">
-                    <a href={props.downloadHref}>
-                        <Icon type="download" /> Segmented cell
-                    </a>
-                </Menu.Item>
-            )}
-            {props.downloadFullField && (
-                <Menu.Item key="2">
-                    <a href={props.downloadFullField}>
-                        <Icon type="download" /> Full field image
-                    </a>
-                </Menu.Item>
-            )}
-        </Menu>
-    );
 
+    const menuItems: ItemType[] = [];
+    if (props.downloadHref) {
+        menuItems.push({
+            key: "1",
+            label: (
+                <a href={props.downloadHref}>
+                    <DownloadOutlined /> Segmented cell
+                </a>
+            ),
+        });
+    }
+    if (props.downloadFullField) {
+        menuItems.push({
+            key: "2",
+            label: (
+                <a href={props.downloadFullField}>
+                    <DownloadOutlined /> Full field image
+                </a>
+            ),
+        });
+    }
+
+    const hasDownload = props.downloadHref !== "" || props.downloadFullField !== "";
     const actions = [
-        <Button
-            className={props.selected ? styles.disabled : ""}
-            key={`${props.cellID}-load`}
-            onClick={openCellIn3D}
-        >
+        <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
-        <Dropdown key={`${props.cellID}-download`} overlay={menu} trigger={["click"]}>
-            <Button icon="download" />
+        <Dropdown
+            key={`${props.cellID}-download`}
+            menu={{ items: menuItems }}
+            trigger={["click"]}
+            disabled={!hasDownload}
+        >
+            <Tooltip
+                key={`${props.cellID}-download`}
+                title={hasDownload ? null : NO_DOWNLOADS_TOOLTIP}
+                trigger={["hover", "focus"]}
+            >
+                <Button disabled={!hasDownload}>
+                    <DownloadOutlined />
+                </Button>
+            </Tooltip>
         </Dropdown>,
-        <Button onClick={deselectPoint} key={`${props.cellID}-close`}>
-            <Icon type="close" />
+        <Button key={`${props.cellID}-close`} onClick={deselectPoint}>
+            <CloseOutlined />
         </Button>,
     ];
 
@@ -88,10 +105,17 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                             </div>
                         )
                     }
-                    description={props.cellID}
+                    description={
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            {props.cellID}
+
+                            {props.mitoticStage && (
+                                <span className={styles.stage}>{props.mitoticStage}</span>
+                            )}
+                            {!props.empty && <div className={styles.actionList}>{actions}</div>}
+                        </div>
+                    }
                 />
-                {props.mitoticStage && <span className={styles.stage}>{props.mitoticStage}</span>}
-                {!props.empty && <div className={styles.actionList}>{actions}</div>}
             </Card>
         </List.Item>
     );

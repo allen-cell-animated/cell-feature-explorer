@@ -45,11 +45,13 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             hoverable
             bordered={false}
             cover={
-                <img
-                    className={styles.staticThumbnail}
-                    alt={`Snapshot of simulation for ${title}`}
-                    src={image}
-                />
+                image != "" ? (
+                    <img
+                        className={styles.staticThumbnail}
+                        alt={`Snapshot of simulation for ${title}`}
+                        src={image}
+                    />
+                ) : null
             }
             onClick={() => handleSelectDataset(id)}
         >
@@ -64,16 +66,16 @@ const DatasetCard: React.FunctionComponent<DatasetCardProps> = ({
             />
             {/* Spacer div to push `Descriptions` to the bottom of the card */}
             <div className={styles.spacer}/>
-            <Descriptions column={1} size="small">
-                <Descriptions.Item label="Number of Cells">
+            <Descriptions column={1} size="small" colon={false}>
+                {userData.totalCells && <Descriptions.Item label="Number of Cells:">
                     {userData.totalCells.toLocaleString("en")}
-                </Descriptions.Item>
-                <Descriptions.Item label="Number of FOVs">
+                </Descriptions.Item>}
+                {userData.totalFOVs && <Descriptions.Item label="Number of FOVs:">
                     {userData.totalFOVs.toLocaleString("en")}
-                </Descriptions.Item>
-                <Descriptions.Item label="Number of tagged structures">
+                </Descriptions.Item>}
+                {userData.totalTaggedStructures && <Descriptions.Item label="Number of tagged structures:">
                     {userData.totalTaggedStructures}
-                </Descriptions.Item>
+                </Descriptions.Item>}
             </Descriptions>
             <Button type="primary" className={styles.loadButton}>
                 Load

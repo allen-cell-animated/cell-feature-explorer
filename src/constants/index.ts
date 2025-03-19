@@ -15,6 +15,7 @@ export const FOV_THUMBNAIL_PATH = "fovThumbnailPath";
 export const FOV_VOLUME_VIEWER_PATH = "fovVolumeviewerPath";
 export const THUMBNAIL_PATH = "thumbnailPath";
 export const VOLUME_VIEWER_PATH = "volumeviewerPath";
+export const TRANSFORM = "transform";
 
 export type FILE_INFO_KEY =
     | typeof CELL_ID_KEY
@@ -34,7 +35,6 @@ export const FILE_INFO_KEYS = Object.freeze([
     FOV_VOLUME_VIEWER_PATH,
 ]);
 
-export const CELL_COUNT_KEY = "cellCount";
 export const DOWNLOAD_CONFIG_TYPE_PROTEIN = "protein";
 export const DOWNLOAD_CONFIG_TYPE_SELECTION_SET = "selectionSet";
 export const MITOTIC_STAGE_KEY = "interphase-and-mitotic-stages"; // TODO: add display info for thumbnail cards to file info so this won't be needed on the front end
@@ -70,3 +70,26 @@ export const GENERAL_PLOT_SETTINGS = {
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
 };
+
+export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this dataset.";
+
+const BASE_PALETTE_COLORS = {
+    purple: "#8950d9",
+    darkGray: "#313131",
+    mediumDarkGray: "#4b4b4b",
+    mediumGray: "#6e6e6e",
+    lightGray: "#a0a0a0",
+    extraLightGray: "#d8d8d8",
+    brightGreen: "#b2d030",
+    brightBlue: "#00a0ff",
+    white: "#ffffff",
+} as const;
+
+export const PALETTE = {
+    ...BASE_PALETTE_COLORS,
+    headerGray: BASE_PALETTE_COLORS.mediumDarkGray,
+    collapseHeaderGray: "#464646",
+    collapseContentGray: BASE_PALETTE_COLORS.darkGray,
+    galleryBackground: BASE_PALETTE_COLORS.mediumDarkGray + "d1",
+    linkHover: BASE_PALETTE_COLORS.brightBlue,
+} as const;

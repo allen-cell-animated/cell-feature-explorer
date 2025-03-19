@@ -24,6 +24,8 @@
     margin-bottom: 20px;
 }
 
-.checkbox-container :global(.ant-checkbox-inner) {
+.checkbox-container
+    :global(.ant-checkbox):not(:global(.ant-checkbox-checked))
+    :global(.ant-checkbox-inner) {
     background-color: transparent;
 }

@@ -12,12 +12,7 @@ import {
 } from "lodash";
 import { createSelector } from "reselect";
 
-import {
-    ARRAY_OF_CELL_IDS_KEY,
-    CELL_ID_KEY,
-    FOV_ID_KEY,
-    GROUP_BY_KEY,
-} from "../../constants";
+import { ARRAY_OF_CELL_IDS_KEY, CELL_ID_KEY, FOV_ID_KEY, GROUP_BY_KEY } from "../../constants";
 import {
     getPerCellDataForPlot,
     getMeasuredFeaturesKeys,
@@ -75,6 +70,7 @@ export const getSelectedAlbumFileInfo = (state: State): FileInfo[] =>
 export const getDownloadRoot = (state: State): string => state.selection.downloadRoot;
 export const getVolumeViewerDataRoot = (state: State): string =>
     state.selection.volumeViewerDataRoot;
+export const getAlignActive = (state: State): boolean => state.selection.alignActive;
 
 export const getSelectedDatasetName = createSelector(
     [getSelectedDataset],
@@ -179,16 +175,17 @@ export const getCategoryGroupColorsAndNames = createSelector(
     }
 );
 
-// =============================================================================================== 
+// ===============================================================================================
 
 // MAIN PLOT SELECTORS
 // ===================
 
 // not truly a selector, it just seemed cleaner to make this one function instead of 3
 // (2 for each axis and one for the color by)
+// tooltip won't render if sent an empty string
 export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[]): string {
     const data = find(options, { key: key });
-    if (data) {
+    if (data && data.tooltip) {
         return data.tooltip;
     }
     return "";
@@ -203,9 +200,16 @@ export const getGroupingCategoryNamesAsArray = createSelector(
      * ["beta-actin", "beta-actin", "tom20", "tom20"]
      */
     [getPerCellDataForPlot, getGroupByFeatureDef],
-    (perCellDataForPlot: DataForPlot, groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef): string[] => {
+    (
+        perCellDataForPlot: DataForPlot,
+        groupByCategoryFeatureDef: DiscreteMeasuredFeatureDef
+    ): string[] => {
         const categoryKey: string = groupByCategoryFeatureDef.key;
-        return map(perCellDataForPlot.values[categoryKey], (ele: (number | null)): string => {
+        if (!categoryKey) {
+            console.log("Missing groupBy category key");
+            return [];
+        }
+        return map(perCellDataForPlot.values[categoryKey], (ele: number | null): string => {
             const numeralRepresentationOfTheCategory = ele !== null ? ele.toString() : "";
             return getCategoryString(groupByCategoryFeatureDef, numeralRepresentationOfTheCategory);
         });
@@ -435,6 +439,7 @@ export const getSelected3DCellFileInfo = createSelector(
             index = plotData.labels.cellIds.indexOf(selected3DCellId);
         }
         return {
+            index,
             ...fileInfo,
             [GROUP_BY_KEY]: arrayOfCategoryNames[index],
         };
@@ -445,6 +450,18 @@ export const getSelected3DCellFOV = createSelector(
     [getSelected3DCellFileInfo],
     (fileInfo: FileInfo): string => {
         return !isEmpty(fileInfo) ? fileInfo[FOV_ID_KEY].toString() : "";
+    }
+);
+
+export const getSelected3DCellHasTransform = createSelector(
+    [getSelected3DCellFileInfo],
+    (fileInfo): boolean => !!fileInfo.transform
+);
+
+export const getSelected3DCellFeatureData = createSelector(
+    [getSelected3DCellFileInfo, getMeasuredValues],
+    ({ index }, values): { [key: string]: number | null } => {
+        return index === undefined ? {} : mapValues(values, (data) => data[index]);
     }
 );
 

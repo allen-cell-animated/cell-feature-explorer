@@ -1,23 +1,12 @@
 const path = require("path");
 const fs = require("fs");
 
-const lessToJs = require("less-vars-to-js");
-const themeVariables = lessToJs(
-    fs.readFileSync(path.join(__dirname, "../src/styles/ant-vars.less"), "utf8")
-);
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const {
-    devServer,
-    Env,
-    stats
-} = require("./constants");
+const { devServer, Env, stats } = require("./constants");
 const getPluginsByEnv = require("./plugins");
 
-module.exports = ({
-    analyze,
-    env
-} = {}) => ({
+module.exports = ({ analyze, env } = {}) => ({
     devtool: env !== Env.PRODUCTION && "source-map",
     devServer: {
         static: {
@@ -33,7 +22,8 @@ module.exports = ({
     },
     mode: env === Env.PRODUCTION ? "production" : "development",
     module: {
-        rules: [{
+        rules: [
+            {
                 test: /\.(ts|js|tsx|jsx)$/,
                 include: [path.resolve(__dirname, "../", "src")],
                 exclude: /node_modules/,
@@ -48,7 +38,8 @@ module.exports = ({
                 test: /\.css/,
                 include: [path.resolve(__dirname, "../", "src")],
                 exclude: [path.resolve(__dirname, "../src", "style.css")],
-                use: [{
+                use: [
+                    {
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
@@ -82,9 +73,10 @@ module.exports = ({
                 test: /\.css/,
                 include: [
                     path.resolve(__dirname, "../", "node_modules"),
-                    path.resolve(__dirname, "../src", "style.css")
+                    path.resolve(__dirname, "../src", "style.css"),
                 ],
-                use: [{
+                use: [
+                    {
                         loader: MiniCssExtractPlugin.loader,
                     },
                     {
@@ -92,32 +84,7 @@ module.exports = ({
                     },
                 ],
             },
-            {
-                // treat less files from node_modules without any css module mangling
-                // i.e. no options in css-loader because we figure they are already
-                test: /\.less$/,
-                include: [path.resolve(__dirname, "../", "node_modules")],
-                use: [{
-                        loader: MiniCssExtractPlugin.loader,
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            importLoaders: 1,
-                        },
-                    },
-                    {
-                        loader: "less-loader",
-                        options: {
-                            lessOptions: {
-                                javascriptEnabled: true,
-                                modifyVars: themeVariables,
-                                math: "always",
-                            },
-                        },
-                    },
-                ],
-            },
+
             {
                 test: /\.(png|jpg|gif|svg)$/i,
                 type: "asset/resource",

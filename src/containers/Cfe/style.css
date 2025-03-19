@@ -24,6 +24,7 @@
     flex: 2;
     background-color: black;
     max-height: calc(100vh - var(--header-height) - var(--tab-bar-height));
+    padding-right: 120px;
 }
 
 .blur {
@@ -39,17 +40,8 @@
     margin-right: 120px;
 }
 
-.viewer-title {
-    margin-bottom: 0;
-}
-
-.viewer-title .label {
-    color: var(--text-gray);
-}
-
 .header-main {
     text-align: left;
-    background-color: var(--background-dim-gray);
     padding: 15px 50px;
     height: initial;
     display: flex;
@@ -64,30 +56,43 @@
 .viewer-menu-bar {
     position: relative;
     overflow: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-right: 30px;
+    background-color: var(--viewer-header-background-gray);
+    border-bottom: 1px solid var(--layout-borders);
 }
 
 .viewer-title-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    left: 450px;
-    right: 120px;
-    transition: left 0.2s;
+    height: 57px;
+    width: 100%;
+
+    & .viewer-title {
+        max-width: 100%;
+        overflow: ellipsis;
+        font-weight: 600;
+        margin-bottom: 0;
+        line-height: 20px;
+        height: auto;
+        white-space: nowrap;
+        margin-top: 0;
+
+        & .label {
+            color: var(--text-gray);
+        }
+    }
 }
 
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 1000px) {
     .viewer-title-container {
         justify-content: right;
         padding-right: 12px;
     }
-}
-
-.viewer-menu-bar-collapsed > .viewer-title-container {
-    left: 0;
 }
 
 :global(.allencell-header) {
@@ -106,11 +111,11 @@
 
 .sider {
     background-color: #4b4b4bd1;
-    height: 100vh;
-    position: fixed;
+    height: calc(100vh - var(--header-height));
+    position: absolute;
     right: 0;
-    z-index: 10;
-    padding-bottom: 0;
+    z-index: 100;
+    padding-bottom: 0 !important;
 }
 
 .sider :global(.ant-layout-sider-children) {
@@ -135,7 +140,7 @@
 
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger) {
     width: 20px !important;
-    height: 100%;
+    height: calc(100vh - var(--header-height));
     position: absolute;
     left: -20px;
     top: 0px;
@@ -153,6 +158,8 @@
 
 .sider :global(.ant-layout-sider-children) {
     padding-left: 10%;
+    overflow-y: auto;
+    overflow-x: clip;
 }
 
 .sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-children) {
@@ -162,7 +169,7 @@
 /*expanded */
 .sider :global(.ant-layout-sider-trigger) {
     width: 10% !important;
-    height: 100%;
+    height: calc(100vh - var(--header-height));
     position: absolute;
     left: -20px;
     top: 0px;
@@ -184,10 +191,23 @@
 
 .tabbed-menu {
     font-size: 19px;
+
+    /* Align tab labels and icons */
+    & :global(.ant-menu-title-content) {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        align-items: center;
+
+        & :first-child {
+            font-size: 20px;
+            padding: 3px 3px 0 0;
+        }
+    }
 }
 
-:global(.ant-menu-horizontal) {
-    border-bottom: 1px solid var(--border-gray);
+:global(.ant-menu) {
+    background-color: var(--viewer-header-background-gray);
 }
 
 :global(.ant-menu-horizontal .ant-menu-item) {
@@ -195,24 +215,6 @@
     margin-left: 30px;
     padding: 0 10px;
     color: #ffffff;
-}
-
-/* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item),
-:global(.ant-menu-horizontal > .ant-menu-submenu) {
-    border-bottom: 3px solid transparent;
-}
-
-/* Necessary for adjusting the thickness of the tab underline on hover/active */
-:global(.ant-menu-horizontal > .ant-menu-item:hover),
-:global(.ant-menu-horizontal > .ant-menu-submenu:hover),
-:global(.ant-menu-horizontal > .ant-menu-item-active),
-:global(.ant-menu-horizontal > .ant-menu-submenu-active),
-:global(.ant-menu-horizontal > .ant-menu-item-open),
-:global(.ant-menu-horizontal > .ant-menu-submenu-open),
-:global(.ant-menu-horizontal > .ant-menu-item-selected),
-:global(.ant-menu-horizontal > .ant-menu-submenu-selected) {
-    border-bottom: 3px solid #ffffff;
 }
 
 /* Icomoon icons */

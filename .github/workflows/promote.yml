@@ -1,30 +1,27 @@
 name: Promote to production AWS
-env: 
-  NODE_VERSION: '12.x'
+env:
+    NODE_VERSION: "16"
 on:
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
+    push:
+        # Sequence of patterns matched against refs/tags
+        tags:
+            - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  deploy:
-    name: Upload to Amazon S3
-    runs-on: ubuntu-latest
+    deploy:
+        name: Upload to Amazon S3
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+        steps:
+            - uses: actions/checkout@v3
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: us-west-2
 
-      - name: Copy files from staging bucket to production
-        run: aws s3 sync s3://staging.cfe.allencell.org s3://production.cfe.allencell.org --delete
-      - name: Clear cloudfront cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CFE_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
-
-
+            - name: Copy files from staging bucket to production
+              run: aws s3 sync s3://staging.cfe.allencell.org s3://production.cfe.allencell.org --delete
+            - name: Clear cloudfront cache
+              run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CFE_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"

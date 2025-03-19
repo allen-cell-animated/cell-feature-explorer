@@ -1,9 +1,11 @@
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
-import { FileInfo, MeasuredFeatureDef } from "../../state/metadata/types";
+import { MeasuredFeatureDef } from "../../state/metadata/types";
 import {
+    getAlignActive,
     getDownloadRoot,
     getGroupByFeatureDef,
+    getSelected3DCellFeatureData,
     getSelected3DCellFileInfo,
     getVolumeViewerDataRoot,
 } from "../../state/selection/selectors";
@@ -14,7 +16,7 @@ import {
 } from "../../state/util";
 
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { getViewerChannelSettings } from "../../state/metadata/selectors";
+import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
 export interface VolumeViewerProps {
@@ -25,12 +27,69 @@ export interface VolumeViewerProps {
     fovDownloadHref: string;
     cellDownloadHref: string;
     viewerChannelSettings?: ViewerChannelSettings;
+    transform?: {
+        translation: [number, number, number];
+        rotation: [number, number, number];
+    };
+    metadata?: { [key: string]: string | number | null };
     onControlPanelToggle?(collapsed: boolean): void;
 }
 
+function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFeatureDef): string {
+    const { unit, discrete } = featureDef;
+
+    if (featureValue === null || featureValue === undefined) {
+        return `${featureValue}`;
+    }
+    if (discrete) {
+        if (!featureDef.options) {
+            return featureValue.toString();
+        }
+        return `${featureDef.options[featureValue.toString()]?.name}`;
+    }
+
+    /** Replace these unit names with a shorter symbol */
+    const unitSymbols: Record<string, string> = {
+        degrees: "deg",
+    };
+    /** Do not include these units at all */
+    const noSymbolUnits = ["unitless", "stage"];
+
+    if (unit && !noSymbolUnits.includes(unit)) {
+        return `${featureValue} ${unitSymbols[unit] || unit}`;
+    }
+    return `${featureValue}`;
+}
+
+const getCellMetadata = createSelector(
+    [getSelected3DCellFeatureData, getMeasuredFeaturesDefs],
+    (featureData, featureDefs) => {
+        const metadata: { [key: string]: number | string | null } = {};
+        for (const featureDef of featureDefs) {
+            const featureValue = featureData[featureDef.key];
+            metadata[featureDef.displayName] = formatFeatureValue(featureValue, featureDef);
+        }
+        return { metadata };
+    }
+);
+
 export const getPropsForVolumeViewer = createSelector(
-    [getSelected3DCellFileInfo, getVolumeViewerDataRoot, getDownloadRoot, getViewerChannelSettings],
-    (fileInfo: FileInfo, dataRoot, downloadRoot, viewerChannelSettings): VolumeViewerProps => {
+    [
+        getSelected3DCellFileInfo,
+        getVolumeViewerDataRoot,
+        getDownloadRoot,
+        getViewerChannelSettings,
+        getAlignActive,
+        getCellMetadata,
+    ],
+    (
+        fileInfo,
+        dataRoot,
+        downloadRoot,
+        viewerChannelSettings,
+        alignActive,
+        cellMetadata
+    ): VolumeViewerProps => {
         if (isEmpty(fileInfo)) {
             return {} as VolumeViewerProps;
         }
@@ -70,16 +129,17 @@ export const getPropsForVolumeViewer = createSelector(
         if (!dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
-        const props = {
+        return {
             cellId: cellId,
             baseUrl: dataRoot,
             cellPath: mainCellPath,
             fovPath: parentCellPath,
             cellDownloadHref: mainDownloadHref,
             fovDownloadHref: parentDownloadHref,
+            transform: alignActive ? fileInfo.transform : undefined,
+            metadata: cellMetadata.metadata,
             viewerChannelSettings,
         };
-        return props;
     }
 );
 
@@ -97,10 +157,6 @@ export const getViewerHeader = createSelector(
         const cellId = fileInfo.volumeviewerPath ? fileInfo.CellId : fileInfo.FOVId;
         label = groupByFeatureDef.displayName;
         value = fileInfo[GROUP_BY_KEY] || "";
-        return {
-            cellId,
-            label,
-            value,
-        };
+        return { cellId, label, value };
     }
 );

@@ -1,7 +1,5 @@
 import { SelectedGroups } from "..";
-import {
-    CELL_ID_KEY,
-} from "../../constants";
+import { CELL_ID_KEY } from "../../constants";
 import { FileInfo } from "../metadata/types";
 
 export interface SelectionStateBranch {
@@ -28,6 +26,7 @@ export interface SelectionStateBranch {
     thumbnailRoot: string;
     downloadRoot: string;
     volumeViewerDataRoot: string;
+    alignActive: boolean;
 }
 
 export interface CellDataArrays {
@@ -70,7 +69,7 @@ export interface DeselectGroupOfPointsAction {
     type: string;
 }
 
-export interface  SelectPointAction {
+export interface SelectPointAction {
     payload: {
         id: string;
         index?: number;
@@ -106,7 +105,7 @@ export interface SelectedPointData {
     index: number;
     thumbnailPath: string;
     groupBy?: string;
-}   
+}
 
 export interface ChangeHoveredPointAction {
     payload: SelectedPointData;
@@ -162,7 +161,7 @@ export interface SelectArrayOfPointsAction {
 export interface SetHoveredCardAction {
     payload: SelectedPointData;
     type: string;
-};
+}
 
 export interface ClearDatasetAction {
     type: string;

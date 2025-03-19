@@ -73,7 +73,8 @@ export function convertSingleImageIdToDownloadId(id: string): string {
 }
 
 export function formatDownloadOfIndividualFile(root: string, id: string): string {
-    return `${root}&id=${id}`;
+    // if no downloadRoot is present, then return empty string
+    return root === "" ? "" : `${root}&id=${id}`;
 }
 
 export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
@@ -93,6 +94,9 @@ export function getCategoryString(
 ): string {
     if (!optionKey) {
         return "";
+    }
+    if (!groupByFeatureDef.options) {
+        return "" + optionKey;
     }
     const groupCategoryInfo = groupByFeatureDef.options[optionKey];
     // key is the most specific but only used if the names are not unique.

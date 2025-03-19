@@ -45,16 +45,24 @@ const stateWithSelections: State = {
 };
 describe("Viewer selectors", () => {
     describe("getPropsForVolumeViewer", () => {
-        it("for a cell with both sc and fov data, returns all the data in a format that can be passed to thee viewer as props ", () => {
+        it("for a cell with both sc and fov data, returns all the data in a format that can be passed to the viewer as props", () => {
             const result = getPropsForVolumeViewer(stateWithSelections);
             expect(result).to.deep.equal({
                 cellId: "1",
                 baseUrl: "url/",
-                cellDownloadHref: "&id=C1",
+                cellDownloadHref: "dlurl/&id=C1",
                 cellPath: "volumeviewerPath",
-                fovDownloadHref: "&id=F12762",
+                fovDownloadHref: "dlurl/&id=F12762",
                 fovPath: "fovVolumeviewerPath",
                 viewerChannelSettings: {},
+                metadata: {
+                    "Anaphase segmentation complete": "Complete",
+                    "Apical Proximity": "-0.25868651080317",
+                    "Cell Surface area": "702.3191 µm²",
+                    "Labeled Structure": "Matrix adhesions",
+                    "Missing data": "null",
+                },
+                transform: undefined,
             });
         });
         it("if there is no single cell data, returns fov info as main info", () => {
@@ -70,11 +78,19 @@ describe("Viewer selectors", () => {
             expect(result).to.deep.equal({
                 cellId: "12762",
                 baseUrl: "url/",
-                cellDownloadHref: "&id=F12762",
+                cellDownloadHref: "dlurl/&id=F12762",
                 cellPath: "fovVolumeviewerPath",
                 fovDownloadHref: "",
                 fovPath: "",
                 viewerChannelSettings: {},
+                metadata: {
+                    "Anaphase segmentation complete": "Incomplete",
+                    "Apical Proximity": "-0.1",
+                    "Cell Surface area": "702.3191 µm²",
+                    "Labeled Structure": "Actin filaments",
+                    "Missing data": "null",
+                },
+                transform: undefined,
             });
         });
         it("if dataset has channelNameMapping data, it will be included", () => {

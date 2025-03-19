@@ -1,12 +1,16 @@
-import { Button, Dropdown, Icon, Menu } from "antd";
+import { Button, Dropdown, MenuProps, Tooltip } from "antd";
+import { CheckOutlined, DownloadOutlined } from "@ant-design/icons";
+import { ItemType } from "antd/es/menu/interface";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { ClickParam } from "antd/es/menu";
+import { MenuInfo } from "rc-menu/lib/interface";
+
 import { includes, uniq } from "lodash";
 import React, { MouseEvent } from "react";
 
 import { DownloadConfig } from "../../state/selection/types";
 
 import styles from "./style.css";
+import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 interface DownloadDropDownMenuProps {
     color: string;
@@ -17,6 +21,7 @@ interface DownloadDropDownMenuProps {
     closeable?: boolean;
     downloadConfig: DownloadConfig;
     downloadUrls: string[];
+    downloadRoot: string;
     hideable?: boolean;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
@@ -43,6 +48,9 @@ export default class DownloadDropDownMenu extends React.Component<
         downloadUrls: [],
         hideable: true,
     };
+
+    private popupContainerRef: React.RefObject<HTMLDivElement>;
+
     constructor(props: DownloadDropDownMenuProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
@@ -57,6 +65,8 @@ export default class DownloadDropDownMenu extends React.Component<
                 : {},
             downloadMenuVisible: false,
         };
+
+        this.popupContainerRef = React.createRef();
     }
 
     public onClose({ currentTarget }: MouseEvent<HTMLButtonElement>) {
@@ -73,7 +83,7 @@ export default class DownloadDropDownMenu extends React.Component<
         }
     }
 
-    public saveDownloadUrl(clickedLink: ClickParam) {
+    public saveDownloadUrl(info: MenuInfo) {
         const { downloadConfig } = this.props;
         const { alreadyDownloaded } = this.state;
         const thisAlreadyDownloaded = alreadyDownloaded[downloadConfig.key];
@@ -81,14 +91,14 @@ export default class DownloadDropDownMenu extends React.Component<
             this.setState({
                 alreadyDownloaded: {
                     ...alreadyDownloaded,
-                    [downloadConfig.key]: uniq([...thisAlreadyDownloaded, clickedLink.key]),
+                    [downloadConfig.key]: uniq([...thisAlreadyDownloaded, info.key]),
                 },
             });
         } else {
             this.setState({
                 alreadyDownloaded: {
                     ...alreadyDownloaded,
-                    [downloadConfig.key]: [clickedLink.key],
+                    [downloadConfig.key]: [info.key],
                 },
             });
         }
@@ -109,39 +119,56 @@ export default class DownloadDropDownMenu extends React.Component<
     }
 
     public render() {
-        const { id, downloadUrls, downloadConfig } = this.props;
+        const { id, downloadUrls, downloadConfig, downloadRoot } = this.props;
         const alreadyDownloaded = this.state.alreadyDownloaded[downloadConfig.key];
-        const menu = (
-            <Menu className={styles.menu} onClick={this.handleMenuClick}>
-                {downloadUrls.map((url, index) => (
-                    <Menu.Item key={index} onClick={this.saveDownloadUrl}>
+
+        // TODO: Parts of list are cut off by the edges of the screen when there are
+        // too many items
+        const menuItems: ItemType[] = downloadUrls.map((url, index) => {
+            return {
+                key: index,
+                onClick: this.saveDownloadUrl,
+                label: (
+                    <>
                         {includes(alreadyDownloaded, index.toString()) ? (
-                            <Icon type="check" />
+                            <CheckOutlined />
                         ) : (
-                            <Icon type="download" />
+                            <DownloadOutlined />
                         )}
                         <a href={url}> data chunk {index + 1} </a>
-                    </Menu.Item>
-                ))}
-            </Menu>
-        );
+                    </>
+                ),
+            };
+        });
+        const menu: MenuProps = { items: menuItems, onClick: this.handleMenuClick };
+
+        // we can not check for downloadUrls.length because there are some conditions where
+        // downloadUrls is empty but we still want to show the download button due to
+        // initialization order in the app / React lifecycle concerns.
+        const noDownloads = downloadRoot === "";
         return (
-            <div className={styles.container}>
-                <Dropdown
-                    overlay={menu}
-                    trigger={["click"]}
-                    onVisibleChange={this.handleDownloadMenuVisibleChange}
-                    visible={this.state.downloadMenuVisible}
-                >
-                    <Button
-                        size="small"
-                        className="ant-dropdown-link"
-                        id={id}
-                        onClick={this.onDownload}
+            <div className={styles.container} ref={this.popupContainerRef}>
+                <Tooltip title={noDownloads ? NO_DOWNLOADS_TOOLTIP : null}>
+                    <Dropdown
+                        menu={menu}
+                        trigger={["click"]}
+                        onOpenChange={this.handleDownloadMenuVisibleChange}
+                        open={this.state.downloadMenuVisible}
+                        placement="bottomRight"
+                        autoAdjustOverflow={false}
+                        getPopupContainer={() => this.popupContainerRef.current || document.body}
                     >
-                        <Icon type="download" />
-                    </Button>
-                </Dropdown>
+                        <Button
+                            size="small"
+                            className={noDownloads ? styles.disabledDownload : "ant-dropdown-link"}
+                            id={id}
+                            onClick={noDownloads ? undefined : this.onDownload}
+                            disabled={noDownloads}
+                        >
+                            <DownloadOutlined />
+                        </Button>
+                    </Dropdown>
+                </Tooltip>
             </div>
         );
     }

@@ -1,9 +1,10 @@
 import React from "react";
-import { Row, Col, Layout } from "antd";
+import { Row, Col, Layout, Descriptions } from "antd";
+const { Content } = Layout;
 
 import MegasetCard from "../../components/MegasetCard";
 import { Megaset } from "../../state/image-dataset/types";
-const { Content } = Layout;
+import downloadData, { DownloadInfo } from "./download-data";
 
 import styles from "./style.css";
 
@@ -14,39 +15,38 @@ interface LandingPageProps {
 
 const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
     <Layout>
-        <div className={styles.headerMain}>
-            View any of over 200,000 3D cell images and plot cells by features such as organelle
-            volume
-        </div>
+        <Row className={styles.lightSection}>
+            <h1 className={styles.subtitle}>Welcome to Cell Feature Explorer</h1>
+
+            <Col className={styles.sectionContent}>
+                <div className={styles.paragraph}>
+                    The Cell Feature Explorer (CFE) is an online tool to access segmented and
+                    processed images of over 200,000 cells as curated datasets. Each dataset has
+                    specific measured features, such as cellular volume and mitosis stage that are
+                    described in the user interface and detailed in publications associated with
+                    each dataset. The CFE is composed of a plot, where each cell is graphed by these
+                    measured features, and a 3D viewer for in-depth visual analysis.
+                </div>
+            </Col>
+        </Row>
         <Layout>
             <Content className={styles.content}>
-                <h2 className={styles.subtitle}>Load a dataset to get started</h2>
-                <Row 
-                    type="flex"
-                    className={styles.section}
-                >
-                    {megasets.map((megaset) => (
-                        <MegasetCard key={megaset.name} megaset={megaset} handleSelectDataset={handleSelectDataset} />
-                    ))}
-                    <Col className={styles.caption}>
-                        The Cell Feature Explorer is an online tool to access our complete database
-                        of segmented and processed cells as curated datasets. We have annotated each
-                        of our cells with measured features, such as cellular volume and what stage
-                        of mitosis it is in. The tool is composed of a plot and a 3D viewer. In the
-                        plot each cell is graphed by its measured features described in our journal
-                        publications. To access older data sets, see our{" "}
-                        <a
-                            target="_blank"
-                            rel="noreferrer"
-                            href="https://www.allencell.org/data-downloading.html"
-                        >
-                            Data Downloading page
-                        </a>
-                        .
-                    </Col>
+                <Row className={styles.section}>
+                    <div className={styles.sectionContent}>
+                        <h2 className={styles.subtitle}>Load a dataset to get started</h2>
+                        <Row className={styles.cardContainer}>
+                            {megasets.map((megaset: Megaset) => (
+                                <MegasetCard
+                                    key={megaset.name}
+                                    megaset={megaset}
+                                    handleSelectDataset={handleSelectDataset}
+                                />
+                            ))}
+                        </Row>
+                    </div>
                 </Row>
                 <Row className={styles.lightSection}>
-                    <Col className={styles.lightSectionContent}>
+                    <Col className={styles.sectionContent}>
                         <h2 className={styles.subtitle}>Cell features in our data </h2>
                         <div className={styles.paragraph}>
                             hiPS cells from the{" "}
@@ -88,6 +88,46 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                             ) are made available for plotting at the top of the CFE tool page. The
                             beautiful cells and the FOVs from which they were segmented can be
                             explored in a 3D viewer at the bottom of the CFE tool page.
+                        </div>
+                    </Col>
+                </Row>
+                <Row className={styles.section}>
+                    <Col className={styles.sectionContent}>
+                        <h2 className={styles.subtitle}>Download cell feature data (via Quilt)</h2>
+                        <Row className={styles.section}>
+                            <Descriptions
+                                layout="horizontal"
+                                colon={false}
+                                column={1}
+                                style={{ margin: "10px 0" }}
+                            >
+                                <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
+
+                                {downloadData.map((downloadInfo: DownloadInfo) => {
+                                    return (
+                                        <>
+                                            <Descriptions.Item label={downloadInfo.date}>
+                                                {" "}
+                                                <a
+                                                    target="_blank"
+                                                    href={downloadInfo.link}
+                                                    rel="noreferrer"
+                                                >
+                                                    {downloadInfo.title}
+                                                </a>
+                                            </Descriptions.Item>
+                                        </>
+                                    );
+                                })}
+                            </Descriptions>
+                        </Row>
+                        <div className={styles.paragraph}>
+                            Once you navigate to Quilt, you can follow the instructions provided to
+                            access the cell feature data. If you need assistance, please visit the{" "}
+                            <a href="https://forum.allencell.org/tags/c/software-code/11/cell-feature-explorer">
+                                Allen Cell Discussion Forum
+                            </a>
+                            .
                         </div>
                     </Col>
                 </Row>

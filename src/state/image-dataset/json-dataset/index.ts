@@ -5,18 +5,17 @@ import {
     CELL_ID_KEY,
     FILE_INFO_KEY,
     ARRAY_OF_CELL_IDS_KEY,
-    CELL_COUNT_KEY,
 } from "../../../constants";
 
 import {
     DataForPlot,
     FileInfo,
     MappingOfMeasuredValuesArrays,
+    MeasuredFeatureDef,
 } from "../../metadata/types";
 
-import { ImageDataset } from "../types";
+import { ImageDataset, DatasetMetaData, Megaset, InitialDatasetSelections } from "../types";
 import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-import { find } from "lodash";
 
 interface DatasetInfo {
     name: string;
@@ -34,16 +33,16 @@ interface DatasetInfo {
     volumeViewerDataRoot: string;
     xAxis: {
         default: string;
-    }
+    };
     yAxis: {
         default: string;
-    }
+    };
     colorBy: {
         default: string;
-    }
+    };
     groupBy: {
         default: string;
-    }
+    };
     featuresDisplayOrder: string[];
     featuresDataOrder: string[];
 }
@@ -52,8 +51,7 @@ class JsonRequest implements ImageDataset {
     private listOfDatasetsDoc: string;
     private fileInfo: { [key: string]: FileInfo } = {};
     private viewerChannelSettings?: ViewerChannelSettings;
-
-    private featureDefsPromise?: Promise<any[]>;
+    private featureDefs?: MeasuredFeatureDef[];
 
     private dataPromise?: Promise<DataForPlot>;
 
@@ -92,31 +90,107 @@ class JsonRequest implements ImageDataset {
 
         // for now this particular file must be kept up to date.
         // dev-aics-dtp-001/cfedata is the designated repository of internal cfe data sets
+        // this datasets.json contains a list of the names of subdirectories (strings),
+        // each of which is expected to contain a dataset.json file
         this.listOfDatasetsDoc =
-            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/datasets.json";
+            "http://dev-aics-dtp-001.corp.alleninstitute.org/cfedata/cell-feature-data/datasets.json";
     }
 
-    public getAvailableDatasets = () => {
-        return axios
-            .get(`${this.listOfDatasetsDoc}`)
-            .then((metadata: AxiosResponse) => metadata.data);
+    public getAvailableDatasets = async (): Promise<Megaset[]> => {
+        const metadata: AxiosResponse = await axios.get(`${this.listOfDatasetsDoc}`);
+        const datadir = this.listOfDatasetsDoc.substring(
+            0,
+            this.listOfDatasetsDoc.lastIndexOf("/")
+        );
+
+        return Promise.all(
+            (metadata.data as string[]).map(async (datasetdir) => {
+                const datasetdirpath = `${datadir}/${datasetdir}`;
+                const fullurl = `${datasetdirpath}/dataset.json`;
+                const dataset: AxiosResponse = await axios.get(fullurl);
+                const megaset = dataset.data as Megaset;
+                if (megaset.datasets) {
+                    ///////////////////////////
+                    // TODO handle megasets from json flat file data
+                    ///////////////////////////
+                    console.log("has datasets; unexpected; dropping");
+                    return {} as Megaset;
+                } else {
+                    // If there is no `datasets` field, then megaset is a single dataset.
+                    // We need to convert it into a Megaset that has itself as the only dataset.
+                    const dataset = megaset as unknown as DatasetMetaData;
+                    const id = `${megaset.name}_v${dataset.version}`;
+                    const megasetInfo = {
+                        ...megaset,
+                        publications: megaset.publications || [],
+                        extra: megaset.extra || "",
+                        name: id,
+                        datasets: {
+                            [id]: {
+                                ...dataset,
+                                id: id,
+                                image: `${datasetdirpath}/${dataset.image}`,
+                                manifest: `${datasetdirpath}/dataset.json`,
+                            },
+                        },
+                    } as Megaset;
+
+                    if (!megasetInfo.dateCreated) {
+                        console.error(
+                            "dataset has no dateCreated and jsonDataset doesn't know how to create one"
+                        );
+                    }
+
+                    return megasetInfo;
+                }
+            })
+        );
     };
 
-    public selectDataset = (manifestPath: string) => {
+    private fixupPaths = (datasetInfo: DatasetInfo, datadir: string) => {
+        if (datasetInfo.albumPath && !datasetInfo.albumPath.startsWith("http")) {
+            datasetInfo.albumPath = `${datadir}/${datasetInfo.albumPath}`;
+        }
+        if (datasetInfo.featureDefsPath && !datasetInfo.featureDefsPath.startsWith("http")) {
+            datasetInfo.featureDefsPath = `${datadir}/${datasetInfo.featureDefsPath}`;
+        }
+        if (datasetInfo.featuresDataPath && !datasetInfo.featuresDataPath.startsWith("http")) {
+            datasetInfo.featuresDataPath = `${datadir}/${datasetInfo.featuresDataPath}`;
+        }
+        if (datasetInfo.viewerSettingsPath && !datasetInfo.viewerSettingsPath.startsWith("http")) {
+            datasetInfo.viewerSettingsPath = `${datadir}/${datasetInfo.viewerSettingsPath}`;
+        }
+        if (datasetInfo.thumbnailRoot && !datasetInfo.thumbnailRoot.startsWith("http")) {
+            datasetInfo.thumbnailRoot = `${datadir}/${datasetInfo.thumbnailRoot}`;
+        }
+        if (datasetInfo.downloadRoot && !datasetInfo.downloadRoot.startsWith("http")) {
+            datasetInfo.downloadRoot = `${datadir}/${datasetInfo.downloadRoot}`;
+        }
+        if (
+            datasetInfo.volumeViewerDataRoot &&
+            !datasetInfo.volumeViewerDataRoot.startsWith("http")
+        ) {
+            datasetInfo.volumeViewerDataRoot = `${datadir}/${datasetInfo.volumeViewerDataRoot}`;
+        }
+    };
+    public selectDataset = (manifestPath: string): Promise<InitialDatasetSelections> => {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
+
+        const datadir = manifestPath.substring(0, manifestPath.lastIndexOf("/"));
 
         return axios.get(`${manifestPath}`).then((metadata: AxiosResponse) => {
             const { data } = metadata;
             this.datasetInfo = data as DatasetInfo;
+            this.fixupPaths(this.datasetInfo, datadir);
             return {
-                defaultXAxis: data.xAxis.default,
-                defaultYAxis: data.yAxis.default,
-                defaultColorBy: data.colorBy.default,
-                defaultGroupBy: data.groupBy.default,
-                thumbnailRoot: data.thumbnailRoot,
-                downloadRoot: data.downloadRoot,
-                volumeViewerDataRoot: data.volumeViewerDataRoot,
+                defaultXAxis: data.xAxis?.default || "",
+                defaultYAxis: data.yAxis?.default || "",
+                defaultColorBy: data.colorBy?.default || "",
+                defaultGroupBy: data.groupBy?.default || "",
+                thumbnailRoot: data.thumbnailRoot || "",
+                downloadRoot: data.downloadRoot || "",
+                volumeViewerDataRoot: data.volumeViewerDataRoot || "",
             };
         });
     };
@@ -131,25 +205,27 @@ class JsonRequest implements ImageDataset {
         }
         return this.getJson(this.datasetInfo.viewerSettingsPath).then((data) => {
             this.viewerChannelSettings = data as ViewerChannelSettings;
+            // fixup for missing data
+            if (!this.viewerChannelSettings.groups) {
+                this.viewerChannelSettings.groups = [
+                    { name: "Channels", channels: [{ match: "(.+)", enabled: true }] },
+                ];
+            }
             return this.viewerChannelSettings;
         });
     };
 
-    public getMeasuredFeatureDefs = () => {
-        if (this.featureDefsPromise) {
-            return this.featureDefsPromise;
+    public getMeasuredFeatureDefs = async () => {
+        if (this.featureDefs) {
+            return Promise.resolve(this.featureDefs);
         }
-
-        // make sure we have the feature defs first.
-        this.featureDefsPromise = this.getJson(this.datasetInfo.featureDefsPath).then(
-            (featureDefs) => {
-                return featureDefs;
-            }
-        );
-        return this.featureDefsPromise;
+        return this.getJson(this.datasetInfo.featureDefsPath).then((featureDefs) => {
+            this.featureDefs = featureDefs as MeasuredFeatureDef[];
+            return this.featureDefs;
+        });
     };
 
-    public getFeatureData = () => {
+    public getFeatureData = async () => {
         if (this.dataPromise) {
             return this.dataPromise;
         }
@@ -157,91 +233,78 @@ class JsonRequest implements ImageDataset {
         // ASSUME cell line defs AND feature defs are already loaded by the time the feature data arrives
 
         let featureKeys = [];
-        return this.getMeasuredFeatureDefs().then((featureDefs) => {
-            featureKeys = featureDefs.map((ele) => ele.key);
-            if (
-                !this.datasetInfo.featuresDataOrder ||
-                this.datasetInfo.featuresDataOrder.length === 0
-            ) {
-                this.datasetInfo.featuresDataOrder = featureKeys;
-            }
-            // if display order is not provided, then use data order as display order.
-            if (this.datasetInfo.featuresDisplayOrder.length === 0) {
-                this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
-            }
-            const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
-                (acc, featureName: string) => {
-                    const initArray: number[] = [];
-                    acc[featureName] = initArray;
-                    return acc;
-                },
-                {} as MappingOfMeasuredValuesArrays
-            );
+        const featureDefs = await this.getMeasuredFeatureDefs();
+        featureKeys = featureDefs.map((ele) => ele.key);
+        if (
+            !this.datasetInfo.featuresDataOrder ||
+            this.datasetInfo.featuresDataOrder.length === 0
+        ) {
+            this.datasetInfo.featuresDataOrder = featureKeys;
+        }
+        // if display order is not provided, then use data order as display order.
+        if (this.datasetInfo.featuresDisplayOrder.length === 0) {
+            this.datasetInfo.featuresDisplayOrder = this.datasetInfo.featuresDataOrder.slice();
+        }
+        const dataMappedByMeasuredFeatures = this.datasetInfo.featuresDisplayOrder.reduce(
+            (acc, featureName: string) => {
+                const initArray: number[] = [];
+                acc[featureName] = initArray;
+                return acc;
+            },
+            {} as MappingOfMeasuredValuesArrays
+        );
 
-            const thumbnails: string[] = [];
-            const ids: string[] = [];
-            const indices: number[] = [];
-            this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
-                (featureDataArray) => {
-                    featureDataArray.forEach((el: any, index: number) => {
-                        indices.push(index);
-                        // FILE INFO
-                        // number of file info property names must be same as number of file_info entries in data
-                        if (FILE_INFO_KEYS.length !== el.file_info.length) {
-                            throw new Error("Bad number of file_info entries in data");
-                        }
-                        // convert file_info array to obj
-                        const fileInfo = {} as FileInfo;
-                        el.file_info.forEach((f: string, i: number) => {
-                            const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
+        const thumbnails: string[] = [];
+        const ids: string[] = [];
+        const indices: number[] = [];
+        this.dataPromise = this.getJson(this.datasetInfo.featuresDataPath).then(
+            (featureDataArray) => {
+                featureDataArray.forEach((el: any, index: number) => {
+                    indices.push(index);
+                    // FILE INFO
+                    // number of file info property names must be same as number of file_info entries in data
+                    if (FILE_INFO_KEYS.length !== el.file_info.length) {
+                        throw new Error("Bad number of file_info entries in data");
+                    }
+                    // convert file_info array to obj
+                    const fileInfo = {} as FileInfo;
+                    el.file_info.forEach((f: string, i: number) => {
+                        const key = FILE_INFO_KEYS[i] as FILE_INFO_KEY;
 
-                            fileInfo[key] = f as never;
-                        });
-                        this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
-
-                        // FEATURE DATA
-                        // number of feature defs must be same as number of features
-                        if (featureDefs.length !== el.features.length) {
-                            throw new Error("Bad number of feature entries in data");
-                        }
-
-                        const groupByFeatureDef = find(featureDefs, {
-                            key: this.datasetInfo.groupBy.default,
-                        });
-
-            
-                        // increment count in feature def
-                        if (groupByFeatureDef[CELL_COUNT_KEY] !== undefined) {
-                            (groupByFeatureDef[CELL_COUNT_KEY] as number)++;
-                        } else {
-                            groupByFeatureDef[CELL_COUNT_KEY] = 1;
-                        }
-
-                        el.features.forEach((value: number, index: number) => {
-                            const arrayOfValues = dataMappedByMeasuredFeatures[
-                                this.datasetInfo.featuresDataOrder[index]
-                            ] as (number | null)[];
-                            if (isNaN(value)) {
-                                arrayOfValues.push(null);
-                            } else {
-                                arrayOfValues.push(Number(value));
-                            }
-                        }, {});
-                        thumbnails.push(fileInfo.thumbnailPath);
-                        ids.push(fileInfo[CELL_ID_KEY].toString());
+                        fileInfo[key] = f as never;
                     });
-                    return {
-                        indices: indices,
-                        values: dataMappedByMeasuredFeatures,
-                        labels: {
-                            thumbnailPaths: thumbnails,
-                            [ARRAY_OF_CELL_IDS_KEY]: ids,
-                        },
-                    };
-                }
-            );
-            return this.dataPromise;
-        });
+                    this.fileInfo[fileInfo[CELL_ID_KEY].toString()] = fileInfo;
+
+                    // FEATURE DATA
+                    // number of feature defs must be same as number of features
+                    if (featureDefs.length !== el.features.length) {
+                        throw new Error("Bad number of feature entries in data");
+                    }
+
+                    el.features.forEach((value: number, index: number) => {
+                        const arrayOfValues = dataMappedByMeasuredFeatures[
+                            this.datasetInfo.featuresDataOrder[index]
+                        ] as (number | null)[];
+                        if (isNaN(value)) {
+                            arrayOfValues.push(null);
+                        } else {
+                            arrayOfValues.push(Number(value));
+                        }
+                    }, {});
+                    thumbnails.push(fileInfo.thumbnailPath);
+                    ids.push(fileInfo[CELL_ID_KEY].toString());
+                }, this);
+                return {
+                    indices: indices,
+                    values: dataMappedByMeasuredFeatures,
+                    labels: {
+                        thumbnailPaths: thumbnails,
+                        [ARRAY_OF_CELL_IDS_KEY]: ids,
+                    },
+                };
+            }
+        );
+        return this.dataPromise;
     };
 
     public getFileInfoByCellId = (cellId: string) => {
