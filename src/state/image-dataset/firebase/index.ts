@@ -12,7 +12,7 @@ import { FileInfo, MappingOfMeasuredValuesArrays, MeasuredFeatureDef } from "../
 import { Album } from "../../types";
 import { ImageDataset, DatasetMetaData, Megaset } from "../types";
 import { firestore } from "./configure-firebase";
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
 
 class FirebaseRequest implements ImageDataset {
     private collectionRef: DocumentReference;

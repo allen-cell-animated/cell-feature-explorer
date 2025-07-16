@@ -1,6 +1,6 @@
 import { Timestamp } from "@firebase/firestore-types";
 
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
 
 import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";

@@ -36,7 +36,7 @@ import {
     getSelected3DCell,
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {

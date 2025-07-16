@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import { Album } from "../..";
 import * as Papa from "papaparse";
 import {

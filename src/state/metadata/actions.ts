@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
 
 import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";

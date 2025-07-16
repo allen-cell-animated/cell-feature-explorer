@@ -18,7 +18,7 @@
         "lint": "eslint src/**/*.{ts,tsx}",
         "typeCheck": "tsc -p tsconfig.json --noEmit",
         "test": "cross-env BABEL_ENV=commonjs TS_NODE_FILES=true TS_NODE_PROJECT=tsconfig.commonjs.json NODE_ENV=production mocha src/**/*.test.ts",
-        "update-viewer": "npm i @aics/web-3d-viewer@latest",
+        "update-viewer": "npm i @aics/vole-app@latest",
         "all-checks": "npm run test && npm run typeCheck && npm run lint"
     },
     "author": "",
@@ -84,7 +84,6 @@
     },
     "dependencies": {
         "@aics/browsing-context-messaging": "~1.1",
-        "@aics/web-3d-viewer": "^2.10.4",
         "@ant-design/icons": "^4.2.2",
         "antd": "^5.17.4",
         "axios": "^1.7.7",
