@@ -32,9 +32,7 @@ const fileInfo: FileInfo[] = [
 ];
 
 const stateWithSelections: State = {
-    metadata: {
-        ...mockState.metadata,
-    },
+    ...mockState,
     selection: {
         ...mockState.selection,
         cellSelectedFor3D: "1",

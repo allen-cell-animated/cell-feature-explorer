@@ -33,7 +33,7 @@ import {
     FileInfo,
 } from "./types";
 
-export const initialState = {
+export const initialState: MetadataStateBranch = {
     albums: [],
     cellFileInfo: [] as FileInfo[],
     isLoading: true,
@@ -51,7 +51,8 @@ export const initialState = {
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_DATA_FOR_PLOT]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
+        accepts: (action: AnyAction): action is ReceiveAction =>
+            action.type === RECEIVE_DATA_FOR_PLOT,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,

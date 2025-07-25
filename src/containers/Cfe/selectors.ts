@@ -126,7 +126,10 @@ export const getPropsForVolumeViewer = createSelector(
                 convertFullFieldIdToDownloadId(fileInfo ? fileInfo.FOVId : "")
             );
         }
-        if (!dataRoot.endsWith("/")) {
+
+        // Discard data root if it's an empty string so it doesn't add a "/" to
+        // the front of all HTTP(S) URLs. (ex: "/http://example.com" is invalid)
+        if (dataRoot !== "" && !dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
         return {
