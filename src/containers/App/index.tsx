@@ -15,7 +15,6 @@ import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
 import { LoadCsvDatasetAction, Megaset } from "../../state/image-dataset/types";
 import { RequestAction } from "../../state/metadata/types";
-
 const { Header } = Layout;
 import styles from "./style.css";
 
@@ -27,6 +26,7 @@ interface AppProps {
     requestAvailableDatasets: () => RequestAction;
     megasets: Megaset[];
     loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
+    csvUrl: string;
 }
 
 const { darkAlgorithm } = theme;
@@ -84,14 +84,11 @@ const configProviderTheme = {
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
-        // Get current url and see if it has a file ID query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const fileId = urlParams.get("fileId");
-        if (fileId) {
-            const url = `http://127.0.0.1:5000/get-file/${fileId}`;
-            console.log("Loading CSV file with ID:", fileId, "from URL:", url);
-            fetch(url).then((response) => {
+        // TODO: Move this into an action?
+        if (this.props.csvUrl) {
+            fetch(this.props.csvUrl).then((response) => {
                 if (response.ok) {
+                    // TODO: Wrap this in a try/catch
                     response.text().then((fileText) => {
                         this.props.loadCsvDataset(fileText);
                     });
@@ -150,6 +147,7 @@ function mapStateToProps(state: State) {
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
         megasets: metadataStateBranch.selectors.getMegasetsByNewest(state),
+        csvUrl: selectionStateBranch.selectors.getCsvUrl(state),
     };
 }
 

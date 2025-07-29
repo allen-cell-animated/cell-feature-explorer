@@ -32,6 +32,7 @@ import {
     CLEAR_DATASET,
     CHANGE_GROUP_BY_CATEGORY,
     SET_ALIGN_ACTIVE,
+    SET_CSV_URL,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -52,6 +53,7 @@ import {
     SelectAxisAction,
     SelectionStateBranch,
     SelectPointAction,
+    SetCsvUrlAction,
 } from "./types";
 
 export const initialState = {
@@ -59,6 +61,7 @@ export const initialState = {
     cellSelectedFor3D: "",
     colorBy: "",
     dataset: "",
+    csvUrl: "",
     downloadConfig: {
         key: "",
         type: "",
@@ -106,6 +109,13 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: () => {
             return { ...initialState };
         },
+    },
+    [SET_CSV_URL]: {
+        accepts: (action: AnyAction): action is SetCsvUrlAction => action.type === SET_CSV_URL,
+        perform: (state: SelectionStateBranch, action: SetCsvUrlAction) => ({
+            ...state,
+            csvUrl: action.payload,
+        }),
     },
 
     [CHANGE_AXIS]: {

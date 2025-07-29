@@ -11,6 +11,7 @@ import { batchActions } from "../util";
 import {
     CHANGE_DATASET,
     CHANGE_SELECTED_ALBUM,
+    CSV_DATASET_NAME,
     RECEIVE_FILE_INFO_FOR_ALBUM_CELLS,
     RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS,
     RECEIVE_FILE_INFO_FOR_SELECTED_CELL,
@@ -71,7 +72,9 @@ const changeDatasetLogic = createLogic({
             selectedDataset = find(datasets, { id: action.payload });
         }
         if (selectedDataset === undefined) {
-            console.error(`A dataset matching ${action.payload} is not available.`);
+            if (action.payload !== CSV_DATASET_NAME) {
+                console.error(`A dataset matching ${action.payload} is not available.`);
+            }
             return done();
         }
         imageDataSet

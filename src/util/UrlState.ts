@@ -26,6 +26,7 @@ import {
     selectAlbum,
     selectCellFor3DViewer,
     selectPoint,
+    setCsvUrl,
     toggleGallery,
 } from "../state/selection/actions";
 import { initialState } from "../state/selection/reducer";
@@ -40,6 +41,7 @@ export enum URLSearchParam {
     selectedPoint = "selectedPoint",
     selectedAlbum = "selectedAlbum",
     galleryCollapsed = "galleryCollapsed",
+    csvUrl = "csvUrl",
 }
 
 type StateValue = any; // types are narrowed in mappings
@@ -132,6 +134,7 @@ export default class UrlState {
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.dataset]: (id) => changeDataset(String(id)),
+        [URLSearchParam.csvUrl]: (url) => setCsvUrl(decodeURIComponent(String(url))),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => toggleGallery(galleryCollapsed === "true"),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
         [URLSearchParam.plotByOnY]: (plotByOnY) => changeAxis(Y_AXIS_ID, String(plotByOnY)),
@@ -169,6 +172,7 @@ export default class UrlState {
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
         dataset: (id) => ({ [URLSearchParam.dataset]: String(id)}),
+        csvUrl: (url) => ({ [URLSearchParam.csvUrl]: String(encodeURIComponent(url)) }),
         galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
         selectedAlbum: (value) => ({ [URLSearchParam.selectedAlbum]: String(value) }),
         selectedPoints: (value: FileInfo[]) => {

@@ -7,6 +7,8 @@ export interface SelectionStateBranch {
     cellSelectedFor3D: string;
     colorBy: string;
     dataset: string;
+    /** Source of the URL for a CSV file. */
+    csvUrl: string;
     downloadConfig: DownloadConfig;
     filterExclude: string[];
     galleryCollapsed: boolean;
@@ -167,6 +169,10 @@ export interface ClearDatasetAction {
     type: string;
 }
 
+export interface SetCsvUrlAction {
+    type: string;
+    payload: string;
+}
 export interface ChangeGroupByCategory {
     payload: string;
     type: string;

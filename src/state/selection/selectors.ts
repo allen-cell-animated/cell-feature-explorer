@@ -78,6 +78,7 @@ export const getSelectedDatasetName = createSelector(
         return selectedDataset.split("_v")[0];
     }
 );
+export const getCsvUrl = (state: State): string => state.selection.csvUrl;
 
 // ===============================================================================================
 
