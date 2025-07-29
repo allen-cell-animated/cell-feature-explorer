@@ -1,18 +1,19 @@
 import { ConfigProvider, Layout, theme } from "antd";
 import * as React from "react";
-import { connect } from "react-redux";
+import { ActionCreator, connect } from "react-redux";
 import classNames from "classnames";
 
 import AllenCellHeader from "../../components/AppHeader";
 import { PALETTE } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
+import imageDatasetStateBranch from "../../state/image-dataset";
 import LandingPage from "../../components/LandingPage";
 import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
-import { Megaset } from "../../state/image-dataset/types";
+import { LoadCsvDatasetAction, Megaset } from "../../state/image-dataset/types";
 import { RequestAction } from "../../state/metadata/types";
 
 const { Header } = Layout;
@@ -25,6 +26,7 @@ interface AppProps {
     selectedDataset: string;
     requestAvailableDatasets: () => RequestAction;
     megasets: Megaset[];
+    loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
 }
 
 const { darkAlgorithm } = theme;
@@ -82,6 +84,21 @@ const configProviderTheme = {
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
+        // Get current url and see if it has a file ID query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileId = urlParams.get("fileId");
+        if (fileId) {
+            const url = `http://127.0.0.1:5000/get-file/${fileId}`;
+            console.log("Loading CSV file with ID:", fileId, "from URL:", url);
+            fetch(url).then((response) => {
+                if (response.ok) {
+                    response.text().then((fileText) => {
+                        this.props.loadCsvDataset(fileText);
+                    });
+                }
+            });
+        }
+
         this.props.requestAvailableDatasets();
     };
 
@@ -139,6 +156,7 @@ function mapStateToProps(state: State) {
 const dispatchToPropsMap = {
     changeDataset: selectionStateBranch.actions.changeDataset,
     requestAvailableDatasets: metadataStateBranch.actions.requestAvailableDatasets,
+    loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(App);
