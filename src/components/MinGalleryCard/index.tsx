@@ -4,6 +4,7 @@ import React from "react";
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
 import styles from "./style.css";
+import { PictureOutlined } from "@ant-design/icons";
 
 interface GalleryCardProps {
     category: string;
@@ -36,15 +37,18 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             <List.Item.Meta
                 avatar={
-                    props.src && (
-                        <div onClick={openCellin3D}>
-                            <Avatar
-                                className={props.selected ? styles.selected : undefined}
-                                alt="thumbnail of microscopy image"
-                                src={props.src}
-                            />
-                        </div>
-                    )
+                    <div onClick={openCellin3D}>
+                        <Avatar
+                            className={props.selected ? styles.selected : undefined}
+                            alt="thumbnail of microscopy image"
+                            src={props.src}
+                            icon={
+                                props.src ? undefined : (
+                                    <PictureOutlined className={styles.placeholderAvatar} />
+                                )
+                            }
+                        />
+                    </div>
                 }
             />
         </List.Item>

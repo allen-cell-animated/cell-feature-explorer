@@ -1,4 +1,4 @@
-import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
+import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
 import { Avatar, Button, Card, Dropdown, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
@@ -95,15 +95,18 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 <Card.Meta
                     title={props.category}
                     avatar={
-                        props.src && (
-                            <div onClick={openCellIn3D}>
-                                <Avatar
-                                    className={props.selected ? styles.selected : undefined}
-                                    alt="thumbnail of microscopy image"
-                                    src={props.src}
-                                />
-                            </div>
-                        )
+                        <div onClick={openCellIn3D}>
+                            <Avatar
+                                className={props.selected ? styles.selected : undefined}
+                                alt="thumbnail of microscopy image"
+                                src={props.src}
+                                icon={
+                                    props.src ? undefined : (
+                                        <PictureOutlined className={styles.placeholderAvatar} />
+                                    )
+                                }
+                            />
+                        </div>
                     }
                     description={
                         <div style={{ display: "flex", flexDirection: "column" }}>

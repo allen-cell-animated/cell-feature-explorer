@@ -37,7 +37,7 @@ const BFF_UPLOADED_KEY = "Uploaded";
 const FMS_FILE_PATH_KEY = "file_path";
 const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_ID_KEY = "file_id";
-const FMS_THUMBNAIL_PATH_KEY = "thumbnail_path";
+const FMS_THUMBNAIL_PATH_KEY = "thumbnail";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
