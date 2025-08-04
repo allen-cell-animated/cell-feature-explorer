@@ -34,6 +34,13 @@ const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
 
+const FMS_FILE_PATH_KEY = "file_path";
+const FMS_FILENAME_KEY = "file_name";
+const FMS_FILE_ID_KEY = "file_id";
+const FMS_THUMBNAIL_PATH_KEY = "thumbnail_path";
+const FMS_FILE_SIZE_KEY = "file_size";
+const FMS_UPLOADED_KEY = "uploaded";
+
 const METADATA_KEYS = new Set([
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -48,6 +55,12 @@ const METADATA_KEYS = new Set([
     BFF_FILENAME_KEY,
     BFF_FILE_SIZE_KEY,
     BFF_UPLOADED_KEY,
+    FMS_FILE_PATH_KEY,
+    FMS_FILENAME_KEY,
+    FMS_FILE_ID_KEY,
+    FMS_THUMBNAIL_PATH_KEY,
+    FMS_FILE_SIZE_KEY,
+    FMS_UPLOADED_KEY,
 ]);
 
 // Adobe palette of high-contrast colors for denoting different categories
@@ -385,6 +398,14 @@ class CsvRequest implements ImageDataset {
         this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     };
 
+    private remapFmsKeys(row: Record<string, string>): void {
+        if (!this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY)) {
+            this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
+        }
+        this.copyColumnIfEmpty(row, FMS_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
+    }
+
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
         // https://www.papaparse.com/docs#strings
@@ -401,9 +422,10 @@ class CsvRequest implements ImageDataset {
             throw new Error("No data found in CSV");
         }
 
-        // Map certain BFF keys to the standard keys
+        // Map certain BFF/FMS keys to the standard keys
         for (let i = 0; i < this.csvData.length; i++) {
             this.remapBffKeys(this.csvData[i]);
+            this.remapFmsKeys(this.csvData[i]);
         }
 
         // Check if all rows have a cell ID. If not, we must use the row index
