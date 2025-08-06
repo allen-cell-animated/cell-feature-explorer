@@ -43,6 +43,13 @@ const stateSanitizer = (state: State) => ({
     },
 });
 
+// Extend the Window interface to include __REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+declare global {
+    interface Window {
+        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (opts: any) => typeof compose;
+    }
+}
+
 type DevtoolsComposeType = ((opts: any) => typeof compose) | undefined;
 const devtoolsCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as DevtoolsComposeType;
 

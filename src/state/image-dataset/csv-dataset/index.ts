@@ -11,7 +11,7 @@ import {
     ContinuousMeasuredFeatureDef,
 } from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
-import firebase from "firebase";
+import firebase from "firebase/firestore";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -306,7 +306,7 @@ class CsvRequest implements ImageDataset {
             name: "csv",
             title: "CSV Dataset",
             production: false,
-            dateCreated: firebase.firestore.Timestamp.now(),
+            dateCreated: firebase.Timestamp.now(),
             datasets: {
                 csv: {
                     name: "csv",

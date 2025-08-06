@@ -100,7 +100,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.selectAlbum = this.selectAlbum.bind(this);
         this.closeGallery = this.closeGallery.bind(this);
         this.selectCell = this.selectCell.bind(this);
-        this.endOfAlbum = React.createRef();
+        this.endOfAlbum = React.createRef<HTMLDivElement>();
         this.state = {
             ...initialState,
         };

@@ -23,7 +23,7 @@ interface GalleryCardProps {
     downloadFullField: string;
 }
 
-const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const GalleryCard: React.FC<GalleryCardProps> = (props) => {
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
     };
@@ -91,20 +91,20 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 onMouseLeave: props.onMouseLeave,
             }}
         >
-            <Card bordered={true}>
+            <Card
+                cover={
+                    props.src && (
+                        <img
+                            alt="thumbnail of microscopy image"
+                            src={props.src}
+                            className={props.selected ? styles.selected : undefined}
+                            onClick={openCellIn3D}
+                        />
+                    )
+                }
+            >
                 <Card.Meta
                     title={props.category}
-                    avatar={
-                        props.src && (
-                            <div onClick={openCellIn3D}>
-                                <Avatar
-                                    className={props.selected ? styles.selected : undefined}
-                                    alt="thumbnail of microscopy image"
-                                    src={props.src}
-                                />
-                            </div>
-                        )
-                    }
                     description={
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             {props.cellID}

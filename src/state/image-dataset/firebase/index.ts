@@ -107,34 +107,51 @@ class FirebaseRequest implements ImageDataset {
         // clear locally cached data.
         this.viewerChannelSettings = undefined;
 
-        return this.getManifest(ref).then((data) => {
-            this.featuresDataPath = data.featuresDataPath;
-            this.viewerSettingsPath = data.viewerSettingsPath;
-            this.thumbnailRoot = data.thumbnailRoot;
-            this.downloadRoot = data.downloadRoot;
-            this.volumeViewerDataRoot = data.volumeViewerDataRoot;
-            this.featuresDisplayOrder = data.featuresDisplayOrder;
-            this.fileInfoPath = data.fileInfoPath;
-            this.featuresDataOrder = data.featuresDataOrder;
-            this.featureDefsPath = data.featureDefsPath;
-            this.albumPath = data.albumPath;
-            return {
-                defaultXAxis: data.xAxis.default,
-                defaultYAxis: data.yAxis.default,
-                defaultColorBy: data.colorBy.default,
-                defaultGroupBy: data.groupBy.default,
-                thumbnailRoot: data.thumbnailRoot,
-                downloadRoot: data.downloadRoot,
-                volumeViewerDataRoot: data.volumeViewerDataRoot,
-            };
-        });
+        return this.getManifest(ref).then(
+            (data: {
+                featuresDataPath: string;
+                viewerSettingsPath: string;
+                thumbnailRoot: string;
+                downloadRoot: string;
+                volumeViewerDataRoot: string;
+                featuresDisplayOrder: string[];
+                fileInfoPath: string;
+                featuresDataOrder: string[];
+                featureDefsPath: string;
+                albumPath: string;
+                xAxis: { default: any };
+                yAxis: { default: any };
+                colorBy: { default: any };
+                groupBy: { default: any };
+            }) => {
+                this.featuresDataPath = data.featuresDataPath;
+                this.viewerSettingsPath = data.viewerSettingsPath;
+                this.thumbnailRoot = data.thumbnailRoot;
+                this.downloadRoot = data.downloadRoot;
+                this.volumeViewerDataRoot = data.volumeViewerDataRoot;
+                this.featuresDisplayOrder = data.featuresDisplayOrder;
+                this.fileInfoPath = data.fileInfoPath;
+                this.featuresDataOrder = data.featuresDataOrder;
+                this.featureDefsPath = data.featureDefsPath;
+                this.albumPath = data.albumPath;
+                return {
+                    defaultXAxis: data.xAxis.default,
+                    defaultYAxis: data.yAxis.default,
+                    defaultColorBy: data.colorBy.default,
+                    defaultGroupBy: data.groupBy.default,
+                    thumbnailRoot: data.thumbnailRoot,
+                    downloadRoot: data.downloadRoot,
+                    volumeViewerDataRoot: data.volumeViewerDataRoot,
+                };
+            }
+        );
     };
 
     public getViewerChannelSettings = () => {
         if (this.viewerChannelSettings) {
             return Promise.resolve(this.viewerChannelSettings);
         }
-        if (!this.viewerSettingsPath) { 
+        if (!this.viewerSettingsPath) {
             return Promise.resolve({} as ViewerChannelSettings);
         }
         return axios
@@ -153,7 +170,6 @@ class FirebaseRequest implements ImageDataset {
         // Firebase limits the array to ten items, so will need to make multiple requests for
         // more features
         const batchToRequest = featuresLeftToRequest.splice(0, 10);
-
         const snapshot = await firestore
             .collection(this.featureDefsPath)
             .where("key", "in", batchToRequest)
