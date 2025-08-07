@@ -1,5 +1,5 @@
 import { find } from "lodash";
-import { AnyAction, Reducer } from "redux";
+import type { Action, Reducer } from "redux";
 
 import { APP_ID, CELL_ID_KEY } from "../constants";
 
@@ -14,7 +14,7 @@ export function makeReducer<S>(
     typeToDescriptionMap: TypeToDescriptionMap,
     initialState: S
 ): Reducer<S> {
-    return (state: S = initialState, action: AnyAction) => {
+    return (state: S = initialState, action: Action) => {
         const description = typeToDescriptionMap[action.type];
         if (!description) {
             return state;
@@ -30,17 +30,20 @@ export function makeReducer<S>(
 
 export const BATCH_ACTIONS = makeConstant("batch", "batch-actions");
 
-export function batchActions(actions: AnyAction[], type: string = BATCH_ACTIONS): BatchedAction {
+export function batchActions<A extends Action>(actions: A[], type: string = BATCH_ACTIONS): BatchedAction<A> {
     return { type, batch: true, payload: actions };
 }
 
-function actionIsBatched(action: AnyAction): action is BatchedAction {
-    return action && action.batch && Array.isArray(action.payload);
+function actionIsBatched<A extends Action>(action: Action): action is BatchedAction<A> {
+    return action && (action as BatchedAction).batch && Array.isArray((action as BatchedAction).payload);
 }
 
-export function enableBatching<S>(reducer: Reducer<S>, initialState: S): Reducer<S> {
-    return function batchingReducer(state: S = initialState, action: AnyAction): S {
-        if (actionIsBatched(action)) {
+export function enableBatching<S, A extends Action = Action>(
+    reducer: Reducer<S, A>,
+    initialState: S
+): Reducer<S, A | BatchedAction<A>> {
+    return function batchingReducer(state: S = initialState, action: A | BatchedAction<A>): S {
+        if (actionIsBatched<A>(action)) {
             return action.payload.reduce(batchingReducer, state);
         }
         return reducer(state, action);
