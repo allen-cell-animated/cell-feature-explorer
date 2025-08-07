@@ -42,9 +42,11 @@ import {
     RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectedPointData,
     SelectPointAction,
+    SyncStateWithURLAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -114,7 +116,7 @@ export function selectCellFor3DViewer(payload: { id: string }): SelectPointActio
     };
 }
 
-export function syncStateWithURL(payload: URLSearchParamMap) {
+export function syncStateWithURL(payload: URLSearchParamMap): SyncStateWithURLAction {
     return {
         payload,
         type: SYNC_STATE_WITH_URL,
@@ -197,7 +199,7 @@ export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByC
     };
 }
 
-export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
+export function requestCellFileInfoByArrayOfCellIds(payload: string[]): SelectArrayOfPointsAction {
     return {
         payload,
         type: SELECT_ARRAY_OF_POINTS,

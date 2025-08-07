@@ -19,8 +19,8 @@ export interface BatchedAction<A extends Action = Action> {
     payload: A[];
 }
 
-export interface ReduxLogicDeps {
-    action: Action;
+export interface ReduxLogicDeps<A extends Action = Action> {
+    action: A;
     httpClient: AxiosInstance;
     imageDataSet: ImageDataset;
     getState: () => State;
