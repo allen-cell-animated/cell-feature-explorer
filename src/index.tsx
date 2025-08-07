@@ -33,7 +33,7 @@ const validateParams = (obj: Record<string, any>): URLSearchParamMap => {
 class Pram {
     constructor(private history: History) {}
 
-    getParams() {
+    getParams(): URLSearchParamMap {
         return validateParams(parse(this.history.location.search, { ignoreQueryPrefix: true }));
     }
 
