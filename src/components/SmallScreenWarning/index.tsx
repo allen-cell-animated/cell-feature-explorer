@@ -10,7 +10,7 @@ interface SmallScreenWarningProps {
     visible: boolean;
 }
 
-const SmallScreenWarning: React.SFC<SmallScreenWarningProps> = ({
+const SmallScreenWarning: React.FC<SmallScreenWarningProps> = ({
     visible,
     handleClose,
     onDismissCheckboxChecked,

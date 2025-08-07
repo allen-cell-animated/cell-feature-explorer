@@ -23,7 +23,7 @@ interface GalleryCardProps {
     downloadFullField: string;
 }
 
-const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const GalleryCard: React.FC<GalleryCardProps> = (props) => {
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
     };

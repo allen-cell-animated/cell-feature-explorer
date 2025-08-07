@@ -10,7 +10,7 @@ export interface PopoverCardProps {
     src?: string;
 }
 
-const PopoverCard: React.SFC<PopoverCardProps> = (props) => {
+const PopoverCard: React.FC<PopoverCardProps> = (props) => {
     return (
         <Card
             className={styles.container}
