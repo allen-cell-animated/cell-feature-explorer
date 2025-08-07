@@ -1,9 +1,9 @@
-import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
-import { AnyAction } from "redux";
-import { Megaset } from "../image-dataset/types";
-import { ReceiveCellFileInfoAction } from "../selection/types";
+import type { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import type { Action } from "redux";
+import type { Megaset } from "../image-dataset/types";
+import type { ReceiveCellFileInfoAction } from "../selection/types";
 
-import { TypeToDescriptionMap } from "../types";
+import type { TypeToDescriptionMap } from "../types";
 import { makeReducer } from "../util";
 
 import {
@@ -51,14 +51,14 @@ export const initialState = {
 
 const actionToConfigMap: TypeToDescriptionMap = {
     [RECEIVE_DATA_FOR_PLOT]: {
-        accepts: (action: AnyAction): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
+        accepts: (action: Action): action is ReceiveAction => action.type === RECEIVE_DATA_FOR_PLOT,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
             featureData: action.payload,
         }),
     },
     [CLEAR_DATASET_VALUES]: {
-        accepts: (action: AnyAction): action is ClearAction => action.type === CLEAR_DATASET_VALUES,
+        accepts: (action: Action): action is ClearAction => action.type === CLEAR_DATASET_VALUES,
         perform: (state: MetadataStateBranch) => ({
             ...state,
             cellFileInfo: initialState.cellFileInfo,
@@ -69,7 +69,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_AVAILABLE_DATASETS]: {
-        accepts: (action: AnyAction): action is ReceiveAvailableDatasetsAction =>
+        accepts: (action: Action): action is ReceiveAvailableDatasetsAction =>
             action.type === RECEIVE_AVAILABLE_DATASETS,
         perform: (state: MetadataStateBranch, action: ReceiveAction) => ({
             ...state,
@@ -77,7 +77,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_CELL_FILE_INFO]: {
-        accepts: (action: AnyAction): action is ReceiveCellFileInfoAction =>
+        accepts: (action: Action): action is ReceiveCellFileInfoAction =>
             action.type === RECEIVE_CELL_FILE_INFO,
         perform: (state: MetadataStateBranch, action: ReceiveCellFileInfoAction) => ({
             ...state,
@@ -85,7 +85,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_ALBUM_DATA]: {
-        accepts: (action: AnyAction): action is ReceiveAlbumDataAction =>
+        accepts: (action: Action): action is ReceiveAlbumDataAction =>
             action.type === RECEIVE_ALBUM_DATA,
         perform: (state: MetadataStateBranch, action: ReceiveAlbumDataAction) => ({
             ...state,
@@ -93,7 +93,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_VIEWER_CHANNEL_SETTINGS]: {
-        accepts: (action: AnyAction): action is ReceiveViewerChannelSettingsAction =>
+        accepts: (action: Action): action is ReceiveViewerChannelSettingsAction =>
             action.type === RECEIVE_VIEWER_CHANNEL_SETTINGS,
         perform: (state: MetadataStateBranch, action: ReceiveViewerChannelSettingsAction) => ({
             ...state,
@@ -101,7 +101,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_IS_LOADING]: {
-        accepts: (action: AnyAction): action is SetLoadingAction => action.type === SET_IS_LOADING,
+        accepts: (action: Action): action is SetLoadingAction => action.type === SET_IS_LOADING,
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
             isLoading: action.payload,
@@ -109,7 +109,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_LOADING_TEXT]: {
-        accepts: (action: AnyAction): action is SetLoadingAction =>
+        accepts: (action: Action): action is SetLoadingAction =>
             action.type === SET_LOADING_TEXT,
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
@@ -117,7 +117,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_SHOW_SMALL_SCREEN_WARNING]: {
-        accepts: (action: AnyAction): action is SetSmallScreenWarningAction =>
+        accepts: (action: Action): action is SetSmallScreenWarningAction =>
             action.type === SET_SHOW_SMALL_SCREEN_WARNING,
         perform: (state: MetadataStateBranch, action: SetSmallScreenWarningAction) => ({
             ...state,
@@ -125,7 +125,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [RECEIVE_MEASURED_FEATURE_DEFS]: {
-        accepts: (action: AnyAction): action is ReceiveMeasuredFeaturesAction =>
+        accepts: (action: Action): action is ReceiveMeasuredFeaturesAction =>
             action.type === RECEIVE_MEASURED_FEATURE_DEFS,
         perform: (state: MetadataStateBranch, action: ReceiveMeasuredFeaturesAction) => ({
             ...state,
