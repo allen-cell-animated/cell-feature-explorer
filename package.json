@@ -84,6 +84,7 @@
     },
     "dependencies": {
         "@aics/browsing-context-messaging": "~1.1",
+        "@aics/vole-app": "^2.13.1",
         "@ant-design/icons": "^4.2.2",
         "antd": "^5.17.4",
         "axios": "^1.7.7",
