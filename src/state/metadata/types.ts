@@ -19,11 +19,7 @@ export interface MetadataStateBranch {
     loadingText: string;
     showSmallScreenWarning: boolean;
     megasets: Megaset[];
-    featureData: {
-        indices: number[];
-        values: MappingOfMeasuredValuesArrays;
-        labels: PerCellLabels;
-    };
+    featureData: DataForPlot;
     measuredFeaturesDefs: MeasuredFeatureDef[];
     viewerChannelSettings: ViewerChannelSettings;
 }
@@ -99,7 +95,7 @@ export interface DataForPlot {
 // ACTIONS
 
 export interface ReceiveAction {
-    payload: { [key: string]: any };
+    payload: DataForPlot;
     type: string;
 }
 
