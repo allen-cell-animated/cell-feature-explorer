@@ -2,7 +2,8 @@ import { Popover } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { filter, includes, map } from "lodash";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
+import type { ActionCreator } from "redux";
 
 import AxisDropDown from "../../components/AxisDropDown";
 import MainPlot from "../../components/MainPlot";
