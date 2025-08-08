@@ -1,4 +1,4 @@
-import type { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import type { ViewerChannelSettings } from "@aics/vole-app";
 import type { Action } from "redux";
 import type { Megaset } from "../image-dataset/types";
 import type { ReceiveCellFileInfoAction } from "../selection/types";

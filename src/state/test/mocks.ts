@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,

@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import { map, filter, forEach } from "lodash";
 import { createSelector } from "reselect";
 import { Album } from "..";

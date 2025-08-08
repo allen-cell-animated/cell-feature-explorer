@@ -10,7 +10,7 @@ import {
 } from "../../constants";
 import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
-import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 
 export interface MetadataStateBranch {
     albums: Album[];

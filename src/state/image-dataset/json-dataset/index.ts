@@ -15,7 +15,7 @@ import {
 } from "../../metadata/types";
 
 import { ImageDataset, DatasetMetaData, Megaset, InitialDatasetSelections } from "../types";
-import { ViewerChannelSettings } from "@aics/vole-app/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 
 interface DatasetInfo {
     name: string;
