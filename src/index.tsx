@@ -4,7 +4,7 @@ import "core-js/es6/set";
 import { createBrowserHistory, type History } from "history";
 import { parse, stringify } from "qs";
 import * as React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 
 import { APP_ID } from "./constants";
@@ -99,9 +99,14 @@ store.subscribe(function updateURL() {
     }
 });
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById(APP_ID)
-);
+const container = document.getElementById(APP_ID);
+if (container === null) {
+    console.error("App container missing!");
+} else {
+    const root = createRoot(container);
+    root.render(
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );
+}
