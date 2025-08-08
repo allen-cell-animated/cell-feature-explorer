@@ -34,6 +34,7 @@ import {
     ChangeMousePositionAction,
     ChangeSelectionAction,
     ClearDatasetAction,
+    DeselectGroupOfPointsAction,
     DeselectPointAction,
     DownloadConfig,
     LassoOrBoxSelectAction,
@@ -75,7 +76,7 @@ export function lassoOrBoxSelectGroup(
     };
 }
 
-export function deselectGroupOfPoints(payload: string | number) {
+export function deselectGroupOfPoints(payload: string | number): DeselectGroupOfPointsAction {
     return {
         payload,
         type: DESELECT_GROUP_OF_POINTS,

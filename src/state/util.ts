@@ -6,8 +6,11 @@ import { APP_ID, CELL_ID_KEY } from "../constants";
 import { DiscreteMeasuredFeatureDef, FileInfo, MeasuredFeatureDef } from "./metadata/types";
 import { BatchedAction, TypeToDescriptionMap } from "./types";
 
-export function makeConstant(associatedReducer: string, actionType: string) {
-    return `${APP_ID}/${associatedReducer.toUpperCase()}/${actionType.toUpperCase()}`;
+export function makeConstant<R extends string, A extends string>(
+    associatedReducer: R,
+    actionType: A
+): `${typeof APP_ID}/${Uppercase<R>}/${Uppercase<A>}` {
+    return `${APP_ID}/${associatedReducer.toUpperCase() as Uppercase<R>}/${actionType.toUpperCase() as Uppercase<A>}`;
 }
 
 export function makeReducer<S>(
