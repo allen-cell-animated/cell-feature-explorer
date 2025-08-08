@@ -30,7 +30,7 @@ const validateParams = (obj: Record<string, any>): URLSearchParamMap => {
     return result;
 };
 
-class Pram {
+class URLParams {
     constructor(private history: History) {}
 
     getParams(): URLSearchParamMap {
@@ -63,17 +63,17 @@ class Pram {
     }
 }
 
-const pram = new Pram(createBrowserHistory());
+const params = new URLParams(createBrowserHistory());
 const initialSelections = {
     ...initialState,
-    ...UrlState.toAppState(pram.getParams())
+    ...UrlState.toAppState(params.getParams())
 }
 const store = createReduxStore({ selection: initialSelections });
 
-store.dispatch(selection.actions.syncStateWithURL(pram.getParams()));
+store.dispatch(selection.actions.syncStateWithURL(params.getParams()));
 
 // when the dataset query param changes, check if it's been removed
-pram.onParamRemoved("dataset", () => {
+params.onParamRemoved("dataset", () => {
     // used the back button to get back to the landing page
     // UrlState doesn't sync actions if a query param doesn't exist, 
     // so clearing it out here 
@@ -87,15 +87,15 @@ pram.onParamRemoved("dataset", () => {
 store.subscribe(function updateURL() {
     const state = store.getState();
     const mapping = UrlState.toUrlSearchParameterMap(state.selection);
-    const currentParams = pram.getParams();
+    const currentParams = params.getParams();
     const datasetChanged = UrlState.paramChanged(URLSearchParam.dataset, mapping, currentParams);
     if (datasetChanged) {
         // only save in browser history if the dataset is different
-        pram.pushParam(URLSearchParam.dataset, mapping.dataset);
+        params.pushParam(URLSearchParam.dataset, mapping.dataset);
     }
     
     if (UrlState.paramsChanged(mapping, currentParams)) {
-        pram.replaceParams(mapping);
+        params.replaceParams(mapping);
     }
 });
 
