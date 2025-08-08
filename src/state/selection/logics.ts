@@ -174,7 +174,7 @@ const selectAlbum = createLogic({
         }
 
         return imageDataSet
-            .getFileInfoByArrayOfCellIds(action.payload)
+            .getFileInfoByArrayOfCellIds([action.payload.toString()])
             .then((data: (FileInfo | undefined)[]) => {
                 return filter(data);
             })
