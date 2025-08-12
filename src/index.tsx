@@ -101,7 +101,7 @@ store.subscribe(function updateURL() {
 
 const container = document.getElementById(APP_ID);
 if (container === null) {
-    console.error("App container missing!");
+    console.error(`App container (#${APP_ID}) missing!`);
 } else {
     const root = createRoot(container);
     root.render(
