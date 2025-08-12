@@ -1,5 +1,6 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import { FirebaseFirestore } from "@firebase/firestore-types";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD691xhXsWl-8QU_9htjZnMUd7siWVCTAE",
@@ -25,7 +26,7 @@ const firebaseDevConfig = {
 firebase.initializeApp(process.env.USE_DEV_DB ? firebaseDevConfig : firebaseConfig);
 firebase.analytics();
 
-const firestore = firebase.firestore();
+const firestore: FirebaseFirestore = firebase.firestore();
 
 export { firebase, firestore };
 
