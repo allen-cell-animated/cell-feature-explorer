@@ -24,7 +24,6 @@ const firebaseDevConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(process.env.USE_DEV_DB ? firebaseDevConfig : firebaseConfig);
-firebase.analytics();
 
 const firestore: FirebaseFirestore = firebase.firestore();
 
