@@ -21,6 +21,7 @@ interface GalleryCardProps {
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
     downloadFullField: string;
+    size: number;
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
@@ -59,7 +60,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
         <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
-        <Divider key={`${props.cellID}-divider`} type="vertical" />,
+        <Divider key={`${props.cellID}-0`} type="vertical" />,
         <Dropdown
             key={`${props.cellID}-download`}
             menu={{ items: menuItems }}
@@ -76,7 +77,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 </Button>
             </Tooltip>
         </Dropdown>,
-        <Divider key={`${props.cellID}-divider`} type="vertical" />,
+        <Divider key={`${props.cellID}-1`} type="vertical" />,
 
         <Button key={`${props.cellID}-close`} onClick={deselectPoint}>
             <CloseOutlined />
@@ -87,6 +88,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
+            style={{ width: props.size }}
             {...{
                 // props not in ant.d component, but do exist
                 id: props.cellID ? props.cellID.toString() : "",
