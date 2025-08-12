@@ -15,7 +15,7 @@ import {
     formatDownloadOfIndividualFile,
 } from "../../state/util";
 
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 

@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
-import { AnyAction } from "redux";
+import { Action } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
@@ -9,25 +9,25 @@ import { ImageDataset } from "./image-dataset/types";
 export type NumberOrString = number | string;
 
 export interface ActionDescription {
-    accepts: (action: AnyAction) => boolean;
+    accepts: (action: Action) => boolean;
     perform: (state: any, action: any) => any;
 }
 
-export interface BatchedAction {
+export interface BatchedAction<A extends Action = Action> {
     type: string;
     batch: boolean;
-    payload: AnyAction[];
+    payload: A[];
 }
 
-export interface ReduxLogicDeps {
-    action: AnyAction;
+export interface ReduxLogicDeps<A extends Action = Action> {
+    action: A;
     httpClient: AxiosInstance;
     imageDataSet: ImageDataset;
     getState: () => State;
     ctx?: any;
 }
 
-export type ReduxLogicNextCb = (action: AnyAction) => void;
+export type ReduxLogicNextCb = (action: Action) => void;
 
 export interface State {
     metadata: MetadataStateBranch;

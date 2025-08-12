@@ -12,7 +12,7 @@ interface ColorBySwitcherProps {
     unCheckedChildren?: string;
 }
 
-const ColorBySwitcher: React.SFC<ColorBySwitcherProps> = (props) => {
+const ColorBySwitcher: React.FC<React.PropsWithChildren<ColorBySwitcherProps>> = (props) => {
     return props.includeCol ? (
         <Row className={styles.colorByRow} align="middle">
             <Col span={props.includeCol}>

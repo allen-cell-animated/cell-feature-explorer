@@ -10,23 +10,7 @@ import {
 } from "../../constants";
 import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
-
-export interface MetadataStateBranch {
-    albums: Album[];
-    cellFileInfo: FileInfo[];
-    isLoading: boolean;
-    loadingText: string;
-    showSmallScreenWarning: boolean;
-    megasets: Megaset[];
-    featureData: {
-        indices: number[];
-        values: MappingOfMeasuredValuesArrays;
-        labels: PerCellLabels;
-    };
-    measuredFeaturesDefs: MeasuredFeatureDef[];
-    viewerChannelSettings: ViewerChannelSettings;
-}
+import { ViewerChannelSettings } from "@aics/vole-app";
 
 // FROM THE DATABASE TYPINGS
 
@@ -96,10 +80,24 @@ export interface DataForPlot {
     labels: PerCellLabels;
 }
 
+// STATE BRANCH
+
+export interface MetadataStateBranch {
+    albums: Album[];
+    cellFileInfo: FileInfo[];
+    isLoading: boolean;
+    loadingText: string;
+    showSmallScreenWarning: boolean;
+    megasets: Megaset[];
+    featureData: DataForPlot;
+    measuredFeaturesDefs: MeasuredFeatureDef[];
+    viewerChannelSettings: ViewerChannelSettings;
+}
+
 // ACTIONS
 
 export interface ReceiveAction {
-    payload: { [key: string]: any };
+    payload: DataForPlot;
     type: string;
 }
 

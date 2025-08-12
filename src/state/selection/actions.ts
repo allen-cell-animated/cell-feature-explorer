@@ -34,6 +34,7 @@ import {
     ChangeMousePositionAction,
     ChangeSelectionAction,
     ClearDatasetAction,
+    DeselectGroupOfPointsAction,
     DeselectPointAction,
     DownloadConfig,
     LassoOrBoxSelectAction,
@@ -42,9 +43,11 @@ import {
     RequestFileInfoByCellIDAction,
     ResetSelectionAction,
     SelectAlbumAction,
+    SelectArrayOfPointsAction,
     SelectAxisAction,
     SelectedPointData,
     SelectPointAction,
+    SyncStateWithURLAction,
 } from "./types";
 
 export function changeAxis(axisId: string, payload: string): SelectAxisAction {
@@ -73,7 +76,7 @@ export function lassoOrBoxSelectGroup(
     };
 }
 
-export function deselectGroupOfPoints(payload: string | number) {
+export function deselectGroupOfPoints(payload: string | number): DeselectGroupOfPointsAction {
     return {
         payload,
         type: DESELECT_GROUP_OF_POINTS,
@@ -114,7 +117,7 @@ export function selectCellFor3DViewer(payload: { id: string }): SelectPointActio
     };
 }
 
-export function syncStateWithURL(payload: URLSearchParamMap) {
+export function syncStateWithURL(payload: URLSearchParamMap): SyncStateWithURLAction {
     return {
         payload,
         type: SYNC_STATE_WITH_URL,
@@ -197,7 +200,7 @@ export function requestCellFileInfoByCellId(payload: string): RequestFileInfoByC
     };
 }
 
-export function requestCellFileInfoByArrayOfCellIds(payload: string[]) {
+export function requestCellFileInfoByArrayOfCellIds(payload: string[]): SelectArrayOfPointsAction {
     return {
         payload,
         type: SELECT_ARRAY_OF_POINTS,

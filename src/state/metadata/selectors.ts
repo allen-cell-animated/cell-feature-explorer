@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import { map, filter, forEach } from "lodash";
 import { createSelector } from "reselect";
 import { Album } from "..";

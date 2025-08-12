@@ -1,4 +1,4 @@
-import { ImageViewerApp, ViewerStateProvider } from "@aics/web-3d-viewer";
+import { ImageViewerApp, ViewerStateProvider } from "@aics/vole-app";
 import React from "react";
 
 import styles from "./style.css";
