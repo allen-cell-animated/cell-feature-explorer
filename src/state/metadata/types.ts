@@ -12,18 +12,6 @@ import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
 import { ViewerChannelSettings } from "@aics/vole-app";
 
-export interface MetadataStateBranch {
-    albums: Album[];
-    cellFileInfo: FileInfo[];
-    isLoading: boolean;
-    loadingText: string;
-    showSmallScreenWarning: boolean;
-    megasets: Megaset[];
-    featureData: DataForPlot;
-    measuredFeaturesDefs: MeasuredFeatureDef[];
-    viewerChannelSettings: ViewerChannelSettings;
-}
-
 // FROM THE DATABASE TYPINGS
 
 export interface FileInfo {
@@ -90,6 +78,20 @@ export interface DataForPlot {
     indices: number[];
     values: MappingOfMeasuredValuesArrays;
     labels: PerCellLabels;
+}
+
+// STATE BRANCH
+
+export interface MetadataStateBranch {
+    albums: Album[];
+    cellFileInfo: FileInfo[];
+    isLoading: boolean;
+    loadingText: string;
+    showSmallScreenWarning: boolean;
+    megasets: Megaset[];
+    featureData: DataForPlot;
+    measuredFeaturesDefs: MeasuredFeatureDef[];
+    viewerChannelSettings: ViewerChannelSettings;
 }
 
 // ACTIONS
