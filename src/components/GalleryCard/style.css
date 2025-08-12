@@ -1,7 +1,7 @@
 @import "../../styles/colors.css";
 
 .container {
-    width: 300px;
+    width: 128px;
 }
 
 .container :global(.ant-list-item-content) {
@@ -16,12 +16,23 @@
     margin: -15px 0;
 }
 
+.container :global(.ant-card-meta-title) {
+    font-weight: initial;
+    font-size: 14px;
+    color: var(--off-white);
+    margin-bottom: 0 !important;
+}
+
+.container :global(.ant-card-body) {
+    padding: 12px;
+}
+
 .container :global(.ant-card-meta-detail) {
     margin-top: 1em;
 }
 
 .container :global(.ant-card-bordered) {
-    border-color: var(--border-gray);
+    border-color: var(--background-dark-gray);
     background-color: var(--header-gray);
 }
 
@@ -30,42 +41,30 @@
     padding-left: 0;
 }
 
-.actionList {
+.action-list {
     display: flex;
     flex-direction: row;
     margin-top: 6px;
     margin-bottom: 10px;
+    width: 100%;
+    align-items: center;
 }
 
-.actionList button {
+.action-list button {
     border: none;
     border-radius: 0;
     background-color: transparent !important;
     height: inherit;
-    color: white;
-    padding: 2px 10px;
+    color: var(--off-white);
+    margin: auto;
+    padding: 0;
 }
 
-.actionList a {
-    color: white;
+.action-list a {
+    color: var(--off-white);
 }
 
-.actionList button:first-of-type {
-    padding-left: 0;
-}
-
-.actionList button:not(:last-of-type),
-.actionList button:not(:last-of-type):hover {
-    /* Add a white vertical divider between the buttons */
-    border-right: 1px solid white;
-    border-color: white !important;
-}
-
-.title {
-    color: white;
-}
-
-.actionList .disabled {
+.action-list .disabled {
     color: var(--text-gray);
 }
 
@@ -76,7 +75,7 @@
 }
 
 .container .selected {
-    border: 1px solid white;
+    border: 1px solid var(--light-gray);
 }
 
 .container :global(.ant-list-item-meta) {

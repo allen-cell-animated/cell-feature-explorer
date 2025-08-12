@@ -212,7 +212,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
         return (
             <Row id="gallery" className={styles.container} gutter={32} justify="space-between">
-                <Col className={styles.galleryGrid}>
+                <div className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
                         {data.length > 0 && !selectedAlbum && (
@@ -238,10 +238,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         renderItem={this.renderGalleryCard}
                         footer={<div ref={this.endOfAlbum} />}
                     />
-                </Col>
-                <Col className={styles.albumSideBar}>
+                </div>
+                <div className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
-                        <h2>Gallery</h2>
+                        <h2>Thumbnail Gallery</h2>
                         <Button type="text" onClick={this.closeGallery} style={{ padding: 0 }}>
                             <CloseOutlined style={{ fontSize: "2em" }} />
                         </Button>
@@ -259,7 +259,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         />
                     </Form.Item>
                     {this.renderAlbumButtons()}
-                </Col>
+                </div>
             </Row>
         );
     }

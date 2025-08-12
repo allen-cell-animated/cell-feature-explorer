@@ -1,5 +1,5 @@
 import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, Dropdown, List, Tooltip } from "antd";
+import { Button, Card, Divider, Dropdown, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
 
@@ -59,6 +59,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
         <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
+        <Divider key={`${props.cellID}-divider`} type="vertical" />,
         <Dropdown
             key={`${props.cellID}-download`}
             menu={{ items: menuItems }}
@@ -75,6 +76,8 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 </Button>
             </Tooltip>
         </Dropdown>,
+        <Divider key={`${props.cellID}-divider`} type="vertical" />,
+
         <Button key={`${props.cellID}-close`} onClick={deselectPoint}>
             <CloseOutlined />
         </Button>,
