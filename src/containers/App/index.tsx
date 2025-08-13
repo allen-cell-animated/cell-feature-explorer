@@ -74,6 +74,13 @@ const configProviderTheme = {
             // Dropdown arrow color
             colorTextQuaternary: PALETTE.white,
         },
+        Slider: {
+            trackBg: PALETTE.lightGray,
+            trackHoverBg: PALETTE.extraLightGray,
+            handleColor: PALETTE.white,
+            dotActiveBorderColor: PALETTE.white,
+            handleActiveColor: PALETTE.white,
+        },
         Tooltip: {
             colorBgSpotlight: "rgba(0, 0, 0, 0.85)",
         },

@@ -1,5 +1,5 @@
 import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Card, Divider, Dropdown, List, Tooltip } from "antd";
+import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
 
@@ -111,14 +111,16 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 <Card.Meta
                     title={props.category}
                     description={
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            {props.cellID}
+                        <>
+                            <Flex justify="space-between" align="center" wrap={"wrap"}>
+                                {props.cellID}
 
-                            {props.mitoticStage && (
-                                <span className={styles.stage}>{props.mitoticStage}</span>
-                            )}
+                                {props.mitoticStage && (
+                                    <span className={styles.stage}>{props.mitoticStage}</span>
+                                )}
+                            </Flex>
                             {!props.empty && <div className={styles.actionList}>{actions}</div>}
-                        </div>
+                        </>
                     }
                 />
             </Card>

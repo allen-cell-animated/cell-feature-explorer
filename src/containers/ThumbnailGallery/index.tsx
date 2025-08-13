@@ -1,17 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import {
-    Button,
-    Col,
-    ConfigProvider,
-    Flex,
-    Form,
-    Input,
-    List,
-    Popconfirm,
-    Radio,
-    Row,
-    Slider,
-} from "antd";
+import { Button, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -19,6 +7,8 @@ import { ActionCreator, connect } from "react-redux";
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";
+import GalleryCardSlider from "../../components/GalleryCardSlider";
+
 import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
@@ -229,18 +219,12 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 <div className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
-                        <Flex justify="space-between" align="center">
-                            <span>smaller</span>
-                            <Slider
-                                style={{ width: 60 }}
-                                min={106} // smallest where the buttons still fit
-                                max={256}
-                                value={this.state.thumbnailSize}
-                                onChange={(value) => this.setState({ thumbnailSize: value })}
-                                tooltip={{ formatter: (value) => `${value}px` }}
-                            />
-                            <span>larger</span>
-                        </Flex>
+                        <GalleryCardSlider
+                            setWidth={(width: number) => this.setState({ thumbnailSize: width })}
+                            defaultWidth={initialState.thumbnailSize}
+                            currentWidth={this.state.thumbnailSize}
+                        />
+
                         {data.length > 0 && !selectedAlbum && (
                             <Popconfirm
                                 title="Are you sure you want to unselect all?"
