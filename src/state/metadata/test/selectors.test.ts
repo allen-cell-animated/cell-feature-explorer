@@ -1,11 +1,13 @@
 import { expect } from "chai";
-import { Timestamp } from "firebase/firestore/";
+import "firebase/compat/firestore";
+import firebase from "firebase/compat/app";
 
 import { mockState } from "../../test/mocks";
 import { State } from "../../types";
 import { Megaset } from "../../image-dataset/types";
 import { getMeasuredFeaturesKeys, getMegasetsByNewest } from "../selectors";
 
+const Timestamp = firebase.firestore.Timestamp;
 describe("Metadata branch selectors", () => {
     describe("getMeasuredFeaturesKeys", () => {
         it("returns the keys of measured features data", () => {
