@@ -80,6 +80,7 @@ const configProviderTheme = {
             handleColor: PALETTE.white,
             dotActiveBorderColor: PALETTE.white,
             handleActiveColor: PALETTE.white,
+            colorPrimaryBorderHover: PALETTE.white,
         },
         Tooltip: {
             colorBgSpotlight: "rgba(0, 0, 0, 0.85)",

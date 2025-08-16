@@ -2,6 +2,11 @@
 
 .container {
     width: 128px;
+    min-height: calc(100% - 16px);
+}
+
+.container :global(.ant-card) {
+    height: 100%;
 }
 
 .container :global(.ant-list-item-content) {
@@ -17,14 +22,17 @@
 }
 
 .container :global(.ant-card-meta-title) {
-    font-weight: initial;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--off-white);
-    margin-bottom: 0 !important;
+    margin-bottom: 6px !important;
+}
+
+.container .small :global(.ant-card-meta-title) {
+    font-size: 14px;
 }
 
 .container :global(.ant-card-body) {
-    padding: 12px;
+    padding: 18px 12px;
 }
 
 .container :global(.ant-card-meta-detail) {
@@ -36,15 +44,10 @@
     background-color: var(--header-gray);
 }
 
-.infoList {
-    list-style: none;
-    padding-left: 0;
-}
-
 .action-list {
     display: flex;
     flex-direction: row;
-    margin-top: 6px;
+    margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
     align-items: center;
@@ -76,6 +79,21 @@
 
 .container .selected {
     border: 1px solid var(--light-gray);
+}
+
+.container .selected img {
+    border: 1px solid var(--light-gray);
+    border-bottom: 1px solid black;
+}
+
+.container img {
+    background-color: black;
+    border: 1px solid black;
+}
+
+.container img:hover {
+    border: 1px solid white;
+    cursor: pointer;
 }
 
 .container :global(.ant-list-item-meta) {

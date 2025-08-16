@@ -221,7 +221,6 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         <h2>{selectedAlbumName}</h2>
                         <GalleryCardSlider
                             setWidth={(width: number) => this.setState({ thumbnailSize: width })}
-                            defaultWidth={initialState.thumbnailSize}
                             currentWidth={this.state.thumbnailSize}
                         />
 

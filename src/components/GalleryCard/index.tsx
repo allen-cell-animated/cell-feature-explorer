@@ -2,6 +2,7 @@ import { CloseOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
+import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
@@ -97,30 +98,33 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
             }}
         >
             <Card
+                className={props.selected ? styles.selected : styles.unselected}
+                loading={props.empty}
                 cover={
                     props.src && (
                         <img
                             alt="thumbnail of microscopy image"
                             src={props.src}
-                            className={props.selected ? styles.selected : undefined}
                             onClick={openCellIn3D}
                         />
                     )
                 }
             >
                 <Card.Meta
+                    className={classNames({ [styles.small]: props.size < 170 })}
                     title={props.category}
                     description={
-                        <>
-                            <Flex justify="space-between" align="center" wrap={"wrap"}>
-                                {props.cellID}
-
-                                {props.mitoticStage && (
-                                    <span className={styles.stage}>{props.mitoticStage}</span>
-                                )}
+                        <Flex vertical justify="space-between">
+                            <Flex vertical>
+                                <span>{props.cellID}</span>
+                                <span style={{ minHeight: "1.5em" }}>
+                                    {props.mitoticStage && (
+                                        <span className={styles.stage}>{props.mitoticStage}</span>
+                                    )}
+                                </span>
                             </Flex>
                             {!props.empty && <div className={styles.actionList}>{actions}</div>}
-                        </>
+                        </Flex>
                     }
                 />
             </Card>
