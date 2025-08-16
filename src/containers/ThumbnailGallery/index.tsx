@@ -3,7 +3,8 @@ import { Button, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } fro
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
+import type { ActionCreator } from "redux";
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";

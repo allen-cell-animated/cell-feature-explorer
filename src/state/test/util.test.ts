@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { AnyAction } from "redux";
+import type { Action } from "redux";
 
 import { APP_ID } from "../../constants";
 import { TypeToDescriptionMap } from "../types";
@@ -30,7 +30,7 @@ describe("state utilities", () => {
 
     describe("makeReducer", () => {
         const ACTION_CONSTANT = "FAKE_CONSTANT";
-        interface Action {
+        interface TestAction {
             type: string;
             arbitraryProp: boolean;
         }
@@ -44,8 +44,8 @@ describe("state utilities", () => {
 
         const typeToDescriptionMap: TypeToDescriptionMap = {
             [ACTION_CONSTANT]: {
-                accepts: (action: AnyAction): action is Action => action.hasOwnProperty("arbitraryProp"),
-                perform: (state: Partial<State>, action: AnyAction) => ({ ...state, flag: action.arbitraryProp }),
+                accepts: (action: Action): action is TestAction => action.hasOwnProperty("arbitraryProp"),
+                perform: (state: Partial<State>, action: TestAction) => ({ ...state, flag: action.arbitraryProp }),
             },
         };
 
@@ -107,7 +107,7 @@ describe("state utilities", () => {
             tortilla: false,
         };
 
-        const reducer = (state: MockState = initialState, action: AnyAction) => {
+        const reducer = (state: MockState = initialState, action: MockAction) => {
             switch (action.type) {
                 case TOGGLE_BURRITO_INGREDIENT:
                     return {
@@ -119,7 +119,7 @@ describe("state utilities", () => {
             }
         };
 
-        const batchingReducer = enableBatching<MockState>(reducer, initialState);
+        const batchingReducer = enableBatching<MockState, MockAction>(reducer, initialState);
 
         it("applies all actions in a batched action to state", () => {
             const enableBeans = toggleBurritoIngredientCreator("beans", true);
