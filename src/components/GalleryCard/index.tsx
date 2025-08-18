@@ -1,13 +1,21 @@
-import { CloseOutlined, DownloadOutlined, FileImageOutlined } from "@ant-design/icons";
+import {
+    CloseOutlined,
+    DownloadOutlined,
+    FileImageOutlined,
+    PictureOutlined,
+} from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
+import * as zarr from "zarrita";
+// @ts-ignore
+import { renderThumbnail } from "ome-zarr.js";
 
 interface GalleryCardProps {
     category: string;
@@ -25,7 +33,28 @@ interface GalleryCardProps {
     size: number;
 }
 
+async function createThumbnailImageSrc(src: string): Promise<string> {
+    const store = new zarr.FetchStore(src);
+    const url = await renderThumbnail(store);
+    return url;
+}
+
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
+    const [imageSrc, setImageSrc] = useState(props.src);
+    useEffect(() => {
+        if (!props.src) {
+            // Asynchronously load + set image source
+            // createThumbnailImageSrc(
+            //     // Example image data
+            //     "https://s3.us-west-2.amazonaws.com/production.files.allencell.org/016/f42/efc/798/669/f4a/14d/073/6c8/533/d2/3500007213_20250321_20X_timelapse-01(P66-C5).ome.zarr"
+            // ).then((src) => {
+            //     setImageSrc(src);
+            // });
+        } else {
+            setImageSrc(props.src);
+        }
+    }, [props.src]);
+
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
     };
@@ -101,11 +130,13 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 className={props.selected ? styles.selected : styles.unselected}
                 loading={props.empty}
                 cover={
-                    props.src ? (
+                    imageSrc ? (
                         <img
                             alt="thumbnail of microscopy image"
-                            src={props.src}
+                            src={imageSrc}
                             onClick={openCellIn3D}
+                            width={props.size}
+                            height={props.size}
                         />
                     ) : (
                         <Flex
