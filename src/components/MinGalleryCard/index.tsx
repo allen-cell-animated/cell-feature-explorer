@@ -1,5 +1,6 @@
 import { Avatar, List } from "antd";
 import React from "react";
+import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
@@ -19,7 +20,7 @@ interface GalleryCardProps {
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
-const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
     const openCellin3D = () => {
         props.handleOpenIn3D({ id: props.cellID });
     };
@@ -37,18 +38,22 @@ const MinGalleryCard: React.SFC<GalleryCardProps> = (props) => {
         >
             <List.Item.Meta
                 avatar={
-                    <div onClick={openCellin3D}>
-                        <Avatar
-                            className={props.selected ? styles.selected : undefined}
-                            alt="thumbnail of microscopy image"
-                            src={props.src}
-                            icon={
-                                props.src ? undefined : (
-                                    <PictureOutlined className={styles.placeholderAvatar} />
-                                )
-                            }
-                        />
-                    </div>
+                    props.src && (
+                        <div onClick={openCellin3D}>
+                            <Avatar
+                                className={classNames(
+                                    { [styles.selected]: props.selected },
+                                    styles.avatar
+                                )}
+                                alt="thumbnail of microscopy image"
+                                icon={
+                                    props.src ? undefined : (
+                                        <PictureOutlined className={styles.placeholderAvatar} />
+                                    )
+                                }
+                            />
+                        </div>
+                    )
                 }
             />
         </List.Item>

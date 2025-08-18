@@ -1,7 +1,7 @@
 import { MY_SELECTIONS_ID } from "../../constants/index";
 import { makeConstant } from "../util";
 
-const makeSelectionConstant = (constant: string) => makeConstant("selection", constant);
+const makeSelectionConstant = <A extends string>(constant: A) => makeConstant("selection", constant);
 
 export const CHANGE_AXIS = makeSelectionConstant("deselect-file");
 export const CHANGE_GROUP_BY_CATEGORY = makeSelectionConstant("change-group-by-category");

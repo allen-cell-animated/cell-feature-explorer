@@ -11,7 +11,7 @@ import {
     reduce,
     isEqual
 } from "lodash";
-import { AnyAction } from "redux";
+import type { Action } from "redux";
 
 import {
     CELL_ID_KEY,
@@ -19,7 +19,7 @@ import {
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../constants";
-import { FileInfo } from "../state/metadata/types";
+import type { FileInfo } from "../state/metadata/types";
 import {
     changeAxis,
     changeDataset,
@@ -30,7 +30,7 @@ import {
     toggleGallery,
 } from "../state/selection/actions";
 import { initialState } from "../state/selection/reducer";
-import { SelectionStateBranch } from "../state/selection/types";
+import type { SelectionStateBranch } from "../state/selection/types";
 
 export enum URLSearchParam {
     cellSelectedFor3D = "cellSelectedFor3D",
@@ -52,7 +52,7 @@ export interface URLSearchParamMap {
 }
 
 interface URLSearchParamToActionCreatorMap {
-    [index: string]: (value: URLSearchParamValue, collection: URLSearchParamMap) => AnyAction | AnyAction[];
+    [index: string]: (value: URLSearchParamValue, collection: URLSearchParamMap) => Action | Action[];
 }
 
 interface URLSearchParamToStateMap {
@@ -87,8 +87,8 @@ export default class UrlState {
         return !isEqual(currentParams, newParamsFromState) 
     }
 
-    public static toReduxActions(searchParameterMap: URLSearchParamMap): AnyAction[] {
-        const initial: AnyAction[] = [];
+    public static toReduxActions(searchParameterMap: URLSearchParamMap): Action[] {
+        const initial: Action[] = [];
         return reduce(searchParameterMap, (accum, searchParamValue, searchParamKey) => {
             if (UrlState.urlParamToActionCreatorMap.hasOwnProperty(searchParamKey)) {
                 const action = UrlState.urlParamToActionCreatorMap[searchParamKey](
@@ -141,7 +141,7 @@ export default class UrlState {
         [URLSearchParam.selectedAlbum]: (album) => selectAlbum(Number(album)),
         [URLSearchParam.selectedPoint]: (selection) => {
             if (Array.isArray(selection)) {
-                return map<number | string, AnyAction>(selection, (point) => selectPoint({ id: String(point)} ));
+                return map<number | string, Action>(selection, (point) => selectPoint({ id: String(point)} ));
             }
             return selectPoint({id: String(selection)});
         },

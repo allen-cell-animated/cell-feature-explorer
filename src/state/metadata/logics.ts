@@ -1,5 +1,5 @@
 import { createLogic } from "redux-logic";
-import { AnyAction } from "redux";
+import type { Action } from "redux";
 
 import { Megaset } from "../image-dataset/types";
 
@@ -36,8 +36,8 @@ import {
     getSelected3DCell,
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
 import { getImageDataset } from "../image-dataset/selectors";
+import { ViewerChannelSettings } from "@aics/vole-app";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
@@ -95,7 +95,7 @@ const requestFeatureDataLogic = createLogic({
 
         dispatch(setLoadingText("Loading plot data, may take several seconds to a minute..."));
         // const state = getState();
-        const actions: AnyAction[] = [];
+        const actions: Action[] = [];
         const measuredFeatureDefs = await imageDataSet.getMeasuredFeatureDefs();
         actions.push(receiveMeasuredFeatureDefs(measuredFeatureDefs));
 

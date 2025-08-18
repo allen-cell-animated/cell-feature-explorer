@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import { Album } from "../..";
 import * as Papa from "papaparse";
 import {
@@ -11,7 +11,7 @@ import {
     ContinuousMeasuredFeatureDef,
 } from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,

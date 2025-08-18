@@ -10,9 +10,10 @@ interface ColorBySwitcherProps {
     includeCol?: number;
     checkedChildren?: string;
     unCheckedChildren?: string;
+    children?: React.ReactNode;
 }
 
-const ColorBySwitcher: React.SFC<ColorBySwitcherProps> = (props) => {
+const ColorBySwitcher: React.FC<ColorBySwitcherProps> = (props) => {
     return props.includeCol ? (
         <Row className={styles.colorByRow} align="middle">
             <Col span={props.includeCol}>

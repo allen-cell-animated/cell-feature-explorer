@@ -147,13 +147,18 @@
     background-color: var(--header-gray);
     border-left: 0.5px solid var(--border-gray);
     border-right: none;
+    box-sizing: border-box;
+}
 
-    & i {
-        display: block;
-        position: absolute;
-        left: 3.5px;
-        top: 50%;
-    }
+.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger):hover {
+    border-left: 2px solid white;
+}
+
+.sider:global(.ant-layout-sider-collapsed) :global(.ant-layout-sider-trigger) span {
+    display: block;
+    position: absolute;
+    right: 3.5px;
+    top: 50%;
 }
 
 .sider :global(.ant-layout-sider-children) {

@@ -6,7 +6,7 @@ const { Link } = Anchor;
 import styles from "./style.css";
 const offsetTop = 65;
 
-const AffixedNav: React.SFC = () => {
+const AffixedNav: React.FC = () => {
     return (
         <Anchor offsetTop={offsetTop} showInkInFixed={true} className={styles.container}>
             <Link

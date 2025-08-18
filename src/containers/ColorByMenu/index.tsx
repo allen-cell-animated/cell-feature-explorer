@@ -3,7 +3,8 @@ import { CheckboxChangeEvent } from "antd/es/checkbox";
 // import { RadioChangeEvent } from "antd/es/radio";
 import { filter, includes } from "lodash";
 import React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
+import type { ActionCreator } from "redux";
 
 import AxisDropDown from "../../components/AxisDropDown";
 import InteractiveLegend from "../../components/InteractiveLegend";

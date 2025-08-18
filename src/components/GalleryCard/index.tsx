@@ -1,7 +1,8 @@
-import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, Dropdown, List, Tooltip } from "antd";
+import { CloseOutlined, DownloadOutlined, FileImageOutlined } from "@ant-design/icons";
+import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
+import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
@@ -21,9 +22,10 @@ interface GalleryCardProps {
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
     downloadFullField: string;
+    size: number;
 }
 
-const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
+const GalleryCard: React.FC<GalleryCardProps> = (props) => {
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
     };
@@ -59,6 +61,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <Button key={`${props.cellID}-load`} onClick={openCellIn3D}>
             3D
         </Button>,
+        <Divider key={`${props.cellID}-0`} type="vertical" />,
         <Dropdown
             key={`${props.cellID}-download`}
             menu={{ items: menuItems }}
@@ -75,6 +78,8 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 </Button>
             </Tooltip>
         </Dropdown>,
+        <Divider key={`${props.cellID}-1`} type="vertical" />,
+
         <Button key={`${props.cellID}-close`} onClick={deselectPoint}>
             <CloseOutlined />
         </Button>,
@@ -84,6 +89,7 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
+            style={{ width: props.size }}
             {...{
                 // props not in ant.d component, but do exist
                 id: props.cellID ? props.cellID.toString() : "",
@@ -91,32 +97,36 @@ const GalleryCard: React.SFC<GalleryCardProps> = (props) => {
                 onMouseLeave: props.onMouseLeave,
             }}
         >
-            <Card bordered={true}>
+            <Card
+                className={props.selected ? styles.selected : styles.unselected}
+                loading={props.empty}
+                cover={
+                    props.src ? (
+                        <img
+                            alt="thumbnail of microscopy image"
+                            src={props.src}
+                            onClick={openCellIn3D}
+                        />
+                    ) : (
+                        <FileImageOutlined onClick={openCellIn3D} />
+                    )
+                }
+            >
                 <Card.Meta
+                    className={classNames({ [styles.small]: props.size < 170 })}
                     title={props.category}
-                    avatar={
-                        <div onClick={openCellIn3D}>
-                            <Avatar
-                                className={props.selected ? styles.selected : undefined}
-                                alt="thumbnail of microscopy image"
-                                src={props.src}
-                                icon={
-                                    props.src ? undefined : (
-                                        <PictureOutlined className={styles.placeholderAvatar} />
-                                    )
-                                }
-                            />
-                        </div>
-                    }
                     description={
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            {props.cellID}
-
-                            {props.mitoticStage && (
-                                <span className={styles.stage}>{props.mitoticStage}</span>
-                            )}
+                        <Flex vertical justify="space-between">
+                            <Flex vertical>
+                                <span>{props.cellID}</span>
+                                <span style={{ minHeight: "1.5em" }}>
+                                    {props.mitoticStage && (
+                                        <span className={styles.stage}>{props.mitoticStage}</span>
+                                    )}
+                                </span>
+                            </Flex>
                             {!props.empty && <div className={styles.actionList}>{actions}</div>}
-                        </div>
+                        </Flex>
                     }
                 />
             </Card>
