@@ -108,7 +108,24 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                             onClick={openCellIn3D}
                         />
                     ) : (
-                        <FileImageOutlined onClick={openCellIn3D} />
+                        <Flex
+                            style={{
+                                display: "flex",
+                                width: props.size,
+                                height: props.size,
+                                fontSize: props.size / 3,
+                                // TODO: Use a UI dark grey
+                                background: "#000",
+                            }}
+                            align="center"
+                            justify="center"
+                            // TODO: Make this an unstyled button and not a div
+                            onClick={openCellIn3D}
+                        >
+                            <span>
+                                <PictureOutlined />
+                            </span>
+                        </Flex>
                     )
                 }
             >
