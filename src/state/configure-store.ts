@@ -4,7 +4,6 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { createLogicMiddleware } from "redux-logic";
 
 import { enableBatching, initialState, imageDataset, metadata, selection, State } from "./";
-import RequestClassToUse from "./image-dataset";
 import devtoolsCompose from "./redux-devtools";
 
 const reducers = {
