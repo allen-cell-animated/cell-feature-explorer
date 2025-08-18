@@ -111,7 +111,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         },
     },
     [SET_CSV_URL]: {
-        accepts: (action: AnyAction): action is SetCsvUrlAction => action.type === SET_CSV_URL,
+        accepts: (action: Action): action is SetCsvUrlAction => action.type === SET_CSV_URL,
         perform: (state: SelectionStateBranch, action: SetCsvUrlAction) => ({
             ...state,
             csvUrl: action.payload,
@@ -135,8 +135,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [OPEN_CELL_IN_3D]: {
-        accepts: (action: Action): action is SelectPointAction =>
-            action.type === OPEN_CELL_IN_3D,
+        accepts: (action: Action): action is SelectPointAction => action.type === OPEN_CELL_IN_3D,
         perform: (state: SelectionStateBranch, action: SelectPointAction) => ({
             ...state,
             cellSelectedFor3D: action.payload.id,
@@ -173,8 +172,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [DESELECT_POINT]: {
-        accepts: (action: Action): action is DeselectPointAction =>
-            action.type === DESELECT_POINT,
+        accepts: (action: Action): action is DeselectPointAction => action.type === DESELECT_POINT,
         perform: (state: SelectionStateBranch, action: DeselectPointAction) => ({
             ...state,
             selectedPoints: filter(state.selectedPoints, (e) => e.CellId !== action.payload),
@@ -277,8 +275,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_ALIGN_ACTIVE]: {
-        accepts: (action: Action): action is BoolToggleAction =>
-            action.type === SET_ALIGN_ACTIVE,
+        accepts: (action: Action): action is BoolToggleAction => action.type === SET_ALIGN_ACTIVE,
         perform: (state: SelectionStateBranch, action: BoolToggleAction) => ({
             ...state,
             alignActive: action.payload,

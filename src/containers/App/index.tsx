@@ -1,6 +1,6 @@
 import { ConfigProvider, Layout, theme } from "antd";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
 import classNames from "classnames";
 
 import AllenCellHeader from "../../components/AppHeader";
@@ -25,7 +25,7 @@ interface AppProps {
     selectedDataset: string;
     requestAvailableDatasets: () => RequestAction;
     megasets: Megaset[];
-    loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
+    loadCsvDataset: (fileContents: string) => LoadCsvDatasetAction;
     csvUrl: string;
 }
 
