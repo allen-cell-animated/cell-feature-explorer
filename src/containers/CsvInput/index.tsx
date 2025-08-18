@@ -3,14 +3,14 @@ import { Flex } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import React, { ReactElement } from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
 
 import { State } from "../../state";
 import imageDatasetStateBranch from "../../state/image-dataset";
 import { LoadCsvDatasetAction } from "../../state/image-dataset/types";
 
 type DispatchProps = {
-    loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
+    loadCsvDataset: (fileContents: string) => LoadCsvDatasetAction;
 };
 
 type CsvInputProps = DispatchProps;

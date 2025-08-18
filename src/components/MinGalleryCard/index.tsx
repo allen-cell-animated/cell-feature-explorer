@@ -46,6 +46,7 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
                                     styles.avatar
                                 )}
                                 alt="thumbnail of microscopy image"
+                                src={props.src}
                                 icon={
                                     props.src ? undefined : (
                                         <PictureOutlined className={styles.placeholderAvatar} />
