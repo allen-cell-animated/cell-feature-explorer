@@ -124,6 +124,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                             onClick={openCellIn3D}
                             width={props.size}
                             height={props.size}
+                            style={{ objectFit: "cover" }}
                         />
                     ) : (
                         <Flex

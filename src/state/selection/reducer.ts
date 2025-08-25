@@ -56,7 +56,7 @@ import {
     SetCsvUrlAction,
 } from "./types";
 
-export const initialState = {
+export const initialState: SelectionStateBranch = {
     applySelectionSetColoring: true,
     cellSelectedFor3D: "",
     colorBy: "",
