@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/web-3d-viewer/type-declarations";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import {
     ARRAY_OF_CELL_IDS_KEY,
     CELL_ID_KEY,

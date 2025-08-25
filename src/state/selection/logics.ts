@@ -24,10 +24,17 @@ import { changeAxis, changeGroupByCategory } from "./actions";
 import { FileInfo } from "../metadata/types";
 import { DatasetMetaData } from "../image-dataset/types";
 import { getImageDataset } from "../image-dataset/selectors";
+import {
+    ChangeSelectionAction,
+    SelectAlbumAction,
+    SelectArrayOfPointsAction,
+    SelectPointAction,
+    SyncStateWithURLAction,
+} from "./types";
 
 const syncStateWithUrl = createLogic({
     type: SYNC_STATE_WITH_URL,
-    process({ action }: ReduxLogicDeps, dispatch: any, done: any) {
+    process({ action }: ReduxLogicDeps<SyncStateWithURLAction>, dispatch: any, done: any) {
         const searchParameterMap = action.payload;
         const actions = UrlState.toReduxActions(searchParameterMap);
         const logicActions = remove(actions, { type: CHANGE_DATASET });
@@ -42,7 +49,7 @@ const syncStateWithUrl = createLogic({
 
 const changeDatasetLogic = createLogic({
     type: CHANGE_DATASET,
-    async process(deps: ReduxLogicDeps, dispatch: any, done: any) {
+    async process(deps: ReduxLogicDeps<ChangeSelectionAction>, dispatch: any, done: any) {
         const { action, getState } = deps;
         const state = getState();
         const imageDataSet = getImageDataset(state);
@@ -103,7 +110,7 @@ const changeDatasetLogic = createLogic({
 });
 
 const requestCellFileInfoForSelectedPoint = createLogic({
-    process(deps: ReduxLogicDeps) {
+    process(deps: ReduxLogicDeps<SelectPointAction>) {
         const { action, getState } = deps;
         const state = getState();
         const imageDataSet = getImageDataset(state);
@@ -141,7 +148,7 @@ const getIndicesForCellIds = (cellIds: string[], fullArrayOfCelIds: string[]) =>
 };
 
 const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
-    process(deps: ReduxLogicDeps) {
+    process(deps: ReduxLogicDeps<SelectArrayOfPointsAction>) {
         const { action, getState } = deps;
         const state = getState();
         const imageDataSet = getImageDataset(state);
@@ -173,7 +180,7 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
 });
 
 const selectAlbum = createLogic({
-    process(deps: ReduxLogicDeps) {
+    process(deps: ReduxLogicDeps<SelectAlbumAction>) {
         const { action, getState } = deps;
         const state = getState();
         const imageDataSet = getImageDataset(state);
@@ -182,7 +189,7 @@ const selectAlbum = createLogic({
         }
 
         return imageDataSet
-            .getFileInfoByArrayOfCellIds(action.payload)
+            .getFileInfoByArrayOfCellIds([action.payload.toString()])
             .then((data: (FileInfo | undefined)[]) => {
                 return filter(data);
             })

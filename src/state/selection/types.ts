@@ -1,6 +1,7 @@
-import { SelectedGroups } from "..";
+import type { SelectedGroups } from "..";
 import { CELL_ID_KEY } from "../../constants";
-import { FileInfo } from "../metadata/types";
+import type { URLSearchParamMap } from "../../util/UrlState";
+import type { FileInfo } from "../metadata/types";
 
 export interface SelectionStateBranch {
     applySelectionSetColoring: boolean;
@@ -66,6 +67,11 @@ export interface DeselectPointAction {
 
 export interface DeselectGroupOfPointsAction {
     payload: number | string;
+    type: string;
+}
+
+export interface SyncStateWithURLAction {
+    payload: URLSearchParamMap;
     type: string;
 }
 

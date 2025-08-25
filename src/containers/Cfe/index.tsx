@@ -4,7 +4,8 @@ import { ItemType } from "antd/es/menu/interface";
 import { uniq } from "lodash";
 import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
-import { ActionCreator, connect } from "react-redux";
+import { connect } from "react-redux";
+import type { ActionCreator } from "redux";
 import classNames from "classnames";
 
 import CellViewer from "../../components/CellViewer/index";
