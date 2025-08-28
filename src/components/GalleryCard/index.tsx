@@ -22,7 +22,7 @@ interface GalleryCardProps {
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
     downloadFullField: string;
-    size: number;
+    widthPx: number;
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
@@ -89,7 +89,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
-            style={{ width: props.size }}
+            style={{ width: props.widthPx }}
             {...{
                 // props not in ant.d component, but do exist
                 id: props.cellID ? props.cellID.toString() : "",
@@ -111,7 +111,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 }
             >
                 <Card.Meta
-                    className={classNames({ [styles.small]: props.size < 170 })}
+                    className={classNames({ [styles.small]: props.widthPx < 170 })}
                     title={props.category}
                     description={
                         <Flex vertical justify="space-between">
