@@ -11,7 +11,7 @@ import {
     ContinuousMeasuredFeatureDef,
 } from "../../metadata/types";
 import { ImageDataset, InitialDatasetSelections, Megaset } from "../types";
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,

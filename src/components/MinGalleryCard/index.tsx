@@ -1,5 +1,6 @@
 import { Avatar, List } from "antd";
 import React from "react";
+import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
@@ -39,7 +40,10 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
                     props.src && (
                         <div onClick={openCellin3D}>
                             <Avatar
-                                className={props.selected ? styles.selected : undefined}
+                                className={classNames(
+                                    { [styles.selected]: props.selected },
+                                    styles.avatar
+                                )}
                                 alt="thumbnail of microscopy image"
                                 src={props.src}
                             />
