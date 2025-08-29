@@ -1,4 +1,4 @@
-import { CloseOutlined, DownloadOutlined, FileImageOutlined } from "@ant-design/icons";
+import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
 import React from "react";
@@ -108,7 +108,10 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                             onClick={openCellIn3D}
                         />
                     ) : (
-                        <FileImageOutlined onClick={openCellIn3D} />
+                        <PictureOutlined
+                            onClick={openCellIn3D}
+                            style={{ padding: "12px 0", fontSize: `${props.widthPx / 3}px` }}
+                        />
                     )
                 }
             >
