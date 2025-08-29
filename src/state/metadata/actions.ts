@@ -38,9 +38,8 @@ import {
 export function requestAvailableDatasets() {
     return { type: REQUEST_AVAILABLE_DATASETS };
 }
-export function receiveAvailableDatasets(
-    payload: Megaset[]
-): ReceiveAvailableDatasetsAction {
+
+export function receiveAvailableDatasets(payload: Megaset[]): ReceiveAvailableDatasetsAction {
     return {
         payload,
         type: RECEIVE_AVAILABLE_DATASETS,

@@ -191,14 +191,14 @@ export function getFeatureDefTooltip(key: string, options: MeasuredFeatureDef[])
     return "";
 }
 
+/**
+ * Returns an array the length of the data that has the string representation of the
+ * current `groupBy` category name for each cell in the data.
+ * For example, if the the perCellDataForPlot
+ * has `value["cell-line"] = [2, 2, 12, 12]`, and the `groupBy = "cell-line"`, then this will return
+ * `["beta-actin", "beta-actin", "tom20", "tom20"]`
+ */
 export const getGroupingCategoryNamesAsArray = createSelector(
-    /**
-     * Returns an array the length of the data that has the string representation of the
-     * current "groupBy" category name for each cell in the data.
-     * For example, if the the perCellDataForPlot
-     * has value["cell-line"] = [2, 2, 12, 12], and the groupBy = "cell-line", then this will return
-     * ["beta-actin", "beta-actin", "tom20", "tom20"]
-     */
     [getPerCellDataForPlot, getGroupByFeatureDef],
     (
         perCellDataForPlot: DataForPlot,

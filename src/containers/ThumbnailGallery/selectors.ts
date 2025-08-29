@@ -87,10 +87,10 @@ export const getThumbnails = createSelector(
             const cellID = fileInfoForCell[CELL_ID_KEY];
             let cellIndex = -1;
             if (fileInfoForCell.index !== undefined && fileInfoForCell.index > 0) {
-                cellIndex = fileInfoForCell.index
+                cellIndex = fileInfoForCell.index;
             } else {
                 cellIndex = perCellPlotData.labels[ARRAY_OF_CELL_IDS_KEY].indexOf(cellID);
-            } 
+            }
             if (cellIndex < 0) {
                 return {} as Thumbnail;
             }
@@ -120,9 +120,12 @@ export const getThumbnails = createSelector(
                 );
             }
 
-            const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell);
-            const lookupKey =  groupByValues[cellIndex];
-            const category = getCategoryString(groupByFeatureDef, lookupKey ? lookupKey.toString() : "");
+            const thumbnailSrc = formatThumbnailSrc(thumbnailRoot, fileInfoForCell.thumbnailPath);
+            const lookupKey = groupByValues[cellIndex];
+            const category = getCategoryString(
+                groupByFeatureDef,
+                lookupKey ? lookupKey.toString() : ""
+            );
             return {
                 cellID,
                 downloadHref,

@@ -1,5 +1,5 @@
+import { Col, Descriptions, Layout, Row } from "antd";
 import React from "react";
-import { Row, Col, Layout, Descriptions } from "antd";
 const { Content } = Layout;
 
 import MegasetCard from "../../components/MegasetCard";
@@ -103,10 +103,13 @@ const LandingPage = ({ handleSelectDataset, megasets }: LandingPageProps) => (
                             >
                                 <Descriptions.Item label="RELEASE DATE">DATASET</Descriptions.Item>
 
-                                {downloadData.map((downloadInfo: DownloadInfo) => {
+                                {downloadData.map((downloadInfo: DownloadInfo, index) => {
                                     return (
                                         <>
-                                            <Descriptions.Item label={downloadInfo.date}>
+                                            <Descriptions.Item
+                                                label={downloadInfo.date}
+                                                key={index}
+                                            >
                                                 {" "}
                                                 <a
                                                     target="_blank"

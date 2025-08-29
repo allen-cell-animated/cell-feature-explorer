@@ -1,9 +1,13 @@
-import FirebaseRequest from "./firebase";
-import JsonRequest from "./json-dataset";
-import { ImageDataset } from "./types";
+import * as actions from "./actions";
+import logics from "./logics";
+import reducer from "./reducer";
+import * as selectors from "./selectors";
+import * as types from "./types";
 
-// by default will use Firebase for dataset, can be switched to JSON dataset using ENV
-// variable
-export default function RequestClassToUse(): ImageDataset {
-    return process.env.USE_JSON_DATASET ? new JsonRequest() : new FirebaseRequest();
-}
+export default {
+    actions,
+    logics,
+    reducer,
+    selectors,
+    types,
+};

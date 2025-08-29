@@ -33,7 +33,7 @@ import {
     FileInfo,
 } from "./types";
 
-export const initialState = {
+export const initialState: MetadataStateBranch = {
     albums: [],
     cellFileInfo: [] as FileInfo[],
     isLoading: true,
@@ -109,8 +109,7 @@ const actionToConfigMap: TypeToDescriptionMap = {
         }),
     },
     [SET_LOADING_TEXT]: {
-        accepts: (action: Action): action is SetLoadingAction =>
-            action.type === SET_LOADING_TEXT,
+        accepts: (action: Action): action is SetLoadingAction => action.type === SET_LOADING_TEXT,
         perform: (state: MetadataStateBranch, action: SetLoadingAction) => ({
             ...state,
             loadingText: action.payload,
