@@ -32,7 +32,10 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
     const [imageSrc, setImageSrc] = useState(props.src);
     useEffect(() => {
         const path = props.fileInfo?.volumeviewerPath ?? props.fileInfo?.fovVolumeviewerPath;
-        if (!props.src && path && path.endsWith(".ome.zarr")) {
+        if (
+            (!props.src && path && path.endsWith(".ome.zarr")) ||
+            (props.src && props.src.endsWith(".ome.zarr"))
+        ) {
             // Asynchronously load + set image source
             createThumbnailImageSrc(path).then((src) => {
                 setImageSrc(src);
