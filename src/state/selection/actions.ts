@@ -25,6 +25,7 @@ import {
     CLEAR_DATASET,
     CHANGE_GROUP_BY_CATEGORY,
     SET_ALIGN_ACTIVE,
+    SET_CSV_URL,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -47,6 +48,7 @@ import {
     SelectAxisAction,
     SelectedPointData,
     SelectPointAction,
+    SetCsvUrlAction,
     SyncStateWithURLAction,
 } from "./types";
 
@@ -183,6 +185,13 @@ export function changeDataset(payload: string): ChangeSelectionAction {
 export function clearDataset(): ClearDatasetAction {
     return {
         type: CLEAR_DATASET,
+    };
+}
+
+export function setCsvUrl(payload: string): SetCsvUrlAction {
+    return {
+        payload,
+        type: SET_CSV_URL,
     };
 }
 
