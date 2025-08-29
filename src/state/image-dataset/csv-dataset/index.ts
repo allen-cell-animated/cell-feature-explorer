@@ -382,7 +382,10 @@ class CsvRequest implements ImageDataset {
         columnSrc: string,
         columnDst: string
     ): boolean {
-        if (row[columnSrc] !== undefined && row[columnDst] === undefined) {
+        if (
+            row[columnSrc] !== undefined &&
+            (row[columnDst] === undefined || row[columnDst] === "")
+        ) {
             row[columnDst] = row[columnSrc];
             return true;
         }
@@ -395,6 +398,14 @@ class CsvRequest implements ImageDataset {
             this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
         }
         this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        if (
+            !row[BFF_THUMBNAIL_PATH_KEY] &&
+            row[BFF_FILE_PATH_KEY] &&
+            row[BFF_FILE_PATH_KEY].endsWith(".ome.zarr")
+        ) {
+            // replace thumbnail with zarr
+            this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, THUMBNAIL_PATH);
+        }
         this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     };
 
@@ -403,6 +414,14 @@ class CsvRequest implements ImageDataset {
             this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
         }
         this.copyColumnIfEmpty(row, FMS_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        if (
+            !row[FMS_THUMBNAIL_PATH_KEY] &&
+            row[FMS_FILE_PATH_KEY] &&
+            row[FMS_FILE_PATH_KEY].endsWith(".ome.zarr")
+        ) {
+            // replace thumbnail with zarr
+            this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, THUMBNAIL_PATH);
+        }
         this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     }
 
