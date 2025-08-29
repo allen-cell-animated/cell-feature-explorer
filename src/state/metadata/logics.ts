@@ -38,6 +38,7 @@ import {
 } from "../selection/selectors";
 import { getImageDataset } from "../image-dataset/selectors";
 import { ViewerChannelSettings } from "@aics/vole-app";
+import { getImageDataset } from "../image-dataset/selectors";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {

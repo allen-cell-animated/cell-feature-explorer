@@ -361,7 +361,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 handleDeselectPoint={handleDeselectPoint}
                 handleOpenIn3D={this.selectCell}
                 empty={item.empty}
-                size={this.state.thumbnailSize}
+                widthPx={this.state.thumbnailSize}
             />
         );
     }
