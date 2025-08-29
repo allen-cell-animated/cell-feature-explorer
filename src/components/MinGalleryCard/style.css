@@ -3,6 +3,7 @@
 .container {
     width: 300px;
 }
+
 .container:global(.ant-list-item) {
     border-bottom: 0.5px solid var(--border-gray);
 }
@@ -28,38 +29,8 @@
     background-color: var(--header-gray);
 }
 
-.infoList {
-    list-style: none;
-    padding-left: 0;
-}
-
-.actionList button {
-    border: none;
-    border-right: 1px solid white;
-    border-radius: 0;
-    background-color: transparent;
-    height: inherit;
-    color: white;
-}
-
-.actionList a {
-    color: white;
-}
-
-.actionList button:first-of-type{
-    padding-left: 0;
-}
-
-.actionList button:last-of-type{
-    border-right: none;
-}
-
 .title {
     color: white;
-}
-
-.actionList .disabled {
-    color: var(--text-gray)
 }
 
 .container :global(.ant-avatar) {
@@ -68,7 +39,12 @@
 }
 
 .container .selected {
+    border: 1px solid var(--light-gray);
+}
+
+.avatar:hover {
     border: 1px solid white;
+    cursor: pointer;
 }
 
 .container :global(.ant-list-item-meta) {
@@ -82,12 +58,4 @@
 .container :global(.ant-list-item-action) {
     margin-right: 16px;
     margin-left: 0;
-}
-
-.container :global(.ant-list-item-action li) {
-    color: white;
-}
-
-.container :global(.ant-list-item-action a) {
-    color: white;
 }

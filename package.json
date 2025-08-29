@@ -8,7 +8,7 @@
         "url": "ssh://git@stash.corp.alleninstitute.org:7999/aics/cell-feature-explorer.git"
     },
     "scripts": {
-        "dev": "webpack serve --hot --public --config ./webpack/webpack.config.js  --env env=development",
+        "dev": "webpack serve --hot --config ./webpack/webpack.config.js  --env env=development",
         "build": "webpack --config ./webpack/webpack.config.js  --env env=production",
         "staging-db-build": "cross-env USE_DEV_DB=true webpack --config ./webpack/webpack.config.js  --env env=production",
         "build:internal": "cross-env USE_JSON_DATASET=true webpack --config ./webpack/webpack.config.js  --env env=development",
@@ -79,8 +79,8 @@
         "url-loader": "^4.1.1",
         "webpack": "^5.51.1",
         "webpack-bundle-analyzer": "^4.4.2",
-        "webpack-cli": "^4.8.0",
-        "webpack-dev-server": "^4.7.3"
+        "webpack-cli": "^6.0.1",
+        "webpack-dev-server": "^5.2.2"
     },
     "dependencies": {
         "@aics/browsing-context-messaging": "~1.1",
@@ -90,11 +90,12 @@
         "axios": "^1.7.7",
         "classnames": "^2.2.5",
         "core-js": "^2.5.5",
-        "firebase": "^7.24.0",
+        "firebase": "^9.23.0",
         "history": "^4.7.2",
         "lodash": "^4.17.20",
         "papaparse": "^5.4.1",
         "plotly.js": "^2.35.2",
+        "qs": "^6.14.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-plotly.js": "^2.3.0",

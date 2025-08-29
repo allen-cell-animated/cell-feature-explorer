@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Button, Col, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
+import { Button, ConfigProvider, Form, Input, List, Popconfirm, Radio, Row } from "antd";
 import { RadioChangeEvent } from "antd/es/radio";
 import { includes, map } from "lodash";
 import * as React from "react";
@@ -8,6 +8,8 @@ import type { ActionCreator } from "redux";
 
 import GalleryCard from "../../components/GalleryCard";
 import MinGalleryCard from "../../components/MinGalleryCard";
+import GalleryCardSlider from "../../components/GalleryCardSlider";
+
 import { MY_SELECTIONS_ID } from "../../constants";
 import { requestAlbumData } from "../../state/metadata/actions";
 import { getAllAlbumData } from "../../state/metadata/selectors";
@@ -72,11 +74,13 @@ type ThumbnailGalleryProps = PropsFromState & DispatchProps & OwnProps;
 interface ThumbnailGalleryState {
     inputStatus: "success" | "error" | "warning" | "validating" | undefined;
     message: string;
+    thumbnailSize: number;
 }
 
 const initialState = {
     inputStatus: undefined,
     message: "",
+    thumbnailSize: 128,
 };
 
 const messages = {
@@ -101,7 +105,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
         this.selectAlbum = this.selectAlbum.bind(this);
         this.closeGallery = this.closeGallery.bind(this);
         this.selectCell = this.selectCell.bind(this);
-        this.endOfAlbum = React.createRef();
+        this.endOfAlbum = React.createRef<HTMLDivElement>();
         this.state = {
             ...initialState,
         };
@@ -213,9 +217,14 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
 
         return (
             <Row id="gallery" className={styles.container} gutter={32} justify="space-between">
-                <Col className={styles.galleryGrid}>
+                <div className={styles.galleryGrid}>
                     <div className={styles.galleryHeader}>
                         <h2>{selectedAlbumName}</h2>
+                        <GalleryCardSlider
+                            setWidth={(width: number) => this.setState({ thumbnailSize: width })}
+                            currentWidth={this.state.thumbnailSize}
+                        />
+
                         {data.length > 0 && !selectedAlbum && (
                             <Popconfirm
                                 title="Are you sure you want to unselect all?"
@@ -239,10 +248,10 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         renderItem={this.renderGalleryCard}
                         footer={<div ref={this.endOfAlbum} />}
                     />
-                </Col>
-                <Col className={styles.albumSideBar}>
+                </div>
+                <div className={styles.albumSideBar}>
                     <div className={styles.sideBarHeader}>
-                        <h2>Gallery</h2>
+                        <h2>Thumbnail Gallery</h2>
                         <Button type="text" onClick={this.closeGallery} style={{ padding: 0 }}>
                             <CloseOutlined style={{ fontSize: "2em" }} />
                         </Button>
@@ -260,7 +269,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                         />
                     </Form.Item>
                     {this.renderAlbumButtons()}
-                </Col>
+                </div>
             </Row>
         );
     }
@@ -352,6 +361,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 handleDeselectPoint={handleDeselectPoint}
                 handleOpenIn3D={this.selectCell}
                 empty={item.empty}
+                widthPx={this.state.thumbnailSize}
             />
         );
     }
