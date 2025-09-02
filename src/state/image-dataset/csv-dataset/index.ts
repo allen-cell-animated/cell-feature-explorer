@@ -394,22 +394,20 @@ class CsvRequest implements ImageDataset {
         return false;
     }
 
-    private remapBffKeys = (row: Record<string, string>): void => {
+    private remapBffOrFmsKeys = (row: Record<string, string>): void => {
         // Use File ID preferentially, but fall back to Filename if File ID is empty
-        if (!this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY)) {
+        if (
+            !this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY) &&
+            !this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY)
+        ) {
             this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
-        }
-        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
-        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
-    };
-
-    private remapFmsKeys(row: Record<string, string>): void {
-        if (!this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY)) {
             this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
         }
+        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
         this.copyColumnIfEmpty(row, FMS_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
         this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
-    }
+    };
 
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
@@ -429,8 +427,7 @@ class CsvRequest implements ImageDataset {
 
         // Map certain BFF/FMS keys to the standard keys
         for (let i = 0; i < this.csvData.length; i++) {
-            this.remapBffKeys(this.csvData[i]);
-            this.remapFmsKeys(this.csvData[i]);
+            this.remapBffOrFmsKeys(this.csvData[i]);
         }
 
         // Check if all rows have a cell ID. If not, we must use the row index
