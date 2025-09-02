@@ -29,15 +29,17 @@ export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
 const BFF_FILE_PATH_KEY = "File Path";
-const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
 const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
 
-const FMS_FILE_PATH_KEY = "file_path";
-const FMS_FILENAME_KEY = "file_name";
+const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
+
+// FMS keys are identical to BFF keys but use snake_case
 const FMS_FILE_ID_KEY = "file_id";
 const FMS_THUMBNAIL_PATH_KEY = "thumbnail";
+const FMS_FILE_PATH_KEY = "file_path";
+const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
