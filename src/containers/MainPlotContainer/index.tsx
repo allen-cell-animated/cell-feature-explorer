@@ -43,6 +43,7 @@ import {
     getYTickConversion,
 } from "./selectors";
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
+import { formatThumbnailSrc } from "../../state/util";
 
 import styles from "./style.css";
 
@@ -174,13 +175,17 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        const thumbnailSrc = formatThumbnailSrc(
+            thumbnailRoot,
+            hoveredPointData?.thumbnailPath || ""
+        );
         return (
             hoveredPointData &&
             galleryCollapsed && (
                 <PopoverCard
                     title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
-                    src={`${thumbnailRoot}/${hoveredPointData.thumbnailPath}`}
+                    src={thumbnailSrc}
                 />
             )
         );

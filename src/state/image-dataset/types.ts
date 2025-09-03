@@ -5,6 +5,20 @@ import { ViewerChannelSettings } from "@aics/vole-app";
 import { DataForPlot, FileInfo, MeasuredFeatureDef } from "../metadata/types";
 import { Album } from "../types";
 
+export interface ImageDatasetStateBranch {
+    imageDataset: ImageDataset;
+}
+
+export interface ReceiveImageDatasetAction {
+    payload: ImageDataset;
+    type: string;
+}
+
+export interface LoadCsvDatasetAction {
+    payload: string; // CSV contents
+    type: string;
+}
+
 export interface InitialDatasetSelections {
     defaultXAxis: string;
     defaultYAxis: string;
@@ -64,4 +78,11 @@ export interface ImageDataset {
     getMeasuredFeatureDefs(): Promise<MeasuredFeatureDef[]>;
     getFileInfoByCellId(id: string): Promise<FileInfo | undefined>;
     getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]>;
+}
+
+// ACTIONS
+
+export interface ChangeImageDatasetTypeAction {
+    payload: ImageDataset;
+    type: string;
 }

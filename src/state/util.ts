@@ -6,11 +6,15 @@ import { APP_ID, CELL_ID_KEY } from "../constants";
 import { DiscreteMeasuredFeatureDef, FileInfo, MeasuredFeatureDef } from "./metadata/types";
 import { BatchedAction, TypeToDescriptionMap } from "./types";
 
+const HTTP_REGEX = /^https?:\/\//;
+
 export function makeConstant<R extends string, A extends string>(
     associatedReducer: R,
     actionType: A
 ): `${typeof APP_ID}/${Uppercase<R>}/${Uppercase<A>}` {
-    return `${APP_ID}/${associatedReducer.toUpperCase() as Uppercase<R>}/${actionType.toUpperCase() as Uppercase<A>}`;
+    return `${APP_ID}/${associatedReducer.toUpperCase() as Uppercase<R>}/${
+        actionType.toUpperCase() as Uppercase<A>
+    }`;
 }
 
 export function makeReducer<S>(
@@ -33,12 +37,19 @@ export function makeReducer<S>(
 
 export const BATCH_ACTIONS = makeConstant("batch", "batch-actions");
 
-export function batchActions<A extends Action>(actions: A[], type: string = BATCH_ACTIONS): BatchedAction<A> {
+export function batchActions<A extends Action>(
+    actions: A[],
+    type: string = BATCH_ACTIONS
+): BatchedAction<A> {
     return { type, batch: true, payload: actions };
 }
 
 function actionIsBatched<A extends Action>(action: Action): action is BatchedAction<A> {
-    return action && (action as BatchedAction).batch && Array.isArray((action as BatchedAction).payload);
+    return (
+        action &&
+        (action as BatchedAction).batch &&
+        Array.isArray((action as BatchedAction).payload)
+    );
 }
 
 export function enableBatching<S, A extends Action = Action>(
@@ -83,11 +94,15 @@ export function formatDownloadOfIndividualFile(root: string, id: string): string
     return root === "" ? "" : `${root}&id=${id}`;
 }
 
-export function formatThumbnailSrc(thumbnailRoot: string, item: FileInfo): string {
-    if (!thumbnailRoot || !item || !item.thumbnailPath) {
+export function formatThumbnailSrc(thumbnailRoot: string, thumbnailPath: string): string {
+    // Don't modify HTTP(S) thumbnail paths
+    if (HTTP_REGEX.test(thumbnailPath)) {
+        return thumbnailPath;
+    }
+    if (!thumbnailRoot || !thumbnailPath) {
         return "";
     }
-    return `${thumbnailRoot}/${item.thumbnailPath}`;
+    return `${thumbnailRoot}/${thumbnailPath}`;
 }
 
 export function findFeature(features: MeasuredFeatureDef[], searchKey: string) {

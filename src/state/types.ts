@@ -4,7 +4,7 @@ import { Action } from "redux";
 
 import { MetadataStateBranch } from "./metadata/types";
 import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
-import { ImageDataset } from "./image-dataset/types";
+import { ImageDatasetStateBranch } from "./image-dataset/types";
 
 export type NumberOrString = number | string;
 
@@ -22,7 +22,6 @@ export interface BatchedAction<A extends Action = Action> {
 export interface ReduxLogicDeps<A extends Action = Action> {
     action: A;
     httpClient: AxiosInstance;
-    imageDataSet: ImageDataset;
     getState: () => State;
     ctx?: any;
 }
@@ -32,6 +31,7 @@ export type ReduxLogicNextCb = (action: Action) => void;
 export interface State {
     metadata: MetadataStateBranch;
     selection: SelectionStateBranch;
+    imageDataset: ImageDatasetStateBranch;
 }
 
 export interface TypeToDescriptionMap {
@@ -65,13 +65,13 @@ export interface SelectedGroupDatum {
 }
 
 export interface PlotlyCustomData {
-    thumbnailPath: string; 
+    thumbnailPath: string;
     index: number;
 }
 
 export enum DataType {
     CONTINUOUS = "continuous",
-    GROUPED = "grouped"
+    GROUPED = "grouped",
 }
 
 export interface ContinuousPlotData {
