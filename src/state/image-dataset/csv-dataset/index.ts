@@ -369,7 +369,10 @@ class CsvRequest implements ImageDataset {
         columnSrc: string,
         columnDst: string
     ): boolean {
-        if (row[columnSrc] !== undefined && row[columnDst] === undefined) {
+        if (
+            row[columnSrc] !== undefined &&
+            (row[columnDst] === undefined || row[columnDst] === "")
+        ) {
             row[columnDst] = row[columnSrc];
             return true;
         }
