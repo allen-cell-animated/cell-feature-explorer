@@ -1,4 +1,5 @@
 import { ConfigProvider, Layout, theme } from "antd";
+const { Header } = Layout;
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
@@ -7,15 +8,16 @@ import AllenCellHeader from "../../components/AppHeader";
 import { PALETTE } from "../../constants";
 import metadataStateBranch from "../../state/metadata";
 import selectionStateBranch from "../../state/selection";
+import imageDatasetStateBranch from "../../state/image-dataset";
 import LandingPage from "../../components/LandingPage";
 import Cfe from "../Cfe";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
-import { Megaset } from "../../state/image-dataset/types";
+import { LoadCsvDatasetAction, Megaset } from "../../state/image-dataset/types";
 import { RequestAction } from "../../state/metadata/types";
+import { fetchAndLoadCsvDataset } from "../../util";
 
-const { Header } = Layout;
 import styles from "./style.css";
 
 interface AppProps {
@@ -25,6 +27,8 @@ interface AppProps {
     selectedDataset: string;
     requestAvailableDatasets: () => RequestAction;
     megasets: Megaset[];
+    loadCsvDataset: (fileContents: string) => LoadCsvDatasetAction;
+    csvUrl: string;
 }
 
 const { darkAlgorithm } = theme;
@@ -90,6 +94,14 @@ const configProviderTheme = {
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
+        if (this.props.csvUrl) {
+            // TODO: Add a component to show error messages to the user
+            try {
+                fetchAndLoadCsvDataset(this.props.csvUrl, this.props.loadCsvDataset);
+            } catch (e) {
+                console.error("Error loading CSV dataset from URL:", e);
+            }
+        }
         this.props.requestAvailableDatasets();
     };
 
@@ -141,12 +153,14 @@ function mapStateToProps(state: State) {
         loadingText: metadataStateBranch.selectors.getLoadingText(state),
         selectedDataset: selectionStateBranch.selectors.getSelectedDataset(state),
         megasets: metadataStateBranch.selectors.getMegasetsByNewest(state),
+        csvUrl: selectionStateBranch.selectors.getCsvUrl(state),
     };
 }
 
 const dispatchToPropsMap = {
     changeDataset: selectionStateBranch.actions.changeDataset,
     requestAvailableDatasets: metadataStateBranch.actions.requestAvailableDatasets,
+    loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
 };
 
 export default connect(mapStateToProps, dispatchToPropsMap)(App);

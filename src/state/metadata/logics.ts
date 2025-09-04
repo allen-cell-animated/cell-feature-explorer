@@ -1,34 +1,30 @@
-import { createLogic } from "redux-logic";
+import { ViewerChannelSettings } from "@aics/vole-app";
 import type { Action } from "redux";
-
-import { Megaset } from "../image-dataset/types";
-
-import { ReduxLogicDeps } from "../types";
-import { batchActions } from "../util";
+import { createLogic } from "redux-logic";
 
 import {
     receiveAvailableDatasets,
-    receiveMeasuredFeatureDefs,
     receiveDataForPlot,
+    receiveMeasuredFeatureDefs,
     receiveViewerChannelSettings,
     setLoadingText,
     stopLoading,
 } from "./actions";
-import { getShowSmallScreenWarning } from "./selectors";
-
 import {
     RECEIVE_ALBUM_DATA,
-    REQUEST_AVAILABLE_DATASETS,
     REQUEST_ALBUM_DATA,
+    REQUEST_AVAILABLE_DATASETS,
     REQUEST_FEATURE_DATA,
     REQUEST_VIEWER_CHANNEL_SETTINGS,
 } from "./constants";
+import { getShowSmallScreenWarning } from "./selectors";
 import { DataForPlot } from "./types";
-import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
+import { getImageDataset } from "../image-dataset/selectors";
+import { Megaset } from "../image-dataset/types";
 import {
-    selectPoint,
-    selectCellFor3DViewer,
     requestCellFileInfoByArrayOfCellIds,
+    selectCellFor3DViewer,
+    selectPoint,
 } from "../selection/actions";
 import {
     getPlotByOnX,
@@ -36,8 +32,9 @@ import {
     getSelected3DCell,
     getSelectedIdsFromUrl,
 } from "../selection/selectors";
-import { ViewerChannelSettings } from "@aics/vole-app";
-import { getImageDataset } from "../image-dataset/selectors";
+import { ReduxLogicDeps } from "../types";
+import { batchActions } from "../util";
+import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 
 const requestAvailableDatasets = createLogic({
     process(deps: ReduxLogicDeps, dispatch: any, done: any) {
