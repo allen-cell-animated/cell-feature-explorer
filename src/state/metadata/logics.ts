@@ -19,7 +19,6 @@ import {
 } from "./constants";
 import { getShowSmallScreenWarning } from "./selectors";
 import { DataForPlot } from "./types";
-
 import { getImageDataset } from "../image-dataset/selectors";
 import { Megaset } from "../image-dataset/types";
 import {
@@ -35,7 +34,6 @@ import {
 } from "../selection/selectors";
 import { ReduxLogicDeps } from "../types";
 import { batchActions } from "../util";
-
 import { ARRAY_OF_CELL_IDS_KEY } from "../../constants";
 
 const requestAvailableDatasets = createLogic({

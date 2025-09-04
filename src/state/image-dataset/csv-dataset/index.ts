@@ -101,15 +101,22 @@ type FeatureInfo =
 
 type FeatureData = (number | null)[] | (string | null)[];
 
+/**
+ * Returns true if and only if a value is `null` or a numeric string (including
+ * "NaN" or "nan").
+ */
 function isNullOrNumericString(value: string | null): boolean {
     if (value === null) {
         return true;
     } else if (typeof value != "string") {
         return false;
     } else if (value.trim().toLowerCase() === "nan") {
+        // String values that match "NaN" or "nan" can be considered as numbers.
         return true;
     }
 
+    // Catch string values that are not numbers (but aren't explicitly "NaN" or
+    // "nan")
     return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
