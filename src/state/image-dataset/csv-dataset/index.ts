@@ -29,10 +29,19 @@ export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
 const BFF_FILE_ID_KEY = "File ID";
 const BFF_THUMBNAIL_PATH_KEY = "Thumbnail";
 const BFF_FILE_PATH_KEY = "File Path";
-const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
 const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
+
+const BFF_DEFAULT_GROUP_BY_KEY = "Cell Line";
+
+// FMS keys are identical to BFF keys but use snake_case
+const FMS_FILE_ID_KEY = "file_id";
+const FMS_THUMBNAIL_PATH_KEY = "thumbnail";
+const FMS_FILE_PATH_KEY = "file_path";
+const FMS_FILENAME_KEY = "file_name";
+const FMS_FILE_SIZE_KEY = "file_size";
+const FMS_UPLOADED_KEY = "uploaded";
 
 const METADATA_KEYS = new Set([
     CELL_ID_KEY,
@@ -48,6 +57,12 @@ const METADATA_KEYS = new Set([
     BFF_FILENAME_KEY,
     BFF_FILE_SIZE_KEY,
     BFF_UPLOADED_KEY,
+    FMS_FILE_PATH_KEY,
+    FMS_FILENAME_KEY,
+    FMS_FILE_ID_KEY,
+    FMS_THUMBNAIL_PATH_KEY,
+    FMS_FILE_SIZE_KEY,
+    FMS_UPLOADED_KEY,
 ]);
 
 // Adobe palette of high-contrast colors for denoting different categories
@@ -386,13 +401,18 @@ class CsvRequest implements ImageDataset {
         return false;
     }
 
-    private remapBffKeys = (row: Record<string, string>): void => {
+    private remapBffOrFmsKeys = (row: Record<string, string>): void => {
         // Use File ID preferentially, but fall back to Filename if File ID is empty
-        if (!this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY)) {
+        const didCopyBffFileIdKey = this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY);
+        const didCopyFmsFileIdKey = this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY);
+        if (!didCopyBffFileIdKey && !didCopyFmsFileIdKey) {
             this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
+            this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
         }
         this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
+        this.copyColumnIfEmpty(row, FMS_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
         this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
+        this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
     };
 
     private parseCsvData(csvDataSrc: string): void {
@@ -411,9 +431,9 @@ class CsvRequest implements ImageDataset {
             throw new Error("No data found in CSV");
         }
 
-        // Map certain BFF keys to the standard keys
+        // Map certain BFF/FMS keys to the standard keys
         for (let i = 0; i < this.csvData.length; i++) {
-            this.remapBffKeys(this.csvData[i]);
+            this.remapBffOrFmsKeys(this.csvData[i]);
         }
 
         // Check if all rows have a cell ID. If not, we must use the row index

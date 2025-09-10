@@ -40,6 +40,8 @@ export const RECEIVE_FILE_INFO_FOR_SELECTED_ARRAY_OF_CELLS = makeSelectionConsta
 export const SET_DATASET = makeSelectionConstant("set-dataset");
 export const CHANGE_DATASET = makeSelectionConstant("change-dataset");
 export const CLEAR_DATASET = makeSelectionConstant("clear-dataset");
+export const SET_CSV_URL = makeSelectionConstant("set-csv-url");
+export const CSV_DATASET_NAME = "csv";
 
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 
