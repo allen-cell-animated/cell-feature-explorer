@@ -1,3 +1,4 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Avatar, List } from "antd";
 import React from "react";
 import classNames from "classnames";
@@ -5,7 +6,6 @@ import classNames from "classnames";
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 
 import styles from "./style.css";
-import { PictureOutlined } from "@ant-design/icons";
 
 interface GalleryCardProps {
     category: string;

@@ -1,5 +1,4 @@
 import { ConfigProvider, Layout, theme } from "antd";
-const { Header } = Layout;
 import * as React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
@@ -16,9 +15,11 @@ import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
 import { LoadCsvDatasetAction, Megaset } from "../../state/image-dataset/types";
 import { RequestAction } from "../../state/metadata/types";
-import { fetchAndLoadCsvDataset } from "../../util";
+import { fetchCsvText } from "../../util";
 
 import styles from "./style.css";
+
+const { Header } = Layout;
 
 interface AppProps {
     isLoading: boolean;
@@ -95,10 +96,13 @@ const configProviderTheme = {
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
         if (this.props.csvUrl) {
-            // TODO: Add a component to show error messages to the user
             try {
-                fetchAndLoadCsvDataset(this.props.csvUrl, this.props.loadCsvDataset);
+                fetchCsvText(this.props.csvUrl).then(this.props.loadCsvDataset);
             } catch (e) {
+                // TODO: Add a component to show error messages to the user
+                window.alert(
+                    "Could not load CSV dataset from URL. See browser console for details."
+                );
                 console.error("Error loading CSV dataset from URL:", e);
             }
         }

@@ -20,16 +20,12 @@ export function isDevOrStagingSite(host: string): boolean {
     return !host || host.includes("localhost") || host.includes("staging") || host.includes("stg");
 }
 
-export async function fetchAndLoadCsvDataset(
-    url: string,
-    loadCsvDataset: (fileText: string) => void
-): Promise<void> {
+export async function fetchCsvText(url: string): Promise<string> {
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error(
             `Failed to fetch CSV dataset from url '${url}': ${response.status} ${response.statusText}`
         );
     }
-    const fileText = await response.text();
-    loadCsvDataset(fileText);
+    return response.text();
 }

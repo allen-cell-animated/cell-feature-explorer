@@ -403,10 +403,9 @@ class CsvRequest implements ImageDataset {
 
     private remapBffOrFmsKeys = (row: Record<string, string>): void => {
         // Use File ID preferentially, but fall back to Filename if File ID is empty
-        if (
-            !this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY) &&
-            !this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY)
-        ) {
+        const didCopyBffFileIdKey = this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY);
+        const didCopyFmsFileIdKey = this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY);
+        if (!didCopyBffFileIdKey && !didCopyFmsFileIdKey) {
             this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
             this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
         }
