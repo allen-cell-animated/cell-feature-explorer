@@ -15,8 +15,11 @@ import { State } from "../../state/types";
 import { ChangeSelectionAction } from "../../state/selection/types";
 import { LoadCsvDatasetAction, Megaset } from "../../state/image-dataset/types";
 import { RequestAction } from "../../state/metadata/types";
-const { Header } = Layout;
+import { fetchCsvText } from "../../util";
+
 import styles from "./style.css";
+
+const { Header } = Layout;
 
 interface AppProps {
     isLoading: boolean;
@@ -92,18 +95,17 @@ const configProviderTheme = {
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
-        // TODO: Move this into an action?
         if (this.props.csvUrl) {
-            fetch(this.props.csvUrl).then((response) => {
-                if (response.ok) {
-                    // TODO: Wrap this in a try/catch
-                    response.text().then((fileText) => {
-                        this.props.loadCsvDataset(fileText);
-                    });
-                }
-            });
+            try {
+                fetchCsvText(this.props.csvUrl).then(this.props.loadCsvDataset);
+            } catch (e) {
+                // TODO: Add a component to show error messages to the user
+                window.alert(
+                    "Could not load CSV dataset from URL. See browser console for details."
+                );
+                console.error("Error loading CSV dataset from URL:", e);
+            }
         }
-
         this.props.requestAvailableDatasets();
     };
 
