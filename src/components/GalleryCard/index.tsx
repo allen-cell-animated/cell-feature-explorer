@@ -25,7 +25,7 @@ interface GalleryCardProps {
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
     downloadFullField: string;
-    size: number;
+    widthPx: number;
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
@@ -108,7 +108,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
         <List.Item
             key={props.cellID}
             className={styles.container}
-            style={{ width: props.size }}
+            style={{ width: props.widthPx }}
             {...{
                 // props not in ant.d component, but do exist
                 id: props.cellID ? props.cellID.toString() : "",
@@ -120,39 +120,22 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 className={props.selected ? styles.selected : styles.unselected}
                 loading={props.empty}
                 cover={
-                    imageSrc ? (
+                    props.src ? (
                         <img
                             alt="thumbnail of microscopy image"
-                            src={imageSrc}
+                            src={props.src}
                             onClick={openCellIn3D}
-                            width={props.size}
-                            height={props.size}
-                            style={{ objectFit: "cover" }}
                         />
                     ) : (
-                        <Flex
-                            style={{
-                                display: "flex",
-                                width: props.size,
-                                height: props.size,
-                                fontSize: props.size / 3,
-                                // TODO: Use a UI dark grey
-                                background: "#000",
-                            }}
-                            align="center"
-                            justify="center"
-                            // TODO: Make this an unstyled button and not a div
+                        <PictureOutlined
                             onClick={openCellIn3D}
-                        >
-                            <span>
-                                <PictureOutlined />
-                            </span>
-                        </Flex>
+                            style={{ padding: "12px 0", fontSize: `${props.widthPx / 3}px` }}
+                        />
                     )
                 }
             >
                 <Card.Meta
-                    className={classNames({ [styles.small]: props.size < 170 })}
+                    className={classNames({ [styles.small]: props.widthPx < 170 })}
                     title={props.category}
                     description={
                         <Flex vertical justify="space-between">

@@ -34,10 +34,11 @@ const BFF_FILENAME_KEY = "File Name";
 const BFF_FILE_SIZE_KEY = "File Size";
 const BFF_UPLOADED_KEY = "Uploaded";
 
-const FMS_FILE_PATH_KEY = "file_path";
-const FMS_FILENAME_KEY = "file_name";
+// FMS keys are identical to BFF keys but use snake_case
 const FMS_FILE_ID_KEY = "file_id";
 const FMS_THUMBNAIL_PATH_KEY = "thumbnail";
+const FMS_FILE_PATH_KEY = "file_path";
+const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
@@ -99,15 +100,22 @@ type FeatureInfo =
 
 type FeatureData = (number | null)[] | (string | null)[];
 
+/**
+ * Returns true if and only if a value is `null` or a numeric string (including
+ * "NaN" or "nan").
+ */
 function isNullOrNumericString(value: string | null): boolean {
     if (value === null) {
         return true;
     } else if (typeof value != "string") {
         return false;
     } else if (value.trim().toLowerCase() === "nan") {
+        // String values that match "NaN" or "nan" can be considered as numbers.
         return true;
     }
 
+    // Catch string values that are not numbers (but aren't explicitly "NaN" or
+    // "nan")
     return !isNaN(Number(value)) && !isNaN(parseFloat(value));
 }
 
@@ -392,38 +400,19 @@ class CsvRequest implements ImageDataset {
         return false;
     }
 
-    private remapBffKeys = (row: Record<string, string>): void => {
+    private remapBffOrFmsKeys = (row: Record<string, string>): void => {
         // Use File ID preferentially, but fall back to Filename if File ID is empty
-        if (!this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY)) {
+        const didCopyBffFileIdKey = this.copyColumnIfEmpty(row, BFF_FILE_ID_KEY, CELL_ID_KEY);
+        const didCopyFmsFileIdKey = this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY);
+        if (!didCopyBffFileIdKey && !didCopyFmsFileIdKey) {
             this.copyColumnIfEmpty(row, BFF_FILENAME_KEY, CELL_ID_KEY);
-        }
-        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
-        if (
-            !row[BFF_THUMBNAIL_PATH_KEY] &&
-            row[BFF_FILE_PATH_KEY] &&
-            row[BFF_FILE_PATH_KEY].endsWith(".ome.zarr")
-        ) {
-            // replace thumbnail with zarr
-            this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, THUMBNAIL_PATH);
-        }
-        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
-    };
-
-    private remapFmsKeys(row: Record<string, string>): void {
-        if (!this.copyColumnIfEmpty(row, FMS_FILE_ID_KEY, CELL_ID_KEY)) {
             this.copyColumnIfEmpty(row, FMS_FILENAME_KEY, CELL_ID_KEY);
         }
+        this.copyColumnIfEmpty(row, BFF_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
         this.copyColumnIfEmpty(row, FMS_THUMBNAIL_PATH_KEY, THUMBNAIL_PATH);
-        if (
-            !row[FMS_THUMBNAIL_PATH_KEY] &&
-            row[FMS_FILE_PATH_KEY] &&
-            row[FMS_FILE_PATH_KEY].endsWith(".ome.zarr")
-        ) {
-            // replace thumbnail with zarr
-            this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, THUMBNAIL_PATH);
-        }
+        this.copyColumnIfEmpty(row, BFF_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
         this.copyColumnIfEmpty(row, FMS_FILE_PATH_KEY, VOLUME_VIEWER_PATH);
-    }
+    };
 
     private parseCsvData(csvDataSrc: string): void {
         // TODO: handle URLs and files here: they need to be handled via async callbacks.
@@ -443,8 +432,7 @@ class CsvRequest implements ImageDataset {
 
         // Map certain BFF/FMS keys to the standard keys
         for (let i = 0; i < this.csvData.length; i++) {
-            this.remapBffKeys(this.csvData[i]);
-            this.remapFmsKeys(this.csvData[i]);
+            this.remapBffOrFmsKeys(this.csvData[i]);
         }
 
         // Check if all rows have a cell ID. If not, we must use the row index
