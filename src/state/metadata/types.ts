@@ -1,3 +1,5 @@
+import { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
+
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -6,11 +8,11 @@ import {
     GROUP_BY_KEY,
     THUMBNAIL_PATH,
     TRANSFORM,
+    VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
 import { Megaset } from "../image-dataset/types";
 import { Album } from "../types";
-import { ViewerChannelSettings } from "@aics/vole-app";
 
 // FROM THE DATABASE TYPINGS
 
@@ -26,6 +28,8 @@ export interface FileInfo {
         rotation: [number, number, number];
     };
     [GROUP_BY_KEY]?: string;
+    [VOLE_PARAMS]?: { args: Partial<AppProps>; viewerSettings: Partial<ViewerState> };
+
     index?: number; // added to the data after it's loaded for fast lookup into other array
 }
 

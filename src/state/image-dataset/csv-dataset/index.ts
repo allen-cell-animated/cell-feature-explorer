@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/vole-app";
+import { parseViewerUrlParams, ViewerChannelSettings } from "@aics/vole-app";
 import { Album } from "../..";
 import * as Papa from "papaparse";
 import {
@@ -20,6 +20,7 @@ import {
     GROUP_BY_KEY,
     THUMBNAIL_PATH,
     TRANSFORM,
+    VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
 
@@ -42,6 +43,9 @@ const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
+/** Path that includes Vol-E query parameters */
+const LINK_PATH_KEY = "Link Path";
+
 const METADATA_KEYS = new Set([
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -62,6 +66,7 @@ const METADATA_KEYS = new Set([
     FMS_THUMBNAIL_PATH_KEY,
     FMS_FILE_SIZE_KEY,
     FMS_UPLOADED_KEY,
+    LINK_PATH_KEY,
 ]);
 
 // Adobe palette of high-contrast colors for denoting different categories
@@ -552,7 +557,7 @@ class CsvRequest implements ImageDataset {
         return Promise.resolve(featureDefsArray);
     }
 
-    getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
+    async getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
         const rowIndex = this.idToIndex[id];
         if (rowIndex === undefined) {
             return Promise.resolve(undefined);
@@ -562,19 +567,26 @@ class CsvRequest implements ImageDataset {
         if (!data) {
             return Promise.resolve(undefined);
         }
+        let voleUrlParams: FileInfo[typeof VOLE_PARAMS];
+        if (data[LINK_PATH_KEY]) {
+            const queryParamString = data[LINK_PATH_KEY].split("?")[1] || "";
+            voleUrlParams = await parseViewerUrlParams(new URLSearchParams(queryParamString));
+            console.log(voleUrlParams); // tslint:disable-line:no-console
+        }
         const fileInfo = {
-            [CELL_ID_KEY]: data[CELL_ID_KEY] || "",
-            [FOV_ID_KEY]: data[FOV_ID_KEY] || "",
-            [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH] || "",
-            [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
-            [THUMBNAIL_PATH]: data[THUMBNAIL_PATH] || "",
-            [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
+            [CELL_ID_KEY]: data[CELL_ID_KEY],
+            [FOV_ID_KEY]: data[FOV_ID_KEY],
+            [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH],
+            [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH],
+            [THUMBNAIL_PATH]: data[THUMBNAIL_PATH],
+            [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH],
             [GROUP_BY_KEY]: data[GROUP_BY_KEY] || this.defaultGroupByFeatureKey,
+            [VOLE_PARAMS]: voleUrlParams,
         };
-        return Promise.resolve(fileInfo);
+        return fileInfo;
     }
 
-    getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
+    async getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
         const promises = ids.map((id) => this.getFileInfoByCellId(id));
         const result = Promise.all(promises);
         return Promise.resolve(result);
