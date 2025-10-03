@@ -569,7 +569,9 @@ class CsvRequest implements ImageDataset {
         }
         let voleUrlParams: FileInfo[typeof VOLE_PARAMS];
         if (data[LINK_PATH_KEY]) {
-            const queryParamString = data[LINK_PATH_KEY].split("?")[1] || "";
+            const split = data[LINK_PATH_KEY].split("?");
+            // Get the last element after the last "?" in case there are multiple
+            const queryParamString = split[split.length - 1] || "";
             voleUrlParams = await parseViewerUrlParams(new URLSearchParams(queryParamString));
             console.log(voleUrlParams); // tslint:disable-line:no-console
         }
