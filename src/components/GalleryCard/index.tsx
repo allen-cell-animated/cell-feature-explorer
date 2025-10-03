@@ -124,7 +124,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                     props.src ? (
                         <img
                             alt="thumbnail of microscopy image"
-                            src={props.src}
+                            src={imageSrc}
                             onClick={openCellIn3D}
                         />
                     ) : (

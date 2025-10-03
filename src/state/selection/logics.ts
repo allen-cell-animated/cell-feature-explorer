@@ -1,5 +1,5 @@
 import { createLogic } from "redux-logic";
-import { filter, find, get, indexOf, map, remove } from "lodash";
+import { filter, find, indexOf, map, remove } from "lodash";
 
 import { UrlState } from "../../util";
 import { InitialDatasetSelections } from "../image-dataset/types";
