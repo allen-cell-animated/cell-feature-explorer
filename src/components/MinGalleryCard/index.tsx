@@ -1,7 +1,7 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Avatar, List } from "antd";
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { PictureOutlined } from "@ant-design/icons";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { FileInfo } from "../../state/metadata/types";
@@ -64,12 +64,8 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
                                 styles.avatar
                             )}
                             alt="thumbnail of microscopy image"
-                            src={imageSrc}
-                            icon={
-                                imageSrc ? undefined : (
-                                    <PictureOutlined className={styles.placeholderAvatar} />
-                                )
-                            }
+                            src={props.src}
+                            icon={<PictureOutlined className={styles.placeholderAvatar} />}
                         />
                     </div>
                 }
