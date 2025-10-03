@@ -1,5 +1,4 @@
 import * as zarr from "zarrita";
-// @ts-ignore
 import { renderThumbnail } from "ome-zarr.js";
 
 export async function createThumbnailImageSrc(src: string): Promise<string> {
