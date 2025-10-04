@@ -95,11 +95,13 @@ export const getPlotlyCustomData = createSelector(
     [getFilteredCellData],
     (filteredCellData: DataForPlot): PlotlyCustomData[] => {
         const thumbnailPaths = filteredCellData.labels.thumbnailPaths;
+        const srcPaths = filteredCellData.labels.sourcePaths;
         const indices = filteredCellData.indices;
         return map(indices, (cellIndex, i) => {
             return {
                 index: cellIndex,
                 thumbnailPath: thumbnailPaths[i],
+                srcPath: srcPaths?.[i],
             };
         });
     }
@@ -338,18 +340,21 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
-export const getScatterPlotDataArray = createSelector([composePlotlyData], (allPlotData): Partial<PlotData>[] => {
-    const { mainPlotData, selectedGroupPlotData } = allPlotData;
-    const data = [
-        makeHistogramPlotX(mainPlotData.x),
-        makeHistogramPlotY(mainPlotData.y),
-        makeScatterPlotData(mainPlotData),
-    ];
-    if (selectedGroupPlotData) {
-        data.push(makeScatterPlotData(selectedGroupPlotData));
+export const getScatterPlotDataArray = createSelector(
+    [composePlotlyData],
+    (allPlotData): Partial<PlotData>[] => {
+        const { mainPlotData, selectedGroupPlotData } = allPlotData;
+        const data = [
+            makeHistogramPlotX(mainPlotData.x),
+            makeHistogramPlotY(mainPlotData.y),
+            makeScatterPlotData(mainPlotData),
+        ];
+        if (selectedGroupPlotData) {
+            data.push(makeScatterPlotData(selectedGroupPlotData));
+        }
+        return data;
     }
-    return data;
-});
+);
 
 export const getXDisplayOptions = createSelector(
     [getMeasuredFeaturesDefs],

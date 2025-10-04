@@ -2,6 +2,17 @@
     width: 80px;
 }
 
+/* Increase specificity to override Ant Design styles */
+div.placeholder-container.placeholder-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    width: 80px;
+    background-color: var(--dimgray);
+    font-size: 36px;
+}
+
 .container :global(.ant-card-body) {
     padding: 2px;
 }

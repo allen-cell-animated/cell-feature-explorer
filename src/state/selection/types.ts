@@ -112,6 +112,7 @@ export interface SelectedPointData {
     [CELL_ID_KEY]: string;
     index: number;
     thumbnailPath: string;
+    srcPath: string;
     groupBy?: string;
 }
 

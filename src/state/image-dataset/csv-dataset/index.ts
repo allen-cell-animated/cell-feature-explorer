@@ -5,7 +5,6 @@ import {
     DataForPlot,
     MeasuredFeatureDef,
     FileInfo,
-    PerCellLabels,
     MeasuredFeaturesOption,
     DiscreteMeasuredFeatureDef,
     ContinuousMeasuredFeatureDef,
@@ -524,22 +523,26 @@ class CsvRequest implements ImageDataset {
     getFeatureData(): Promise<DataForPlot> {
         const indices = this.csvData.map((_row, index) => index);
         const values: Record<string, (number | null)[]> = this.getFeatureKeyToData();
-        const labels: PerCellLabels = {
-            thumbnailPaths: [],
-            cellIds: [],
-        };
+        const thumbnailPaths = [];
+        const cellIds = [];
+        const sourcePaths = [];
 
         for (let i = 0; i < indices.length; i++) {
             const row = this.csvData[i];
             // Copy label data
-            labels.cellIds.push(row[CELL_ID_KEY]);
-            labels.thumbnailPaths.push(row[THUMBNAIL_PATH] || "");
+            cellIds.push(row[CELL_ID_KEY]);
+            thumbnailPaths.push(row[THUMBNAIL_PATH] || "");
+            sourcePaths.push(row[VOLUME_VIEWER_PATH] || row[FOV_VOLUME_VIEWER_PATH] || "");
         }
 
         return Promise.resolve({
             indices,
             values,
-            labels,
+            labels: {
+                thumbnailPaths,
+                cellIds,
+                sourcePaths,
+            },
         });
     }
 

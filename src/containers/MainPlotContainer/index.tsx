@@ -46,6 +46,7 @@ import { getFeatureDefTooltip } from "../../state/selection/selectors";
 import { formatThumbnailSrc } from "../../state/util";
 
 import styles from "./style.css";
+import { createThumbnailImageSrc } from "../../util/thumbnail_utils";
 
 interface PropsFromState {
     annotations: Annotation[];
@@ -83,13 +84,24 @@ interface PropsFromApp {
 
 type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
-class MainPlotContainer extends React.Component<MainPlotContainerProps> {
+interface MainPlotContainerState {
+    /**
+     * Thumbnail source override for Zarr files that don't have a specified
+     * thumbnail path in the metadata, generated asynchronously. `null` when a
+     * thumbnail is in the process of being generated.
+     */
+    cellIdToZarrThumbnailUrl: Map<string, string | null>;
+}
+
+class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
     private popoverContainer: React.RefObject<HTMLDivElement>;
 
     constructor(props: MainPlotContainerProps) {
         super(props);
 
         this.popoverContainer = React.createRef();
+
+        this.state = { cellIdToZarrThumbnailUrl: new Map() };
 
         this.onPointClicked = this.onPointClicked.bind(this);
         this.onPointHovered = this.onPointHovered.bind(this);
@@ -116,6 +128,39 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
         });
     }
 
+    private async loadThumbnailForZarr(cellId: string, srcPath: string | undefined): Promise<void> {
+        if (this.state.cellIdToZarrThumbnailUrl.has(cellId)) {
+            return;
+        } else if (this.state.cellIdToZarrThumbnailUrl.get(cellId) === null) {
+            // already loading, or load failed
+            return;
+        }
+        this.setState((state) => {
+            // Mark this cell ID as loading by storing `null` in state.
+            const newMap = new Map(state.cellIdToZarrThumbnailUrl);
+            newMap.set(cellId, null);
+            return { cellIdToZarrThumbnailUrl: newMap };
+        });
+        if (srcPath && srcPath.endsWith(".ome.zarr")) {
+            createThumbnailImageSrc(srcPath).then((src) => {
+                this.setState((state) => {
+                    const newMap = new Map(state.cellIdToZarrThumbnailUrl);
+                    newMap.set(cellId, src);
+                    return { cellIdToZarrThumbnailUrl: newMap };
+                });
+            });
+        }
+    }
+
+    public componentWillUnmount() {
+        // Revoke any object URLs created to free memory
+        for (const url of this.state.cellIdToZarrThumbnailUrl.values()) {
+            if (url) {
+                URL.revokeObjectURL(url);
+            }
+        }
+    }
+
     // TODO: retype once plotly has id and fullData types
     public onPointHovered(hovered: any) {
         const { points, event } = hovered;
@@ -135,7 +180,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     [CELL_ID_KEY]: point.id,
                     index: point.customdata.index,
                     thumbnailPath: point.customdata.thumbnailPath,
+                    srcPath: point.customdata.srcPath,
                 });
+                this.loadThumbnailForZarr(point.id, point.customdata.srcPath);
             } else {
                 changeHoveredPoint(null);
             }
@@ -175,10 +222,16 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
 
     public renderPopover() {
         const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
-        const thumbnailSrc = formatThumbnailSrc(
+        let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
         );
+        if (!thumbnailSrc && hoveredPointData?.CellId) {
+            // If a generated thumbnail is available for this Zarr cell, use it as
+            // a fallback for the thumbnail path.
+            thumbnailSrc =
+                this.state.cellIdToZarrThumbnailUrl.get(hoveredPointData.CellId) ?? undefined;
+        }
         return (
             hoveredPointData &&
             galleryCollapsed && (
