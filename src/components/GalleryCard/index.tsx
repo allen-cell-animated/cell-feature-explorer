@@ -106,7 +106,7 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 className={props.selected ? styles.selected : styles.unselected}
                 loading={props.empty}
                 cover={
-                    props.src ? (
+                    imageSrc ? (
                         <img
                             alt="thumbnail of microscopy image"
                             src={imageSrc}
