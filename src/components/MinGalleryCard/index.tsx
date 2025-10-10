@@ -1,11 +1,10 @@
 import { Avatar, List } from "antd";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classNames from "classnames";
-import { PictureOutlined } from "@ant-design/icons";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { FileInfo } from "../../state/metadata/types";
-import { createThumbnailImageSrc } from "../../util/thumbnail_utils";
+import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
 
@@ -18,27 +17,14 @@ interface GalleryCardProps {
     fileInfo: FileInfo;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
     handleOpenIn3D: (payload: { id: string }) => SelectPointAction;
+    // Unused
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
 const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
-    const [imageSrc, setImageSrc] = useState(props.src);
-    useEffect(() => {
-        const path = props.fileInfo?.volumeviewerPath ?? props.fileInfo?.fovVolumeviewerPath;
-        if (
-            (!props.src && path && path.endsWith(".ome.zarr")) ||
-            (props.src && props.src.endsWith(".ome.zarr"))
-        ) {
-            // Asynchronously load + set image source
-            createThumbnailImageSrc(path).then((src) => {
-                setImageSrc(src);
-            });
-        } else {
-            setImageSrc(props.src);
-        }
-    }, [props.src]);
+    const imageSrc = useThumbnail(props.src, props.fileInfo);
 
     const openCellin3D = () => {
         props.handleOpenIn3D({ id: props.cellID });
@@ -65,11 +51,7 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
                             )}
                             alt="thumbnail of microscopy image"
                             src={imageSrc}
-                            icon={
-                                imageSrc ? undefined : (
-                                    <PictureOutlined className={styles.placeholderAvatar} />
-                                )
-                            }
+                            icon={<PictureOutlined className={styles.placeholderAvatar} />}
                         />
                     </div>
                 }

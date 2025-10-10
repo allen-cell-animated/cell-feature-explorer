@@ -1,10 +1,10 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Card } from "antd";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { createThumbnailImageSrc } from "../../util/thumbnail_utils";
+import styles from "./style.css";
 
 const { Meta } = Card;
-import styles from "./style.css";
 
 export interface PopoverCardProps {
     description: string;
@@ -13,24 +13,22 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
-    const [imageSrc, setImageSrc] = useState(props.src);
-
-    useEffect(() => {
-        const path = props.src;
-        if (path && path.endsWith(".ome.zarr")) {
-            // Asynchronously load + set image source
-            createThumbnailImageSrc(path).then((src) => {
-                setImageSrc(src);
-            });
-        } else {
-            setImageSrc(props.src);
-        }
-    }, [props.src]);
+    const placeholderImage = (
+        <div className={styles.placeholderContainer}>
+            <PictureOutlined />
+        </div>
+    );
 
     return (
         <Card
             className={styles.container}
-            cover={imageSrc && <img alt="thumbnail of microscopy image" src={imageSrc} />}
+            cover={
+                props.src ? (
+                    <img alt="thumbnail of microscopy image" src={props.src} />
+                ) : (
+                    placeholderImage
+                )
+            }
         >
             <Meta description={props.description} title={props.title} />
         </Card>

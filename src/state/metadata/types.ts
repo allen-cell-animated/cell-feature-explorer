@@ -68,11 +68,11 @@ export interface MappingOfMeasuredValuesArrays {
     [key: string]: (number | null)[];
 }
 
-export interface PerCellLabels {
+export type PerCellLabels = {
     thumbnailPaths: string[];
     cellIds: string[];
     [key: string]: string[];
-}
+} & { sourcePaths?: string[] };
 
 export interface MeasuredFeaturesWithCategoryNames {
     [key: string]: string[] | (number | null)[];

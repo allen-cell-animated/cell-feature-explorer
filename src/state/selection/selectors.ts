@@ -325,6 +325,7 @@ export const getFilteredCellData = createSelector(
         const dataToReturn: MappingOfMeasuredValuesArrays = {};
         const cellIds: string[] = [];
         const thumbnails: string[] = [];
+        const srcPaths: string[] = [];
         const indices: number[] = [];
         for (let i = 0; i < perCellDataForPlot.labels.cellIds.length; i++) {
             const categoryName: string = groupingNames[i];
@@ -333,7 +334,9 @@ export const getFilteredCellData = createSelector(
                 cellIds.push(cellId);
                 categoryNameArray.push(categoryName);
                 thumbnails.push(perCellDataForPlot.labels.thumbnailPaths[i]);
+                srcPaths.push(perCellDataForPlot.labels.sourcePaths?.[i] ?? "");
                 indices.push(perCellDataForPlot.indices[i]);
+
                 measuredFeatureKeys.forEach((featureKey) => {
                     if (!dataToReturn[featureKey]) {
                         dataToReturn[featureKey] = [];
@@ -352,6 +355,7 @@ export const getFilteredCellData = createSelector(
                 [categoryKey]: categoryNameArray,
                 [ARRAY_OF_CELL_IDS_KEY]: cellIds,
                 thumbnailPaths: thumbnails,
+                sourcePaths: srcPaths,
             },
         };
     }
