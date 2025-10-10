@@ -1,3 +1,4 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Avatar, List } from "antd";
 import React from "react";
 import classNames from "classnames";
