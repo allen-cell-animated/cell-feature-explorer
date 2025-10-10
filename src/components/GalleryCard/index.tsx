@@ -1,16 +1,15 @@
 import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
+import classNames from "classnames";
 import React from "react";
 
-import classNames from "classnames";
-
+import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 import { FileInfo } from "../../state/metadata/types";
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
-import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
+import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
-import { useThumbnail } from "../../util/thumbnails";
 
 interface GalleryCardProps {
     category: string;

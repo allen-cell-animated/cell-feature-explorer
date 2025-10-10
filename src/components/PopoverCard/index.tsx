@@ -1,8 +1,8 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import React from "react";
 
 import styles from "./style.css";
-import { PictureOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 

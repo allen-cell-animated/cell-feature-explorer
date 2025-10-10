@@ -4,6 +4,7 @@
 
 /* Increase specificity to override Ant Design styles */
 div.placeholder-container.placeholder-container {
+    /* Format the placeholder to be centered */
     display: flex;
     align-items: center;
     justify-content: center;

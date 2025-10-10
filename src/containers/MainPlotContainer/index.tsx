@@ -49,7 +49,7 @@ import styles from "./style.css";
 import { createThumbnailImageSrc } from "../../util/thumbnails";
 
 /** Maximum number of auto-generated thumbnails to store. */
-const MAX_THUMBNAILS = 250;
+const MAX_GENERATED_THUMBNAILS = 250;
 
 interface PropsFromState {
     annotations: Annotation[];
@@ -133,13 +133,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
 
     private updateThumbnails(cellId: string, url: string | null) {
         this.setState((state) => {
-            // Move the most recently used thumbnail to the front of the map.
+            // Move the updated thumbnail to the front of the map.
             const oldEntries = Array.from(state.cellIdToZarrThumbnailUrl.entries()).filter(
-                ([id, _]) => cellId !== id
+                ([id]) => cellId !== id
             );
             oldEntries.unshift([cellId, url]);
-            // Limit the number of thumbnails stored in state to avoid excessive memory usage.
-            const newEntries = oldEntries.slice(0, MAX_THUMBNAILS);
+            // Limit the number of thumbnails stored in memory.
+            const newEntries = oldEntries.slice(0, MAX_GENERATED_THUMBNAILS);
             const newMap = new Map(newEntries);
             return { cellIdToZarrThumbnailUrl: newMap };
         });
@@ -160,7 +160,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public componentWillUnmount() {
-        // Revoke any object URLs created to free memory
         this.state.cellIdToZarrThumbnailUrl.clear();
     }
 
