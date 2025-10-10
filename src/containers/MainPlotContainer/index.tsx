@@ -46,7 +46,10 @@ import { getFeatureDefTooltip } from "../../state/selection/selectors";
 import { formatThumbnailSrc } from "../../state/util";
 
 import styles from "./style.css";
-import { createThumbnailImageSrc } from "../../util/thumbnail_utils";
+import { createThumbnailImageSrc } from "../../util/thumbnails";
+
+/** Maximum number of auto-generated thumbnails to store. */
+const MAX_THUMBNAILS = 250;
 
 interface PropsFromState {
     annotations: Annotation[];
@@ -86,9 +89,9 @@ type MainPlotContainerProps = PropsFromState & DispatchProps & PropsFromApp;
 
 interface MainPlotContainerState {
     /**
-     * Thumbnail source override for Zarr files that don't have a specified
-     * thumbnail path in the metadata, generated asynchronously. `null` when a
-     * thumbnail is in the process of being generated.
+     * Maps from `cellId` to a thumbnail URL for Zarr files that don't have a
+     * specified thumbnail path in the metadata, generated asynchronously.
+     * `null` when a thumbnail is in the process of being generated.
      */
     cellIdToZarrThumbnailUrl: Map<string, string | null>;
 }
@@ -128,6 +131,20 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         });
     }
 
+    private updateThumbnails(cellId: string, url: string | null) {
+        this.setState((state) => {
+            // Move the most recently used thumbnail to the front of the map.
+            const oldEntries = Array.from(state.cellIdToZarrThumbnailUrl.entries()).filter(
+                ([id, _]) => cellId !== id
+            );
+            oldEntries.unshift([cellId, url]);
+            // Limit the number of thumbnails stored in state to avoid excessive memory usage.
+            const newEntries = oldEntries.slice(0, MAX_THUMBNAILS);
+            const newMap = new Map(newEntries);
+            return { cellIdToZarrThumbnailUrl: newMap };
+        });
+    }
+
     private async loadThumbnailForZarr(cellId: string, srcPath: string | undefined): Promise<void> {
         if (this.state.cellIdToZarrThumbnailUrl.has(cellId)) {
             return;
@@ -135,30 +152,16 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             // already loading, or load failed
             return;
         }
-        this.setState((state) => {
-            // Mark this cell ID as loading by storing `null` in state.
-            const newMap = new Map(state.cellIdToZarrThumbnailUrl);
-            newMap.set(cellId, null);
-            return { cellIdToZarrThumbnailUrl: newMap };
-        });
+        this.updateThumbnails(cellId, null);
         if (srcPath && srcPath.endsWith(".ome.zarr")) {
-            createThumbnailImageSrc(srcPath).then((src) => {
-                this.setState((state) => {
-                    const newMap = new Map(state.cellIdToZarrThumbnailUrl);
-                    newMap.set(cellId, src);
-                    return { cellIdToZarrThumbnailUrl: newMap };
-                });
-            });
+            const src = await createThumbnailImageSrc(srcPath);
+            this.updateThumbnails(cellId, src);
         }
     }
 
     public componentWillUnmount() {
         // Revoke any object URLs created to free memory
-        for (const url of this.state.cellIdToZarrThumbnailUrl.values()) {
-            if (url) {
-                URL.revokeObjectURL(url);
-            }
-        }
+        this.state.cellIdToZarrThumbnailUrl.clear();
     }
 
     // TODO: retype once plotly has id and fullData types

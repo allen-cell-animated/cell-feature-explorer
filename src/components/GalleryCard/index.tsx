@@ -1,7 +1,7 @@
 import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import classNames from "classnames";
 
@@ -10,7 +10,7 @@ import { DeselectPointAction, SelectPointAction } from "../../state/selection/ty
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
 
 import styles from "./style.css";
-import { createThumbnailImageSrc } from "../../util/thumbnail_utils";
+import { useThumbnail } from "../../util/thumbnails";
 
 interface GalleryCardProps {
     category: string;
@@ -30,21 +30,7 @@ interface GalleryCardProps {
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
-    const [imageSrc, setImageSrc] = useState(props.src);
-    useEffect(() => {
-        const path = props.fileInfo?.volumeviewerPath ?? props.fileInfo?.fovVolumeviewerPath;
-        if (
-            (!props.src && path && path.endsWith(".ome.zarr")) ||
-            (props.src && props.src.endsWith(".ome.zarr"))
-        ) {
-            // Asynchronously load + set image source
-            createThumbnailImageSrc(path).then((src) => {
-                setImageSrc(src);
-            });
-        } else {
-            setImageSrc(props.src);
-        }
-    }, [props.src]);
+    const imageSrc = useThumbnail(props.src, props.fileInfo);
 
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
