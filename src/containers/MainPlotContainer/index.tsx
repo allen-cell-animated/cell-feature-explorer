@@ -133,13 +133,15 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
 
     private updateThumbnails(cellId: string, url: string | null) {
         this.setState((state) => {
-            // Move the updated thumbnail to the front of the map.
-            const oldEntries = Array.from(state.cellIdToZarrThumbnailUrl.entries()).filter(
-                ([id]) => cellId !== id
-            );
-            oldEntries.unshift([cellId, url]);
-            // Limit the number of thumbnails stored in memory.
-            const newEntries = oldEntries.slice(0, MAX_GENERATED_THUMBNAILS);
+            // Move the updated thumbnail to the front of the map entries
+            const mapCopy = new Map(state.cellIdToZarrThumbnailUrl);
+            mapCopy.delete(cellId);
+            const mapEntries: [string, string | null][] = [
+                [cellId, url],
+                ...Array.from(mapCopy.entries()),
+            ];
+            // Limit the number of thumbnails stored in memory
+            const newEntries = mapEntries.slice(0, MAX_GENERATED_THUMBNAILS);
             const newMap = new Map(newEntries);
             return { cellIdToZarrThumbnailUrl: newMap };
         });
