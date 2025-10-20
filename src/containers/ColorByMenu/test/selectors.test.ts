@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 import { find } from "lodash";
 
 import { DOWNLOAD_CONFIG_TYPE_PROTEIN } from "../../../constants/index";
@@ -78,22 +78,21 @@ describe("ColorByMenu selectors", () => {
             expect(actin?.disabled).to.be.false;
             expect(paxillin?.disabled).to.be.false;
             expect(tom20?.disabled).to.be.true;
-
         });
         it("returns disabled === true if that category isn't represented the plot", () => {
             const state = {
                 ...newMockState,
                 selection: {
                     ...newMockState.selection,
-                    plotByOnX:  "missing-data",
+                    plotByOnX: "missing-data",
                 },
             };
-            // "missing data" is missing for all points, so no category should be 
+            // "missing data" is missing for all points, so no category should be
             // enabled
             const result: PanelData[] = getInteractivePanelData(state);
-            result.forEach(ele => {
-                expect(ele.disabled).to.be.true
-            })
+            result.forEach((ele) => {
+                expect(ele.disabled).to.be.true;
+            });
         });
     });
 

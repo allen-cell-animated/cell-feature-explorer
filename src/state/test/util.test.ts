@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect, beforeEach } from "vitest";
 import type { Action } from "redux";
 
 import { APP_ID } from "../../constants";
@@ -16,11 +16,7 @@ describe("state utilities", () => {
     describe("makeConstant", () => {
         it("returns a string in the form 'APP_NAMESPACE/REDUCER/ACTION_TYPE'", () => {
             const constant = makeConstant("foo", "bar");
-            const [
-                namespace,
-                reducer,
-                type,
-            ] = constant.split("/");
+            const [namespace, reducer, type] = constant.split("/");
             expect(constant).to.be.a("string");
             expect(namespace).to.equal(APP_ID);
             expect(reducer).to.equal("FOO");
@@ -44,8 +40,12 @@ describe("state utilities", () => {
 
         const typeToDescriptionMap: TypeToDescriptionMap = {
             [ACTION_CONSTANT]: {
-                accepts: (action: Action): action is TestAction => action.hasOwnProperty("arbitraryProp"),
-                perform: (state: Partial<State>, action: TestAction) => ({ ...state, flag: action.arbitraryProp }),
+                accepts: (action: Action): action is TestAction =>
+                    action.hasOwnProperty("arbitraryProp"),
+                perform: (state: Partial<State>, action: TestAction) => ({
+                    ...state,
+                    flag: action.arbitraryProp,
+                }),
             },
         };
 
@@ -57,7 +57,7 @@ describe("state utilities", () => {
             reducer = makeReducer(typeToDescriptionMap, initialState);
         });
 
-        it("returns a reducer function", ()  => {
+        it("returns a reducer function", () => {
             expect(reducer).to.be.a("function");
         });
 
@@ -73,7 +73,10 @@ describe("state utilities", () => {
 
         it("returns the output of ActionDescription.perform if the type assertion passes", () => {
             const realAction = { type: ACTION_CONSTANT, arbitraryProp: true };
-            const expectedOutput = typeToDescriptionMap[ACTION_CONSTANT].perform(initialState, realAction);
+            const expectedOutput = typeToDescriptionMap[ACTION_CONSTANT].perform(
+                initialState,
+                realAction
+            );
             const nextState = reducer(initialState, realAction);
             expect(nextState).to.not.equal(initialState);
             expect(nextState).to.deep.equal(expectedOutput);
@@ -95,7 +98,10 @@ describe("state utilities", () => {
 
         const TOGGLE_BURRITO_INGREDIENT = "TOGGLE_BURRITO_INGRED";
 
-        const toggleBurritoIngredientCreator = (key: keyof MockState, value: boolean): MockAction => ({
+        const toggleBurritoIngredientCreator = (
+            key: keyof MockState,
+            value: boolean
+        ): MockAction => ({
             key,
             type: TOGGLE_BURRITO_INGREDIENT,
             value,
@@ -131,8 +137,9 @@ describe("state utilities", () => {
                 tortilla: false,
             };
 
-            expect(batchingReducer(initialState, batchActions([enableBeans, enableCheese])))
-                .to.deep.equal(expectedState);
+            expect(
+                batchingReducer(initialState, batchActions([enableBeans, enableCheese]))
+            ).to.deep.equal(expectedState);
         });
 
         it("applies non-batched actions as usual", () => {

@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 import {
     CELL_ID_KEY,
     FOV_ID_KEY,
