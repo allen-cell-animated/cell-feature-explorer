@@ -1,8 +1,5 @@
 module.exports = {
     extends: ["plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
-    env: {
-        mocha: true,
-    },
     parser: "@typescript-eslint/parser",
     parserOptions: {
         ecmaFeatures: {

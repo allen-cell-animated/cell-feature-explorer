@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 import "firebase/compat/firestore";
 import firebase from "firebase/compat/app";
 
