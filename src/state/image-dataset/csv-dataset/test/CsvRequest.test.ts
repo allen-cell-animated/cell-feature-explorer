@@ -309,11 +309,12 @@ describe("CsvRequest", () => {
                 volumeviewerPath:
                     "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/35.zarr",
                 groupBy: "Cell Line",
-                fovThumbnailPath: "",
-                fovVolumeviewerPath: "",
+                fovThumbnailPath: undefined,
+                fovVolumeviewerPath: undefined,
                 thumbnailPath:
                     "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-12/AICS-12_35.png",
-                FOVId: "",
+                FOVId: undefined,
+                voleUrlParams: undefined,
             });
         });
     });
