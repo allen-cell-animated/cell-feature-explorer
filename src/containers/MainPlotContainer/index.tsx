@@ -5,7 +5,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
-import AxisDropDown from "../../components/AxisDropDown";
+import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
 import MainPlot from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
@@ -235,11 +235,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                     className={styles.container}
                     onMouseLeave={this.onPlotUnhovered}
                 >
-                    <AxisDropDown
-                        axisId={X_AXIS_ID}
+                    <FeatureSelectDropdown
+                        classKey={X_AXIS_ID}
                         value={xDropDownValue}
                         options={xDropDownOptions}
-                        handleChangeAxis={handleChangeAxis}
+                        onChange={(v: string) => {
+                            handleChangeAxis(X_AXIS_ID, v);
+                        }}
                         tooltip={getFeatureDefTooltip(xDropDownValue, xDropDownOptions)}
                     />
                     <div className={styles.glossaryLink}>
@@ -251,11 +253,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps> {
                             <InfoCircleOutlined /> Open axis glossary
                         </a>
                     </div>
-                    <AxisDropDown
-                        axisId={Y_AXIS_ID}
+                    <FeatureSelectDropdown
+                        classKey={Y_AXIS_ID}
                         value={yDropDownValue}
                         options={yDropDownOptions}
-                        handleChangeAxis={handleChangeAxis}
+                        onChange={(v: string) => {
+                            handleChangeAxis(Y_AXIS_ID, v);
+                        }}
                         tooltip={getFeatureDefTooltip(yDropDownValue, yDropDownOptions)}
                     />
 

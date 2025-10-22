@@ -6,7 +6,7 @@ import React from "react";
 import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
-import AxisDropDown from "../../components/AxisDropDown";
+import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
 import InteractiveLegend from "../../components/InteractiveLegend";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
@@ -23,6 +23,7 @@ import { getFeatureDefTooltip, getDownloadRoot } from "../../state/selection/sel
 import {
     BoolToggleAction,
     ChangeDownloadConfigAction,
+    ChangeGroupByCategory,
     ChangeSelectionAction,
     ColorForPlot,
     DeselectGroupOfPointsAction,
@@ -30,7 +31,7 @@ import {
     SelectAxisAction,
 } from "../../state/selection/types";
 import { State } from "../../state/types";
-import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
+import { getColorByDisplayOptions, getGroupByDisplayOptions } from "../MainPlotContainer/selectors";
 
 import {
     createUrlFromListOfIds,
@@ -51,6 +52,7 @@ const { Panel } = Collapse;
 interface PropsFromState {
     // selector props
     colorBy: keyof MappingOfMeasuredValuesArrays;
+    groupBy: keyof MappingOfMeasuredValuesArrays;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     downloadRoot: string;
@@ -59,6 +61,7 @@ interface PropsFromState {
     selectionSetsPanelData: PanelData[];
     isInIndeterminateState: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
+    groupByDisplayOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
     categoricalFeatures: string[];
@@ -68,6 +71,7 @@ interface PropsFromState {
 interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
+    changeGroupByCategory: ActionCreator<ChangeGroupByCategory>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
@@ -184,27 +188,49 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             downloadConfig,
             downloadRoot,
             colorBy,
+            groupBy,
             colorByMenuOptions,
+            groupByDisplayOptions,
             handleChangeAxis,
+            changeGroupByCategory,
             colorForPlot,
             categoryCounts,
             categoricalFeatures,
         } = this.props;
+        console.log("group by", groupBy);
+        console.log("color by", colorBy);
+        console.log("color by menu options", colorByMenuOptions);
+        console.log("group by display options", groupByDisplayOptions);
         return (
             <React.Fragment>
                 <Row className={styles.colorByRow}>
                     <Col span={6}>Color by:</Col>
                     <Col span={18}>
-                        <AxisDropDown
-                            axisId={COLOR_BY_SELECTOR}
+                        <FeatureSelectDropdown
                             value={colorBy as string}
                             options={colorByMenuOptions}
-                            handleChangeAxis={handleChangeAxis}
+                            onChange={(v: string) => {
+                                handleChangeAxis(COLOR_BY_SELECTOR, v);
+                            }}
                             tooltip={getFeatureDefTooltip(colorBy as string, colorByMenuOptions)}
                         />
                     </Col>
                 </Row>
-                {includes(categoricalFeatures, colorBy) && (
+                <Row className={styles.colorByRow}>
+                    <Col span={6}>Group by:</Col>
+                    <Col span={18}>
+                        <FeatureSelectDropdown
+                            value={groupBy as string}
+                            options={groupByDisplayOptions}
+                            onChange={(v: string) => {
+                                changeGroupByCategory(v);
+                            }}
+                            tooltip={getFeatureDefTooltip(groupBy as string, groupByDisplayOptions)}
+                        />
+                    </Col>
+                </Row>
+                {/* todo figure out the utility of this this below */}
+                {/* {includes(categoricalFeatures, colorBy) && (
                     <Row className={styles.colorByRow}>
                         <Col span={6} />
                         <Col span={18}>
@@ -220,7 +246,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             })}
                         </Col>
                     </Row>
-                )}
+                )} */}
 
                 <div>
                     <div className={styles.interactiveLegendHeader}>
@@ -273,7 +299,9 @@ function mapStateToProps(state: State): PropsFromState {
     return {
         categoryCounts: selectionStateBranch.selectors.getColorByCategoryCounts(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
+        groupBy: selectionStateBranch.selectors.getGroupByCategory(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
+        groupByDisplayOptions: getGroupByDisplayOptions(state),
         colorForPlot: getLegendColors(state),
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
@@ -290,6 +318,7 @@ function mapStateToProps(state: State): PropsFromState {
 const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
+    changeGroupByCategory: selectionStateBranch.actions.changeGroupByCategory,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,

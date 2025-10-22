@@ -373,6 +373,15 @@ export const getColorByDisplayOptions = createSelector(
     }
 );
 
+export const getGroupByDisplayOptions = createSelector(
+    [getMeasuredFeaturesDefs, getGroupByTitle],
+    (featureDefs): MeasuredFeatureDef[] => {
+        // Only discrete features can be used for groupBy
+        // TODO: group by chunked ranges of continuous features?
+        return featureDefs.filter(feature => feature.discrete);
+    }
+);
+
 const makeNumberToTextConversion = (options: MeasuredFeaturesOptions): TickConversion => {
     return {
         tickText: map(options, "name"),
