@@ -133,6 +133,7 @@ export const getThumbnails = createSelector(
                 category,
                 mitoticStage,
                 src: thumbnailSrc,
+                fileInfo: fileInfoForCell,
             };
         });
     }

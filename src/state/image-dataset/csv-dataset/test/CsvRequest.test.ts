@@ -57,6 +57,12 @@ describe("CsvRequest", () => {
                     "https://example.com/4.jpeg",
                 ],
                 cellIds: ["potato", "garbanzo", "turnip", "rutabaga"],
+                sourcePaths: [
+                    "https://example.com/1/raw.ome.zarr",
+                    "https://example.com/2/raw.ome.zarr",
+                    "https://example.com/3/raw.ome.zarr",
+                    "https://example.com/4/raw.ome.zarr",
+                ],
             },
         });
     });
@@ -284,6 +290,12 @@ describe("CsvRequest", () => {
                     "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-61/AICS-61_141128.png",
                     "https://s3-us-west-2.amazonaws.com/bisque.allencell.org/v2.0.0/Cell-Viewer_Thumbnails/AICS-10/AICS-10_4557.png",
                 ],
+                sourcePaths: [
+                    "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/35.zarr",
+                    "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/2655.zarr",
+                    "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/141128.zarr",
+                    "https://animatedcell-test-data.s3.us-west-2.amazonaws.com/variance/4557.zarr",
+                ],
             });
             // Check volume viewer paths
             const fileInfo = await csvDataset.getFileInfoByArrayOfCellIds([
@@ -324,4 +336,3 @@ describe("CsvRequest", () => {
         expect(await csvData.getFileInfoByCellId("5")).to.be.undefined;
     });
 });
-

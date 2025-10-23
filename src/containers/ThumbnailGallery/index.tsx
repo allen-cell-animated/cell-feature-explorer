@@ -337,6 +337,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 selected={selectedCellId === item.cellID}
                 downloadHref={item.downloadHref}
                 cellID={item.cellID}
+                fileInfo={item.fileInfo}
                 handleDeselectPoint={handleDeselectPoint}
                 handleOpenIn3D={this.selectCell}
                 empty={item.empty}
@@ -358,6 +359,7 @@ class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailG
                 downloadHref={item.downloadHref}
                 downloadFullField={item.fullFieldDownloadHref}
                 cellID={item.cellID}
+                fileInfo={item.fileInfo}
                 handleDeselectPoint={handleDeselectPoint}
                 handleOpenIn3D={this.selectCell}
                 empty={item.empty}

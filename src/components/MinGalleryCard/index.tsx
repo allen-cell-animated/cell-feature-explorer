@@ -4,6 +4,8 @@ import React from "react";
 import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
+import type { FileInfo } from "../../state/metadata/types";
+import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
 
@@ -13,14 +15,18 @@ interface GalleryCardProps {
     selected: boolean;
     downloadHref: string;
     cellID: string;
+    fileInfo: FileInfo;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
     handleOpenIn3D: (payload: { id: string }) => SelectPointAction;
+    // Unused
     empty?: boolean;
     onMouseEnter: (target: React.MouseEvent<HTMLElement>) => void;
     onMouseLeave: (target: React.MouseEvent<HTMLElement>) => void;
 }
 
 const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
+    const imageSrc = useThumbnail(props.src, props.fileInfo);
+
     const openCellin3D = () => {
         props.handleOpenIn3D({ id: props.cellID });
     };
@@ -45,7 +51,7 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
                                 styles.avatar
                             )}
                             alt="thumbnail of microscopy image"
-                            src={props.src}
+                            src={imageSrc}
                             icon={<PictureOutlined className={styles.placeholderAvatar} />}
                         />
                     </div>

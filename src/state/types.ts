@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { Color } from "plotly.js";
 import { Action } from "redux";
 
-import { MetadataStateBranch } from "./metadata/types";
+import { FileInfo, MetadataStateBranch } from "./metadata/types";
 import { LassoOrBoxSelectPointData, SelectionStateBranch } from "./selection/types";
 import { ImageDatasetStateBranch } from "./image-dataset/types";
 
@@ -56,6 +56,7 @@ export interface Thumbnail {
     cellID: string;
     empty?: boolean;
     fullFieldDownloadHref: string;
+    fileInfo: FileInfo;
 }
 
 export interface SelectedGroupDatum {

@@ -15,7 +15,7 @@ const loadCsvDataset = createLogic({
     type: LOAD_CSV_DATASET,
     async process(deps: ReduxLogicDeps<LoadCsvDatasetAction>, dispatch: any, done: any) {
         const { action } = deps;
-        const fileContents = action.payload as string;
+        const fileContents = action.payload;
         const dataset = new CsvRequest(fileContents);
         dispatch(changeImageDatasetType(dataset));
 

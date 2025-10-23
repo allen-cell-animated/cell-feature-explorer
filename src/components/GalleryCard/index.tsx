@@ -1,11 +1,13 @@
 import { CloseOutlined, DownloadOutlined, PictureOutlined } from "@ant-design/icons";
 import { Button, Card, Divider, Dropdown, Flex, List, Tooltip } from "antd";
 import { ItemType } from "antd/es/menu/interface";
-import React from "react";
 import classNames from "classnames";
+import React from "react";
 
-import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
+import type { FileInfo } from "../../state/metadata/types";
+import type { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
+import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
 
@@ -15,6 +17,7 @@ interface GalleryCardProps {
     selected: boolean;
     downloadHref: string;
     cellID: string;
+    fileInfo: FileInfo;
     mitoticStage?: string;
     handleDeselectPoint: (payload: string) => DeselectPointAction;
     handleOpenIn3D: (payload: { id: string }) => SelectPointAction;
@@ -26,6 +29,8 @@ interface GalleryCardProps {
 }
 
 const GalleryCard: React.FC<GalleryCardProps> = (props) => {
+    const imageSrc = useThumbnail(props.src, props.fileInfo);
+
     const deselectPoint = () => {
         props.handleDeselectPoint(props.cellID);
     };
@@ -101,10 +106,10 @@ const GalleryCard: React.FC<GalleryCardProps> = (props) => {
                 className={props.selected ? styles.selected : styles.unselected}
                 loading={props.empty}
                 cover={
-                    props.src ? (
+                    imageSrc ? (
                         <img
                             alt="thumbnail of microscopy image"
-                            src={props.src}
+                            src={imageSrc}
                             onClick={openCellIn3D}
                         />
                     ) : (

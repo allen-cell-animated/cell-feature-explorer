@@ -1,8 +1,10 @@
+import { PictureOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import React from "react";
 
-const { Meta } = Card;
 import styles from "./style.css";
+
+const { Meta } = Card;
 
 export interface PopoverCardProps {
     description: string;
@@ -11,11 +13,16 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
+    const image = props.src ? (
+        <img alt="thumbnail of microscopy image" src={props.src} />
+    ) : (
+        <div className={styles.placeholderContainer}>
+            <PictureOutlined />
+        </div>
+    );
+
     return (
-        <Card
-            className={styles.container}
-            cover={props.src && <img alt="thumbnail of microscopy image" src={props.src} />}
-        >
+        <Card className={styles.container} cover={image}>
             <Meta description={props.description} title={props.title} />
         </Card>
     );
