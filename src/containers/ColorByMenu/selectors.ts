@@ -118,20 +118,33 @@ export const getInteractivePanelData = createSelector(
         getGroupByFeatureOptionsAsList,
         getFiltersToExclude,
         getDisplayableGroups,
+        getGroupingCategoryNamesAsArray,
     ],
     (
         categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
         categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
         categories: MeasuredFeaturesOption[],
         filtersToExclude: string[],
-        displayableGroups: string[]
+        displayableGroups: string[],
+        categoryNamesArray: string[]
     ): PanelData[] => {
+
+        // Calculate actual counts from the data
+        const countsByCategory: { [key: string]: number } = reduce(
+            categoryNamesArray,
+            (acc, categoryName) => {
+                acc[categoryName] = (acc[categoryName] || 0) + 1;
+                return acc;
+            },
+            {} as { [key: string]: number }
+        );
+
         const names = disambiguateCategoryNames(categories);
         return map(categories, (category: MeasuredFeaturesOption, index: number) => {
             const name: string = category.name;
             const key: string = category.key || "";
             const id = key || name;
-            const total: number = category.count || 0;
+            const total: number = countsByCategory[id] || category.count || 0;
             const disabled = !displayableGroups.includes(id);
             const color = getColorForCategory(
                 categoryToColorBy === categoryToGroupBy,
