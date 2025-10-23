@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 import { findVisibleDataPoint } from "../logics";
 import { MappingOfMeasuredValuesArrays } from "../types";
 
@@ -64,7 +64,6 @@ describe("Metadata logic", () => {
             expect(result.length).to.deep.equal(lessThanLength.length);
         });
         it("will return zero if there are no values for the selected set", () => {
-
             const result = [
                 findVisibleDataPoint(
                     length,
