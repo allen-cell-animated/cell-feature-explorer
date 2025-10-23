@@ -5,8 +5,8 @@ import classNames from "classnames";
 import React from "react";
 
 import { NO_DOWNLOADS_TOOLTIP } from "../../constants";
-import { FileInfo } from "../../state/metadata/types";
-import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
+import type { FileInfo } from "../../state/metadata/types";
+import type { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
 import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
