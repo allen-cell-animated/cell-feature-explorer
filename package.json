@@ -17,7 +17,7 @@
         "start:dev": "cross-env USE_DEV_DB=true webpack serve --config ./webpack/webpack.config.js  --env env=development",
         "lint": "eslint src/**/*.{ts,tsx}",
         "typeCheck": "tsc -p tsconfig.json --noEmit",
-        "test": "cross-env vitest",
+        "test": "vitest",
         "update-viewer": "npm i @aics/vole-app@latest",
         "all-checks": "npm run test && npm run typeCheck && npm run lint"
     },

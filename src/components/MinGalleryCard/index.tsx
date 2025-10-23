@@ -4,7 +4,7 @@ import React from "react";
 import classNames from "classnames";
 
 import { DeselectPointAction, SelectPointAction } from "../../state/selection/types";
-import { FileInfo } from "../../state/metadata/types";
+import type { FileInfo } from "../../state/metadata/types";
 import { useThumbnail } from "../../util/thumbnails";
 
 import styles from "./style.css";
