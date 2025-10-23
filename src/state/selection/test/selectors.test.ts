@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
 import { mockState } from "../../test/mocks";
 import { NumberOrString, State } from "../../types";

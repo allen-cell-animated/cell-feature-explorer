@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
 import { changeAxis, selectCellFor3DViewer, selectPoint } from "../../state/selection/actions";
@@ -72,7 +72,10 @@ describe("UrlState utility class", () => {
             )
                 .to.be.an("array")
                 .of.length(2)
-                .and.to.have.deep.members([selectPoint({ id: "2" }), selectCellFor3DViewer({id: "2"})]);
+                .and.to.have.deep.members([
+                    selectPoint({ id: "2" }),
+                    selectCellFor3DViewer({ id: "2" }),
+                ]);
         });
 
         it("does not duplicate cellSelectedFor3D in list of selected points if it is already there", () => {
@@ -84,7 +87,10 @@ describe("UrlState utility class", () => {
             )
                 .to.be.an("array")
                 .of.length(2)
-                .and.to.have.deep.members([selectPoint({ id: "2" }), selectCellFor3DViewer({id: "2"})]);
+                .and.to.have.deep.members([
+                    selectPoint({ id: "2" }),
+                    selectCellFor3DViewer({ id: "2" }),
+                ]);
         });
 
         it("maps multiple key value pairs to multiple redux actions", () => {
@@ -100,7 +106,7 @@ describe("UrlState utility class", () => {
                 .to.be.an("array")
                 .of.length(9)
                 .and.to.have.deep.members([
-                    selectCellFor3DViewer({id: "2"}),
+                    selectCellFor3DViewer({ id: "2" }),
                     changeAxis(X_AXIS_ID, "feature_x"),
                     changeAxis(Y_AXIS_ID, "feature_y"),
                     changeAxis(COLOR_BY_SELECTOR, "feature_z"),

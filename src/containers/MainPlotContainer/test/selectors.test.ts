@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { describe, it, expect } from "vitest";
 
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
 import { Annotation, State } from "../../../state/types";
