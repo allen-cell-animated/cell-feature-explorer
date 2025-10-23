@@ -18,22 +18,33 @@ export async function createThumbnailImageSrc(src: string): Promise<string> {
  * provided source and file info.
  *
  * If no source is provided, attempts to generate a thumbnail. (Currently only
- * supports .ome.zarr files.)
+ * supports OME-Zarr images.)
  */
 export function useThumbnail(src: string, fileInfo: FileInfo): string {
     const [imageSrc, setImageSrc] = useState(src);
 
     // If no thumbnail src is provided, attempt to generate one
     useEffect(() => {
-        const path = fileInfo?.volumeviewerPath ?? fileInfo?.fovVolumeviewerPath;
-        if ((!src && path && path.endsWith(".ome.zarr")) || (src && src.endsWith(".ome.zarr"))) {
-            // Asynchronously load + set image source
-            createThumbnailImageSrc(path).then((src) => {
-                setImageSrc(src);
-            });
-        } else {
-            setImageSrc(src);
-        }
+        const tryGenerateThumbnailAsync = async (): Promise<void> => {
+            let zarrPath: string | undefined = undefined;
+            const path: string | undefined =
+                fileInfo?.volumeviewerPath ?? fileInfo?.fovVolumeviewerPath;
+            if (src && src.endsWith(".zarr")) {
+                zarrPath = src;
+            } else if (path && path.endsWith(".zarr")) {
+                zarrPath = path;
+            }
+            if (zarrPath) {
+                try {
+                    const imageSrc = await createThumbnailImageSrc(zarrPath);
+                    setImageSrc(imageSrc);
+                    return;
+                } catch (e) {
+                    console.error(`Error generating thumbnail for file ${zarrPath} :`, e);
+                }
+            }
+        };
+        tryGenerateThumbnailAsync();
     }, [src]);
 
     return imageSrc;

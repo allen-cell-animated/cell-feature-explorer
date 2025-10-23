@@ -13,23 +13,16 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
-    const placeholderImage = (
+    const image = props.src ? (
+        <img alt="thumbnail of microscopy image" src={props.src} />
+    ) : (
         <div className={styles.placeholderContainer}>
             <PictureOutlined />
         </div>
     );
 
     return (
-        <Card
-            className={styles.container}
-            cover={
-                props.src ? (
-                    <img alt="thumbnail of microscopy image" src={props.src} />
-                ) : (
-                    placeholderImage
-                )
-            }
-        >
+        <Card className={styles.container} cover={image}>
             <Meta description={props.description} title={props.title} />
         </Card>
     );

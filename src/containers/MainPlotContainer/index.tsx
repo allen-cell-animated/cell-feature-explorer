@@ -134,11 +134,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     private updateThumbnails(cellId: string, url: string | null) {
         this.setState((state) => {
             // Move the updated thumbnail to the front of the map entries
-            const mapCopy = new Map(state.cellIdToZarrThumbnailUrl);
-            mapCopy.delete(cellId);
+            const map = state.cellIdToZarrThumbnailUrl;
+            map.delete(cellId);
             const mapEntries: [string, string | null][] = [
                 [cellId, url],
-                ...Array.from(mapCopy.entries()),
+                ...Array.from(map.entries()),
             ];
             // Limit the number of thumbnails stored in memory
             const newEntries = mapEntries.slice(0, MAX_GENERATED_THUMBNAILS);
@@ -155,9 +155,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             return;
         }
         this.updateThumbnails(cellId, null);
-        if (srcPath && srcPath.endsWith(".ome.zarr")) {
-            const src = await createThumbnailImageSrc(srcPath);
-            this.updateThumbnails(cellId, src);
+        if (srcPath && srcPath.endsWith(".zarr")) {
+            try {
+                const src = await createThumbnailImageSrc(srcPath);
+                this.updateThumbnails(cellId, src);
+            } catch (e) {
+                console.error("Error generating thumbnail for Zarr:", e);
+            }
         }
     }
 
