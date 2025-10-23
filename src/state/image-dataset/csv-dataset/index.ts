@@ -42,7 +42,16 @@ const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
-/** Path that includes Vol-E query parameters */
+/**
+ * Optional column containing Vol-E URL query parameters, which will be applied
+ * to the file when opened in the 3D viewer. This can either be a full Vol-E URL
+ * (`https://vole.allencell.org/viewer?<params>`) or just the query parameters
+ * (`?<params>` or `<params>`).
+ *
+ * See
+ * https://github.com/allen-cell-animated/vole-app/blob/main/documentation/URL_SPEC.md
+ * for full list of supported parameters.
+ */
 const LINK_PATH_KEY = "Link Path";
 
 const METADATA_KEYS = new Set([
@@ -570,13 +579,16 @@ class CsvRequest implements ImageDataset {
         if (!data) {
             return Promise.resolve(undefined);
         }
+        // Extract vole parameters from column if it exists
         let voleUrlParams: FileInfo[typeof VOLE_PARAMS];
         if (data[LINK_PATH_KEY]) {
             const split = data[LINK_PATH_KEY].split("?");
-            // Get the last element after the last "?" in case there are multiple
+            // Get the last element after the last "?", which also works if
+            // there is no "?". Note that this may not be safe if the URL
+            // contains unescaped "?" characters in the query parameters
+            // themselves, but this is non-standard.
             const queryParamString = split[split.length - 1] || "";
             voleUrlParams = await parseViewerUrlParams(new URLSearchParams(queryParamString));
-            console.log(voleUrlParams); // tslint:disable-line:no-console
         }
         const fileInfo = {
             [CELL_ID_KEY]: data[CELL_ID_KEY],
