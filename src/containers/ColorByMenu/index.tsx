@@ -197,15 +197,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             categoryCounts,
             categoricalFeatures,
         } = this.props;
-        console.log("group by", groupBy);
-        console.log("color by", colorBy);
-        console.log("color by menu options", colorByMenuOptions);
-        console.log("group by display options", groupByDisplayOptions);
+
+        const showColorLegend = includes(categoricalFeatures, colorBy) && colorBy !== groupBy;
         return (
             <React.Fragment>
                 <Row className={styles.colorByRow}>
-                    <Col span={6}>Color by:</Col>
-                    <Col span={18}>
+                    <Col span={4}>Color by:</Col>
+                    <Col span={20}>
                         <FeatureSelectDropdown
                             value={colorBy as string}
                             options={colorByMenuOptions}
@@ -217,8 +215,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                     </Col>
                 </Row>
                 <Row className={styles.colorByRow}>
-                    <Col span={6}>Group by:</Col>
-                    <Col span={18}>
+                    <Col span={4}>Group by:</Col>
+                    <Col span={20}>
                         <FeatureSelectDropdown
                             value={groupBy as string}
                             options={groupByDisplayOptions}
@@ -229,11 +227,37 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         />
                     </Col>
                 </Row>
-                {/* todo figure out the utility of this this below */}
-                {/* {includes(categoricalFeatures, colorBy) && (
-                    <Row className={styles.colorByRow}>
-                        <Col span={6} />
-                        <Col span={18}>
+                <div className={styles.interactiveLegendContainer}>
+                    <div>
+                        <div className={styles.interactiveLegendHeader}>
+                            <Checkbox
+                                indeterminate={isInIndeterminateState}
+                                checked={filtersToExclude.length === 0}
+                                onChange={this.allOnOff}
+                            >
+                                Show/Hide all
+                            </Checkbox>
+                            <span className={styles.label}># of cells</span>
+                        </div>
+
+                        <InteractiveLegend
+                            closeable={false}
+                            showTooltips={true}
+                            panelData={interactivePanelData}
+                            downloadUrls={downloadUrls}
+                            downloadConfig={downloadConfig}
+                            downloadRoot={downloadRoot}
+                            hideable={true}
+                            onBarClicked={this.onBarClicked}
+                            handleDownload={this.onCategorySetDownloadButtonClicked}
+                        />
+                    </div>
+                    {showColorLegend && (
+                        <Row className={styles.colorByRow}>
+                            <div className={styles.interactiveLegendHeader}>
+                                <div> Color legend </div>
+                                <span className={styles.label}># of cells</span>
+                            </div>
                             {colorForPlot.map((ele, index) => {
                                 return (
                                     <ColorLegendRow
@@ -244,47 +268,23 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                     />
                                 );
                             })}
-                        </Col>
-                    </Row>
-                )} */}
-
-                <div>
-                    <div className={styles.interactiveLegendHeader}>
-                        <Checkbox
-                            indeterminate={isInIndeterminateState}
-                            checked={filtersToExclude.length === 0}
-                            onChange={this.allOnOff}
-                        >
-                            Show/Hide all
-                        </Checkbox>
-                        <span className={styles.label}># of cells</span>
-                    </div>
-
-                    <InteractiveLegend
-                        closeable={false}
-                        showTooltips={true}
-                        panelData={interactivePanelData}
-                        downloadUrls={downloadUrls}
-                        downloadConfig={downloadConfig}
-                        downloadRoot={downloadRoot}
-                        hideable={true}
-                        onBarClicked={this.onBarClicked}
-                        handleDownload={this.onCategorySetDownloadButtonClicked}
-                    />
+                        </Row>
+                    )}
                 </div>
             </React.Fragment>
         );
     }
 
     public render() {
-        const { defaultActiveKey, openKeys, panelKeys, groupByTitle } = this.props;
+        const { defaultActiveKey, openKeys, panelKeys } = this.props;
         return (
             <Collapse
+                className={styles.collapse}
                 defaultActiveKey={defaultActiveKey}
                 activeKey={openKeys}
                 onChange={this.onActivePanelChange}
             >
-                <Panel key={panelKeys[0]} header={`Data grouped by ${groupByTitle}`}>
+                <Panel key={panelKeys[0]} header={`Plot configuration`}>
                     {this.renderTaggedStructuresPanel()}
                 </Panel>
                 <Panel key={panelKeys[1]} header="Selected sets">
