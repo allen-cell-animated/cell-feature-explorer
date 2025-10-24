@@ -48,9 +48,9 @@ const FMS_UPLOADED_KEY = "uploaded";
  * (`https://vole.allencell.org/viewer?<params>`) or just the query parameters
  * (`?<params>` or `<params>`).
  *
- * See
+ * The full list of supported parameters is available in the Vol-E
+ * documentation:
  * https://github.com/allen-cell-animated/vole-app/blob/main/documentation/URL_SPEC.md
- * for full list of supported parameters.
  */
 const LINK_PATH_KEY = "Link Path";
 
@@ -234,7 +234,7 @@ class CsvRequest implements ImageDataset {
             let isContinuous = true;
             for (const row of csvData) {
                 const value = row[key] ?? null;
-                if (value === null || value.trim() === "") {
+                if (value === null || (typeof value === "string" && value.trim() === "")) {
                     rawValues.push(null);
                 } else {
                     rawValues.push(value);

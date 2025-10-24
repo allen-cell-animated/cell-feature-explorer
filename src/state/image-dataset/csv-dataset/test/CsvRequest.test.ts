@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import CsvRequest, { DEFAULT_GROUPBY_NONE } from "..";
 import { DiscreteMeasuredFeatureDef, MeasuredFeatureDef } from "../../../metadata/types";
+import { ViewMode } from "@aics/vole-app";
 
 const testCsv = `CellId,volumeviewerPath,thumbnailPath,feature1,feature2,feature3,discretefeature
 potato,https://example.com/1/raw.ome.zarr,https://example.com/1.png,1,2,3,A
@@ -335,5 +336,109 @@ describe("CsvRequest", () => {
         expect(await csvData.getFileInfoByCellId("2")).to.not.be.undefined;
         expect(await csvData.getFileInfoByCellId("3")).to.not.be.undefined;
         expect(await csvData.getFileInfoByCellId("5")).to.be.undefined;
+    });
+
+    describe("retrieves Vol-E query parameters", () => {
+        const CELL_1_PARAMS =
+            "interp=0&view=Z&slice=0.5,0.5,0.75&bright=30&dens=60&c0=sen:1,isv:150&c2=ven:1,clz:1,lut:v15:v230";
+        const CELL_2_PARAMS =
+            "url=https://example1.com,https://example2.com&t=15&c0=ven:0&c1=ven:1";
+
+        async function validateCell1Params(csvDataset: CsvRequest): Promise<void> {
+            // Validate cell 1
+            const cell1Info = await csvDataset.getFileInfoByCellId("cell1");
+
+            const cell1VoleArgs = cell1Info?.voleUrlParams?.args;
+            const cell1VoleSettings = cell1Info?.voleUrlParams?.viewerSettings;
+            expect(cell1VoleArgs).to.not.equal(undefined);
+            expect(cell1VoleSettings).to.not.equal(undefined);
+
+            // Viewer settings
+            expect(cell1VoleSettings?.interpolationEnabled).to.equal(false);
+            expect(cell1VoleSettings?.viewMode).to.equal(ViewMode.xy);
+            expect(cell1VoleSettings?.slice).to.deep.equal({ x: 0.5, y: 0.5, z: 0.75 });
+            expect(cell1VoleSettings?.brightness).to.equal(30);
+            expect(cell1VoleSettings?.density).to.equal(60);
+
+            // Channel data
+            const cell1Channels = cell1VoleArgs?.viewerChannelSettings?.groups[0].channels!;
+            console.log(cell1Channels);
+            expect(cell1Channels[0].match).to.equal(0);
+            expect(cell1Channels[0].enabled).toBeFalsy();
+            expect(cell1Channels[0].surfaceEnabled).to.be.true;
+            expect(cell1Channels[0].isovalue).to.equal(150);
+            expect(cell1Channels[1].match).to.equal(2);
+            expect(cell1Channels[1].enabled).to.be.true;
+            expect(cell1Channels[1].colorizeEnabled).to.be.true;
+            expect(cell1Channels[1].lut).to.deep.equal(["v15", "v230"]);
+        }
+
+        async function validateCell2Params(csvDataset: CsvRequest): Promise<void> {
+            // Validate cell 2
+            const cell2Info = await csvDataset.getFileInfoByCellId("cell2");
+            const cell2VoleArgs = cell2Info?.voleUrlParams?.args;
+            const cell2VoleSettings = cell2Info?.voleUrlParams?.viewerSettings;
+            expect(cell2VoleArgs).to.not.equal(undefined);
+            expect(cell2VoleSettings).to.not.equal(undefined);
+
+            // Viewer settings
+            expect(cell2VoleArgs?.imageUrl).to.deep.equal({
+                scenes: [["https://example1.com", "https://example2.com"]],
+            });
+            expect(cell2VoleSettings?.time).to.equal(15);
+
+            // Channel data
+            const cell2Channels = cell2VoleArgs?.viewerChannelSettings?.groups[0].channels!;
+            expect(cell2Channels[0].match).to.equal(0);
+            expect(cell2Channels[0].enabled).to.be.false;
+            expect(cell2Channels[1].match).to.equal(1);
+            expect(cell2Channels[1].enabled).to.be.true;
+        }
+
+        async function validateVoleParams(csvDataset: CsvRequest): Promise<void> {
+            await validateCell1Params(csvDataset);
+            await validateCell2Params(csvDataset);
+        }
+
+        it("accepts plain params", async () => {
+            const csvString = `CellId,Link Path
+            cell1,"${CELL_1_PARAMS}"
+            cell2,"${CELL_2_PARAMS}"`;
+            const csvDataset = new CsvRequest(csvString);
+            await validateVoleParams(csvDataset);
+        });
+
+        it("accepts params with ? prefix", async () => {
+            const csvString = `CellId,Link Path
+            cell1,"?${CELL_1_PARAMS}"
+            cell2,"?${CELL_2_PARAMS}"`;
+            const csvDataset = new CsvRequest(csvString);
+            await validateVoleParams(csvDataset);
+        });
+
+        it("accepts params containing Vol-E links", async () => {
+            const csvString = `CellId,Link Path
+            cell1,"https://vole.allencell.org/viewer?${CELL_1_PARAMS}"
+            cell2,"https://vole.allencell.org/viewer?${CELL_2_PARAMS}"`;
+            const csvDataset = new CsvRequest(csvString);
+            await validateVoleParams(csvDataset);
+        });
+
+        it("returns undefined when no column is provided", async () => {
+            const csvDataset = new CsvRequest(testCsv);
+            const featureData = await csvDataset.getFileInfoByCellId("potato");
+            expect(featureData?.voleUrlParams).to.be.undefined;
+        });
+
+        it("handles empty link paths", async () => {
+            const csvString = `CellId,Link Path
+            cell1,"https://vole.allencell.org/viewer?${CELL_1_PARAMS}"
+            cell2,`;
+            const csvDataset = new CsvRequest(csvString);
+            await validateCell1Params(csvDataset);
+
+            const cell2Info = await csvDataset.getFileInfoByCellId("cell2");
+            expect(cell2Info?.voleUrlParams).to.be.undefined;
+        });
     });
 });
