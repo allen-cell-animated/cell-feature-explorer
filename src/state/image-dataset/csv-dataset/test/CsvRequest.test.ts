@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, assert } from "vitest";
 import CsvRequest, { DEFAULT_GROUPBY_NONE } from "..";
 import { DiscreteMeasuredFeatureDef, MeasuredFeatureDef } from "../../../metadata/types";
 import { ViewMode } from "@aics/vole-app";
@@ -361,8 +361,8 @@ describe("CsvRequest", () => {
             expect(cell1VoleSettings?.density).to.equal(60);
 
             // Channel data
-            const cell1Channels = cell1VoleArgs?.viewerChannelSettings?.groups[0].channels!;
-            console.log(cell1Channels);
+            const cell1Channels = cell1VoleArgs?.viewerChannelSettings?.groups[0].channels;
+            assert(cell1Channels !== undefined);
             expect(cell1Channels[0].match).to.equal(0);
             expect(cell1Channels[0].enabled).toBeFalsy();
             expect(cell1Channels[0].surfaceEnabled).to.be.true;
@@ -388,7 +388,8 @@ describe("CsvRequest", () => {
             expect(cell2VoleSettings?.time).to.equal(15);
 
             // Channel data
-            const cell2Channels = cell2VoleArgs?.viewerChannelSettings?.groups[0].channels!;
+            const cell2Channels = cell2VoleArgs?.viewerChannelSettings?.groups[0].channels;
+            assert(cell2Channels !== undefined);
             expect(cell2Channels[0].match).to.equal(0);
             expect(cell2Channels[0].enabled).to.be.false;
             expect(cell2Channels[1].match).to.equal(1);
