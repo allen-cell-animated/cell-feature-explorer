@@ -61,6 +61,8 @@ describe("Viewer selectors", () => {
                     "Missing data": "null",
                 },
                 transform: undefined,
+                appProps: undefined,
+                viewerSettings: undefined,
             });
         });
         it("if there is no single cell data, returns fov info as main info", () => {
@@ -89,6 +91,8 @@ describe("Viewer selectors", () => {
                     "Missing data": "null",
                 },
                 transform: undefined,
+                appProps: undefined,
+                viewerSettings: undefined,
             });
         });
         it("if dataset has channelNameMapping data, it will be included", () => {

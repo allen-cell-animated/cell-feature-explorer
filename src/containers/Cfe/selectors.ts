@@ -15,7 +15,7 @@ import {
     formatDownloadOfIndividualFile,
 } from "../../state/util";
 
-import { ViewerChannelSettings } from "@aics/vole-app";
+import { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
 import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
@@ -33,6 +33,8 @@ export interface VolumeViewerProps {
     };
     metadata?: { [key: string]: string | number | null };
     onControlPanelToggle?(collapsed: boolean): void;
+    appProps?: Partial<AppProps>;
+    viewerSettings?: Partial<ViewerState>;
 }
 
 function formatFeatureValue(featureValue: number | null, featureDef: MeasuredFeatureDef): string {
@@ -142,6 +144,8 @@ export const getPropsForVolumeViewer = createSelector(
             transform: alignActive ? fileInfo.transform : undefined,
             metadata: cellMetadata.metadata,
             viewerChannelSettings,
+            appProps: fileInfo.voleUrlParams?.args,
+            viewerSettings: fileInfo.voleUrlParams?.viewerSettings,
         };
     }
 );
