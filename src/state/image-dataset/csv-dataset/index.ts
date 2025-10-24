@@ -605,8 +605,7 @@ class CsvRequest implements ImageDataset {
 
     async getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
         const promises = ids.map((id) => this.getFileInfoByCellId(id));
-        const result = Promise.all(promises);
-        return Promise.resolve(result);
+        return Promise.all(promises);
     }
 }
 
