@@ -210,7 +210,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             onChange={(v: string) => {
                                 handleChangeAxis(COLOR_BY_SELECTOR, v);
                             }}
-                            tooltip={getFeatureDefTooltip(colorBy as string, colorByMenuOptions)}
+                            tooltip={getFeatureDefTooltip(colorBy.toString(), colorByMenuOptions)}
                         />
                     </Col>
                 </Row>
@@ -223,7 +223,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             onChange={(v: string) => {
                                 changeGroupByCategory(v);
                             }}
-                            tooltip={getFeatureDefTooltip(groupBy as string, groupByDisplayOptions)}
+                            tooltip={getFeatureDefTooltip(groupBy.toString(), groupByDisplayOptions)}
                         />
                     </Col>
                 </Row>
