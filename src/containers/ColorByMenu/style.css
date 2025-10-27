@@ -1,6 +1,6 @@
 @import "../../styles/colors.css";
 
-.color-by-row {
+.feature-select-row {
   margin-bottom: 1em;
 }
 
@@ -31,6 +31,6 @@
   width: 100%;
 }
 
-.color-by-row :global(.ant-select) {
+.feature-select-row :global(.ant-select) {
   width: 100%;
 }

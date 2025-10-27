@@ -37,7 +37,7 @@ export default class FeatureSelectDropdown extends React.Component<FeatureSelect
         });
 
         const selectedOptionLabel = selectOptions
-            .find((option) => option && "key" in option && option.key === value)
+            .find((option) => option && option.key === value)
             ?.label?.toString();
 
         return (

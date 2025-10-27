@@ -201,11 +201,11 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         const showColorLegend = includes(categoricalFeatures, colorBy) && colorBy !== groupBy;
         return (
             <React.Fragment>
-                <Row className={styles.colorByRow}>
+                <Row className={styles.featureSelectRow}>
                     <Col span={4}>Color by:</Col>
                     <Col span={20}>
                         <FeatureSelectDropdown
-                            value={colorBy as string}
+                            value={colorBy.toString()}
                             options={colorByMenuOptions}
                             onChange={(v: string) => {
                                 handleChangeAxis(COLOR_BY_SELECTOR, v);
@@ -214,11 +214,11 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         />
                     </Col>
                 </Row>
-                <Row className={styles.colorByRow}>
+                <Row className={styles.featureSelectRow}>
                     <Col span={4}>Group by:</Col>
                     <Col span={20}>
                         <FeatureSelectDropdown
-                            value={groupBy as string}
+                            value={groupBy.toString()}
                             options={groupByDisplayOptions}
                             onChange={(v: string) => {
                                 changeGroupByCategory(v);
@@ -253,7 +253,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                         />
                     </div>
                     {showColorLegend && (
-                        <Row className={styles.colorByRow}>
+                        <Row className={styles.featureSelectRow}>
                             <div className={styles.interactiveLegendHeader}>
                                 <div> Color legend </div>
                                 <span className={styles.label}># of cells</span>
