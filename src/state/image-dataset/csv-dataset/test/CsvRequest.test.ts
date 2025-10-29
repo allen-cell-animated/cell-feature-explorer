@@ -1,4 +1,4 @@
-import { describe, it, expect, assert } from "vitest";
+import { describe, it, expect } from "vitest";
 import CsvRequest, { DEFAULT_GROUPBY_NONE } from "..";
 import { DiscreteMeasuredFeatureDef, MeasuredFeatureDef } from "../../../metadata/types";
 import { ViewMode } from "@aics/vole-app";
@@ -362,15 +362,15 @@ describe("CsvRequest", () => {
 
             // Channel data
             const cell1Channels = cell1VoleArgs?.viewerChannelSettings?.groups[0].channels;
-            assert(cell1Channels !== undefined);
-            expect(cell1Channels[0].match).to.equal(0);
-            expect(cell1Channels[0].enabled).toBeFalsy();
-            expect(cell1Channels[0].surfaceEnabled).to.be.true;
-            expect(cell1Channels[0].isovalue).to.equal(150);
-            expect(cell1Channels[1].match).to.equal(2);
-            expect(cell1Channels[1].enabled).to.be.true;
-            expect(cell1Channels[1].colorizeEnabled).to.be.true;
-            expect(cell1Channels[1].lut).to.deep.equal(["v15", "v230"]);
+            expect(cell1Channels).not.toBeUndefined();
+            expect(cell1Channels?.[0].match).to.equal(0);
+            expect(cell1Channels?.[0].enabled).toBeFalsy();
+            expect(cell1Channels?.[0].surfaceEnabled).to.be.true;
+            expect(cell1Channels?.[0].isovalue).to.equal(150);
+            expect(cell1Channels?.[1].match).to.equal(2);
+            expect(cell1Channels?.[1].enabled).to.be.true;
+            expect(cell1Channels?.[1].colorizeEnabled).to.be.true;
+            expect(cell1Channels?.[1].lut).to.deep.equal(["v15", "v230"]);
         }
 
         async function validateCell2Params(csvDataset: CsvRequest): Promise<void> {
@@ -389,11 +389,11 @@ describe("CsvRequest", () => {
 
             // Channel data
             const cell2Channels = cell2VoleArgs?.viewerChannelSettings?.groups[0].channels;
-            assert(cell2Channels !== undefined);
-            expect(cell2Channels[0].match).to.equal(0);
-            expect(cell2Channels[0].enabled).to.be.false;
-            expect(cell2Channels[1].match).to.equal(1);
-            expect(cell2Channels[1].enabled).to.be.true;
+            expect(cell2Channels).not.toBeUndefined();
+            expect(cell2Channels?.[0].match).to.equal(0);
+            expect(cell2Channels?.[0].enabled).to.be.false;
+            expect(cell2Channels?.[1].match).to.equal(1);
+            expect(cell2Channels?.[1].enabled).to.be.true;
         }
 
         async function validateVoleParams(csvDataset: CsvRequest): Promise<void> {
