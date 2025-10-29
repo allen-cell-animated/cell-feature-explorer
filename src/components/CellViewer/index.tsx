@@ -19,7 +19,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
 
     return (
         <div className={styles.cellViewerContainer} style={CONTAINER_STYLE}>
-            <ViewerStateProvider>
+            <ViewerStateProvider viewerSettings={props.viewerSettings}>
                 <ImageViewerApp
                     cellId={props.cellId}
                     imageUrl={props.baseUrl + props.cellPath}
@@ -32,6 +32,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
                     metadata={props.metadata}
                     appHeight="100%"
                     canvasMargin="0 0 0 0"
+                    {...props.appProps}
                 />
             </ViewerStateProvider>
         </div>
