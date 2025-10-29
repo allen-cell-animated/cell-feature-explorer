@@ -71,7 +71,7 @@ interface PropsFromState {
 interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
-    changeGroupByCategory: ActionCreator<ChangeGroupByCategory>;
+    handleChangeGroupByCategory: ActionCreator<ChangeGroupByCategory>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
@@ -192,7 +192,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             colorByMenuOptions,
             groupByDisplayOptions,
             handleChangeAxis,
-            changeGroupByCategory,
+            handleChangeGroupByCategory,
             colorForPlot,
             categoryCounts,
             categoricalFeatures,
@@ -221,7 +221,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             value={groupBy.toString()}
                             options={groupByDisplayOptions}
                             onChange={(v: string) => {
-                                changeGroupByCategory(v);
+                                handleChangeGroupByCategory(v);
                             }}
                             tooltip={getFeatureDefTooltip(groupBy.toString(), groupByDisplayOptions)}
                         />
@@ -318,7 +318,7 @@ function mapStateToProps(state: State): PropsFromState {
 const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
-    changeGroupByCategory: selectionStateBranch.actions.changeGroupByCategory,
+    handleChangeGroupByCategory: selectionStateBranch.actions.changeGroupByCategory,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,
