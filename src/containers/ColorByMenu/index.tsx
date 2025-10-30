@@ -6,7 +6,7 @@ import React from "react";
 import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
-import AxisDropDown from "../../components/AxisDropDown";
+import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
 import InteractiveLegend from "../../components/InteractiveLegend";
 import ColorBySwitcher from "../../components/ColorBySwitcher";
 import ColorLegendRow from "../../components/ColorLegend";
@@ -23,6 +23,7 @@ import { getFeatureDefTooltip, getDownloadRoot } from "../../state/selection/sel
 import {
     BoolToggleAction,
     ChangeDownloadConfigAction,
+    ChangeGroupByCategory,
     ChangeSelectionAction,
     ColorForPlot,
     DeselectGroupOfPointsAction,
@@ -30,7 +31,7 @@ import {
     SelectAxisAction,
 } from "../../state/selection/types";
 import { State } from "../../state/types";
-import { getColorByDisplayOptions } from "../MainPlotContainer/selectors";
+import { getColorByDisplayOptions, getGroupByDisplayOptions } from "../MainPlotContainer/selectors";
 
 import {
     createUrlFromListOfIds,
@@ -51,6 +52,7 @@ const { Panel } = Collapse;
 interface PropsFromState {
     // selector props
     colorBy: keyof MappingOfMeasuredValuesArrays;
+    groupBy: keyof MappingOfMeasuredValuesArrays;
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     downloadRoot: string;
@@ -59,6 +61,7 @@ interface PropsFromState {
     selectionSetsPanelData: PanelData[];
     isInIndeterminateState: boolean;
     colorByMenuOptions: MeasuredFeatureDef[];
+    groupByDisplayOptions: MeasuredFeatureDef[];
     colorForPlot: ColorForPlot[];
     categoryCounts: number[];
     categoricalFeatures: string[];
@@ -68,6 +71,7 @@ interface PropsFromState {
 interface DispatchProps {
     handleApplyColorSwitchChange: ActionCreator<BoolToggleAction>;
     handleChangeAxis: ActionCreator<SelectAxisAction>;
+    handleChangeGroupByCategory: ActionCreator<ChangeGroupByCategory>;
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
@@ -184,30 +188,76 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
             downloadConfig,
             downloadRoot,
             colorBy,
+            groupBy,
             colorByMenuOptions,
+            groupByDisplayOptions,
             handleChangeAxis,
+            handleChangeGroupByCategory,
             colorForPlot,
             categoryCounts,
             categoricalFeatures,
         } = this.props;
+
+        const showColorLegend = includes(categoricalFeatures, colorBy) && colorBy !== groupBy;
         return (
             <React.Fragment>
-                <Row className={styles.colorByRow}>
-                    <Col span={6}>Color by:</Col>
-                    <Col span={18}>
-                        <AxisDropDown
-                            axisId={COLOR_BY_SELECTOR}
-                            value={colorBy as string}
+                <Row className={styles.featureSelectRow}>
+                    <Col span={4}>Color by:</Col>
+                    <Col span={20}>
+                        <FeatureSelectDropdown
+                            value={colorBy.toString()}
                             options={colorByMenuOptions}
-                            handleChangeAxis={handleChangeAxis}
-                            tooltip={getFeatureDefTooltip(colorBy as string, colorByMenuOptions)}
+                            onChange={(v: string) => {
+                                handleChangeAxis(COLOR_BY_SELECTOR, v);
+                            }}
+                            tooltip={getFeatureDefTooltip(colorBy.toString(), colorByMenuOptions)}
                         />
                     </Col>
                 </Row>
-                {includes(categoricalFeatures, colorBy) && (
-                    <Row className={styles.colorByRow}>
-                        <Col span={6} />
-                        <Col span={18}>
+                <Row className={styles.featureSelectRow}>
+                    <Col span={4}>Group by:</Col>
+                    <Col span={20}>
+                        <FeatureSelectDropdown
+                            value={groupBy.toString()}
+                            options={groupByDisplayOptions}
+                            onChange={(v: string) => {
+                                handleChangeGroupByCategory(v);
+                            }}
+                            tooltip={getFeatureDefTooltip(groupBy.toString(), groupByDisplayOptions)}
+                        />
+                    </Col>
+                </Row>
+                <div className={styles.interactiveLegendContainer}>
+                    <div>
+                        <div className={styles.interactiveLegendHeader}>
+                            <Checkbox
+                                indeterminate={isInIndeterminateState}
+                                checked={filtersToExclude.length === 0}
+                                onChange={this.allOnOff}
+                            >
+                                Show/Hide all
+                            </Checkbox>
+                            <span className={styles.label}># of cells</span>
+                        </div>
+
+                        <InteractiveLegend
+                            closeable={false}
+                            showTooltips={true}
+                            panelData={interactivePanelData}
+                            downloadUrls={downloadUrls}
+                            downloadConfig={downloadConfig}
+                            downloadRoot={downloadRoot}
+                            hideable={true}
+                            onBarClicked={this.onBarClicked}
+                            handleDownload={this.onCategorySetDownloadButtonClicked}
+                        />
+                    </div>
+                    {showColorLegend && (
+                        <Row className={styles.featureSelectRow}>
+                            <div className={styles.interactiveLegendHeader}>
+                                <div> Color legend </div>
+                                <span className={styles.label}># of cells</span>
+                            </div>
                             {colorForPlot.map((ele, index) => {
                                 return (
                                     <ColorLegendRow
@@ -218,47 +268,23 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                     />
                                 );
                             })}
-                        </Col>
-                    </Row>
-                )}
-
-                <div>
-                    <div className={styles.interactiveLegendHeader}>
-                        <Checkbox
-                            indeterminate={isInIndeterminateState}
-                            checked={filtersToExclude.length === 0}
-                            onChange={this.allOnOff}
-                        >
-                            Show/Hide all
-                        </Checkbox>
-                        <span className={styles.label}># of cells</span>
-                    </div>
-
-                    <InteractiveLegend
-                        closeable={false}
-                        showTooltips={true}
-                        panelData={interactivePanelData}
-                        downloadUrls={downloadUrls}
-                        downloadConfig={downloadConfig}
-                        downloadRoot={downloadRoot}
-                        hideable={true}
-                        onBarClicked={this.onBarClicked}
-                        handleDownload={this.onCategorySetDownloadButtonClicked}
-                    />
+                        </Row>
+                    )}
                 </div>
             </React.Fragment>
         );
     }
 
     public render() {
-        const { defaultActiveKey, openKeys, panelKeys, groupByTitle } = this.props;
+        const { defaultActiveKey, openKeys, panelKeys } = this.props;
         return (
             <Collapse
+                className={styles.collapse}
                 defaultActiveKey={defaultActiveKey}
                 activeKey={openKeys}
                 onChange={this.onActivePanelChange}
             >
-                <Panel key={panelKeys[0]} header={`Data grouped by ${groupByTitle}`}>
+                <Panel key={panelKeys[0]} header={`Plot configuration`}>
                     {this.renderTaggedStructuresPanel()}
                 </Panel>
                 <Panel key={panelKeys[1]} header="Selected sets">
@@ -273,7 +299,9 @@ function mapStateToProps(state: State): PropsFromState {
     return {
         categoryCounts: selectionStateBranch.selectors.getColorByCategoryCounts(state),
         colorBy: selectionStateBranch.selectors.getColorBySelection(state),
+        groupBy: selectionStateBranch.selectors.getGroupByCategory(state),
         colorByMenuOptions: getColorByDisplayOptions(state),
+        groupByDisplayOptions: getGroupByDisplayOptions(state),
         colorForPlot: getLegendColors(state),
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         downloadConfig: selectionStateBranch.selectors.getDownloadConfig(state),
@@ -290,6 +318,7 @@ function mapStateToProps(state: State): PropsFromState {
 const dispatchToPropsMap: DispatchProps = {
     handleApplyColorSwitchChange: selectionStateBranch.actions.toggleApplySelectionSetColors,
     handleChangeAxis: selectionStateBranch.actions.changeAxis,
+    handleChangeGroupByCategory: selectionStateBranch.actions.changeGroupByCategory,
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,

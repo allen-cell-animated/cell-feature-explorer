@@ -1,35 +1,31 @@
 import { Select, Tooltip } from "antd";
 import { SelectProps, SelectValue } from "antd/es/select";
 import React from "react";
-import type { ActionCreator } from "redux";
-
 import { MeasuredFeatureDef } from "../../state/metadata/types";
-import { SelectAxisAction } from "../../state/selection/types";
 
 import styles from "./style.css";
 
-interface AxisDropDownProps {
-    axisId: string;
-    handleChangeAxis: ActionCreator<SelectAxisAction>;
+interface FeatureSelectDropdownProps {
     value: string;
     options: MeasuredFeatureDef[];
     tooltip: string;
+    onChange: (value: string) => void;
+    classKey?: string;
 }
 
-export default class AxisDropDown extends React.Component<AxisDropDownProps> {
-    constructor(props: AxisDropDownProps) {
+export default class FeatureSelectDropdown extends React.Component<FeatureSelectDropdownProps> {
+    constructor(props: FeatureSelectDropdownProps) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
     }
 
     public handleChange(value: SelectValue): void {
-        const { axisId, handleChangeAxis } = this.props;
-        const axisSettingValue = value as string;
-        handleChangeAxis(axisId, axisSettingValue);
+        const v = value as string;
+        this.props.onChange(v);
     }
 
     public render() {
-        const { axisId, value, options, tooltip } = this.props;
+        const { classKey = "", value, options, tooltip } = this.props;
 
         const selectOptions: SelectProps["options"] = options.map((option) => {
             return {
@@ -41,17 +37,17 @@ export default class AxisDropDown extends React.Component<AxisDropDownProps> {
         });
 
         const selectedOptionLabel = selectOptions
-            .find((option) => option.key === value)
+            .find((option) => option && option.key === value)
             ?.label?.toString();
 
         return (
-            <div className={styles[axisId]}>
+            <div className={styles[classKey]}>
                 <Tooltip title={tooltip}>
                     <Select
                         onChange={this.handleChange}
                         value={selectedOptionLabel || value}
                         options={selectOptions}
-                    ></Select>
+                    />
                 </Tooltip>
             </div>
         );
