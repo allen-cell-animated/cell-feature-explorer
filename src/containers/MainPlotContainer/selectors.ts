@@ -36,6 +36,8 @@ import {
     getGroupByCategory,
     getGroupingCategoryNamesAsArray,
     getHoveredPointData,
+    getXValues,
+    getYValues,
 } from "../../state/selection/selectors";
 import { SelectedPointData, TickConversion } from "../../state/selection/types";
 import {
@@ -434,5 +436,29 @@ export const getDataForOverlayCard = createSelector(
             ...pointData,
             [GROUP_BY_KEY]: categoryNames[pointData.index],
         };
+    }
+);
+
+/**
+ * Calculate axis ranges from unfiltered data so axes don't rescale when hiding groups
+ */
+
+const getAxisRange = (xValues: (number | null)[]): [number, number] | undefined => {
+    const validValues = xValues.filter((v): v is number => v !== null);
+    if (validValues.length === 0) return undefined;
+    return [Math.min(...validValues), Math.max(...validValues)];
+}
+
+export const getXAxisRange = createSelector(
+    [getXValues],
+    (xValues: (number | null)[]): [number, number] | undefined => {
+       return getAxisRange(xValues);
+    }
+);
+
+export const getYAxisRange = createSelector(
+    [getYValues],
+    (yValues: (number | null)[]): [number, number] | undefined => {
+       return getAxisRange(yValues);
     }
 );
