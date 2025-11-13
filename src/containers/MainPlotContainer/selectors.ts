@@ -442,7 +442,6 @@ export const getDataForOverlayCard = createSelector(
 /**
  * Calculate axis ranges from unfiltered data so axes don't rescale when hiding groups
  */
-
 const getAxisRange = (xValues: (number | null)[]): [number, number] | undefined => {
     const validValues = xValues.filter((v): v is number => v !== null);
     if (validValues.length === 0) return undefined;
