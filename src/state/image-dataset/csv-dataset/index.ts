@@ -22,6 +22,18 @@ import {
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
 
+const DEFAULT_VIEWER_CHANNEL_SETTINGS: ViewerChannelSettings = {
+    groups: [
+        {
+            name: "Channels",
+            channels: [
+                { match: [0, 1, 2], enabled: true },
+                { match: "(.+)", enabled: false },
+            ],
+        },
+    ],
+};
+
 export const DEFAULT_CSV_DATASET_KEY = "csv";
 export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
 
@@ -498,18 +510,7 @@ class CsvRequest implements ImageDataset {
 
     getViewerChannelSettings(): Promise<ViewerChannelSettings> {
         // By default, enable first three channels
-        // TODO: Have this constant be exposed by w3cv?
-        return Promise.resolve({
-            groups: [
-                {
-                    name: "Channels",
-                    channels: [
-                        { match: [0, 1, 2], enabled: true },
-                        { match: "(.+)", enabled: false },
-                    ],
-                },
-            ],
-        });
+        return Promise.resolve(DEFAULT_VIEWER_CHANNEL_SETTINGS);
     }
 
     private getFeatureKeyToData(): Record<string, (number | null)[]> {
