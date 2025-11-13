@@ -1,4 +1,4 @@
-import { ViewerChannelSettings } from "@aics/vole-app";
+import { parseViewerUrlParams, ViewerChannelSettings } from "@aics/vole-app";
 import { Album } from "../..";
 import * as Papa from "papaparse";
 import {
@@ -19,6 +19,7 @@ import {
     GROUP_BY_KEY,
     THUMBNAIL_PATH,
     TRANSFORM,
+    VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
 
@@ -53,6 +54,18 @@ const FMS_FILENAME_KEY = "file_name";
 const FMS_FILE_SIZE_KEY = "file_size";
 const FMS_UPLOADED_KEY = "uploaded";
 
+/**
+ * Optional column containing Vol-E URL query parameters, which will be applied
+ * to the file when opened in the 3D viewer. This can either be a full Vol-E URL
+ * (`https://vole.allencell.org/viewer?<params>`) or just the query parameters
+ * (`?<params>` or `<params>`).
+ *
+ * The full list of supported parameters is available in the Vol-E
+ * documentation:
+ * https://github.com/allen-cell-animated/vole-app/blob/main/documentation/URL_SPEC.md
+ */
+const LINK_PATH_KEY = "Link Path";
+
 const METADATA_KEYS = new Set([
     CELL_ID_KEY,
     FOV_ID_KEY,
@@ -73,6 +86,7 @@ const METADATA_KEYS = new Set([
     FMS_THUMBNAIL_PATH_KEY,
     FMS_FILE_SIZE_KEY,
     FMS_UPLOADED_KEY,
+    LINK_PATH_KEY,
 ]);
 
 // Adobe palette of high-contrast colors for denoting different categories
@@ -232,7 +246,7 @@ class CsvRequest implements ImageDataset {
             let isContinuous = true;
             for (const row of csvData) {
                 const value = row[key] ?? null;
-                if (value === null || value.trim() === "") {
+                if (value === null || (typeof value === "string" && value.trim() === "")) {
                     rawValues.push(null);
                 } else {
                     rawValues.push(value);
@@ -556,7 +570,7 @@ class CsvRequest implements ImageDataset {
         return Promise.resolve(featureDefsArray);
     }
 
-    getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
+    async getFileInfoByCellId(id: string): Promise<FileInfo | undefined> {
         const rowIndex = this.idToIndex[id];
         if (rowIndex === undefined) {
             return Promise.resolve(undefined);
@@ -566,22 +580,33 @@ class CsvRequest implements ImageDataset {
         if (!data) {
             return Promise.resolve(undefined);
         }
+        // Extract vole parameters from column if it exists
+        let voleUrlParams: FileInfo[typeof VOLE_PARAMS];
+        if (data[LINK_PATH_KEY]) {
+            const split = data[LINK_PATH_KEY].split("?");
+            // Get the last element after the last "?", which also works if
+            // there is no "?". Note that this may not be safe if the URL
+            // contains unescaped "?" characters in the query parameters
+            // themselves, but this is non-standard.
+            const queryParamString = split[split.length - 1] || "";
+            voleUrlParams = await parseViewerUrlParams(new URLSearchParams(queryParamString));
+        }
         const fileInfo = {
-            [CELL_ID_KEY]: data[CELL_ID_KEY] || "",
-            [FOV_ID_KEY]: data[FOV_ID_KEY] || "",
-            [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH] || "",
-            [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH] || "",
-            [THUMBNAIL_PATH]: data[THUMBNAIL_PATH] || "",
-            [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH] || "",
+            [CELL_ID_KEY]: data[CELL_ID_KEY],
+            [FOV_ID_KEY]: data[FOV_ID_KEY],
+            [FOV_THUMBNAIL_PATH]: data[FOV_THUMBNAIL_PATH],
+            [FOV_VOLUME_VIEWER_PATH]: data[FOV_VOLUME_VIEWER_PATH],
+            [THUMBNAIL_PATH]: data[THUMBNAIL_PATH],
+            [VOLUME_VIEWER_PATH]: data[VOLUME_VIEWER_PATH],
             [GROUP_BY_KEY]: data[GROUP_BY_KEY] || this.defaultGroupByFeatureKey,
+            [VOLE_PARAMS]: voleUrlParams,
         };
-        return Promise.resolve(fileInfo);
+        return fileInfo;
     }
 
-    getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
+    async getFileInfoByArrayOfCellIds(ids: string[]): Promise<(FileInfo | undefined)[]> {
         const promises = ids.map((id) => this.getFileInfoByCellId(id));
-        const result = Promise.all(promises);
-        return Promise.resolve(result);
+        return Promise.all(promises);
     }
 }
 

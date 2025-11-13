@@ -1,6 +1,6 @@
 @import "../../styles/colors.css";
 
-.color-by-row {
+.feature-select-row {
   margin-bottom: 1em;
 }
 
@@ -13,12 +13,24 @@
   color: var(--background-dark-gray);
 }
 
+.collapse :global(.ant-collapse-content.ant-collapse-content-active) {
+  border-top: none;
+}
+
+.interactive-legend-container{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .interactive-legend-header{
   border-bottom: 0.5px solid var(--dimgray);
   display: flex;
   justify-content: space-between;
+  margin-bottom: 2px;
+  width: 100%;
 }
 
-.color-by-row :global(.ant-select) {
+.feature-select-row :global(.ant-select) {
   width: 100%;
 }
