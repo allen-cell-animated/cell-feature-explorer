@@ -17,6 +17,8 @@ interface MainPlotProps {
     yAxisType: string;
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
+    xAxisRange?: [number, number];
+    yAxisRange?: [number, number];
 }
 
 type AxisType = "array" | "auto" | "linear" | undefined;
@@ -61,7 +63,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                     ".1f",
                     false,
                     props.xAxisType as AxisType,
-                    props.xTickConversion
+                    props.xTickConversion,
+                    props.xAxisRange
                 ),
                 xaxis2: histogramAxis,
                 yaxis: this.makeAxis(
@@ -69,7 +72,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                     ".1f",
                     false,
                     props.yAxisType as AxisType,
-                    props.yTickConversion
+                    props.yTickConversion,
+                    props.yAxisRange
                 ),
                 yaxis2: histogramAxis,
             },
@@ -79,10 +83,12 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { xAxisType, yAxisType, xTickConversion, yTickConversion } = this.props;
+        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } = this.props;
         if (
             xTickConversion !== prevProps.xTickConversion ||
-            yTickConversion !== prevProps.yTickConversion
+            yTickConversion !== prevProps.yTickConversion ||
+            xAxisRange !== prevProps.xAxisRange ||
+            yAxisRange !== prevProps.yAxisRange
         ) {
             this.setState({
                 layout: {
@@ -93,14 +99,16 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         ".1f",
                         false,
                         xAxisType as AxisType,
-                        xTickConversion
+                        xTickConversion,
+                        xAxisRange
                     ),
                     yaxis: this.makeAxis(
                         [0, 0.85],
                         ".1f",
                         false,
                         yAxisType as AxisType,
-                        yTickConversion
+                        yTickConversion,
+                        yAxisRange
                     ),
                 },
             });
@@ -138,7 +146,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         hoverformat: string,
         zeroline: boolean,
         type: AxisType,
-        tickConversion: any
+        tickConversion: any,
+        range?: [number, number]
     ) {
         return {
             color: GENERAL_PLOT_SETTINGS.textColor,
@@ -151,6 +160,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             ticktext: tickConversion.tickText,
             tickvals: tickConversion.tickValues,
             zeroline,
+            range,
         };
     }
 
@@ -194,26 +204,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 y: point.y,
             };
         });
-    }
-
-    public makeLayout() {
-        const { xAxisType, xTickConversion, yAxisType, yTickConversion } = this.props;
-        const { height } = this.state;
-
-        return {
-            annotations: this.makeAnnotations(),
-            autosize: true,
-            height: height - GENERAL_PLOT_SETTINGS.heightMargin,
-            hovermode: "closest" as const,
-            legend: GENERAL_PLOT_SETTINGS.legend,
-            margin: GENERAL_PLOT_SETTINGS.margin,
-            paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-            plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-            xaxis: this.makeAxis([0, 0.85], ".1f", false, xAxisType as AxisType, xTickConversion),
-            xaxis2: histogramAxis,
-            yaxis: this.makeAxis([0, 0.85], ".1f", false, yAxisType as AxisType, yTickConversion),
-            yaxis2: histogramAxis,
-        };
     }
 
     public render() {

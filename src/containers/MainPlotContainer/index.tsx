@@ -41,6 +41,8 @@ import {
     getXTickConversion,
     getYDisplayOptions,
     getYTickConversion,
+    getXAxisRange,
+    getYAxisRange,
 } from "./selectors";
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
 import { formatThumbnailSrc } from "../../state/util";
@@ -67,6 +69,8 @@ interface PropsFromState {
     xDropDownOptions: MeasuredFeatureDef[];
     xTickConversion: TickConversion;
     yTickConversion: TickConversion;
+    xAxisRange?: [number, number];
+    yAxisRange?: [number, number];
 }
 
 interface DispatchProps {
@@ -265,6 +269,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             yTickConversion,
             xTickConversion,
             categoricalFeatures,
+            xAxisRange,
+            yAxisRange,
         } = this.props;
         if (plotDataArray.length === 0) {
             return null;
@@ -335,6 +341,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
                         yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
+                        xAxisRange={xAxisRange}
+                        yAxisRange={yAxisRange}
                     />
                 </div>
             </React.Fragment>
@@ -359,6 +367,8 @@ function mapStateToProps(state: State): PropsFromState {
         yDropDownOptions: getYDisplayOptions(state),
         yDropDownValue: selectionStateBranch.selectors.getPlotByOnY(state),
         yTickConversion: getYTickConversion(state),
+        xAxisRange: getXAxisRange(state),
+        yAxisRange: getYAxisRange(state),
     };
 }
 
