@@ -6,6 +6,8 @@ const ALLEN_PREFIX_TO_HTTPS: Record<string, string> = {
     "/allen/aics/": "https://dev-aics-dtp-001.int.allencell.org/",
 };
 
+const URL_REGEX = /^(https?:\/\/)/;
+
 export function getCellLineFromLegacyCellID(cellID: string): string {
     return cellID.split("_")[0];
 }
@@ -42,6 +44,10 @@ function normalizeFilePathSlashes(input: string): string {
  */
 export function isAllenPath(input: string): boolean {
     return normalizeFilePathSlashes(input).startsWith(ALLEN_FILE_PREFIX);
+}
+
+export function isUrl(input: string): boolean {
+    return URL_REGEX.test(input);
 }
 
 /**

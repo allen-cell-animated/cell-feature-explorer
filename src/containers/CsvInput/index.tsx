@@ -1,5 +1,5 @@
-import { UploadOutlined } from "@ant-design/icons";
-import { Button, Flex, Input, Modal, Radio, Space } from "antd";
+import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Flex, Input, Modal, Radio, Space, Spin } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import React, { ReactElement, useState } from "react";
@@ -7,12 +7,17 @@ import { connect } from "react-redux";
 import { ActionCreator } from "redux";
 
 import { State } from "../../state";
+import selectionStateBranch from "../../state/selection";
 import imageDatasetStateBranch from "../../state/image-dataset";
 import { LoadCsvDatasetAction } from "../../state/image-dataset/types";
-import { fetchCsvText } from "../../util";
+import { convertAllenPathToHttps, fetchCsvText, isAllenPath, isUrl } from "../../util";
+
+import styles from "./styles.css";
+import { SetCsvUrlAction } from "../../state/selection/types";
 
 type DispatchProps = {
     loadCsvDataset: ActionCreator<LoadCsvDatasetAction>;
+    setCsvUrl: ActionCreator<SetCsvUrlAction>;
 };
 
 type CsvInputProps = DispatchProps;
@@ -33,9 +38,20 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    const onClickCancel = () => {
+        setIsOpen(false);
+        setIsLoading(false);
+        setErrorText("");
+    };
+
     const onFileUploaded = async (file: RcFile): Promise<string> => {
         setIsLoading(true);
         const fileText = await file.text();
+        if (fileText.trim().length === 0) {
+            setErrorText("The provided file is empty.");
+            setIsLoading(false);
+            return "";
+        }
         try {
             props.loadCsvDataset(fileText);
         } catch (e) {
@@ -51,7 +67,17 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const onClickedLoadUrl = async () => {
         setIsLoading(true);
         try {
-            await fetchCsvText(urlInput.trim()).then(props.loadCsvDataset);
+            let url = urlInput.trim();
+            if (isAllenPath(url)) {
+                url = convertAllenPathToHttps(url) || url;
+            }
+            if (!isUrl(url)) {
+                throw new Error(`'${url}' is not a valid URL.`);
+            }
+            const csvText = await fetchCsvText(url);
+            // TODO: Abort loading if modal is closed while fetching.
+            props.loadCsvDataset(csvText);
+            props.setCsvUrl(url);
             setIsOpen(false);
         } catch (e) {
             setErrorText((e as Error).message);
@@ -59,7 +85,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
         setIsLoading(false);
     };
 
-    const footer = <Button>Cancel</Button>;
+    const footer = <Button onClick={onClickCancel}>Cancel</Button>;
 
     return (
         <>
@@ -96,6 +122,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
                         }}
                         value={selectionInputMode}
                         onChange={(e) => setSelectionInputMode(e.target.value)}
+                        disabled={isLoading}
                     >
                         <Radio
                             style={{ minWidth: "40%", display: "flex", justifyContent: "center" }}
@@ -113,22 +140,27 @@ function CsvInput(props: CsvInputProps): ReactElement {
 
                     {selectionInputMode === CsvInputMode.Device && (
                         <div style={{ width: "100%" }}>
-                            {/* TODO: Show a loading spinner during load */}
                             <Dragger
+                                className={styles.csvUpload}
                                 action={onFileUploaded}
                                 accept=".csv"
                                 multiple={false}
                                 showUploadList={false}
-                                style={{ color: "darkgrey" }}
                                 disabled={isLoading}
                             >
                                 <Flex vertical={true} align={"center"}>
                                     <p style={{ fontSize: "30px" }}>
-                                        <UploadOutlined />
+                                        {isLoading ? (
+                                            <Spin
+                                                className={styles.uploadSpinner}
+                                                indicator={<LoadingOutlined spin />}
+                                                size="large"
+                                            ></Spin>
+                                        ) : (
+                                            <UploadOutlined />
+                                        )}
                                     </p>
-                                    <p className="ant-upload-text">
-                                        Click or drag a .csv file here to load.
-                                    </p>
+                                    <p>Click or drag a .csv file here to load.</p>
                                 </Flex>
                             </Dragger>
                         </div>
@@ -162,6 +194,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
 
 const dispatchToPropsMap: DispatchProps = {
     loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
+    setCsvUrl: selectionStateBranch.actions.setCsvUrl,
 };
 
 export default connect<any, DispatchProps, any, State>(null, dispatchToPropsMap)(CsvInput);
