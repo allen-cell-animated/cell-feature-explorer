@@ -1,26 +1,37 @@
-:global(.ant-modal-header) {
+/* TODO: Styling for modals should be handled globally in one location. */
+
+:global(.ant-modal) > div > :global(.ant-modal-content) {
+    background-color: var(--background-dim-gray);
+    color: var(--text-gray);
+    border: 1px solid var(--layout-borders);
+}
+
+:global(.ant-modal-header):global(.ant-modal-header) {
     border-radius: 0;
-    background-color: #d8d8d8;
     text-align: center;
+    background: transparent;
 }
 
 :global(.ant-modal-header) :global(.ant-modal-title) {
-    color: #0a0a0a;
+    font-size: 1.1rem;
+    color: #fff;
 }
+
+div:global(.ant-modal-mask):global(.ant-modal-mask) {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
 .button-container {
     text-align: center;
     margin: auto;
 }
 .ok-button {
-    border-color: #2d224d;
-    background-color: #2d224d;
-    color: #d8d8d8;
     display: inline-block;
     width: 30%;
 }
 
 .checkbox-container :global(.ant-checkbox-wrapper) {
-    color: #0a0a0a;
+    color: var(--text-gray);
     margin-bottom: 20px;
 }
 
