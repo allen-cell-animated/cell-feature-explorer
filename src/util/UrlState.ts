@@ -134,9 +134,7 @@ export default class UrlState {
             return selectCellFor3DAction;
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
-        [URLSearchParam.dataset]: (id) => {
-            return changeDataset(String(id));
-        },
+        [URLSearchParam.dataset]: (id) => changeDataset(String(id)),
         [URLSearchParam.csvUrl]: (url) => setCsvUrl(decodeURIComponent(String(url))),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => toggleGallery(galleryCollapsed === "true"),
         [URLSearchParam.plotByOnX]: (plotByOnX) => changeAxis(X_AXIS_ID, String(plotByOnX)),
