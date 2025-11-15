@@ -38,8 +38,8 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const onClickCancel = () => {
-        setIsOpen(false);
+    const onClickTriggerButton = () => {
+        setIsOpen(true);
         setIsLoading(false);
         setErrorText("");
     };
@@ -54,9 +54,9 @@ function CsvInput(props: CsvInputProps): ReactElement {
         }
         try {
             props.loadCsvDataset(fileText);
+            props.setCsvUrl("");
         } catch (e) {
-            // TODO: This does not actually catch errors if they occur during dataset loading.
-            // Can I make an action return a Promise?
+            // TODO: Make this action return a Promise?
             setErrorText((e as Error).message);
         }
         setIsLoading(false);
@@ -69,7 +69,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
         try {
             let url = urlInput.trim();
             if (isAllenPath(url)) {
-                url = convertAllenPathToHttps(url) || url;
+                url = convertAllenPathToHttps(url) ?? url;
             }
             if (!isUrl(url)) {
                 throw new Error(`'${url}' is not a valid URL.`);
@@ -85,15 +85,11 @@ function CsvInput(props: CsvInputProps): ReactElement {
         setIsLoading(false);
     };
 
-    const footer = <Button onClick={onClickCancel}>Cancel</Button>;
+    const footer = <Button onClick={() => setIsOpen(false)}>Cancel</Button>;
 
     return (
         <>
-            <Button
-                onClick={() => {
-                    setIsOpen(true);
-                }}
-            >
+            <Button onClick={onClickTriggerButton}>
                 <UploadOutlined />
                 Load
             </Button>
@@ -101,17 +97,10 @@ function CsvInput(props: CsvInputProps): ReactElement {
                 title={"Load a .csv dataset"}
                 open={isOpen}
                 onCancel={() => setIsOpen(false)}
-                styles={{}}
                 footer={footer}
             >
-                <Flex
-                    vertical={true}
-                    align="center"
-                    gap={16}
-                    style={{ marginTop: "16px", marginBottom: "16px" }}
-                >
+                <Flex vertical={true} align="center" gap={16} style={{ margin: "16px 0" }}>
                     <Radio.Group
-                        //   value={recordingMode}
                         buttonStyle="solid"
                         optionType="button"
                         style={{
@@ -170,7 +159,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
                             <p style={{ margin: 0 }}>Provide the URL of a .csv file</p>
                             <Space.Compact style={{ width: "100%" }}>
                                 <Input
-                                    placeholder="https://..."
+                                    placeholder="https://example.com/dataset.csv"
                                     value={urlInput}
                                     onChange={(e) => setUrlInput(e.target.value)}
                                     onPressEnter={onClickedLoadUrl}

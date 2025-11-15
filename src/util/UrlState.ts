@@ -135,16 +135,6 @@ export default class UrlState {
         },
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.dataset]: (id) => {
-            if (id === CSV_DATASET_NAME) {
-                // Do not change to the CSV dataset here to prevent an infinite
-                // loading spinner. If the csvUrl param is present, there will
-                // be a separate action dispatched to load it and switch to that
-                // dataset.
-                //
-                // TODO: Show prompt to load local file if dataset is CSV but no
-                // csvUrl is provided.
-                return changeDataset("");
-            }
             return changeDataset(String(id));
         },
         [URLSearchParam.csvUrl]: (url) => setCsvUrl(decodeURIComponent(String(url))),

@@ -18,6 +18,7 @@ import { RequestAction } from "../../state/metadata/types";
 import { fetchCsvText } from "../../util";
 
 import styles from "./style.css";
+import { CSV_DATASET_NAME } from "../../state/selection/constants";
 
 const { Header } = Layout;
 
@@ -95,15 +96,20 @@ const configProviderTheme = {
 
 class App extends React.Component<AppProps> {
     public componentDidMount = () => {
-        if (this.props.csvUrl) {
-            try {
-                fetchCsvText(this.props.csvUrl).then(this.props.loadCsvDataset);
-            } catch (e) {
-                // TODO: Add a component to show error messages to the user
-                window.alert(
-                    "Could not load CSV dataset from URL. See browser console for details."
-                );
-                console.error("Error loading CSV dataset from URL:", e);
+        if (this.props.selectedDataset === CSV_DATASET_NAME) {
+            if (this.props.csvUrl) {
+                try {
+                    fetchCsvText(this.props.csvUrl).then(this.props.loadCsvDataset);
+                } catch (e) {
+                    // TODO: Add a component to show error messages to the user
+                    console.error("Error loading CSV dataset from URL:", e);
+                    this.props.changeDataset("");
+                }
+            } else {
+                // Dataset is a CSV but no URL is provided, so it was loaded from a local file.
+                // Return user to the landing page.
+                // TODO: Prompt user to re-upload the file instead
+                this.props.changeDataset("");
             }
         }
         this.props.requestAvailableDatasets();
