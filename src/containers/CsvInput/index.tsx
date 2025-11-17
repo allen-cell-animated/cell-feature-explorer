@@ -74,7 +74,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const onClickedLoadUrl = async () => {
         setIsLoading(true);
         try {
-            let url = urlInput.trim();
+            const url = urlInput.trim();
             if (!isUrl(url) && !isAllenPath(url)) {
                 throw new Error(`Please enter a valid HTTP(S) URL.`);
             }
