@@ -65,7 +65,7 @@ export function convertAllenPathToHttps(input: string): string | null {
     return null;
 }
 
-export async function fetchCsvText(url: string): Promise<string> {
+export async function fetchCsvText(url: string): Promise<{ url: string; text: string }> {
     if (!url) {
         throw new Error("No URL provided.");
     }
@@ -74,7 +74,10 @@ export async function fetchCsvText(url: string): Promise<string> {
         if (convertedUrl) {
             url = convertedUrl;
         } else {
-            throw new Error(`'${url}' is not an HTTPS URL.`);
+            throw new Error(
+                `'${url}' is an Allen path, but could not be converted to an HTTPS URL. ` +
+                    `The provided path may not be servable over HTTPS. Please submit an issue ticket if you believe this is incorrect.`
+            );
         }
     }
     console.log(`Fetching CSV dataset from url: ${url}`);
@@ -84,5 +87,6 @@ export async function fetchCsvText(url: string): Promise<string> {
             `Failed to fetch CSV dataset from url '${url}': ${response.status} ${response.statusText}`
         );
     }
-    return response.text();
+    const text = await response.text();
+    return { url, text };
 }

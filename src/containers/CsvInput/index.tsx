@@ -56,7 +56,6 @@ function CsvInput(props: CsvInputProps): ReactElement {
             props.loadCsvDataset(fileText);
             props.setCsvUrl("");
         } catch (e) {
-            // TODO: Make this action return a Promise?
             setErrorText((e as Error).message);
         }
         setIsLoading(false);
@@ -68,16 +67,13 @@ function CsvInput(props: CsvInputProps): ReactElement {
         setIsLoading(true);
         try {
             let url = urlInput.trim();
-            if (isAllenPath(url)) {
-                url = convertAllenPathToHttps(url) ?? url;
+            if (!isUrl(url) && !isAllenPath(url)) {
+                throw new Error(`Please enter a valid HTTP(S) URL.`);
             }
-            if (!isUrl(url)) {
-                throw new Error(`'${url}' is not a valid URL.`);
-            }
-            const csvText = await fetchCsvText(url);
+            const { url: fetchedUrl, text: csvText } = await fetchCsvText(url);
             // TODO: Abort loading if modal is closed while fetching.
             props.loadCsvDataset(csvText);
-            props.setCsvUrl(url);
+            props.setCsvUrl(fetchedUrl);
             setIsOpen(false);
         } catch (e) {
             setErrorText((e as Error).message);
