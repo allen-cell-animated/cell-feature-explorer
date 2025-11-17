@@ -2,15 +2,15 @@ import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Flex, Input, Modal, Radio, Space, Spin } from "antd";
 import { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { ActionCreator } from "redux";
 
 import { State } from "../../state";
 import selectionStateBranch from "../../state/selection";
 import imageDatasetStateBranch from "../../state/image-dataset";
-import { LoadCsvDatasetAction } from "../../state/image-dataset/types";
-import { convertAllenPathToHttps, fetchCsvText, isAllenPath, isUrl } from "../../util";
+import { ImageDataset, LoadCsvDatasetAction } from "../../state/image-dataset/types";
+import { fetchCsvText, isAllenPath, isUrl } from "../../util";
 
 import styles from "./styles.css";
 import { SetCsvUrlAction } from "../../state/selection/types";
@@ -20,7 +20,11 @@ type DispatchProps = {
     setCsvUrl: ActionCreator<SetCsvUrlAction>;
 };
 
-type CsvInputProps = DispatchProps;
+type PropsFromState = {
+    dataset: ImageDataset;
+};
+
+type CsvInputProps = DispatchProps & PropsFromState;
 
 const enum CsvInputMode {
     Device = "device",
@@ -37,6 +41,10 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const [urlInput, setUrlInput] = useState("");
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        setIsOpen(false);
+    }, [props.dataset]);
 
     const onClickTriggerButton = () => {
         setIsOpen(true);
@@ -59,7 +67,6 @@ function CsvInput(props: CsvInputProps): ReactElement {
             setErrorText((e as Error).message);
         }
         setIsLoading(false);
-        setIsOpen(false);
         return "";
     };
 
@@ -74,7 +81,6 @@ function CsvInput(props: CsvInputProps): ReactElement {
             // TODO: Abort loading if modal is closed while fetching.
             props.loadCsvDataset(csvText);
             props.setCsvUrl(fetchedUrl);
-            setIsOpen(false);
         } catch (e) {
             setErrorText((e as Error).message);
         }
@@ -177,9 +183,18 @@ function CsvInput(props: CsvInputProps): ReactElement {
     );
 }
 
+function mapStateToProps(state: State): PropsFromState {
+    return {
+        dataset: imageDatasetStateBranch.selectors.getImageDataset(state),
+    };
+}
+
 const dispatchToPropsMap: DispatchProps = {
     loadCsvDataset: imageDatasetStateBranch.actions.loadCsvDataset,
     setCsvUrl: selectionStateBranch.actions.setCsvUrl,
 };
 
-export default connect<any, DispatchProps, any, State>(null, dispatchToPropsMap)(CsvInput);
+export default connect<PropsFromState, DispatchProps, any, State>(
+    mapStateToProps,
+    dispatchToPropsMap
+)(CsvInput);

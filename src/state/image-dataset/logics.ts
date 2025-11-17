@@ -3,7 +3,7 @@ import { createLogic } from "redux-logic";
 import { ReduxLogicDeps } from "..";
 import { receiveAvailableDatasets } from "../metadata/actions";
 import { changeDataset } from "../selection/actions";
-import { changeImageDatasetType, setDatasetLoadErrorMessage } from "./actions";
+import { changeImageDatasetType } from "./actions";
 import { LOAD_CSV_DATASET } from "./constants";
 import CsvRequest, { DEFAULT_CSV_DATASET_KEY } from "./csv-dataset";
 import { LoadCsvDatasetAction } from "./types";
