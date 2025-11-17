@@ -43,6 +43,7 @@ function CsvInput(props: CsvInputProps): ReactElement {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        // Close modal upon successful dataset load
         setIsOpen(false);
     }, [props.dataset]);
 
