@@ -99,7 +99,9 @@ class App extends React.Component<AppProps> {
         if (this.props.selectedDataset === CSV_DATASET_NAME) {
             if (this.props.csvUrl) {
                 try {
-                    fetchCsvText(this.props.csvUrl).then(this.props.loadCsvDataset);
+                    fetchCsvText(this.props.csvUrl).then(({ text }) =>
+                        this.props.loadCsvDataset(text)
+                    );
                 } catch (e) {
                     // TODO: Add a component to show error messages to the user
                     console.error("Error loading CSV dataset from URL:", e);
