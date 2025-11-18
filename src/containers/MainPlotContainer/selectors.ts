@@ -230,10 +230,10 @@ export const composePlotlyData = createSelector(
         }
         const selectedGroupPlotData = applyColorToSelections
             ? {
-                  ...selectedGroups,
-                  dataType: "continuous" as DataType.CONTINUOUS,
-                  plotName: SELECTIONS_PLOT_NAME,
-              }
+                ...selectedGroups,
+                dataType: "continuous" as DataType.CONTINUOUS,
+                plotName: SELECTIONS_PLOT_NAME,
+            }
             : null;
 
         return {
@@ -458,13 +458,13 @@ const getAxisRange = (values: (number | null)[]): [number, number] | undefined =
 export const getXAxisRange = createSelector(
     [getXValues],
     (xValues: (number | null)[]): [number, number] | undefined => {
-       return getAxisRange(xValues);
+        return getAxisRange(xValues);
     }
 );
 
 export const getYAxisRange = createSelector(
     [getYValues],
     (yValues: (number | null)[]): [number, number] | undefined => {
-       return getAxisRange(yValues);
+        return getAxisRange(yValues);
     }
 );
