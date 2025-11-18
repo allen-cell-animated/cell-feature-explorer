@@ -36,6 +36,8 @@ import {
     getGroupByCategory,
     getGroupingCategoryNamesAsArray,
     getHoveredPointData,
+    getXValues,
+    getYValues,
 } from "../../state/selection/selectors";
 import { SelectedPointData, TickConversion } from "../../state/selection/types";
 import {
@@ -228,10 +230,10 @@ export const composePlotlyData = createSelector(
         }
         const selectedGroupPlotData = applyColorToSelections
             ? {
-                  ...selectedGroups,
-                  dataType: "continuous" as DataType.CONTINUOUS,
-                  plotName: SELECTIONS_PLOT_NAME,
-              }
+                ...selectedGroups,
+                dataType: "continuous" as DataType.CONTINUOUS,
+                plotName: SELECTIONS_PLOT_NAME,
+            }
             : null;
 
         return {
@@ -434,5 +436,35 @@ export const getDataForOverlayCard = createSelector(
             ...pointData,
             [GROUP_BY_KEY]: categoryNames[pointData.index],
         };
+    }
+);
+
+/**
+ * Calculate axis ranges from unfiltered data so axes don't rescale when hiding groups
+ */
+const getAxisRange = (values: (number | null)[]): [number, number] | undefined => {
+    let min: number | undefined;
+    let max: number | undefined;
+
+    for (const v of values) {
+        if (v == null) continue;
+        if (min === undefined || v < min) min = v;
+        if (max === undefined || v > max) max = v;
+    }
+    if (min === undefined || max === undefined) return undefined;
+    return [min, max];
+};
+
+export const getXAxisRange = createSelector(
+    [getXValues],
+    (xValues: (number | null)[]): [number, number] | undefined => {
+        return getAxisRange(xValues);
+    }
+);
+
+export const getYAxisRange = createSelector(
+    [getYValues],
+    (yValues: (number | null)[]): [number, number] | undefined => {
+        return getAxisRange(yValues);
     }
 );
