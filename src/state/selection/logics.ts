@@ -91,7 +91,6 @@ const changeDatasetLogic = createLogic({
                 const featureKeys = new Set(
                     (await imageDataSet.getMeasuredFeatureDefs()).map((def) => def.key)
                 );
-                console.log("changeDatasetLogic: featureKeys", featureKeys); // tslint:disable-line:no-console
                 const actions = [];
                 if (!featureKeys.has(state.selection.plotByOnX)) {
                     actions.push(changeAxis(X_AXIS_ID, selections.defaultXAxis));
@@ -102,10 +101,8 @@ const changeDatasetLogic = createLogic({
                 if (!featureKeys.has(state.selection.groupBy)) {
                     actions.push(changeGroupByCategory(selections.defaultGroupBy));
                 }
-                if (!featureKeys.has(state.selection.colorBy)) {
-                    if (selections.defaultColorBy) {
-                        actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
-                    }
+                if (!featureKeys.has(state.selection.colorBy) && selections.defaultColorBy) {
+                    actions.push(changeAxis(COLOR_BY_SELECTOR, selections.defaultColorBy));
                 }
                 dispatch(batchActions(actions));
                 dispatch({
