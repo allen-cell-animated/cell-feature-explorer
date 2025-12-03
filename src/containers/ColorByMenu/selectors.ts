@@ -14,6 +14,11 @@ import {
     MeasuredFeaturesOption,
 } from "../../state/metadata/types";
 import {
+    MISSING_CATEGORY_COLOR,
+    MISSING_CATEGORY_KEY,
+    MISSING_CATEGORY_LABEL,
+} from "../../state/selection/constants";
+import {
     getApplyColorToSelections,
     getColorBySelection,
     getDownloadConfig,
@@ -36,8 +41,6 @@ import { ColorForPlot, LassoOrBoxSelectPointData } from "../../state/selection/t
 import { convertSingleImageIdToDownloadId } from "../../state/util";
 
 import { PanelData } from "./types";
-
-const MISSING_CATEGORY_NAME = "N/A";
 
 export const getDisplayableGroups = createSelector(
     [getXValues, getYValues, getGroupingCategoryNamesAsArray],
@@ -140,12 +143,16 @@ export const getInteractivePanelData = createSelector(
             {} as { [key: string]: number }
         );
 
-        if (countsByCategory[""] > 0) {
+        if (countsByCategory[MISSING_CATEGORY_KEY] > 0) {
             // Some data points have no data for this category. Modify categories
             // to include an N/A entry.
             categories = [
                 ...categories,
-                { name: MISSING_CATEGORY_NAME, color: "#d3d3d3", key: "" },
+                {
+                    color: MISSING_CATEGORY_COLOR,
+                    name: MISSING_CATEGORY_LABEL,
+                    key: MISSING_CATEGORY_KEY,
+                },
             ];
         }
 

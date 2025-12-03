@@ -32,6 +32,7 @@ import {
 import { NumberOrString, SelectedGroups, State } from "../types";
 import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
+import { MISSING_PLOT_COLOR_OPTION } from "./constants";
 import {
     ColorForPlot,
     DownloadConfig,
@@ -147,7 +148,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
             const feature = findFeature(measuredFeaturesDefs, categoryToColorBy as string);
             if (feature && feature.discrete) {
                 const { options } = feature;
-                return map(options, (option: MeasuredFeaturesOption, key: string) => {
+                const colorForPlot = map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
                      * this number can represent:
@@ -170,6 +171,9 @@ export const getCategoryGroupColorsAndNames = createSelector(
                         label: option.name,
                     };
                 });
+                // When coloring by a discrete feature, add a default color for
+                // missing data so Plotly has a fallback.
+                return [...colorForPlot, MISSING_PLOT_COLOR_OPTION];
             }
         }
         return [];
