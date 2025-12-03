@@ -62,7 +62,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
             handleDownload,
         } = this.props;
 
-        const tooltip = <div>{id}</div>;
+        const tooltip = <div>{id || "(missing data for this feature)"}</div>;
 
         const labelClassName = disabled ? styles.labelDisabled : styles.label;
 
