@@ -1,0 +1,39 @@
+# Adapted from https://github.com/marketplace/actions/deploy-pr-preview.
+name: Deploy PR Preview
+
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - closed
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+    deploy-preview:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
+
+            - name: Setup node
+              uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6.0.0
+              with:
+                  node-version: "22"
+                  cache: "npm"
+                  cache-dependency-path: "package-lock.json"
+
+              # Must override default vite build base so that assets can still be accessed
+              # when not placed in the root directory of gh-pages branch.
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build
+              run: npm run build
+
+            - name: Deploy preview
+              uses: rossjrw/pr-preview-action@8ff09e486b4c23709012eedd3b42e9f0b95dd0c5 #v1.6.3
+              with:
+                  source-dir: ./dist/
