@@ -16,6 +16,7 @@ import type { Action } from "redux";
 import {
     CELL_ID_KEY,
     COLOR_BY_SELECTOR,
+    GROUP_BY_KEY,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../constants";
@@ -23,6 +24,7 @@ import type { FileInfo } from "../state/metadata/types";
 import {
     changeAxis,
     changeDataset,
+    changeGroupByCategory,
     selectAlbum,
     selectCellFor3DViewer,
     selectPoint,
@@ -35,6 +37,7 @@ import type { SelectionStateBranch } from "../state/selection/types";
 export enum URLSearchParam {
     cellSelectedFor3D = "cellSelectedFor3D",
     colorBy = "colorBy",
+    groupBy = "groupBy",
     dataset = "dataset",
     plotByOnX = "plotByOnX",
     plotByOnY = "plotByOnY",
@@ -132,6 +135,7 @@ export default class UrlState {
 
             return selectCellFor3DAction;
         },
+        [URLSearchParam.groupBy]: (groupBy) => changeGroupByCategory(String(groupBy)),
         [URLSearchParam.colorBy]: (colorBy) => changeAxis(COLOR_BY_SELECTOR, String(colorBy)),
         [URLSearchParam.dataset]: (id) => changeDataset(String(id)),
         [URLSearchParam.csvUrl]: (url) => setCsvUrl(decodeURIComponent(String(url))),
@@ -158,6 +162,7 @@ export default class UrlState {
 
             return base;
         },
+        [URLSearchParam.groupBy]: (groupBy) => ({ [GROUP_BY_KEY]: String(groupBy) }),
         [URLSearchParam.colorBy]: (colorBy) => ({ [COLOR_BY_SELECTOR]: String(colorBy) }),
         [URLSearchParam.dataset]: (id) => ({dataset: String(id)}),
         [URLSearchParam.galleryCollapsed]: (galleryCollapsed) => ({ galleryCollapsed: galleryCollapsed === "true" }),
@@ -171,6 +176,7 @@ export default class UrlState {
         
         cellSelectedFor3D: (value) => ({ [URLSearchParam.cellSelectedFor3D]: String(value) }),
         [COLOR_BY_SELECTOR]: (value) => ({ [URLSearchParam.colorBy]: String(value) }),
+        [GROUP_BY_KEY]: (value) => ({ [URLSearchParam.groupBy]: String(value) }),
         dataset: (id) => ({ [URLSearchParam.dataset]: String(id)}),
         csvUrl: (url) => ({ [URLSearchParam.csvUrl]: String(encodeURIComponent(url)) }),
         galleryCollapsed: (value) => ({ [URLSearchParam.galleryCollapsed]: String(value)}),
