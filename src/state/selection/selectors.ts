@@ -85,20 +85,6 @@ export const getCsvUrl = (state: State): string => state.selection.csvUrl;
 
 // GROUP BY SELECTORS (For the checkbox panel)
 
-/**
- * Gets the value used to represent missing data for the current colorBy selection.
- */
-export const getColorDataMissingValue = createSelector(
-    [getColorBySelection, getGroupByCategory],
-    (categoryToColorBy, categoryToGroupBy): string => {
-        // Color values are passed to Plotly as string values when groupBy and
-        // colorBy are the same, (ex: `["A", "B", "", "C"]`) and are number IDs
-        // otherwise (ex: `[0, 1, null, 2]`). Missing data is either `""` or
-        // `null` respectively.
-        return categoryToColorBy === categoryToGroupBy ? "" : "null";
-    }
-);
-
 export const getGroupByFeatureDef = createSelector(
     /**
      * Returns the full feature definition of the feature currently selected as the
@@ -147,18 +133,11 @@ export const getCategoryGroupColorsAndNames = createSelector(
      * Returns array of objects that have the color mapping for each category in a colorBy
      * selection if the colorBy is a discrete feature.
      */
-    [
-        getColorBySelection,
-        getGroupByCategory,
-        getMeasuredFeaturesDefs,
-        getColorDataMissingValue,
-        getCategoricalFeatureKeys,
-    ],
+    [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
     (
         categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
         categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
         measuredFeaturesDefs: MeasuredFeatureDef[],
-        missingCategoryColorValue: string,
         categoricalFeatureKeys: string[]
     ): ColorForPlot[] => {
         /**
@@ -193,14 +172,15 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     };
                 });
 
-                // Add a fallback for missing color data so Plotly does not
-                // assign unexpected automatic colors. The value used to
-                // represent missing data changes based on current groupBy and
-                // colorBy selections.
+                // Add a fallback color option for missing data; otherwise,
+                // Plotly will automatically assign (unexpected) colors. As
+                // noted above, options are keyed by string names when groupBy
+                // and colorBy are the same, (ex: `["A", "B", "", "C"]`) and are
+                // keyed by numeral IDs otherwise (ex: `[0, 1, null, 2]`).
                 const missingColorOption: ColorForPlot = {
                     color: MISSING_CATEGORY_COLOR,
                     label: MISSING_CATEGORY_LABEL,
-                    name: missingCategoryColorValue,
+                    name: categoryToGroupBy === categoryToColorBy ? "" : "null",
                 };
                 return [...colorForPlot, missingColorOption];
             }
