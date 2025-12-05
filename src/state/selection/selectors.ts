@@ -281,7 +281,7 @@ export const getColorByCategoryCounts = createSelector(
             let counts = map(options, "count");
 
             if (!filter(counts, (count: number) => count !== undefined).length) {
-                // Counts have not been pre calculated in the database
+                // Counts were not precalculated in the database, do it here
                 const totals = reduce(
                     measuredData.values[categoryToColorBy],
                     (acc: { [key: string]: number }, cur) => {
@@ -299,10 +299,11 @@ export const getColorByCategoryCounts = createSelector(
                 counts = values(totals);
             }
 
-            // Calculate the number of missing cells for this category, which is
-            // appended to the end of the counts array (since
-            // `getCategoryGroupColorsAndNames` appends the missing option to
-            // the end of the colors array).
+            // Calculate the number of cells that have no data for this
+            // category, and append it to the end of the counts array. This is
+            // the index corresponding with the missing category color option
+            // returned by `getCategoryGroupColorsAndNames`, and allows the
+            // total number of missing cells to be displayed in the legend.
             const totalCount = reduce(counts, (sum, count) => sum + (count ?? 0), 0);
             const missingCount = measuredData.indices.length - totalCount;
 
