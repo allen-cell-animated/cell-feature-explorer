@@ -278,26 +278,35 @@ export const getColorByCategoryCounts = createSelector(
         const feature = findFeature(measuredFeatureDefs, categoryToColorBy as string);
         if (feature && feature.discrete) {
             const { options } = feature;
-            const counts = map(options, "count");
-            if (filter(counts, (count: number) => count !== undefined).length) {
-                // if the counts have been pre calculated in the database, just use that
-                return counts as number[];
+            let counts = map(options, "count");
+
+            if (!filter(counts, (count: number) => count !== undefined).length) {
+                // Counts have not been pre calculated in the database
+                const totals = reduce(
+                    measuredData.values[categoryToColorBy],
+                    (acc: { [key: string]: number }, cur) => {
+                        // null values may still have a feature definition, IE "undetermined"
+                        const key = cur !== null ? cur.toString() : "";
+                        if (acc[key]) {
+                            acc[key]++;
+                        } else {
+                            acc[key] = 1;
+                        }
+                        return acc;
+                    },
+                    {}
+                );
+                counts = values(totals);
             }
-            const totals = reduce(
-                measuredData.values[categoryToColorBy],
-                (acc: { [key: string]: number }, cur) => {
-                    // null values may still have a feature definition, IE "undetermined"
-                    const key = cur !== null ? cur.toString() : "";
-                    if (acc[key]) {
-                        acc[key]++;
-                    } else {
-                        acc[key] = 1;
-                    }
-                    return acc;
-                },
-                {}
-            );
-            return values(totals);
+
+            // Calculate the number of missing cells for this category, which is
+            // appended to the end of the counts array (since
+            // `getCategoryGroupColorsAndNames` appends the missing option to
+            // the end of the colors array).
+            const totalCount = reduce(counts, (sum, count) => sum + (count ?? 0), 0);
+            const missingCount = measuredData.indices.length - totalCount;
+
+            return [...counts, missingCount] as number[];
         }
         return [];
     }
