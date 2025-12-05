@@ -1,5 +1,4 @@
 import { MY_SELECTIONS_ID } from "../../constants/index";
-import { ColorForPlot } from "./types";
 import { makeConstant } from "../util";
 
 const makeSelectionConstant = <A extends string>(constant: A) =>
