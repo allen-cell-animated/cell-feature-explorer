@@ -280,7 +280,8 @@ export const getColorByCategoryCounts = createSelector(
             const { options } = feature;
             let counts = map(options, "count");
 
-            if (!filter(counts, (count: number) => count !== undefined).length) {
+            const numDefinedCounts = filter(counts, (count: number) => count !== undefined).length;
+            if (numDefinedCounts === 0) {
                 // Counts were not precalculated in the database, do it here
                 const totals = reduce(
                     measuredData.values[categoryToColorBy],
