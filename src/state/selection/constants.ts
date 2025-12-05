@@ -48,14 +48,8 @@ export const CSV_DATASET_NAME = "csv";
 export const INITIAL_SELECTED_ALBUM_ID = MY_SELECTIONS_ID;
 
 export const MISSING_CATEGORY_COLOR = "#d3d3d3";
-export const MISSING_CATEGORY_LABEL = "N/A";
+export const MISSING_CATEGORY_LABEL = "(N/A)";
 export const MISSING_CATEGORY_KEY = "";
-
-export const MISSING_PLOT_COLOR_OPTION: ColorForPlot = {
-    color: MISSING_CATEGORY_COLOR,
-    name: MISSING_CATEGORY_KEY,
-    label: "N/A",
-};
 
 export const INITIAL_COLORS = [
     "#bbcd22",
