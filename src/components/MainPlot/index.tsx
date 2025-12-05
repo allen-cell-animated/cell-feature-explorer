@@ -41,6 +41,12 @@ const histogramAxis = {
     zeroline: true,
 };
 
+function padAxisRange(range: [number, number]): [number, number] {
+    const delta = range[1] - range[0];
+    const padding = delta * 0.05;
+    return [range[0] - padding, range[1] + padding];
+}
+
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     constructor(props: MainPlotProps) {
         super(props);
@@ -83,7 +89,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } = this.props;
+        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } =
+            this.props;
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion ||
@@ -100,7 +107,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         false,
                         xAxisType as AxisType,
                         xTickConversion,
-                        xAxisRange
+                        xAxisRange ? padAxisRange(xAxisRange) : undefined
                     ),
                     yaxis: this.makeAxis(
                         [0, 0.85],
@@ -108,7 +115,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                         false,
                         yAxisType as AxisType,
                         yTickConversion,
-                        yAxisRange
+                        yAxisRange ? padAxisRange(yAxisRange) : undefined
                     ),
                 },
             });
