@@ -14,6 +14,11 @@ import {
     MeasuredFeaturesOption,
 } from "../../state/metadata/types";
 import {
+    MISSING_CATEGORY_COLOR,
+    MISSING_CATEGORY_KEY,
+    MISSING_CATEGORY_LABEL,
+} from "../../state/selection/constants";
+import {
     getApplyColorToSelections,
     getColorBySelection,
     getDownloadConfig,
@@ -128,7 +133,6 @@ export const getInteractivePanelData = createSelector(
         displayableGroups: string[],
         categoryNamesArray: string[]
     ): PanelData[] => {
-
         // Calculate actual counts from the data
         const countsByCategory: { [key: string]: number } = reduce(
             categoryNamesArray,
@@ -139,11 +143,19 @@ export const getInteractivePanelData = createSelector(
             {} as { [key: string]: number }
         );
 
+        if (countsByCategory[MISSING_CATEGORY_KEY] > 0) {
+            // Some data points have no data for this category. Modify categories
+            // to include an N/A entry.
+            categories.push({
+                color: MISSING_CATEGORY_COLOR,
+                name: MISSING_CATEGORY_LABEL,
+                key: MISSING_CATEGORY_KEY,
+            });
+        }
+
         const names = disambiguateCategoryNames(categories);
         return map(categories, (category: MeasuredFeaturesOption, index: number) => {
-            const name: string = category.name;
-            const key: string = category.key || "";
-            const id = key || name;
+            const id = category.key ?? category.name;
             const total: number = countsByCategory[id] || category.count || 0;
             const disabled = !displayableGroups.includes(id);
             const color = getColorForCategory(
