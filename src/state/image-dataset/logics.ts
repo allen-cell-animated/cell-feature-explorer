@@ -16,13 +16,17 @@ const loadCsvDataset = createLogic({
     async process(deps: ReduxLogicDeps<LoadCsvDatasetAction>, dispatch: any, done: any) {
         const { action } = deps;
         const fileContents = action.payload;
-        const dataset = new CsvRequest(fileContents);
-        dispatch(changeImageDatasetType(dataset));
-
-        const megasets = await dataset.getAvailableDatasets();
-        dispatch(receiveAvailableDatasets(megasets));
-        dispatch(changeDataset(DEFAULT_CSV_DATASET_KEY));
-        done();
+        try {
+            const dataset = new CsvRequest(fileContents);
+            const megasets = await dataset.getAvailableDatasets();
+            dispatch(receiveAvailableDatasets(megasets));
+            dispatch(changeDataset(DEFAULT_CSV_DATASET_KEY));
+            dispatch(changeImageDatasetType(dataset));
+        } catch (e) {
+            console.error("Error loading CSV dataset:", e);
+        } finally {
+            done();
+        }
     },
 });
 

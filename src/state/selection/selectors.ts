@@ -32,6 +32,7 @@ import {
 import { NumberOrString, SelectedGroups, State } from "../types";
 import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
 
+import { MISSING_CATEGORY_COLOR, MISSING_CATEGORY_LABEL } from "./constants";
 import {
     ColorForPlot,
     DownloadConfig,
@@ -147,7 +148,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
             const feature = findFeature(measuredFeaturesDefs, categoryToColorBy as string);
             if (feature && feature.discrete) {
                 const { options } = feature;
-                return map(options, (option: MeasuredFeaturesOption, key: string) => {
+                const colorForPlot = map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
                      * this number can represent:
@@ -170,6 +171,18 @@ export const getCategoryGroupColorsAndNames = createSelector(
                         label: option.name,
                     };
                 });
+
+                // Add a fallback color option for missing data; otherwise,
+                // Plotly will automatically assign (unexpected) colors. As
+                // noted above, options are keyed by string names when groupBy
+                // and colorBy are the same, (ex: `["A", "B", "", "C"]`) and are
+                // keyed by numeral IDs otherwise (ex: `[0, 1, null, 2]`).
+                const missingColorOption: ColorForPlot = {
+                    color: MISSING_CATEGORY_COLOR,
+                    label: MISSING_CATEGORY_LABEL,
+                    name: categoryToGroupBy === categoryToColorBy ? "" : "null",
+                };
+                return [...colorForPlot, missingColorOption];
             }
         }
         return [];
@@ -265,26 +278,37 @@ export const getColorByCategoryCounts = createSelector(
         const feature = findFeature(measuredFeatureDefs, categoryToColorBy as string);
         if (feature && feature.discrete) {
             const { options } = feature;
-            const counts = map(options, "count");
-            if (filter(counts, (count: number) => count !== undefined).length) {
-                // if the counts have been pre calculated in the database, just use that
-                return counts as number[];
+            let counts = map(options, "count");
+
+            const numDefinedCounts = filter(counts, (count: number) => count !== undefined).length;
+            if (numDefinedCounts === 0) {
+                // Counts were not precalculated in the database, do it here
+                const totals = reduce(
+                    measuredData.values[categoryToColorBy],
+                    (acc: { [key: string]: number }, cur) => {
+                        // null values may still have a feature definition, IE "undetermined"
+                        const key = cur !== null ? cur.toString() : "";
+                        if (acc[key]) {
+                            acc[key]++;
+                        } else {
+                            acc[key] = 1;
+                        }
+                        return acc;
+                    },
+                    {}
+                );
+                counts = values(totals);
             }
-            const totals = reduce(
-                measuredData.values[categoryToColorBy],
-                (acc: { [key: string]: number }, cur) => {
-                    // null values may still have a feature definition, IE "undetermined"
-                    const key = cur !== null ? cur.toString() : "NaN";
-                    if (acc[key]) {
-                        acc[key]++;
-                    } else {
-                        acc[key] = 1;
-                    }
-                    return acc;
-                },
-                {}
-            );
-            return values(totals);
+
+            // Calculate the number of cells that have no data for this
+            // category, and append it to the end of the counts array. This is
+            // the index corresponding with the missing category color option
+            // returned by `getCategoryGroupColorsAndNames`, and allows the
+            // total number of missing cells to be displayed in the legend.
+            const totalCount = reduce(counts, (sum, count) => sum + (count ?? 0), 0);
+            const missingCount = measuredData.indices.length - totalCount;
+
+            return [...counts, missingCount] as number[];
         }
         return [];
     }

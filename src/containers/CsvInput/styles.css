@@ -1,0 +1,9 @@
+.csv-upload {
+    color: var(--text-gray);
+    fill: var(--text-gray);
+    transition: all 0.2s ease-in-out;
+}
+
+.csv-upload:hover {
+    color: var(--purple-hover);
+}

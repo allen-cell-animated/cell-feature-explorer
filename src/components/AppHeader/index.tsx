@@ -4,6 +4,7 @@ import * as React from "react";
 import { AicsLogo } from "../Icons";
 
 import styles from "./style.css";
+import CsvInput from "../../containers/CsvInput";
 
 interface AppHeaderProps {
     selectedDataset: string;
@@ -29,7 +30,9 @@ class AppHeader extends React.Component<AppHeaderProps> {
                     </a>
                 </Row>
                 <div className={styles.viewerTitle}>{selectedDataset}</div>
-                <div className={styles.buttons}></div>
+                <div className={styles.buttons}>
+                    <CsvInput></CsvInput>
+                </div>
             </div>
         );
     }
