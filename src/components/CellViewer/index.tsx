@@ -31,11 +31,10 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     const [prevCellId, setPrevCellId] = useState<string | undefined>(props.cellId);
 
     const [propsToUse, setPropsToUse] = useState(INITIAL_DUMMY_PROPS);
-    useEffect(() => {
-        setPrevCellId(props.cellId);
-    }, [props.cellId]);
 
     useEffect(() => {
+        setPrevCellId(props.cellId);
+
         if (!props.cellId) {
             return;
         }
@@ -48,7 +47,7 @@ const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
         } else {
             setPropsToUse(props);
         }
-    }, [props.cellId]);
+    }, [props]);
 
     if (!props.cellId) {
         return <div className={styles.emptyOverlay}>Select a cell in gallery to view it in 3D</div>;
