@@ -7,7 +7,7 @@ const { devServer, Env, stats } = require("./constants");
 const getPluginsByEnv = require("./plugins");
 
 module.exports = ({ analyze, env } = {}) => ({
-    devtool: env !== Env.PRODUCTION && "source-map",
+    devtool: env !== Env.PRODUCTION ? "eval-source-map" : false,
     devServer: {
         static: {
             directory: path.join(__dirname, "../", "dist"),
