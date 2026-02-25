@@ -230,10 +230,10 @@ export const composePlotlyData = createSelector(
         }
         const selectedGroupPlotData = applyColorToSelections
             ? {
-                ...selectedGroups,
-                dataType: "continuous" as DataType.CONTINUOUS,
-                plotName: SELECTIONS_PLOT_NAME,
-            }
+                  ...selectedGroups,
+                  dataType: "continuous" as DataType.CONTINUOUS,
+                  plotName: SELECTIONS_PLOT_NAME,
+              }
             : null;
 
         return {
@@ -304,6 +304,27 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     return colorSettings(plotSettings, plotData);
 }
 
+function makeHighlightTrace(annotations: Annotation[]): Partial<PlotData> {
+    return {
+        hoverinfo: "none" as const,
+        marker: {
+            size: GENERAL_PLOT_SETTINGS.circleRadius * 1.2,
+            symbol: "circle-open",
+            color: "rgba(255,255,255, 1.0)",
+            line: {
+                color: "rgba(255,255,255, 1.0)",
+                width: 1.5,
+            },
+        },
+        mode: "markers" as const,
+        name: "selected-cells",
+        showlegend: false,
+        type: "scatter" as const,
+        x: annotations.map((a) => a.x),
+        y: annotations.map((a) => a.y),
+    };
+}
+
 function makeHistogramPlotX(data: (number | null)[]) {
     return {
         marker: {
@@ -343,8 +364,8 @@ function makeHistogramPlotY(data: (number | null)[]) {
 }
 
 export const getScatterPlotDataArray = createSelector(
-    [composePlotlyData],
-    (allPlotData): Partial<PlotData>[] => {
+    [composePlotlyData, getAnnotations],
+    (allPlotData, annotations): Partial<PlotData>[] => {
         const { mainPlotData, selectedGroupPlotData } = allPlotData;
         const data = [
             makeHistogramPlotX(mainPlotData.x),
@@ -354,6 +375,8 @@ export const getScatterPlotDataArray = createSelector(
         if (selectedGroupPlotData) {
             data.push(makeScatterPlotData(selectedGroupPlotData));
         }
+        data.push(makeHighlightTrace(annotations));
+
         return data;
     }
 );
@@ -385,7 +408,7 @@ export const getGroupByDisplayOptions = createSelector(
     (featureDefs): MeasuredFeatureDef[] => {
         // Only discrete features can be used for groupBy
         // TODO: group by chunked ranges of continuous features?
-        return featureDefs.filter(feature => feature.discrete);
+        return featureDefs.filter((feature) => feature.discrete);
     }
 );
 
