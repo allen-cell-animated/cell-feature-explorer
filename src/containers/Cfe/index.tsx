@@ -196,7 +196,8 @@ class Cfe extends React.Component<CfeProps, CfeState> {
                                 <p
                                     className={styles.viewerTitle}
                                     style={
-                                        this.state.currentTab !== VIEWER_TAB_KEY
+                                        this.state.currentTab !== VIEWER_TAB_KEY ||
+                                        !viewerHeader.cellId
                                             ? { display: "none" }
                                             : {}
                                     }
