@@ -24,10 +24,10 @@ const INITIAL_DUMMY_PROPS: VolumeViewerProps = {
 };
 
 const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
-    ///** There is a bug in the viewer where when it mounts with initial data, it doesn't show anything
+    // There is a bug in the viewer where when it mounts with initial data, it doesn't show anything
     // however, switching between data works correctly
     // this temporary code makes sure the viewer always shows data, but lines 31-51 should be deleted
-    // once the bug is fixed */
+    // once the bug is fixed
     const [prevCellId, setPrevCellId] = useState<string | undefined>(props.cellId);
 
     const [propsToUse, setPropsToUse] = useState(INITIAL_DUMMY_PROPS);
