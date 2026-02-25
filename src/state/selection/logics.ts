@@ -130,12 +130,15 @@ const requestCellFileInfoForSelectedPoint = createLogic({
             .getFileInfoByCellId(action.payload.id.toString())
             .then((data?: FileInfo) => {
                 if (!data) {
+                    console.error(`No file info found for cell id ${action.payload.id}`); // tslint:disable-line:no-console
                     return {};
                 }
                 return { ...data, index: action.payload.index };
             })
             .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
+                console.log(
+                    `Error requesting file info for cell id ${action.payload.id}: ${reason}`
+                ); // tslint:disable-line:no-console
             });
     },
     processOptions: {
@@ -182,7 +185,7 @@ const requestCellFileInfoForSelectedArrayOfPoints = createLogic({
                 );
             })
             .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
+                console.log(`Error requesting file info for array of cell ids: ${reason}`); // tslint:disable-line:no-console
             });
     },
     processOptions: {

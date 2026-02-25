@@ -113,11 +113,11 @@ const requestFeatureDataLogic = createLogic({
                 // select first cell on both plot and load in 3D to make it clear what the user can do
                 // BUT only if those selections have not been previously made (e.g., passed through URL params)
                 const selectedCellIdsFromUrls = getSelectedIdsFromUrl(state);
+                const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
                 let selectedCellIndex = 0;
                 if (selectedCellIdsFromUrls.length) {
                     dispatch(requestCellFileInfoByArrayOfCellIds(selectedCellIdsFromUrls));
                 } else {
-                    const ids = metaDatum.labels[ARRAY_OF_CELL_IDS_KEY];
                     const plotByOnX = getPlotByOnX(state);
                     const plotByOnY = getPlotByOnY(state);
                     const xValues = metaDatum.values[plotByOnX];
@@ -127,16 +127,17 @@ const requestFeatureDataLogic = createLogic({
                     }
                     dispatch(
                         selectPoint({
-                            id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex],
+                            id: ids[selectedCellIndex],
                             index: selectedCellIndex,
                         })
                     );
                 }
 
+                const cellIdFor3D = ids[selectedCellIndex];
                 if (!getSelected3DCell(state)) {
                     dispatch(
                         selectCellFor3DViewer({
-                            id: metaDatum.labels[ARRAY_OF_CELL_IDS_KEY][selectedCellIndex],
+                            id: cellIdFor3D,
                         })
                     );
                 }
@@ -144,7 +145,7 @@ const requestFeatureDataLogic = createLogic({
                 dispatch(stopLoading());
             })
             .catch((reason: string) => {
-                console.log(reason); // tslint:disable-line:no-console
+                console.log(`Error requesting feature data: ${reason}`); // tslint:disable-line:no-console
             })
             .then(() => done());
     },
