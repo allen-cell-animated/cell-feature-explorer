@@ -23,12 +23,18 @@ export async function createThumbnailImageSrc(src: string): Promise<string> {
 export function useThumbnail(src: string, fileInfo: FileInfo): string {
     const [imageSrc, setImageSrc] = useState(src);
 
+    const volumeviewerPath = fileInfo?.volumeviewerPath;
+    const fovVolumeviewerPath = fileInfo?.fovVolumeviewerPath;
+
     // If no thumbnail src is provided, attempt to generate one
     useEffect(() => {
+        // Reset to the provided src whenever dependencies change
+        // (clears stale thumbnails, e.g. after "Clear All")
+        setImageSrc(src);
+
         const tryGenerateThumbnailAsync = async (): Promise<void> => {
             let zarrPath: string | undefined = undefined;
-            const path: string | undefined =
-                fileInfo?.volumeviewerPath ?? fileInfo?.fovVolumeviewerPath;
+            const path: string | undefined = volumeviewerPath ?? fovVolumeviewerPath;
             if (src && src.endsWith(".zarr")) {
                 zarrPath = src;
             } else if (path && path.endsWith(".zarr")) {
@@ -36,8 +42,8 @@ export function useThumbnail(src: string, fileInfo: FileInfo): string {
             }
             if (zarrPath) {
                 try {
-                    const imageSrc = await createThumbnailImageSrc(zarrPath);
-                    setImageSrc(imageSrc);
+                    const generatedSrc = await createThumbnailImageSrc(zarrPath);
+                    setImageSrc(generatedSrc);
                     return;
                 } catch (e) {
                     console.error(`Error generating thumbnail for file ${zarrPath} :`, e);
@@ -45,7 +51,7 @@ export function useThumbnail(src: string, fileInfo: FileInfo): string {
             }
         };
         tryGenerateThumbnailAsync();
-    }, [src]);
+    }, [src, volumeviewerPath, fovVolumeviewerPath]);
 
     return imageSrc;
 }
