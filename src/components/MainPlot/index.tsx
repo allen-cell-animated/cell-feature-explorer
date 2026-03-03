@@ -197,14 +197,14 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 return `Cell ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
             }
             if (point.hovered) {
-                return `Cell ${point.cellID}`;
+                return `ID: ${point.cellID}`;
             }
             return "";
         };
 
         return annotations.map((point, index) => {
             const lastOne = index + 1 === annotations.length;
-            const show = lastOne && this.state.showFullAnnotation;
+            const show = lastOne && this.state.showFullAnnotation && annotations.length === 1;
             const hasText = !!show || !!point.hovered;
             return {
                 align: "left",
