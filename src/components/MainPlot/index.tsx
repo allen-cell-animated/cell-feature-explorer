@@ -1,4 +1,4 @@
-import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
+import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent, Shape } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
 
@@ -8,6 +8,7 @@ import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     annotations: Annotation[];
+    highlightShapes: Partial<Shape>[];
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPointHovered: (hovered: PlotMouseEvent) => void;
@@ -57,6 +58,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.state = {
             layout: {
                 annotations: this.makeAnnotations(),
+                shapes: props.highlightShapes,
                 autosize: true,
                 height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
@@ -89,8 +91,24 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } =
-            this.props;
+        const {
+            xAxisType,
+            yAxisType,
+            xTickConversion,
+            yTickConversion,
+            xAxisRange,
+            yAxisRange,
+            highlightShapes,
+        } = this.props;
+        if (highlightShapes !== prevProps.highlightShapes) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    shapes: highlightShapes,
+                    annotations: this.makeAnnotations(),
+                },
+            });
+        }
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion ||
@@ -100,6 +118,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             this.setState({
                 layout: {
                     ...this.state.layout,
+                    shapes: highlightShapes,
                     annotations: this.makeAnnotations(),
                     xaxis: this.makeAxis(
                         [0, 0.85],

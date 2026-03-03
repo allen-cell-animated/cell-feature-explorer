@@ -1,5 +1,5 @@
 import { includes, map, find, findIndex, isEmpty } from "lodash";
-import { PlotData } from "plotly.js";
+import { PlotData, Shape } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
@@ -304,25 +304,22 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     return colorSettings(plotSettings, plotData);
 }
 
-function makeHighlightTrace(annotations: Annotation[]): Partial<PlotData> {
-    return {
-        hoverinfo: "none" as const,
-        marker: {
-            size: GENERAL_PLOT_SETTINGS.circleRadius * 1.2,
-            symbol: "circle-open",
+export function makeHighlightShapes(annotations: Annotation[]): Partial<Shape>[] {
+    const size = GENERAL_PLOT_SETTINGS.circleRadius * 0.06;
+    return annotations.map((a) => ({
+        type: "circle" as const,
+        xref: "x" as const,
+        yref: "y" as const,
+        x0: a.x - size,
+        y0: a.y - size,
+        x1: a.x + size,
+        y1: a.y + size,
+        line: {
             color: "rgba(255,255,255, 1.0)",
-            line: {
-                color: "rgba(255,255,255, 1.0)",
-                width: 1.5,
-            },
+            width: 1.5,
         },
-        mode: "markers" as const,
-        name: "selected-cells",
-        showlegend: false,
-        type: "scatter" as const,
-        x: annotations.map((a) => a.x),
-        y: annotations.map((a) => a.y),
-    };
+        fillcolor: "rgba(0,0,0,0)",
+    }));
 }
 
 function makeHistogramPlotX(data: (number | null)[]) {
@@ -363,9 +360,16 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
+export const getHighlightShapes = createSelector(
+    [getAnnotations],
+    (annotations): Partial<Shape>[] => {
+        return makeHighlightShapes(annotations);
+    }
+);
+
 export const getScatterPlotDataArray = createSelector(
-    [composePlotlyData, getAnnotations],
-    (allPlotData, annotations): Partial<PlotData>[] => {
+    [composePlotlyData],
+    (allPlotData): Partial<PlotData>[] => {
         const { mainPlotData, selectedGroupPlotData } = allPlotData;
         const data = [
             makeHistogramPlotX(mainPlotData.x),
@@ -375,7 +379,6 @@ export const getScatterPlotDataArray = createSelector(
         if (selectedGroupPlotData) {
             data.push(makeScatterPlotData(selectedGroupPlotData));
         }
-        data.push(makeHighlightTrace(annotations));
 
         return data;
     }
