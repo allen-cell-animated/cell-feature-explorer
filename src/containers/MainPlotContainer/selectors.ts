@@ -1,5 +1,5 @@
 import { includes, map, find, findIndex, isEmpty } from "lodash";
-import { PlotData } from "plotly.js";
+import { PlotData, Shape } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
@@ -230,10 +230,10 @@ export const composePlotlyData = createSelector(
         }
         const selectedGroupPlotData = applyColorToSelections
             ? {
-                ...selectedGroups,
-                dataType: "continuous" as DataType.CONTINUOUS,
-                plotName: SELECTIONS_PLOT_NAME,
-            }
+                  ...selectedGroups,
+                  dataType: "continuous" as DataType.CONTINUOUS,
+                  plotName: SELECTIONS_PLOT_NAME,
+              }
             : null;
 
         return {
@@ -304,6 +304,24 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     return colorSettings(plotSettings, plotData);
 }
 
+export function makeHighlightShapes(annotations: Annotation[]): Partial<Shape>[] {
+    const size = GENERAL_PLOT_SETTINGS.circleRadius * 0.06;
+    return annotations.map((a) => ({
+        type: "circle" as const,
+        xref: "x" as const,
+        yref: "y" as const,
+        x0: a.x - size,
+        y0: a.y - size,
+        x1: a.x + size,
+        y1: a.y + size,
+        line: {
+            color: "rgba(255,255,255, 1.0)",
+            width: 1.5,
+        },
+        fillcolor: "rgba(0,0,0,0)",
+    }));
+}
+
 function makeHistogramPlotX(data: (number | null)[]) {
     return {
         marker: {
@@ -342,6 +360,13 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
+export const getHighlightShapes = createSelector(
+    [getAnnotations],
+    (annotations): Partial<Shape>[] => {
+        return makeHighlightShapes(annotations);
+    }
+);
+
 export const getScatterPlotDataArray = createSelector(
     [composePlotlyData],
     (allPlotData): Partial<PlotData>[] => {
@@ -354,6 +379,7 @@ export const getScatterPlotDataArray = createSelector(
         if (selectedGroupPlotData) {
             data.push(makeScatterPlotData(selectedGroupPlotData));
         }
+
         return data;
     }
 );
@@ -385,7 +411,7 @@ export const getGroupByDisplayOptions = createSelector(
     (featureDefs): MeasuredFeatureDef[] => {
         // Only discrete features can be used for groupBy
         // TODO: group by chunked ranges of continuous features?
-        return featureDefs.filter(feature => feature.discrete);
+        return featureDefs.filter((feature) => feature.discrete);
     }
 );
 

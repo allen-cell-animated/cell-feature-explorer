@@ -1,13 +1,14 @@
-import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent } from "plotly.js";
+import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent, Shape } from "plotly.js";
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS } from "../../constants";
+import { PALETTE, GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
     annotations: Annotation[];
+    highlightShapes: Partial<Shape>[];
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPointHovered: (hovered: PlotMouseEvent) => void;
@@ -57,6 +58,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         this.state = {
             layout: {
                 annotations: this.makeAnnotations(),
+                shapes: props.highlightShapes,
                 autosize: true,
                 height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
@@ -89,8 +91,24 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } =
-            this.props;
+        const {
+            xAxisType,
+            yAxisType,
+            xTickConversion,
+            yTickConversion,
+            xAxisRange,
+            yAxisRange,
+            highlightShapes,
+        } = this.props;
+        if (highlightShapes !== prevProps.highlightShapes) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    shapes: highlightShapes,
+                    annotations: this.makeAnnotations(),
+                },
+            });
+        }
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion ||
@@ -100,6 +118,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             this.setState({
                 layout: {
                     ...this.state.layout,
+                    shapes: highlightShapes,
                     annotations: this.makeAnnotations(),
                     xaxis: this.makeAxis(
                         [0, 0.85],
@@ -178,29 +197,29 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 return `Cell ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
             }
             if (point.hovered) {
-                return `Cell ${point.cellID}`;
+                return `ID: ${point.cellID}`;
             }
             return "";
         };
 
         return annotations.map((point, index) => {
             const lastOne = index + 1 === annotations.length;
-            const show = lastOne && this.state.showFullAnnotation;
+            const show = lastOne && this.state.showFullAnnotation && annotations.length === 1;
             const hasText = !!show || !!point.hovered;
             return {
                 align: "left",
-                arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
+                arrowcolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
                 arrowhead: 6,
                 ax: 0,
                 ay: show ? -60 : point.hovered ? -20 : 0,
-                bgcolor: "#00000094",
-                bordercolor: point.hovered ? "#7440f1" : "#ffffffab",
+                bgcolor: PALETTE.lightGray,
+                bordercolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
                 borderpad: hasText ? 4 : 0,
                 borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
                 font: {
-                    color: "#ffffff",
+                    color: PALETTE.white,
                     family: "tahoma, arial, verdana, sans-serif",
                     size: 11,
                 },

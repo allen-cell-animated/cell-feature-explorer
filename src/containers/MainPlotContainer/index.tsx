@@ -4,6 +4,7 @@ import { filter, includes, map } from "lodash";
 import * as React from "react";
 import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
+import { Shape } from "plotly.js";
 
 import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
 import MainPlot from "../../components/MainPlot";
@@ -36,6 +37,7 @@ import { Annotation, State } from "../../state/types";
 import {
     getAnnotations,
     getDataForOverlayCard,
+    getHighlightShapes,
     getScatterPlotDataArray,
     getXDisplayOptions,
     getXTickConversion,
@@ -59,6 +61,7 @@ interface PropsFromState {
     clickedPoints: string[];
     filtersToExclude: string[];
     galleryCollapsed: boolean;
+    highlightShapes: Partial<Shape>[];
     hoveredPointData: SelectedPointData | null;
     mousePosition: MousePosition;
     plotDataArray: any;
@@ -259,6 +262,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     public render() {
         const {
             annotations,
+            highlightShapes,
             plotDataArray,
             mousePosition,
             xDropDownValue,
@@ -334,6 +338,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         plotDataArray={plotDataArray}
                         onPointClicked={this.onPointClicked}
                         annotations={annotations}
+                        highlightShapes={highlightShapes}
                         onGroupSelected={this.onGroupSelected}
                         onPointHovered={this.onPointHovered}
                         onPointUnhovered={this.onPointUnhovered}
@@ -357,6 +362,7 @@ function mapStateToProps(state: State): PropsFromState {
         categoricalFeatures: metadataStateBranch.selectors.getCategoricalFeatureKeys(state),
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
+        highlightShapes: getHighlightShapes(state),
         hoveredPointData: getDataForOverlayCard(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
