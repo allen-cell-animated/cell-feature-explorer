@@ -308,8 +308,8 @@ export function makeHighlightShapes(annotations: Annotation[]): Partial<Shape>[]
     const size = GENERAL_PLOT_SETTINGS.circleRadius * 0.06;
     return annotations.map((a) => ({
         type: "circle" as const,
-        xref: "x" as const,
-        yref: "y" as const,
+        xref: "paper" as const,
+        yref: "paper" as const,
         x0: a.x - size,
         y0: a.y - size,
         x1: a.x + size,
