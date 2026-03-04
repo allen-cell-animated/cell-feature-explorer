@@ -5,20 +5,14 @@ import styles from "./style.css";
 
 import { VolumeViewerProps } from "../../containers/Cfe/selectors";
 
-const CONTAINER_STYLE = {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "red",
-};
 
 const CellViewer: React.FunctionComponent<VolumeViewerProps> = (props) => {
     if (!props.cellId) {
-        return null;
+        return <div className={styles.emptyOverlay}>Select a cell in gallery to view it in 3D</div>;
     }
 
     return (
-        <div className={styles.cellViewerContainer} style={CONTAINER_STYLE}>
+        <div className={styles.cellViewerContainer} >
             <ViewerStateProvider viewerSettings={props.viewerSettings}>
                 <ImageViewerApp
                     cellId={props.cellId}

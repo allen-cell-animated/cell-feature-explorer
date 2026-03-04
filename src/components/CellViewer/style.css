@@ -3,6 +3,9 @@
 */
 
 .cell-viewer-container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
     /* Align header items; fix a bug where the entire div would show pointer-interactive
      * when only the icon (span) was clickable.
     */
@@ -34,4 +37,13 @@
     & :global(.viewer-toolbar-group) > button:global(.ant-btn-icon-only) {
         padding: 0 !important;
     }
+}
+
+.empty-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 1.2em;
+    color: #888;
 }
