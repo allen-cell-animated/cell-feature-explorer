@@ -2,7 +2,7 @@ import { Annotations, Data, PlotMouseEvent, PlotSelectionEvent, Shape } from "pl
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS } from "../../constants";
+import { PALETTE, GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
 import { Annotation } from "../../state/types";
 
@@ -208,18 +208,18 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             const hasText = !!show || !!point.hovered;
             return {
                 align: "left",
-                arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
+                arrowcolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
                 arrowhead: 6,
                 ax: 0,
                 ay: show ? -60 : point.hovered ? -20 : 0,
-                bgcolor: "#00000094",
-                bordercolor: point.hovered ? "#7440f1" : "#ffffffab",
+                bgcolor: PALETTE.lightGray,
+                bordercolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
                 borderpad: hasText ? 4 : 0,
                 borderwidth: 1,
                 captureevents: true,
                 cellID: point.cellID,
                 font: {
-                    color: "#ffffff",
+                    color: PALETTE.white,
                     family: "tahoma, arial, verdana, sans-serif",
                     size: 11,
                 },
