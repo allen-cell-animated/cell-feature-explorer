@@ -370,7 +370,7 @@ describe("CsvRequest", () => {
             expect(cell1Channels?.[1].match).to.equal(2);
             expect(cell1Channels?.[1].enabled).to.be.true;
             expect(cell1Channels?.[1].colorizeEnabled).to.be.true;
-            expect(cell1Channels?.[1].lut).to.deep.equal(["v15", "v230"]);
+            expect(cell1Channels?.[1].intensity?.lut).to.deep.equal(["v15", "v230"]);
         }
 
         async function validateCell2Params(csvDataset: CsvRequest): Promise<void> {
