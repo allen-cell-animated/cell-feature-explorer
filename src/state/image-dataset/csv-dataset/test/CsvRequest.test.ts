@@ -1,3 +1,6 @@
+// Some Vol-E functions will try to use `window.localStorage`, so we need vitest to mock that for us
+// @vitest-environment jsdom
+
 import { describe, it, expect } from "vitest";
 import CsvRequest, { DEFAULT_GROUPBY_NONE } from "..";
 import { DiscreteMeasuredFeatureDef, MeasuredFeatureDef } from "../../../metadata/types";
