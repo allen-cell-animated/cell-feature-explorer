@@ -1,3 +1,6 @@
+// Some Vol-E functions will try to use `window.localStorage`, so we need vitest to mock that for us
+// @vitest-environment jsdom
+
 import { describe, it, expect } from "vitest";
 import CsvRequest, { DEFAULT_GROUPBY_NONE } from "..";
 import { DiscreteMeasuredFeatureDef, MeasuredFeatureDef } from "../../../metadata/types";
@@ -370,7 +373,7 @@ describe("CsvRequest", () => {
             expect(cell1Channels?.[1].match).to.equal(2);
             expect(cell1Channels?.[1].enabled).to.be.true;
             expect(cell1Channels?.[1].colorizeEnabled).to.be.true;
-            expect(cell1Channels?.[1].lut).to.deep.equal(["v15", "v230"]);
+            expect(cell1Channels?.[1].intensity?.lut).to.deep.equal(["v15", "v230"]);
         }
 
         async function validateCell2Params(csvDataset: CsvRequest): Promise<void> {
