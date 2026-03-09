@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
-import { AnnotationData, State } from "../../../state/types";
+import { State } from "../../../state/types";
 import { getAnnotations, handleNullValues } from "../selectors";
 import { PlotlyAnnotation } from "../../../components/MainPlot";
 

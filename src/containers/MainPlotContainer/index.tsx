@@ -31,7 +31,7 @@ import {
     TickConversion,
     SelectedPointData,
 } from "../../state/selection/types";
-import { AnnotationData, State } from "../../state/types";
+import { State } from "../../state/types";
 
 import {
     getDataForOverlayCard,
