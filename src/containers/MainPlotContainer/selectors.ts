@@ -1,5 +1,5 @@
 import { includes, map, find, findIndex, isEmpty } from "lodash";
-import { PlotData, Shape } from "plotly.js";
+import { PlotData } from "plotly.js";
 import { createSelector } from "reselect";
 
 import {
@@ -8,6 +8,7 @@ import {
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     GROUP_BY_KEY,
+    PALETTE,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
@@ -41,7 +42,7 @@ import {
 } from "../../state/selection/selectors";
 import { SelectedPointData, TickConversion } from "../../state/selection/types";
 import {
-    Annotation,
+    AnnotationData,
     ContinuousPlotData,
     PlotlyCustomData,
     GroupedPlotData,
@@ -161,7 +162,7 @@ export const getMainPlotData = createSelector(
     }
 );
 
-export const getAnnotations = createSelector(
+const getAnnotationData = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
     (
         filteredCellData: DataForPlot,
@@ -169,11 +170,11 @@ export const getAnnotations = createSelector(
         xAxis,
         yAxis,
         currentHoveredCellId
-    ): Annotation[] => {
+    ): AnnotationData[] => {
         if (isEmpty(filteredCellData.values) || isEmpty(filteredCellData.labels)) {
             return [];
         }
-        const initAcc: Annotation[] = [];
+        const initAcc: AnnotationData[] = [];
         return clickedCellsFileInfo.reduce((acc, data) => {
             const cellID = data[CELL_ID_KEY];
             const fovID = data[FOV_ID_KEY] || "";
@@ -304,24 +305,6 @@ function makeScatterPlotData(plotData: ContinuousPlotData | GroupedPlotData): Pa
     return colorSettings(plotSettings, plotData);
 }
 
-export function makeHighlightShapes(annotations: Annotation[]): Partial<Shape>[] {
-    const size = GENERAL_PLOT_SETTINGS.circleRadius * 0.06;
-    return annotations.map((a) => ({
-        type: "circle" as const,
-        xref: "paper" as const,
-        yref: "paper" as const,
-        x0: a.x - size,
-        y0: a.y - size,
-        x1: a.x + size,
-        y1: a.y + size,
-        line: {
-            color: "rgba(255,255,255, 1.0)",
-            width: 1.5,
-        },
-        fillcolor: "rgba(0,0,0,0)",
-    }));
-}
-
 function makeHistogramPlotX(data: (number | null)[]) {
     return {
         marker: {
@@ -360,12 +343,37 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
-export const getHighlightShapes = createSelector(
-    [getAnnotations],
-    (annotations): Partial<Shape>[] => {
-        return makeHighlightShapes(annotations);
-    }
-);
+export function makeAnnotations(annotations: AnnotationData[]): any[] {
+    return annotations.map((point) => {
+        return {
+            align: "left",
+            arrowcolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
+            arrowhead: 6,
+            ax: 0,
+            ay: point.hovered ? -20 : 0,
+            bgcolor: PALETTE.lightGray,
+            bordercolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
+            borderpad: 0,
+            borderwidth: 1,
+            captureevents: true,
+            cellID: point.cellID,
+            font: {
+                color: PALETTE.white,
+                family: "tahoma, arial, verdana, sans-serif",
+                size: 11,
+            },
+            fovID: point.fovID,
+            pointIndex: point.pointIndex,
+            text: point.hovered ? `ID: ${point.cellID}` : "",
+            x: point.x,
+            y: point.y,
+        };
+    });
+}
+
+export const getAnnotations = createSelector([getAnnotationData], (annotationData): any[] => {
+    return makeAnnotations(annotationData);
+});
 
 export const getScatterPlotDataArray = createSelector(
     [composePlotlyData],

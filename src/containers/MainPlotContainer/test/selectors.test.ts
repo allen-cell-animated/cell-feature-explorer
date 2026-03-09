@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
-import { Annotation, State } from "../../../state/types";
-import { getAnnotations, handleNullValues, makeHighlightShapes } from "../selectors";
+import { AnnotationData, State } from "../../../state/types";
+import { getAnnotations, handleNullValues } from "../selectors";
 
 describe("MainPlotContainer selectors", () => {
     const newMockState = mockState;
@@ -36,7 +36,7 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: Annotation[] = getAnnotations(state);
+            const result: AnnotationData[] = getAnnotations(state);
             expect(result).to.have.lengthOf(2);
         });
     });
@@ -51,7 +51,7 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: Annotation[] = getAnnotations(state);
+            const result: AnnotationData[] = getAnnotations(state);
             expect(result).to.have.lengthOf(0);
         });
     });
@@ -66,34 +66,8 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: Annotation[] = getAnnotations(state);
+            const result: AnnotationData[] = getAnnotations(state);
             expect(result).to.have.lengthOf(2);
-        });
-    });
-    describe("makeHighlightShapes selector", () => {
-        it("it returns an array of shape objects for every index in selectedPoints array", () => {
-            const state: State = {
-                ...newMockState,
-                selection: {
-                    ...newMockState.selection,
-                    selectedPoints: selectedCellFileInfo,
-                },
-            };
-            const annotations = getAnnotations(state);
-            const result = makeHighlightShapes(annotations);
-            expect(result).to.have.lengthOf(2);
-        });
-        it("returns an empty array if no points are selected", () => {
-            const state: State = {
-                ...newMockState,
-                selection: {
-                    ...newMockState.selection,
-                    selectedPoints: [],
-                },
-            };
-            const annotations = getAnnotations(state);
-            const result = makeHighlightShapes(annotations);
-            expect(result).to.have.lengthOf(0);
         });
     });
 });
