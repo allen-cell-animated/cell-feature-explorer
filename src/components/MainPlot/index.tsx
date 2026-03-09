@@ -30,6 +30,8 @@ interface MainPlotState {
 
 export interface PlotlyAnnotation extends Partial<Annotations> {
     cellID: string;
+    fovID: string;
+    pointIndex: number;
 }
 
 const histogramAxis = {
