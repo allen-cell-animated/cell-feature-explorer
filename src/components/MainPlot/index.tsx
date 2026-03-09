@@ -198,6 +198,9 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public setAnnotationText(): PlotlyAnnotation[] {
+        // on first load show the help text for one annotation, but the user can dismiss it by clicking on
+        // it or clicking on a point, and it won't show again until they refresh the page
+
         const { annotations } = this.props;
         const getText = (point: PlotlyAnnotation, helpText: boolean) => {
             if (helpText) {
