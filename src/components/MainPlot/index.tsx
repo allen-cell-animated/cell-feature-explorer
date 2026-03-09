@@ -209,8 +209,8 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             return point.text;
         };
 
-        return annotations.map((annotation) => {
-            const isLastOne = annotations.indexOf(annotation) === annotations.length - 1;
+        return annotations.map((annotation, index) => {
+            const isLastOne = index === annotations.length - 1;
             const showHelpText = isLastOne && this.state.showFullAnnotation;
             return {
                 ...annotation,
