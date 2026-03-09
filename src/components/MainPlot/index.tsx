@@ -28,7 +28,7 @@ interface MainPlotState {
     showFullAnnotation: boolean;
 }
 
-interface PlotlyAnnotation extends Partial<Annotations> {
+export interface PlotlyAnnotation extends Partial<Annotations> {
     cellID: string;
 }
 

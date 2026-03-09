@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
 import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
-import MainPlot from "../../components/MainPlot";
+import MainPlot, { PlotlyAnnotation } from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
@@ -54,7 +54,7 @@ import { createThumbnailImageSrc } from "../../util/thumbnails";
 const MAX_GENERATED_THUMBNAILS = 250;
 
 interface PropsFromState {
-    annotations: AnnotationData[];
+    annotations: PlotlyAnnotation[];
     categoricalFeatures: string[];
     clickedPoints: string[];
     filtersToExclude: string[];
