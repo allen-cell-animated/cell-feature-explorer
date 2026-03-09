@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
 import { AnnotationData, State } from "../../../state/types";
 import { getAnnotations, handleNullValues } from "../selectors";
+import { PlotlyAnnotation } from "../../../components/MainPlot";
 
 describe("MainPlotContainer selectors", () => {
     const newMockState = mockState;
@@ -36,7 +37,7 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: AnnotationData[] = getAnnotations(state);
+            const result: PlotlyAnnotation[] = getAnnotations(state);
             expect(result).to.have.lengthOf(2);
         });
     });
@@ -51,7 +52,7 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: AnnotationData[] = getAnnotations(state);
+            const result: PlotlyAnnotation[] = getAnnotations(state);
             expect(result).to.have.lengthOf(0);
         });
     });
@@ -66,7 +67,7 @@ describe("MainPlotContainer selectors", () => {
                     selectedPoints: selectedCellFileInfo,
                 },
             };
-            const result: AnnotationData[] = getAnnotations(state);
+            const result: PlotlyAnnotation[] = getAnnotations(state);
             expect(result).to.have.lengthOf(2);
         });
     });

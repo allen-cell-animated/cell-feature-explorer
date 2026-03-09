@@ -84,6 +84,7 @@ const BASE_PALETTE_COLORS = {
     brightGreen: "#b2d030",
     brightBlue: "#00a0ff",
     white: "#ffffff",
+    translucentWhite: "#ffffffab",
 } as const;
 
 export const PALETTE = {

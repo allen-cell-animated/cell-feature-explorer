@@ -50,6 +50,7 @@ import {
 } from "../../state/types";
 import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
+import { PlotlyAnnotation } from "../../components/MainPlot";
 
 export const handleNullValues = (
     inputXValues: (number | null)[],
@@ -343,16 +344,16 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
-export function makeAnnotations(annotations: AnnotationData[]): any[] {
+export function makeAnnotations(annotations: AnnotationData[]): PlotlyAnnotation[] {
     return annotations.map((point) => {
         return {
             align: "left",
-            arrowcolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
+            arrowcolor: point.hovered ? PALETTE.brightGreen : PALETTE.translucentWhite,
             arrowhead: 6,
             ax: 0,
             ay: point.hovered ? -20 : 0,
             bgcolor: PALETTE.lightGray,
-            bordercolor: point.hovered ? PALETTE.brightGreen : "#ffffffab",
+            bordercolor: point.hovered ? PALETTE.brightGreen : PALETTE.translucentWhite,
             borderpad: 0,
             borderwidth: 1,
             captureevents: true,
@@ -371,9 +372,12 @@ export function makeAnnotations(annotations: AnnotationData[]): any[] {
     });
 }
 
-export const getAnnotations = createSelector([getAnnotationData], (annotationData): any[] => {
-    return makeAnnotations(annotationData);
-});
+export const getAnnotations = createSelector(
+    [getAnnotationData],
+    (annotationData): PlotlyAnnotation[] => {
+        return makeAnnotations(annotationData);
+    }
+);
 
 export const getScatterPlotDataArray = createSelector(
     [composePlotlyData],
