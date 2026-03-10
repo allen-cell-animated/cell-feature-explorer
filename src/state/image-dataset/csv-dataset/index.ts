@@ -588,7 +588,7 @@ class CsvRequest implements ImageDataset {
             // contains unescaped "?" characters in the query parameters
             // themselves, but this is non-standard.
             const queryParamString = split[split.length - 1] || "";
-            voleUrlParams = await parseViewerUrlParams(new URLSearchParams(queryParamString));
+            voleUrlParams = await parseViewerUrlParams(queryParamString);
         }
         const fileInfo = {
             [CELL_ID_KEY]: data[CELL_ID_KEY],
