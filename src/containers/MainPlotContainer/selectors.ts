@@ -8,6 +8,7 @@ import {
     FOV_ID_KEY,
     GENERAL_PLOT_SETTINGS,
     GROUP_BY_KEY,
+    PALETTE,
     SCATTER_PLOT_NAME,
     SELECTIONS_PLOT_NAME,
     THUMBNAIL_PATH,
@@ -41,7 +42,7 @@ import {
 } from "../../state/selection/selectors";
 import { SelectedPointData, TickConversion } from "../../state/selection/types";
 import {
-    Annotation,
+    AnnotationData,
     ContinuousPlotData,
     PlotlyCustomData,
     GroupedPlotData,
@@ -49,6 +50,7 @@ import {
 } from "../../state/types";
 import { findFeature } from "../../state/util";
 import { getGroupByTitle } from "../ColorByMenu/selectors";
+import { PlotlyAnnotation } from "../../components/MainPlot";
 
 export const handleNullValues = (
     inputXValues: (number | null)[],
@@ -161,7 +163,7 @@ export const getMainPlotData = createSelector(
     }
 );
 
-export const getAnnotations = createSelector(
+const getAnnotationData = createSelector(
     [getFilteredCellData, getClickedCellsFileInfo, getPlotByOnX, getPlotByOnY, getHoveredCardId],
     (
         filteredCellData: DataForPlot,
@@ -169,11 +171,11 @@ export const getAnnotations = createSelector(
         xAxis,
         yAxis,
         currentHoveredCellId
-    ): Annotation[] => {
+    ): AnnotationData[] => {
         if (isEmpty(filteredCellData.values) || isEmpty(filteredCellData.labels)) {
             return [];
         }
-        const initAcc: Annotation[] = [];
+        const initAcc: AnnotationData[] = [];
         return clickedCellsFileInfo.reduce((acc, data) => {
             const cellID = data[CELL_ID_KEY];
             const fovID = data[FOV_ID_KEY] || "";
@@ -230,10 +232,10 @@ export const composePlotlyData = createSelector(
         }
         const selectedGroupPlotData = applyColorToSelections
             ? {
-                ...selectedGroups,
-                dataType: "continuous" as DataType.CONTINUOUS,
-                plotName: SELECTIONS_PLOT_NAME,
-            }
+                  ...selectedGroups,
+                  dataType: "continuous" as DataType.CONTINUOUS,
+                  plotName: SELECTIONS_PLOT_NAME,
+              }
             : null;
 
         return {
@@ -342,6 +344,41 @@ function makeHistogramPlotY(data: (number | null)[]) {
     };
 }
 
+export function makeAnnotations(annotations: AnnotationData[]): PlotlyAnnotation[] {
+    return annotations.map((point) => {
+        return {
+            align: "left",
+            arrowcolor: point.hovered ? PALETTE.brightGreen : PALETTE.translucentWhite,
+            arrowhead: 6,
+            ax: 0,
+            ay: point.hovered ? -20 : 0,
+            bgcolor: PALETTE.lightGray,
+            bordercolor: point.hovered ? PALETTE.brightGreen : PALETTE.translucentWhite,
+            borderpad: 0,
+            borderwidth: 1,
+            captureevents: true,
+            cellID: point.cellID,
+            font: {
+                color: PALETTE.white,
+                family: "tahoma, arial, verdana, sans-serif",
+                size: 11,
+            },
+            fovID: point.fovID,
+            pointIndex: point.pointIndex,
+            text: point.hovered ? `ID: ${point.cellID}` : "",
+            x: point.x,
+            y: point.y,
+        };
+    });
+}
+
+export const getAnnotations = createSelector(
+    [getAnnotationData],
+    (annotationData): PlotlyAnnotation[] => {
+        return makeAnnotations(annotationData);
+    }
+);
+
 export const getScatterPlotDataArray = createSelector(
     [composePlotlyData],
     (allPlotData): Partial<PlotData>[] => {
@@ -354,6 +391,7 @@ export const getScatterPlotDataArray = createSelector(
         if (selectedGroupPlotData) {
             data.push(makeScatterPlotData(selectedGroupPlotData));
         }
+
         return data;
     }
 );
@@ -385,7 +423,7 @@ export const getGroupByDisplayOptions = createSelector(
     (featureDefs): MeasuredFeatureDef[] => {
         // Only discrete features can be used for groupBy
         // TODO: group by chunked ranges of continuous features?
-        return featureDefs.filter(feature => feature.discrete);
+        return featureDefs.filter((feature) => feature.discrete);
     }
 );
 

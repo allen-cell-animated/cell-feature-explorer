@@ -1,5 +1,5 @@
 import { PictureOutlined } from "@ant-design/icons";
-import { Avatar, List } from "antd";
+import { Avatar, List, Tooltip } from "antd";
 import React from "react";
 import classNames from "classnames";
 
@@ -44,17 +44,23 @@ const MinGalleryCard: React.FC<GalleryCardProps> = (props) => {
         >
             <List.Item.Meta
                 avatar={
-                    <div onClick={openCellin3D}>
-                        <Avatar
-                            className={classNames(
-                                { [styles.selected]: props.selected },
-                                styles.avatar
-                            )}
-                            alt="thumbnail of microscopy image"
-                            src={imageSrc}
-                            icon={<PictureOutlined className={styles.placeholderAvatar} />}
-                        />
-                    </div>
+                    <Tooltip
+                        title={`ID ${props.cellID} — click to open in 3D`}
+                        mouseEnterDelay={1}
+                        placement="left"
+                    >
+                        <div onClick={openCellin3D}>
+                            <Avatar
+                                className={classNames(
+                                    { [styles.selected]: props.selected },
+                                    styles.avatar
+                                )}
+                                alt="thumbnail of microscopy image"
+                                src={imageSrc}
+                                icon={<PictureOutlined className={styles.placeholderAvatar} />}
+                            />
+                        </div>
+                    </Tooltip>
                 }
             />
         </List.Item>

@@ -4,10 +4,9 @@ import Plot from "react-plotly.js";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
-import { Annotation } from "../../state/types";
 
 interface MainPlotProps {
-    annotations: Annotation[];
+    annotations: PlotlyAnnotation[];
     plotDataArray: Data[];
     onPointClicked: (clicked: PlotMouseEvent) => void;
     onPointHovered: (hovered: PlotMouseEvent) => void;
@@ -29,7 +28,11 @@ interface MainPlotState {
     showFullAnnotation: boolean;
 }
 
-type PlotlyAnnotation = Partial<Annotations>;
+export interface PlotlyAnnotation extends Partial<Annotations> {
+    cellID: string;
+    fovID: string;
+    pointIndex: number;
+}
 
 const histogramAxis = {
     color: GENERAL_PLOT_SETTINGS.textColor,
@@ -50,13 +53,14 @@ function padAxisRange(range: [number, number]): [number, number] {
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     constructor(props: MainPlotProps) {
         super(props);
-        this.makeAnnotations = this.makeAnnotations.bind(this);
+        this.setAnnotationText = this.setAnnotationText.bind(this);
+        this.handlePointClick = this.handlePointClick.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
         this.resize = this.resize.bind(this);
 
         this.state = {
             layout: {
-                annotations: this.makeAnnotations(),
+                annotations: this.setAnnotationText(),
                 autosize: true,
                 height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
@@ -89,8 +93,27 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     }
 
     public componentDidUpdate(prevProps: MainPlotProps, prevState: MainPlotState) {
-        const { xAxisType, yAxisType, xTickConversion, yTickConversion, xAxisRange, yAxisRange } =
-            this.props;
+        const {
+            annotations,
+            xAxisType,
+            yAxisType,
+            xTickConversion,
+            yTickConversion,
+            xAxisRange,
+            yAxisRange,
+        } = this.props;
+
+        if (
+            annotations !== prevProps.annotations ||
+            this.state.showFullAnnotation !== prevState.showFullAnnotation
+        ) {
+            this.setState({
+                layout: {
+                    ...this.state.layout,
+                    annotations: this.setAnnotationText(),
+                },
+            });
+        }
         if (
             xTickConversion !== prevProps.xTickConversion ||
             yTickConversion !== prevProps.yTickConversion ||
@@ -100,7 +123,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             this.setState({
                 layout: {
                     ...this.state.layout,
-                    annotations: this.makeAnnotations(),
+                    annotations: this.setAnnotationText(),
                     xaxis: this.makeAxis(
                         [0, 0.85],
                         ".1f",
@@ -144,6 +167,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
     public componentWillUnmount() {
         window.removeEventListener("resize", this.resize);
     }
+    public handlePointClick(event: PlotMouseEvent) {
+        this.setState({ showFullAnnotation: false });
+        this.props.onPointClicked(event);
+    }
+
     public clickedAnnotation() {
         this.setState({ showFullAnnotation: false });
     }
@@ -171,51 +199,32 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public makeAnnotations(): PlotlyAnnotation[] {
+    public setAnnotationText(): PlotlyAnnotation[] {
+        // on first load show the help text for one annotation, but the user can dismiss it by clicking on
+        // it or clicking on a point, and it won't show again until they refresh the page
+
         const { annotations } = this.props;
-        const getText = (point: Annotation, show: boolean) => {
-            if (show) {
-                return `Cell ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
+        const getText = (point: PlotlyAnnotation, helpText: boolean) => {
+            if (helpText) {
+                return `ID: ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`;
             }
-            if (point.hovered) {
-                return `Cell ${point.cellID}`;
-            }
-            return "";
+            return point.text;
         };
 
-        return annotations.map((point, index) => {
-            const lastOne = index + 1 === annotations.length;
-            const show = lastOne && this.state.showFullAnnotation;
-            const hasText = !!show || !!point.hovered;
+        return annotations.map((annotation, index) => {
+            const isLastOne = index === annotations.length - 1;
+            const showHelpText = isLastOne && this.state.showFullAnnotation;
             return {
-                align: "left",
-                arrowcolor: point.hovered ? "#7440f1" : "#ffffffab",
-                arrowhead: 6,
-                ax: 0,
-                ay: show ? -60 : point.hovered ? -20 : 0,
-                bgcolor: "#00000094",
-                bordercolor: point.hovered ? "#7440f1" : "#ffffffab",
-                borderpad: hasText ? 4 : 0,
-                borderwidth: 1,
-                captureevents: true,
-                cellID: point.cellID,
-                font: {
-                    color: "#ffffff",
-                    family: "tahoma, arial, verdana, sans-serif",
-                    size: 11,
-                },
-                fovID: point.fovID,
-                pointIndex: point.pointIndex,
-                text: getText(point, show),
-                x: point.x,
-                y: point.y,
+                ...annotation,
+                ay: showHelpText ? -60 : annotation.ay,
+                borderpad: showHelpText ? 4 : annotation.borderpad,
+                text: getText(annotation, showHelpText),
             };
         });
     }
 
     public render() {
-        const { onPointClicked, onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } =
-            this.props;
+        const { onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } = this.props;
         const options = {
             responsive: true,
             displayModeBar: true,
@@ -236,7 +245,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 useResizeHandler={true}
                 layout={this.state.layout}
                 config={options}
-                onClick={onPointClicked}
+                onClick={this.handlePointClick}
                 onClickAnnotation={this.clickedAnnotation}
                 onHover={onPointHovered}
                 onUnhover={onPointUnhovered}
