@@ -68,6 +68,7 @@ export const GENERAL_PLOT_SETTINGS = {
     heightMargin: 56 + 74 + 140, // header height + tab height + margins
     showLegendCutoffHeight: 635,
     showLegendCutoffWidth: 692,
+    spikeColor: "rgb(160,160,160)",
     textColor: "rgb(255,255,255)",
     unselectedCircleOpacity: 0.5,
 };
