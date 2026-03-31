@@ -162,6 +162,11 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
             hoverformat,
             linecolor: GENERAL_PLOT_SETTINGS.textColor,
             showgrid: false,
+            showspikes: true,
+            spikecolor: GENERAL_PLOT_SETTINGS.spikeColor,
+            spikethickness: 1,
+            spikedash: "dot",
+            spikemode: "across",
             tickcolor: GENERAL_PLOT_SETTINGS.textColor,
             tickmode: type,
             ticktext: tickConversion.tickText,
@@ -227,7 +232,6 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
                 "resetScale2d" as const,
                 "hoverClosestCartesian" as const,
                 "hoverCompareCartesian" as const,
-                "toggleSpikelines" as const,
             ],
         };
         return (
