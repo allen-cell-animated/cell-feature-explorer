@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
 import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
-import MainPlot, { PlotlyAnnotation } from "../../components/MainPlot";
+import MainPlot, { type PlotlyAnnotation } from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
@@ -31,7 +31,7 @@ import {
     TickConversion,
     SelectedPointData,
 } from "../../state/selection/types";
-import { State } from "../../state/types";
+import type { State } from "../../state/types";
 
 import {
     getDataForOverlayCard,

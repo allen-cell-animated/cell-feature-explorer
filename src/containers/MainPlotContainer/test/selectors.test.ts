@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
-import { State, AnnotationData } from "../../../state/types";
+import type { State, AnnotationData } from "../../../state/types";
 import { getAnnotations, handleNullValues, makeAnnotations } from "../selectors";
-import { PlotlyAnnotation } from "../../../components/MainPlot";
+import type { PlotlyAnnotation } from "../../../components/MainPlot";
 import { PALETTE } from "../../../constants";
 
 describe("MainPlotContainer selectors", () => {
