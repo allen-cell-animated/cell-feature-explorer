@@ -53,14 +53,14 @@ function padAxisRange(range: [number, number]): [number, number] {
 export default class MainPlot extends React.Component<MainPlotProps, MainPlotState> {
     constructor(props: MainPlotProps) {
         super(props);
-        this.setAnnotationText = this.setAnnotationText.bind(this);
+        this.updateAnnotationsText = this.updateAnnotationsText.bind(this);
         this.handlePointClick = this.handlePointClick.bind(this);
         this.clickedAnnotation = this.clickedAnnotation.bind(this);
         this.resize = this.resize.bind(this);
 
         this.state = {
             layout: {
-                annotations: this.setAnnotationText(),
+                annotations: this.updateAnnotationsText(),
                 autosize: true,
                 height: window.innerHeight - GENERAL_PLOT_SETTINGS.heightMargin,
                 hovermode: "closest",
@@ -104,26 +104,17 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         } = this.props;
 
         if (
+            xTickConversion !== prevProps.xTickConversion ||
+            yTickConversion !== prevProps.yTickConversion ||
+            xAxisRange !== prevProps.xAxisRange ||
+            yAxisRange !== prevProps.yAxisRange ||
             annotations !== prevProps.annotations ||
             this.state.showFullAnnotation !== prevState.showFullAnnotation
         ) {
             this.setState({
                 layout: {
                     ...this.state.layout,
-                    annotations: this.setAnnotationText(),
-                },
-            });
-        }
-        if (
-            xTickConversion !== prevProps.xTickConversion ||
-            yTickConversion !== prevProps.yTickConversion ||
-            xAxisRange !== prevProps.xAxisRange ||
-            yAxisRange !== prevProps.yAxisRange
-        ) {
-            this.setState({
-                layout: {
-                    ...this.state.layout,
-                    annotations: this.setAnnotationText(),
+                    annotations: this.updateAnnotationsText(),
                     xaxis: this.makeAxis(
                         [0, 0.85],
                         ".1f",
@@ -199,7 +190,7 @@ export default class MainPlot extends React.Component<MainPlotProps, MainPlotSta
         };
     }
 
-    public setAnnotationText(): PlotlyAnnotation[] {
+    public updateAnnotationsText(): PlotlyAnnotation[] {
         // on first load show the help text for one annotation, but the user can dismiss it by clicking on
         // it or clicking on a point, and it won't show again until they refresh the page
 
