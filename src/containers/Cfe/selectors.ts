@@ -33,7 +33,7 @@ export interface VolumeViewerProps {
         translation: [number, number, number];
         rotation: [number, number, number];
     };
-    metadata?: AppProps["metadata"] | (AppProps["metadata"] | undefined)[];
+    metadata?: AppProps["metadata"];
     onControlPanelToggle?(collapsed: boolean): void;
     appProps?: Partial<AppProps>;
     viewerSettings?: Partial<ViewerState>;
