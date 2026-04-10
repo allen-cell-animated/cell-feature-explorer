@@ -1,5 +1,4 @@
-import { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
-import type { MetadataRecord } from "@aics/vole-app/type-declarations/aics-image-viewer/shared/types";
+import type { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
 
@@ -21,6 +20,7 @@ import {
 import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
+// TODO: Should VolumeViewerProps be replaced with AppProps?
 export interface VolumeViewerProps {
     cellId: string;
     baseUrl: string;
@@ -33,7 +33,7 @@ export interface VolumeViewerProps {
         translation: [number, number, number];
         rotation: [number, number, number];
     };
-    metadata?: MetadataRecord | (MetadataRecord | undefined)[];
+    metadata?: AppProps["metadata"] | (AppProps["metadata"] | undefined)[];
     onControlPanelToggle?(collapsed: boolean): void;
     appProps?: Partial<AppProps>;
     viewerSettings?: Partial<ViewerState>;
@@ -78,9 +78,9 @@ const getCellMetadata = createSelector(
 );
 
 const combineVoleMetadata = (
-    voleMetadata: VolumeViewerProps["metadata"],
+    voleMetadata: AppProps["metadata"],
     cellMetadata: { [key: string]: number | string | null }
-): VolumeViewerProps["metadata"] => {
+): AppProps["metadata"] => {
     if (Array.isArray(voleMetadata)) {
         return voleMetadata.map((metadata) => ({
             ...cellMetadata,
