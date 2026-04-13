@@ -339,8 +339,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         onPointUnhovered={this.onPointUnhovered}
                         xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
-                        yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
+                        yTickConversion={yTickConversion}
                         xAxisRange={xAxisRange}
                         yAxisRange={yAxisRange}
                     />
