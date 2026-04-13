@@ -148,7 +148,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
         [props.onPointClicked]
     );
 
-    const clickedAnnotation = React.useCallback(() => setShowFullAnnotation(false), []);
+    const handleAnnotationClick = React.useCallback(() => setShowFullAnnotation(false), []);
 
     const { onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } = props;
 
@@ -159,7 +159,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             layout={layout}
             config={PLOT_CONFIG}
             onClick={handlePointClick}
-            onClickAnnotation={clickedAnnotation}
+            onClickAnnotation={handleAnnotationClick}
             onHover={onPointHovered}
             onUnhover={onPointUnhovered}
             onSelected={onGroupSelected}
