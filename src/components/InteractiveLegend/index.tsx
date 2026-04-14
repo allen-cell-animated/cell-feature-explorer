@@ -1,5 +1,4 @@
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { map } from "lodash";
 import React from "react";
 
 import { PanelData } from "../../containers/ColorByMenu/types";

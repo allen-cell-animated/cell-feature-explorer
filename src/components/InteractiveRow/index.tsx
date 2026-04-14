@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Badge, Button, Checkbox, ColorPicker, Tooltip } from "antd";
+import { Badge, Button, Checkbox, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
