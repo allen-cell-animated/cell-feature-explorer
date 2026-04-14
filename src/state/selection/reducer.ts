@@ -34,6 +34,7 @@ import {
     SET_ALIGN_ACTIVE,
     SET_CSV_URL,
     SET_COLOR_OVERRIDE,
+    SET_COLOR_OVERRIDES,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -55,6 +56,7 @@ import {
     SelectionStateBranch,
     SelectPointAction,
     SetColorOverrideAction,
+    SetColorOverridesAction,
     SetCsvUrlAction,
 } from "./types";
 
@@ -200,6 +202,14 @@ const actionToConfigMap: TypeToDescriptionMap = {
                 colorOverrides: newColorOverrides,
             };
         },
+    },
+    [SET_COLOR_OVERRIDES]: {
+        accepts: (action: Action): action is SetColorOverridesAction =>
+            action.type === SET_COLOR_OVERRIDES,
+        perform: (state: SelectionStateBranch, action: SetColorOverridesAction) => ({
+            ...state,
+            colorOverrides: action.payload,
+        }),
     },
     [TOGGLE_FILTER_BY_CATEGORY_NAME]: {
         accepts: (action: Action): action is ChangeSelectionAction =>

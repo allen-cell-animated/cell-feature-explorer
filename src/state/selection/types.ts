@@ -190,3 +190,8 @@ export interface SetColorOverrideAction {
     payload: { index: number; color: string | undefined };
     type: string;
 }
+
+export interface SetColorOverridesAction {
+    payload: (string | undefined)[];
+    type: string;
+}

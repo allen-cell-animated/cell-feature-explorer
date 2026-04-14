@@ -50,6 +50,7 @@ import {
     SelectedPointData,
     SelectPointAction,
     SetColorOverrideAction,
+    SetColorOverridesAction,
     SetCsvUrlAction,
     SyncStateWithURLAction,
 } from "./types";
@@ -111,6 +112,13 @@ export function setColorOverride(payload: {
     index: number;
     color: string | undefined;
 }): SetColorOverrideAction {
+    return {
+        payload,
+        type: SET_COLOR_OVERRIDE,
+    };
+}
+
+export function setColorOverrides(payload: (string | undefined)[]): SetColorOverridesAction {
     return {
         payload,
         type: SET_COLOR_OVERRIDE,

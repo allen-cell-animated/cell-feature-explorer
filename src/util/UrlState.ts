@@ -17,6 +17,7 @@ import {
     CELL_ID_KEY,
     COLOR_BY_SELECTOR,
     GROUP_BY_KEY,
+    HEX_COLOR_REGEX,
     X_AXIS_ID,
     Y_AXIS_ID,
 } from "../constants";
@@ -28,6 +29,8 @@ import {
     selectAlbum,
     selectCellFor3DViewer,
     selectPoint,
+    setColorOverride,
+    setColorOverrides,
     setCsvUrl,
     toggleGallery,
 } from "../state/selection/actions";
@@ -45,6 +48,7 @@ export enum URLSearchParam {
     selectedAlbum = "selectedAlbum",
     galleryCollapsed = "galleryCollapsed",
     csvUrl = "csvUrl",
+    colorOverrides = "colorOverrides",
 }
 
 type StateValue = any; // types are narrowed in mappings
@@ -124,6 +128,10 @@ export default class UrlState {
         }, initial);
     }
 
+    private static parseColorOverridesParam(value: string): (string | undefined)[] {
+        return map(value.split("-"), (color) => HEX_COLOR_REGEX.test(color) ? `#${color}` : undefined);
+    }
+
     private static urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
         [URLSearchParam.cellSelectedFor3D]: (cellId, params) => {
             const selectCellFor3DAction = selectCellFor3DViewer({ id: String(cellId)});
@@ -149,6 +157,10 @@ export default class UrlState {
             }
             return selectPoint({id: String(selection)});
         },
+        [URLSearchParam.colorOverrides]: (colorOverrides) => {
+            const parsedColorOverrides = UrlState.parseColorOverridesParam(String(colorOverrides));
+            return setColorOverrides(parsedColorOverrides);
+        },
     };
 
     private static urlParamToStateMap: URLSearchParamToStateMap = {
@@ -170,6 +182,8 @@ export default class UrlState {
         [URLSearchParam.plotByOnY]: (plotByOnY) => ({ [Y_AXIS_ID]: String(plotByOnY) }),
         [URLSearchParam.selectedAlbum]: (album) => ({ selectedAlbum: Number(album) }),
         [URLSearchParam.selectedPoint]: (selection) => ({ initSelectedPoints: map(castArray(selection), String) }),
+        [URLSearchParam.csvUrl]: (url) => ({ csvUrl: decodeURIComponent(String(url)) }),
+        [URLSearchParam.colorOverrides]: (colorOverrides) => ({ colorOverrides: UrlState.parseColorOverridesParam(String(colorOverrides)) }),
     };
 
     private static stateToUrlParamMap: StateToUrlSearchParamMap = {
@@ -186,6 +200,11 @@ export default class UrlState {
             return { [URLSearchParam.selectedPoint]: arrayOfIds };},  
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
+        colorOverrides: (value: (string | undefined)[]) => ({
+            [URLSearchParam.colorOverrides]: map(value, (color) =>
+                color ? String(color).substring(1) : ""
+            ).join("-"),
+        }),
     };
 
     private static valueIsMeaningfulToSerialize(selection: any): boolean {
