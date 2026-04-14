@@ -29,6 +29,7 @@ import {
     DeselectGroupOfPointsAction,
     DownloadConfig,
     SelectAxisAction,
+    SetColorOverrideAction,
 } from "../../state/selection/types";
 import { State } from "../../state/types";
 import { getColorByDisplayOptions, getGroupByDisplayOptions } from "../MainPlotContainer/selectors";
@@ -75,6 +76,7 @@ interface DispatchProps {
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
+    handleChangeOverrideColor: ActionCreator<SetColorOverrideAction>;
 }
 
 interface PropsFromApp {
@@ -90,6 +92,8 @@ type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
+    private setColorTimeout: NodeJS.Timeout | null = null;
+
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
@@ -97,7 +101,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderTaggedStructuresPanel = this.renderTaggedStructuresPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
-        this.onCategorySetDownloadButtonClicked = this.onCategorySetDownloadButtonClicked.bind(this);
+        this.onCategorySetDownloadButtonClicked =
+            this.onCategorySetDownloadButtonClicked.bind(this);
         this.onSelectionSetDownloadButtonClicked =
             this.onSelectionSetDownloadButtonClicked.bind(this);
     }
@@ -223,7 +228,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             onChange={(v: string) => {
                                 handleChangeGroupByCategory(v);
                             }}
-                            tooltip={getFeatureDefTooltip(groupBy.toString(), groupByDisplayOptions)}
+                            tooltip={getFeatureDefTooltip(
+                                groupBy.toString(),
+                                groupByDisplayOptions
+                            )}
                         />
                     </Col>
                 </Row>
@@ -265,6 +273,20 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                         name={ele.label}
                                         key={ele.name}
                                         total={categoryCounts[index]}
+                                        setColor={(color) => {
+                                            if (this.setColorTimeout) {
+                                                clearTimeout(
+                                                    this.setColorTimeout as NodeJS.Timeout
+                                                );
+                                            }
+                                            this.setColorTimeout = setTimeout(() => {
+                                                this.props.handleChangeOverrideColor({
+                                                    index,
+                                                    color,
+                                                });
+                                                this.setColorTimeout = null;
+                                            }, 100);
+                                        }}
                                     />
                                 );
                             })}
@@ -322,6 +344,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,
+    handleChangeOverrideColor: selectionStateBranch.actions.setColorOverride,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
     mapStateToProps,

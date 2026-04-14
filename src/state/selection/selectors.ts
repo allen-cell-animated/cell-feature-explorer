@@ -50,6 +50,8 @@ export const getSelectedGroups = (state: State): SelectedGroups => state.selecti
 export const getColorBySelection = (state: State): keyof MappingOfMeasuredValuesArrays =>
     state.selection.colorBy;
 export const getDefaultColors = (state: State): string[] => state.selection.defaultColors;
+export const getColorOverrides = (state: State): (string | undefined)[] =>
+    state.selection.colorOverrides;
 export const getSelectionSetColors = (state: State): { [key: string]: string } =>
     state.selection.selectedGroupColors;
 export const getFiltersToExclude = (state: State): string[] => state.selection.filterExclude;
@@ -133,12 +135,19 @@ export const getCategoryGroupColorsAndNames = createSelector(
      * Returns array of objects that have the color mapping for each category in a colorBy
      * selection if the colorBy is a discrete feature.
      */
-    [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
+    [
+        getColorBySelection,
+        getGroupByCategory,
+        getMeasuredFeaturesDefs,
+        getCategoricalFeatureKeys,
+        getColorOverrides,
+    ],
     (
         categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
         categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
         measuredFeaturesDefs: MeasuredFeatureDef[],
-        categoricalFeatureKeys: string[]
+        categoricalFeatureKeys: string[],
+        colorOverrides: (string | undefined)[]
     ): ColorForPlot[] => {
         /**
          * This data is used to both make the color legend and to tell the plot how to color
@@ -148,6 +157,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
             const feature = findFeature(measuredFeaturesDefs, categoryToColorBy as string);
             if (feature && feature.discrete) {
                 const { options } = feature;
+                let index = 0;
                 const colorForPlot = map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
@@ -155,7 +165,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
                      *   1. a number representing a boolean, ie, 1, 0, and -1 (for undefined)
                      *   2. an id to be mapped to the feature option. ie, a cell line number.
                      */
-                    let id;
+                    let id: string;
                     if (categoryToGroupBy === categoryToColorBy) {
                         /**
                          * For group by features, we're using the string name as the checkbox identifier instead of
@@ -165,8 +175,15 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     } else {
                         id = key;
                     }
+                    let color = option.color;
+                    const overrideColor = colorOverrides[index];
+                    if (overrideColor) {
+                        color = overrideColor;
+                    }
+                    index++;
+
                     return {
-                        color: option.color,
+                        color,
                         name: id,
                         label: option.name,
                     };

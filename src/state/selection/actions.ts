@@ -26,6 +26,7 @@ import {
     CHANGE_GROUP_BY_CATEGORY,
     SET_ALIGN_ACTIVE,
     SET_CSV_URL,
+    SET_COLOR_OVERRIDE,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -48,6 +49,7 @@ import {
     SelectAxisAction,
     SelectedPointData,
     SelectPointAction,
+    SetColorOverrideAction,
     SetCsvUrlAction,
     SyncStateWithURLAction,
 } from "./types";
@@ -102,6 +104,16 @@ export function selectPoint(payload: { id: string; index?: number }): SelectPoin
 export function clearAllSelectedPoints(): ResetSelectionAction {
     return {
         type: DESELECT_ALL_POINTS,
+    };
+}
+
+export function setColorOverride(payload: {
+    index: number;
+    color: string | undefined;
+}): SetColorOverrideAction {
+    return {
+        payload,
+        type: SET_COLOR_OVERRIDE,
     };
 }
 

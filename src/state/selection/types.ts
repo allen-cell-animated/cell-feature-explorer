@@ -20,6 +20,7 @@ export interface SelectionStateBranch {
     plotByOnY: string;
     groupBy: string;
     defaultColors: string[];
+    colorOverrides: (string | undefined)[];
     selectedAlbum: number;
     selectedGroupColors: { [key: string]: string };
     selectedGroups: SelectedGroups;
@@ -182,5 +183,10 @@ export interface SetCsvUrlAction {
 }
 export interface ChangeGroupByCategory {
     payload: string;
+    type: string;
+}
+
+export interface SetColorOverrideAction {
+    payload: { index: number; color: string | undefined };
     type: string;
 }
