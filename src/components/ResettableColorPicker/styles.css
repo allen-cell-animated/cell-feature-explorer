@@ -1,0 +1,19 @@
+.color-picker-container :global(.ant-color-picker) > :global(.ant-popover-arrow)::after {
+    border: 1px solid var(--layout-borders);
+}
+
+.color-picker-container :global(.ant-color-picker) > :global(.ant-popover-content) {
+    border: 1px solid var(--layout-borders);
+    border-radius: 5px;
+}
+
+/* Resize the input container to make room for the reset button. */
+.color-picker-container :global(.ant-color-picker-input-container) {
+    max-width: calc(100% - 58px);
+}
+
+.color-picker-container .reset-button {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+}

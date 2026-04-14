@@ -76,7 +76,7 @@ interface DispatchProps {
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
-    handleChangeOverrideColor: ActionCreator<SetColorOverrideAction>;
+    handleSetColorOverride: ActionCreator<SetColorOverrideAction>;
 }
 
 interface PropsFromApp {
@@ -256,6 +256,19 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             downloadConfig={downloadConfig}
                             downloadRoot={downloadRoot}
                             hideable={true}
+                            setColor={
+                                groupBy === colorBy
+                                    ? (index, color) => {
+                                          console.log(
+                                              "Setting color for index ",
+                                              index,
+                                              " to ",
+                                              color
+                                          );
+                                          this.props.handleSetColorOverride({ index, color });
+                                      }
+                                    : undefined
+                            }
                             onBarClicked={this.onBarClicked}
                             handleDownload={this.onCategorySetDownloadButtonClicked}
                         />
@@ -280,7 +293,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                                 );
                                             }
                                             this.setColorTimeout = setTimeout(() => {
-                                                this.props.handleChangeOverrideColor({
+                                                this.props.handleSetColorOverride({
                                                     index,
                                                     color,
                                                 });
@@ -344,7 +357,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,
-    handleChangeOverrideColor: selectionStateBranch.actions.setColorOverride,
+    handleSetColorOverride: selectionStateBranch.actions.setColorOverride,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
     mapStateToProps,

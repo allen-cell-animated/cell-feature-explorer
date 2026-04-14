@@ -2,6 +2,7 @@ import { Badge, Button, ColorPicker } from "antd";
 import React from "react";
 
 import styles from "./style.css";
+import ResettableColorPicker from "../ResettableColorPicker";
 
 interface InteractiveRowProps {
     color: string;
@@ -21,12 +22,10 @@ export default class ColorLegendRow extends React.Component<InteractiveRowProps>
         return (
             <div className={styles.container}>
                 <div className={styles.firstColumn}>
-                    <ColorPicker
+                    <ResettableColorPicker
                         value={color}
-                        onChange={(antColor) => {
-                            const color = antColor.toHexString();
-                            this.props.setColor(color);
-                        }}
+                        onChange={(color) => this.props.setColor(color.toHexString())}
+                        onReset={() => this.props.setColor(undefined)}
                         disabledAlpha={true}
                         panelRender={(panel) => (
                             <div>
@@ -45,7 +44,7 @@ export default class ColorLegendRow extends React.Component<InteractiveRowProps>
                             }}
                             dot={true}
                         />
-                    </ColorPicker>
+                    </ResettableColorPicker>
                     <span className={styles.label}>{name}</span>
                 </div>
                 <div>

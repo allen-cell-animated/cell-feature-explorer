@@ -15,6 +15,7 @@ interface InteractiveLegendProps {
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     downloadRoot: string;
+    setColor?: (index: number, color: string | undefined) => void;
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }
@@ -34,7 +35,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
     } = props;
     return (
         <React.Fragment>
-            {map(panelData, (item) => {
+            {panelData.map((item, index) => {
                 return (
                     <InteractiveRow
                         key={item.id}
@@ -44,6 +45,9 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
                         hideable={hideable}
                         disabled={item.disabled || false}
                         color={item.color as string}
+                        setColor={
+                            props.setColor ? (color) => props.setColor?.(index, color) : undefined
+                        }
                         name={item.name}
                         total={item.total}
                         id={item.id}
