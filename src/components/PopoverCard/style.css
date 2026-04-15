@@ -10,7 +10,7 @@ div.placeholder-container.placeholder-container {
     justify-content: center;
     height: 80px;
     width: 80px;
-    background-color: var(--dimgray);
+    background-color: black;
     font-size: 36px;
 }
 
