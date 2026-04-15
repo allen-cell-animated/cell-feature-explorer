@@ -8,7 +8,7 @@ div.placeholder-container.placeholder-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 55px;
+    height: 80px;
     width: 80px;
     background-color: var(--dimgray);
     font-size: 36px;
