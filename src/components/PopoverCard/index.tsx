@@ -13,12 +13,12 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
-    const [loadedImageSrc, setLoadedImageSrc] = React.useState("");
+    const [loadedImageSrc, setLoadedImageSrc] = React.useState<string | undefined>(undefined);
     const onImageLoad = React.useCallback(
         (e: React.SyntheticEvent<HTMLImageElement>) => setLoadedImageSrc(e.currentTarget.src),
         []
     );
-    const imageIsLoaded = props.src === loadedImageSrc;
+    const imageIsLoaded = typeof props.src === "string" && props.src === loadedImageSrc;
 
     const cover = (
         <>
