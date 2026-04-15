@@ -23,6 +23,10 @@
         width: 80px;
         background-color: black;
         font-size: 36px;
+
+        svg {
+            color: var(--dimgray);
+        }
     }
 
     :global(.ant-card-cover) > * {
