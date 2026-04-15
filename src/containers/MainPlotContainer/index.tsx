@@ -279,7 +279,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         const popover = this.renderPopover();
 
         return (
-            <React.Fragment>
+            <>
                 <MouseFollower
                     ref={this.popoverContainer}
                     pageX={mousePosition.pageX}
@@ -290,11 +290,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         content={popover}
                         open={!!popover}
                         getPopupContainer={() => this.popoverContainer.current || document.body}
-                        {...{
-                            // props not in ant.d component, but do exist
-                            // needed to style this component since it's out of the DOM structure
-                            id: "thumbnail-popover",
-                        }}
+                        id="thumbnail-popover"
                     />
                 </MouseFollower>
                 <div
@@ -345,7 +341,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         yAxisRange={yAxisRange}
                     />
                 </div>
-            </React.Fragment>
+            </>
         );
     }
 }
