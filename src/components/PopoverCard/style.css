@@ -25,6 +25,10 @@
         font-size: 36px;
     }
 
+    :global(.ant-card-cover) > * {
+        border-radius: 0;
+    }
+
     .container :global(.ant-card-body) {
         padding: 2px;
     }
