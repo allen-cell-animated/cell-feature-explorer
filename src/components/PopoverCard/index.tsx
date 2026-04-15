@@ -40,7 +40,7 @@ const PopoverCard: React.FC<PopoverCardProps> = (props) => {
     );
 
     return (
-        <Card className={styles.container} cover={cover}>
+        <Card className={styles.container} cover={cover} variant="borderless">
             <Meta description={props.description} title={props.title} />
         </Card>
     );
