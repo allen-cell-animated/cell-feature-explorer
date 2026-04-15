@@ -157,7 +157,6 @@ export const getCategoryGroupColorsAndNames = createSelector(
             const feature = findFeature(measuredFeaturesDefs, categoryToColorBy as string);
             if (feature && feature.discrete) {
                 const { options } = feature;
-                let index = 0;
                 const colorForPlot = map(options, (option: MeasuredFeaturesOption, key: string) => {
                     /**
                      * "key" is the numeral value in the features data. For categorical measured features
@@ -175,18 +174,24 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     } else {
                         id = key;
                     }
-                    let color = option.color;
-                    const overrideColor = colorOverrides[index];
-                    if (overrideColor) {
-                        color = overrideColor;
-                    }
-                    index++;
 
                     return {
-                        color,
+                        color: option.color,
                         name: id,
                         label: option.name,
                     };
+                });
+
+                // Sort so items are in the same order as the groupBy list
+                colorForPlot.sort((a, b) => a.label.localeCompare(b.label));
+                console.log("color for plot", colorForPlot);
+
+                // Apply override colors
+                colorForPlot.forEach((colorOption, index) => {
+                    const colorOverride = colorOverrides[index];
+                    if (colorOverride) {
+                        colorOption.color = colorOverride;
+                    }
                 });
 
                 // Add a fallback color option for missing data; otherwise,
