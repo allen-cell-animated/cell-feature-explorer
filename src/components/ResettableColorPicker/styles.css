@@ -9,7 +9,7 @@
 
 /* Resize the input container to make room for the reset button. */
 .color-picker-container :global(.ant-color-picker-input-container) {
-    max-width: calc(100% - 58px);
+    max-width: calc(100% - 36px);
 }
 
 .color-picker-container .reset-button {

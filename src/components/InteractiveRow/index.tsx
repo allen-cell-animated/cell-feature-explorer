@@ -90,7 +90,9 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                         <Badge
                             style={{
                                 backgroundColor: color,
+                                cursor: this.props.setColor ? "pointer" : "default",
                                 padding: 4,
+                                marginBottom: "2px",
                             }}
                             dot={true}
                         />

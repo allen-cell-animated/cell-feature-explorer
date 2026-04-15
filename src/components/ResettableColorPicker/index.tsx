@@ -1,7 +1,8 @@
-import { Button, ColorPicker, ColorPickerProps } from "antd";
+import { Button, ColorPicker, ColorPickerProps, Tooltip } from "antd";
 import React, { PropsWithChildren, ReactElement } from "react";
 
 import styles from "./styles.css";
+import { UndoOutlined } from "@ant-design/icons";
 
 type ResettableColorPickerProps = ColorPickerProps & {
     onReset: () => void;
@@ -15,9 +16,22 @@ export default function ResettableColorPicker(
     const panelRender = (panel: React.ReactNode) => (
         <div>
             {panel}
-            <Button onClick={props.onReset} size="small" className={styles.resetButton}>
-                Reset
-            </Button>
+            <Tooltip
+                title="Reset to default"
+                trigger={["focus", "hover"]}
+                // Ensure the tooltip appears above the color picker popup
+                zIndex={100000}
+                placement="right"
+            >
+                <Button
+                    onClick={props.onReset}
+                    size="small"
+                    className={styles.resetButton}
+                    type="text"
+                >
+                    <UndoOutlined alt="Reset" />
+                </Button>
+            </Tooltip>
         </div>
     );
 
@@ -25,7 +39,7 @@ export default function ResettableColorPicker(
         <div
             ref={containerRef}
             className={styles.colorPickerContainer}
-            style={{ display: "inline-block" }}
+            style={{ width: "fit-content", height: "fit-content" }}
         >
             <ColorPicker
                 {...props}

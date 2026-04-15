@@ -39,7 +39,8 @@ export default class ColorLegendRow extends React.Component<InteractiveRowProps>
                         <Badge
                             style={{
                                 backgroundColor: color,
-                                padding: 4,
+                                padding: "4px",
+                                marginBottom: "2px",
                                 cursor: "pointer",
                             }}
                             dot={true}
