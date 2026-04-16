@@ -295,8 +295,6 @@ class CsvRequest implements ImageDataset {
 
         // Sort values by name to ensure consistent ordering of categories.
         const valueEntries = Array.from(strValueToIndex.entries());
-        sortNumeric(valueEntries, ([value]) => value);
-
         const options: Record<string, MeasuredFeaturesOption> = {};
         for (const [value, { index, count }] of valueEntries) {
             options[index.toString()] = {
