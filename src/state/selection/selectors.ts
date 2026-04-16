@@ -272,7 +272,9 @@ export const getColorByCategoryCounts = createSelector(
         const feature = findFeature(measuredFeatureDefs, categoryToColorBy as string);
         if (feature && feature.discrete) {
             const { options } = feature;
-            let counts = map(options, "count");
+            const optionsList = values(options);
+            sortNumeric(optionsList, (option) => option.name);
+            let counts = map(optionsList, (option) => option.count);
 
             const numDefinedCounts = filter(counts, (count: number) => count !== undefined).length;
             if (numDefinedCounts === 0) {
