@@ -22,6 +22,7 @@ import {
     VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
+import { sortNumeric } from "../../util";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
 export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
@@ -261,8 +262,16 @@ class CsvRequest implements ImageDataset {
         key: string,
         data: (string | null)[]
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
-        const strValueToIndex = new Map<string, { index: number; count: number }>();
         const remappedValues: (number | null)[] = [];
+
+        // Sort non-null values
+        const values = Array.from(new Set<string | null>(data)).filter(
+            (value) => value !== null
+        ) as string[];
+        sortNumeric(values, (value) => value);
+        const strValueToIndex = new Map<string, { index: number; count: number }>(
+            values.map((value, index) => [value ?? "", { index, count: 0 }])
+        );
 
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
@@ -284,8 +293,12 @@ class CsvRequest implements ImageDataset {
             remappedValues.push(indexInfo.index);
         }
 
+        // Sort values by name to ensure consistent ordering of categories.
+        const valueEntries = Array.from(strValueToIndex.entries());
+        sortNumeric(valueEntries, ([value]) => value);
+
         const options: Record<string, MeasuredFeaturesOption> = {};
-        for (const [value, { index, count }] of strValueToIndex.entries()) {
+        for (const [value, { index, count }] of valueEntries) {
             options[index.toString()] = {
                 color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
                 name: value,
