@@ -1,15 +1,4 @@
-import {
-    filter,
-    find,
-    includes,
-    isEmpty,
-    keys,
-    map,
-    mapValues,
-    reduce,
-    sortBy,
-    values,
-} from "lodash";
+import { filter, find, includes, isEmpty, keys, map, mapValues, reduce, values } from "lodash";
 import { createSelector } from "reselect";
 
 import { ARRAY_OF_CELL_IDS_KEY, CELL_ID_KEY, FOV_ID_KEY, GROUP_BY_KEY } from "../../constants";

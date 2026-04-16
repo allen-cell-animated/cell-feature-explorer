@@ -283,7 +283,14 @@ class CsvRequest implements ImageDataset {
                 continue;
             }
             const value = rawValue.trim();
-            let indexInfo = strValueToIndex.get(value)!;
+            const indexInfo = strValueToIndex.get(value);
+            if (!indexInfo) {
+                // All values should already be in the map.
+                remappedValues.push(null);
+                throw new Error(
+                    `CsvRequest.parseDiscreteFeature: value '${value}' not found in value-to-index map.`
+                );
+            }
             indexInfo.count++;
             remappedValues.push(indexInfo.index);
         }
