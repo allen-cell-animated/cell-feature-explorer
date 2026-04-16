@@ -157,10 +157,18 @@ export default class UrlState {
         );
     }
 
-    private static parseColorOverridesParam(value: string): (string | undefined)[] {
-        return map(value.split("-"), (color) =>
+    private static parseColorOverridesParam(param: string): (string | undefined)[] {
+        return map(param.split("-"), (color) =>
             HEX_COLOR_REGEX.test(color) ? `#${color}` : undefined
         );
+    }
+
+    private static serializeColorOverridesParam(colorOverrides: (string | undefined)[]): string {
+        // Remove trailing undefined values
+        const param = colorOverrides
+            .map((color) => (color ? String(color).substring(1) : ""))
+            .join("-");
+        return param.replace(/(-)+$/g, ""); // remove trailing `-` characters
     }
 
     private static urlParamToActionCreatorMap: URLSearchParamToActionCreatorMap = {
@@ -241,9 +249,7 @@ export default class UrlState {
         [X_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnX]: String(value) }),
         [Y_AXIS_ID]: (value) => ({ [URLSearchParam.plotByOnY]: String(value) }),
         colorOverrides: (value: (string | undefined)[]) => ({
-            [URLSearchParam.colorOverrides]: map(value, (color) =>
-                color ? String(color).substring(1) : ""
-            ).join("-"),
+            [URLSearchParam.colorOverrides]: UrlState.serializeColorOverridesParam(value),
         }),
     };
 

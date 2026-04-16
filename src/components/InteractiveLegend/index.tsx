@@ -30,6 +30,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
         downloadRoot,
         hideable,
         onBarClicked,
+        setColor,
         panelData,
     } = props;
     return (
@@ -44,9 +45,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
                         hideable={hideable}
                         disabled={item.disabled || false}
                         color={item.color as string}
-                        setColor={
-                            props.setColor ? (color) => props.setColor?.(index, color) : undefined
-                        }
+                        setColor={setColor ? (color) => setColor?.(index, color) : undefined}
                         name={item.name}
                         total={item.total}
                         id={item.id}

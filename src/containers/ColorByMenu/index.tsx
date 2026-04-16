@@ -45,6 +45,7 @@ import {
 import { PanelData } from "./types";
 
 import styles from "./style.css";
+import { MISSING_CATEGORY_COLOR, MISSING_CATEGORY_LABEL } from "../../state/selection/constants";
 
 // const initIndex = 2;
 
@@ -93,6 +94,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
     private setColorTimeout: NodeJS.Timeout | null = null;
+    private setColorLastIndex: number = -1;
 
     constructor(props: ColorByMenuProps) {
         super(props);
@@ -184,6 +186,20 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         );
     }
 
+    /** Sets a color at an index with some debounce to prevent rapid updates. */
+    private setColorWithDebounce(index: number, color: string | undefined) {
+        if (this.setColorTimeout && this.setColorLastIndex === index) {
+            // Only cancel timeout if it's for the same index, otherwise allow
+            // old timeout to complete.
+            clearTimeout(this.setColorTimeout as NodeJS.Timeout);
+        }
+        this.setColorLastIndex = index;
+        this.setColorTimeout = setTimeout(() => {
+            this.props.handleSetColorOverride({ index, color });
+            this.setColorTimeout = null;
+        }, 100);
+    }
+
     public renderTaggedStructuresPanel() {
         const {
             filtersToExclude,
@@ -259,13 +275,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             setColor={
                                 groupBy === colorBy
                                     ? (index, color) => {
-                                          console.log(
-                                              "Setting color for index ",
-                                              index,
-                                              " to ",
-                                              color
-                                          );
-                                          this.props.handleSetColorOverride({ index, color });
+                                          this.setColorWithDebounce(index, color);
                                       }
                                     : undefined
                             }
@@ -280,26 +290,20 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                 <span className={styles.label}># of cells</span>
                             </div>
                             {colorForPlot.map((ele, index) => {
+                                const disableColorPicker =
+                                    ele.color === MISSING_CATEGORY_COLOR &&
+                                    ele.label === MISSING_CATEGORY_LABEL;
                                 return (
                                     <ColorLegendRow
                                         color={ele.color}
                                         name={ele.label}
                                         key={ele.name}
                                         total={categoryCounts[index]}
-                                        setColor={(color) => {
-                                            if (this.setColorTimeout) {
-                                                clearTimeout(
-                                                    this.setColorTimeout as NodeJS.Timeout
-                                                );
-                                            }
-                                            this.setColorTimeout = setTimeout(() => {
-                                                this.props.handleSetColorOverride({
-                                                    index,
-                                                    color,
-                                                });
-                                                this.setColorTimeout = null;
-                                            }, 100);
-                                        }}
+                                        setColor={
+                                            disableColorPicker
+                                                ? undefined
+                                                : (color) => this.setColorWithDebounce(index, color)
+                                        }
                                     />
                                 );
                             })}

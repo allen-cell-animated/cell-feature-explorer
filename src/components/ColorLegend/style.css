@@ -4,14 +4,13 @@
 
 .container :global(.ant-badge) {
     margin: auto;
-    padding: 2px 4px;
+    padding: 4px;
 }
 
 .container {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    align-items: center;
 }
 
 .container :global(.ant-badge sup) {
@@ -30,7 +29,6 @@
     margin-top: 5px;
     display: flex;
     flex-direction: row;
-    align-items: center;
 }
 
 .container :global(.ant-badge.ant-badge-not-a-wrapper) {
