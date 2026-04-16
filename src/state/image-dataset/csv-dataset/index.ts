@@ -264,10 +264,11 @@ class CsvRequest implements ImageDataset {
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
         const remappedValues: (number | null)[] = [];
 
-        // Get sorted list of unique values.
-        const values = Array.from(new Set<string | null>(data))
-            .filter((value) => value !== null)
-            .map((value) => value.trim()) as string[];
+        // Sort unique string values and assign each a numeric index.
+        const stringValues = Array.from(new Set<string | null>(data)).filter(
+            (value) => value !== null
+        ) as string[];
+        const values = stringValues.map((value) => value.trim()) as string[];
         sortNumeric(values, (value) => value);
         const strValueToIndex = new Map<string, { index: number; count: number }>(
             values.map((value, index) => [value ?? "", { index, count: 0 }])
@@ -282,13 +283,7 @@ class CsvRequest implements ImageDataset {
                 continue;
             }
             const value = rawValue.trim();
-            let indexInfo = strValueToIndex.get(value);
-            if (!indexInfo) {
-                // Assign new index to this value
-                indexInfo = { index: strValueToIndex.size, count: 0 };
-                strValueToIndex.set(value, indexInfo);
-            }
-
+            let indexInfo = strValueToIndex.get(value)!;
             indexInfo.count++;
             remappedValues.push(indexInfo.index);
         }
