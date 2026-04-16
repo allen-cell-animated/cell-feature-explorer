@@ -212,5 +212,11 @@ describe("general utilities", () => {
                 "item 3 part 1",
             ]);
         });
+
+        it("sorts example cell lines", () => {
+            const arr = ["AICS-11", "AICS-25", "AICS-16", "AICS-7"];
+            sortNumeric(arr, (item) => item);
+            expect(arr).to.deep.equal(["AICS-7", "AICS-11", "AICS-16", "AICS-25"]);
+        });
     });
 });

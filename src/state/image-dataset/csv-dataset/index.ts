@@ -265,13 +265,15 @@ class CsvRequest implements ImageDataset {
         const remappedValues: (number | null)[] = [];
 
         // Sort unique string values and assign each a numeric index.
-        const stringValues = Array.from(new Set<string | null>(data)).filter(
-            (value) => value !== null
-        ) as string[];
-        const values = stringValues.map((value) => value.trim()) as string[];
-        sortNumeric(values, (value) => value);
+        const uniqueValues = new Set<string>();
+        for (const value of data) {
+            if (value !== null) {
+                uniqueValues.add(value.trim());
+            }
+        }
+        const values = sortNumeric(Array.from(uniqueValues), (value) => value);
         const strValueToIndex = new Map<string, { index: number; count: number }>(
-            values.map((value, index) => [value ?? "", { index, count: 0 }])
+            values.map((value, index) => [value, { index, count: 0 }])
         );
 
         // Iterate through all values and count them. Replace the values with their
@@ -283,7 +285,13 @@ class CsvRequest implements ImageDataset {
                 continue;
             }
             const value = rawValue.trim();
-            let indexInfo = strValueToIndex.get(value)!;
+            const indexInfo = strValueToIndex.get(value);
+            if (!indexInfo) {
+                // All values will already be in the map; this will not be
+                // reachable.
+                remappedValues.push(null);
+                continue;
+            }
             indexInfo.count++;
             remappedValues.push(indexInfo.index);
         }

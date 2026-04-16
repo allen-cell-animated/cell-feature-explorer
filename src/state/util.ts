@@ -133,8 +133,7 @@ export function getCategoryString(
  * sorted before "category 10".
  */
 export function sortNumeric<T>(arr: T[], toString: (item: T) => string): T[] {
-    arr.sort((a, b) =>
-        new Intl.Collator("en", { numeric: true }).compare(toString(a), toString(b))
-    );
+    const collator = new Intl.Collator("en", { numeric: true });
+    arr.sort((a, b) => collator.compare(toString(a), toString(b)));
     return arr;
 }
