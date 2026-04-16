@@ -983,14 +983,13 @@ div.ant-modal-mask.ant-modal-mask {
 
 .style__container--f9hih .ant-badge {
     margin: auto;
-    padding: 2px 4px;
+    padding: 4px;
 }
 
 .style__container--f9hih {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    align-items: center;
 }
 
 .style__container--f9hih .ant-badge sup {
@@ -1009,7 +1008,6 @@ div.ant-modal-mask.ant-modal-mask {
     margin-top: 5px;
     display: flex;
     flex-direction: row;
-    align-items: center;
 }
 
 .style__container--f9hih .ant-badge.ant-badge-not-a-wrapper {
