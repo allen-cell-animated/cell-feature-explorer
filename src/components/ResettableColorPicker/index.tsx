@@ -11,6 +11,7 @@ type ResettableColorPickerProps = ColorPickerProps & {
 export default function ResettableColorPicker(
     props: PropsWithChildren<ResettableColorPickerProps>
 ): ReactElement {
+    const { onReset, children, ...colorPickerProps } = props;
     const containerRef = React.createRef<HTMLDivElement>();
 
     const panelRender = (panel: React.ReactNode) => (
@@ -20,16 +21,17 @@ export default function ResettableColorPicker(
                 title="Reset to default"
                 trigger={["focus", "hover"]}
                 // Ensure the tooltip appears above the color picker popup
-                zIndex={100000}
+                zIndex={100_000}
                 placement="right"
             >
                 <Button
-                    onClick={props.onReset}
+                    onClick={onReset}
                     size="small"
                     className={styles.resetButton}
                     type="text"
+                    aria-label="Reset to default color"
                 >
-                    <UndoOutlined alt="Reset" />
+                    <UndoOutlined />
                 </Button>
             </Tooltip>
         </div>
@@ -42,12 +44,12 @@ export default function ResettableColorPicker(
             style={{ width: "fit-content", height: "fit-content" }}
         >
             <ColorPicker
-                {...props}
+                {...colorPickerProps}
                 className="potato"
                 getPopupContainer={() => containerRef.current || document.body}
                 panelRender={panelRender}
             >
-                {props.children}
+                {children}
             </ColorPicker>
         </div>
     );

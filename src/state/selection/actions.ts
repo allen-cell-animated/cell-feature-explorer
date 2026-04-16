@@ -27,6 +27,7 @@ import {
     SET_ALIGN_ACTIVE,
     SET_CSV_URL,
     SET_COLOR_OVERRIDE,
+    SET_COLOR_OVERRIDES,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -121,7 +122,7 @@ export function setColorOverride(payload: {
 export function setColorOverrides(payload: (string | undefined)[]): SetColorOverridesAction {
     return {
         payload,
-        type: SET_COLOR_OVERRIDE,
+        type: SET_COLOR_OVERRIDES,
     };
 }
 

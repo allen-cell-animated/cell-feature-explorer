@@ -8,6 +8,7 @@ import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 import styles from "./style.css";
 import ResettableColorPicker from "../ResettableColorPicker";
+import ColorPickerBadge from "../ColorPickerBadge";
 
 interface InteractiveRowProps {
     color: string;
@@ -80,23 +81,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                             disabled={disabled}
                         />
                     )}
-                    <ResettableColorPicker
-                        disabled={!this.props.setColor}
-                        value={color}
-                        onChange={(antColor) => this.props.setColor?.(antColor.toHexString())}
-                        onReset={() => this.props.setColor?.(undefined)}
-                        disabledAlpha={true}
-                    >
-                        <Badge
-                            style={{
-                                backgroundColor: color,
-                                cursor: this.props.setColor ? "pointer" : "default",
-                                padding: 4,
-                                marginBottom: "2px",
-                            }}
-                            dot={true}
-                        />
-                    </ResettableColorPicker>
+                    <ColorPickerBadge color={color} setColor={this.props.setColor} name={name} />
                     {showTooltips ? (
                         <Tooltip placement="right" title={tooltip}>
                             <span className={labelClassName}>{name}</span>
