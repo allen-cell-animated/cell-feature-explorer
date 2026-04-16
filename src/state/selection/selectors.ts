@@ -30,7 +30,7 @@ import {
     PerCellLabels,
 } from "../metadata/types";
 import { NumberOrString, SelectedGroups, State } from "../types";
-import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
+import { findFeature, getCategoryString, getFileInfoDatumFromCellId, sortNumeric } from "../util";
 
 import { MISSING_CATEGORY_COLOR, MISSING_CATEGORY_LABEL } from "./constants";
 import {
@@ -113,7 +113,8 @@ export const getGroupByFeatureOptionsAsList = createSelector(
         if (isEmpty(feature)) {
             return [] as MeasuredFeaturesOption[];
         }
-        return sortBy(feature.options, "name");
+        const options = sortNumeric(values(feature.options), (option) => option.name);
+        return options;
     }
 );
 
@@ -165,12 +166,16 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     } else {
                         id = key;
                     }
+
                     return {
                         color: option.color,
                         name: id,
                         label: option.name,
                     };
                 });
+
+                // Sort so items are in the same order as the groupBy list
+                sortNumeric(colorForPlot, (colorOption) => colorOption.label);
 
                 // Add a fallback color option for missing data; otherwise,
                 // Plotly will automatically assign (unexpected) colors. As

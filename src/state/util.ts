@@ -124,3 +124,17 @@ export function getCategoryString(
     // name is the display name for the category.
     return groupCategoryInfo.key || groupCategoryInfo.name;
 }
+
+/**
+ * Sorts an array of values in-place, with respect to numeric values, and
+ * returns the same sorted array.
+ *
+ * Respects numeric values in strings, so that, for example, "category 2" will be
+ * sorted before "category 10".
+ */
+export function sortNumeric<T>(arr: T[], toString: (item: T) => string): T[] {
+    arr.sort((a, b) =>
+        new Intl.Collator("en", { numeric: true }).compare(toString(a), toString(b))
+    );
+    return arr;
+}
