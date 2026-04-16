@@ -82,7 +82,7 @@ export const initialState = {
     plotByOnY: "",
     groupBy: "",
     defaultColors: INITIAL_COLORS,
-    colorOverrides: ["#ff0000", "#00ff00", "#0000ff"],
+    colorOverrides: [],
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedAlbumFileInfo: [] as FileInfo[],
     selectedGroupColors: {},
