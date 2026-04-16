@@ -1,5 +1,5 @@
 import { Button, ColorPicker, ColorPickerProps, Tooltip } from "antd";
-import React, { PropsWithChildren, ReactElement } from "react";
+import React, { PropsWithChildren, ReactElement, useRef } from "react";
 
 import styles from "./styles.css";
 import { UndoOutlined } from "@ant-design/icons";
@@ -12,7 +12,7 @@ export default function ResettableColorPicker(
     props: PropsWithChildren<ResettableColorPickerProps>
 ): ReactElement {
     const { onReset, children, ...colorPickerProps } = props;
-    const containerRef = React.createRef<HTMLDivElement>();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const panelRender = (panel: React.ReactNode) => (
         <div>
