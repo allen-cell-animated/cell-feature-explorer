@@ -8,6 +8,7 @@ type ResettableColorPickerProps = ColorPickerProps & {
     onReset: () => void;
 };
 
+/** An RGB color picker with a reset button that calls `onReset` when clicked */
 export default function ResettableColorPicker(
     props: PropsWithChildren<ResettableColorPickerProps>
 ): ReactElement {
@@ -43,7 +44,6 @@ export default function ResettableColorPicker(
         <div ref={popupContainerRef} className={styles.colorPickerContainer}>
             <ColorPicker
                 {...colorPickerProps}
-                className="potato"
                 getPopupContainer={() => popupContainerRef.current || document.body}
                 panelRender={panelRender}
             >
