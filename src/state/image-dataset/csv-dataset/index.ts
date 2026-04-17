@@ -22,6 +22,7 @@ import {
     VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
+import { DEFAULT_CATEGORICAL_PALETTE } from "./constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
 export const DEFAULT_GROUPBY_NONE = "_defaultGroupByNone";
@@ -76,23 +77,6 @@ const METADATA_KEYS = new Set([
     FMS_UPLOADED_KEY,
     LINK_PATH_KEY,
 ]);
-
-// Adobe palette of high-contrast colors for denoting different categories
-// Used for categorical data
-const DEFAULT_COLORS = [
-    "#27B4AE",
-    "#4047C4",
-    "#F48730",
-    "#DB4281",
-    "#7E84F4",
-    "#78DF76",
-    "#1C7AED",
-    "#7129CD",
-    "#E7C73B",
-    "#C95F1E",
-    "#188E61",
-    "#BEE952",
-];
 
 const enum FeatureType {
     CONTINUOUS,
@@ -287,7 +271,7 @@ class CsvRequest implements ImageDataset {
         const options: Record<string, MeasuredFeaturesOption> = {};
         for (const [value, { index, count }] of strValueToIndex.entries()) {
             options[index.toString()] = {
-                color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+                color: DEFAULT_CATEGORICAL_PALETTE[index % DEFAULT_CATEGORICAL_PALETTE.length],
                 name: value,
                 key: value,
                 count: count,
@@ -373,7 +357,7 @@ class CsvRequest implements ImageDataset {
         // If no discrete feature is found, assign a default group-by feature.
         const options: Record<string, MeasuredFeaturesOption> = {
             "0": {
-                color: DEFAULT_COLORS[0],
+                color: DEFAULT_CATEGORICAL_PALETTE[0],
                 name: "Default",
                 key: "0",
                 count: csvData.length,
