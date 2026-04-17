@@ -1,4 +1,4 @@
-import { Button, Badge } from "antd";
+import { Badge } from "antd";
 import React, { ReactElement } from "react";
 import ResettableColorPicker from "../ResettableColorPicker";
 
