@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Badge, Button, Checkbox, Tooltip } from "antd";
+import { Button, Checkbox, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
@@ -7,7 +7,6 @@ import { DownloadConfig } from "../../state/selection/types";
 import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 import styles from "./style.css";
-import ResettableColorPicker from "../ResettableColorPicker";
 import ColorPickerBadge from "../ColorPickerBadge";
 
 interface InteractiveRowProps {

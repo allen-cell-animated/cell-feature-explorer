@@ -94,7 +94,7 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
     private setColorTimeout: NodeJS.Timeout | null = null;
-    private setColorLastIndex: number = -1;
+    private setColorLastIndex = -1;
 
     constructor(props: ColorByMenuProps) {
         super(props);
