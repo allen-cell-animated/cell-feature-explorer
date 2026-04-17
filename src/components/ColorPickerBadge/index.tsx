@@ -18,17 +18,10 @@ export default function ColorPickerBadge(props: ColorPickerBadgeProps): ReactEle
             onChange={(color) => setColor?.(color.toHexString())}
             onReset={() => setColor?.(undefined)}
             disabledAlpha={true}
-            panelRender={(panel) => (
-                <div>
-                    {panel}
-                    <Button onClick={() => setColor?.(undefined)} size="small">
-                        Reset
-                    </Button>
-                </div>
-            )}
             disabled={!showColorPicker}
         >
             <button
+                type="button"
                 style={{
                     background: "none",
                     border: "none",

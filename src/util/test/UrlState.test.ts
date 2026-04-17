@@ -34,6 +34,16 @@ describe("UrlState utility class", () => {
             });
         });
 
+        it("handles capitalized hex colors", () => {
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.colorOverrides]: "FF0000--00FF00-0000FF",
+                })
+            ).to.deep.equal({
+                colorOverrides: ["#ff0000", undefined, "#00ff00", "#0000ff"],
+            });
+        });
+
         it("adds cellSelectedFor3D to list of selected points if not already there", () => {
             expect(
                 UrlState.toAppState({

@@ -93,8 +93,7 @@ type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
-    private setColorTimeout: NodeJS.Timeout | null = null;
-    private setColorLastIndex = -1;
+    private setColorTimeouts: Map<number, ReturnType<typeof setTimeout>> = new Map();
 
     constructor(props: ColorByMenuProps) {
         super(props);
@@ -186,18 +185,23 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         );
     }
 
+    public componentWillUnmount(): void {
+        this.setColorTimeouts.forEach((timeout) => clearTimeout(timeout));
+        this.setColorTimeouts.clear();
+    }
+
     /** Sets a color at an index with some debounce to prevent rapid updates. */
     private setColorWithDebounce(index: number, color: string | undefined) {
-        if (this.setColorTimeout && this.setColorLastIndex === index) {
-            // Only cancel timeout if it's for the same index, otherwise allow
-            // old timeout to complete.
-            clearTimeout(this.setColorTimeout as NodeJS.Timeout);
+        // Clear any existing timeouts for this index
+        if (this.setColorTimeouts.has(index)) {
+            clearTimeout(this.setColorTimeouts.get(index));
+            this.setColorTimeouts.delete(index);
         }
-        this.setColorLastIndex = index;
-        this.setColorTimeout = setTimeout(() => {
+        const timerId = setTimeout(() => {
             this.props.handleSetColorOverride({ index, color });
-            this.setColorTimeout = null;
+            this.setColorTimeouts.delete(index);
         }, 100);
+        this.setColorTimeouts.set(index, timerId);
     }
 
     public renderTaggedStructuresPanel() {
@@ -290,20 +294,21 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                 <span className={styles.label}># of cells</span>
                             </div>
                             {colorForPlot.map((ele, index) => {
-                                const disableColorPicker =
+                                // Do not allow color picking for the fallback category.
+                                const isFallbackCategory =
                                     ele.color === MISSING_CATEGORY_COLOR &&
                                     ele.label === MISSING_CATEGORY_LABEL;
+                                const setColorCallback = isFallbackCategory
+                                    ? undefined
+                                    : (color: string | undefined) =>
+                                          this.setColorWithDebounce(index, color);
                                 return (
                                     <ColorLegendRow
                                         color={ele.color}
                                         name={ele.label}
                                         key={ele.name}
                                         total={categoryCounts[index]}
-                                        setColor={
-                                            disableColorPicker
-                                                ? undefined
-                                                : (color) => this.setColorWithDebounce(index, color)
-                                        }
+                                        setColor={setColorCallback}
                                     />
                                 );
                             })}

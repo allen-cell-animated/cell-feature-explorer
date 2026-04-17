@@ -12,41 +12,39 @@ export default function ResettableColorPicker(
     props: PropsWithChildren<ResettableColorPickerProps>
 ): ReactElement {
     const { onReset, children, ...colorPickerProps } = props;
-    const containerRef = useRef<HTMLDivElement>(null);
+    const popupContainerRef = useRef<HTMLDivElement>(null);
+    const buttonContainerRef = useRef<HTMLDivElement>(null);
 
     const panelRender = (panel: React.ReactNode) => (
         <div>
             {panel}
-            <Tooltip
-                title="Reset to default"
-                trigger={["focus", "hover"]}
-                // Ensure the tooltip appears above the color picker popup
-                zIndex={100_000}
-                placement="right"
-            >
-                <Button
-                    onClick={onReset}
-                    size="small"
-                    className={styles.resetButton}
-                    type="text"
-                    aria-label="Reset to default color"
+            <div ref={buttonContainerRef}>
+                <Tooltip
+                    title="Reset to default"
+                    trigger={["focus", "hover"]}
+                    getPopupContainer={() => buttonContainerRef.current || document.body}
+                    placement="right"
                 >
-                    <UndoOutlined />
-                </Button>
-            </Tooltip>
+                    <Button
+                        onClick={onReset}
+                        size="small"
+                        className={styles.resetButton}
+                        type="text"
+                        aria-label="Reset to default color"
+                    >
+                        <UndoOutlined />
+                    </Button>
+                </Tooltip>
+            </div>
         </div>
     );
 
     return (
-        <div
-            ref={containerRef}
-            className={styles.colorPickerContainer}
-            style={{ width: "fit-content", height: "fit-content" }}
-        >
+        <div ref={popupContainerRef} className={styles.colorPickerContainer}>
             <ColorPicker
                 {...colorPickerProps}
                 className="potato"
-                getPopupContainer={() => containerRef.current || document.body}
+                getPopupContainer={() => popupContainerRef.current || document.body}
                 panelRender={panelRender}
             >
                 {children}

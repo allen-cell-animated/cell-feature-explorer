@@ -159,7 +159,7 @@ export default class UrlState {
 
     private static parseColorOverridesParam(param: string): (string | undefined)[] {
         return map(param.split("-"), (color) =>
-            HEX_COLOR_REGEX.test(color) ? `#${color}` : undefined
+            HEX_COLOR_REGEX.test(color) ? `#${color.toLowerCase()}` : undefined
         );
     }
 
@@ -228,7 +228,6 @@ export default class UrlState {
         [URLSearchParam.selectedPoint]: (selection) => ({
             initSelectedPoints: map(castArray(selection), String),
         }),
-        [URLSearchParam.csvUrl]: (url) => ({ csvUrl: decodeURIComponent(String(url)) }),
         [URLSearchParam.colorOverrides]: (colorOverrides) => ({
             colorOverrides: UrlState.parseColorOverridesParam(String(colorOverrides)),
         }),

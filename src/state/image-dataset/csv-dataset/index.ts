@@ -296,10 +296,8 @@ class CsvRequest implements ImageDataset {
             remappedValues.push(indexInfo.index);
         }
 
-        // Sort values by name to ensure consistent ordering of categories.
-        const valueEntries = Array.from(strValueToIndex.entries());
         const options: Record<string, MeasuredFeaturesOption> = {};
-        for (const [value, { index, count }] of valueEntries) {
+        for (const [value, { index, count }] of strValueToIndex.entries()) {
             options[index.toString()] = {
                 color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
                 name: value,
