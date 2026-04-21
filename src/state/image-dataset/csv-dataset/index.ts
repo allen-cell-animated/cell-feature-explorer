@@ -22,6 +22,7 @@ import {
     VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../../constants";
+import { sortNumeric } from "../../util";
 import { DEFAULT_CATEGORICAL_PALETTE } from "./constants";
 
 export const DEFAULT_CSV_DATASET_KEY = "csv";
@@ -245,8 +246,19 @@ class CsvRequest implements ImageDataset {
         key: string,
         data: (string | null)[]
     ): { def: DiscreteMeasuredFeatureDef; data: (number | null)[] } {
-        const strValueToIndex = new Map<string, { index: number; count: number }>();
         const remappedValues: (number | null)[] = [];
+
+        // Sort unique string values and assign each a numeric index.
+        const uniqueValues = new Set<string>();
+        for (const value of data) {
+            if (value !== null) {
+                uniqueValues.add(value.trim());
+            }
+        }
+        const values = sortNumeric(Array.from(uniqueValues), (value) => value);
+        const strValueToIndex = new Map<string, { index: number; count: number }>(
+            values.map((value, index) => [value, { index, count: 0 }])
+        );
 
         // Iterate through all values and count them. Replace the values with their
         // corresponding index.
@@ -257,13 +269,13 @@ class CsvRequest implements ImageDataset {
                 continue;
             }
             const value = rawValue.trim();
-            let indexInfo = strValueToIndex.get(value);
+            const indexInfo = strValueToIndex.get(value);
             if (!indexInfo) {
-                // Assign new index to this value
-                indexInfo = { index: strValueToIndex.size, count: 0 };
-                strValueToIndex.set(value, indexInfo);
+                // All values will already be in the map; this will not be
+                // reachable.
+                remappedValues.push(null);
+                continue;
             }
-
             indexInfo.count++;
             remappedValues.push(indexInfo.index);
         }

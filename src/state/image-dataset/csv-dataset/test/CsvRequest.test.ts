@@ -179,10 +179,10 @@ describe("CsvRequest", () => {
 
     it("distinguishes capitalization", async () => {
         const csvString = `feature1
-        A
         a
-        B
-        b`;
+        A
+        b
+        B`;
         const csvDataset = new CsvRequest(csvString);
         const featureData = await csvDataset.getFeatureData();
         const featureDefs = await csvDataset.getMeasuredFeatureDefs();
@@ -192,7 +192,7 @@ describe("CsvRequest", () => {
         checkForMatchingDiscreteFeatureDef(
             featureDefs,
             "feature1",
-            ["A", "a", "B", "b"],
+            ["a", "A", "b", "B"],
             [1, 1, 1, 1]
         );
     });
@@ -245,13 +245,14 @@ describe("CsvRequest", () => {
             const csvDataset = new CsvRequest(bffCsv);
             const featureData = await csvDataset.getFeatureData();
             expect(featureData.values).to.deep.equal({
-                "Cell Line": [0, 1, 2, 3],
-                Structure: [0, 1, 2, 3],
-                Gene: [0, 1, 2, 3],
+                // Discrete values will be sorted
+                "Cell Line": [1, 2, 3, 0],
+                Structure: [2, 3, 1, 0],
+                Gene: [3, 1, 0, 2],
                 "Colony Position": [0, 0, 1, 0],
                 "Instrument Id": [5, 5, 6, 5],
                 "Plate Barcode": [3500000635, 3500000943, 3500002823, 3500001130],
-                "Well Name": [0, 1, 2, 3],
+                "Well Name": [2, 0, 3, 1],
             });
 
             const featureDefs = await csvDataset.getMeasuredFeatureDefs();
@@ -260,19 +261,19 @@ describe("CsvRequest", () => {
             checkForMatchingDiscreteFeatureDef(
                 featureDefs,
                 "Structure",
-                ["Microtubules", "Nuclear envelope", "Heterochromatin", "Endoplasmic reticulum"],
+                ["Endoplasmic reticulum", "Heterochromatin", "Microtubules", "Nuclear envelope"],
                 [1, 1, 1, 1]
             );
             checkForMatchingDiscreteFeatureDef(
                 featureDefs,
                 "Cell Line",
-                ["AICS-12", "AICS-13", "AICS-61", "AICS-10"],
+                ["AICS-10", "AICS-12", "AICS-13", "AICS-61"],
                 [1, 1, 1, 1]
             );
             checkForMatchingDiscreteFeatureDef(
                 featureDefs,
                 "Gene",
-                ["TUBA1B", "LMNB1", "HIST1H2BJ", "SEC61B"],
+                ["HIST1H2BJ", "LMNB1", "SEC61B", "TUBA1B"],
                 [1, 1, 1, 1]
             );
             checkForMatchingDiscreteFeatureDef(
