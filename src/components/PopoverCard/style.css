@@ -1,19 +1,39 @@
-.container {
-    width: 80px;
-}
+:global(#thumbnail-popover) {
+    box-shadow: 0 2px 8px black;
+    padding: 0;
+    border-radius: 0;
+    border: 1px solid var(--white);
 
-/* Increase specificity to override Ant Design styles */
-div.placeholder-container.placeholder-container {
-    /* Format the placeholder to be centered */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 55px;
-    width: 80px;
-    background-color: var(--dimgray);
-    font-size: 36px;
-}
+    & :global(.ant-card),
+    :global(.ant-popover-inner-content) {
+        border-radius: 0;
+        padding: 0;
+    }
 
-.container :global(.ant-card-body) {
-    padding: 2px;
+    .container {
+        width: 80px;
+    }
+
+    div.placeholder-container {
+        /* Format the placeholder to be centered */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80px;
+        width: 80px;
+        background-color: black;
+        font-size: 36px;
+
+        svg {
+            color: var(--dimgray);
+        }
+    }
+
+    :global(.ant-card-cover) > * {
+        border-radius: 0;
+    }
+
+    .container :global(.ant-card-body) {
+        padding: 2px;
+    }
 }

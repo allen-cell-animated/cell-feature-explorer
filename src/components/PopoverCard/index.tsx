@@ -13,16 +13,34 @@ export interface PopoverCardProps {
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
-    const image = props.src ? (
-        <img alt="thumbnail of microscopy image" src={props.src} />
-    ) : (
-        <div className={styles.placeholderContainer}>
-            <PictureOutlined />
-        </div>
+    const [loadedImageSrc, setLoadedImageSrc] = React.useState<string | undefined>(undefined);
+    const onImageLoad = React.useCallback(
+        (e: React.SyntheticEvent<HTMLImageElement>) => setLoadedImageSrc(e.currentTarget.src),
+        []
+    );
+    const imageIsLoaded = typeof props.src === "string" && props.src === loadedImageSrc;
+
+    const cover = (
+        <>
+            {props.src && (
+                <img
+                    alt="thumbnail of microscopy image"
+                    src={props.src}
+                    onLoad={onImageLoad}
+                    style={imageIsLoaded ? {} : { display: "none" }}
+                />
+            )}
+            <div
+                className={styles.placeholderContainer}
+                style={imageIsLoaded ? { display: "none" } : {}}
+            >
+                <PictureOutlined />
+            </div>
+        </>
     );
 
     return (
-        <Card className={styles.container} cover={image}>
+        <Card className={styles.container} cover={cover} variant="borderless">
             <Meta description={props.description} title={props.title} />
         </Card>
     );
