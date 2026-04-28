@@ -29,6 +29,7 @@ import {
     DeselectGroupOfPointsAction,
     DownloadConfig,
     SelectAxisAction,
+    SetColorOverrideAction,
 } from "../../state/selection/types";
 import { State } from "../../state/types";
 import { getColorByDisplayOptions, getGroupByDisplayOptions } from "../MainPlotContainer/selectors";
@@ -44,6 +45,7 @@ import {
 import { PanelData } from "./types";
 
 import styles from "./style.css";
+import { MISSING_CATEGORY_COLOR, MISSING_CATEGORY_LABEL } from "../../state/selection/constants";
 
 // const initIndex = 2;
 
@@ -75,6 +77,7 @@ interface DispatchProps {
     handleCloseSelectionSet: ActionCreator<DeselectGroupOfPointsAction>;
     handleFilterByCategoryName: ActionCreator<ChangeSelectionAction>;
     handleChangeDownloadSettings: ActionCreator<ChangeDownloadConfigAction>;
+    handleSetColorOverride: ActionCreator<SetColorOverrideAction>;
 }
 
 interface PropsFromApp {
@@ -90,6 +93,8 @@ type ColorByMenuProps = PropsFromApp & PropsFromState & DispatchProps;
 class ColorByMenu extends React.Component<ColorByMenuProps> {
     // submenu keys of first level
 
+    private setColorTimeouts: Map<number, ReturnType<typeof setTimeout>> = new Map();
+
     constructor(props: ColorByMenuProps) {
         super(props);
         this.onBarClicked = this.onBarClicked.bind(this);
@@ -97,7 +102,8 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         this.renderTaggedStructuresPanel = this.renderTaggedStructuresPanel.bind(this);
         this.renderSelectionPanel = this.renderSelectionPanel.bind(this);
         this.allOnOff = this.allOnOff.bind(this);
-        this.onCategorySetDownloadButtonClicked = this.onCategorySetDownloadButtonClicked.bind(this);
+        this.onCategorySetDownloadButtonClicked =
+            this.onCategorySetDownloadButtonClicked.bind(this);
         this.onSelectionSetDownloadButtonClicked =
             this.onSelectionSetDownloadButtonClicked.bind(this);
     }
@@ -179,6 +185,25 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
         );
     }
 
+    public componentWillUnmount(): void {
+        this.setColorTimeouts.forEach((timeout) => clearTimeout(timeout));
+        this.setColorTimeouts.clear();
+    }
+
+    /** Sets a color at an index with some debounce to prevent rapid updates. */
+    private setColorWithDebounce(index: number, color: string | undefined) {
+        // Clear any existing timeouts for this index
+        if (this.setColorTimeouts.has(index)) {
+            clearTimeout(this.setColorTimeouts.get(index));
+            this.setColorTimeouts.delete(index);
+        }
+        const timerId = setTimeout(() => {
+            this.props.handleSetColorOverride({ index, color });
+            this.setColorTimeouts.delete(index);
+        }, 100);
+        this.setColorTimeouts.set(index, timerId);
+    }
+
     public renderTaggedStructuresPanel() {
         const {
             filtersToExclude,
@@ -223,7 +248,10 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             onChange={(v: string) => {
                                 handleChangeGroupByCategory(v);
                             }}
-                            tooltip={getFeatureDefTooltip(groupBy.toString(), groupByDisplayOptions)}
+                            tooltip={getFeatureDefTooltip(
+                                groupBy.toString(),
+                                groupByDisplayOptions
+                            )}
                         />
                     </Col>
                 </Row>
@@ -248,6 +276,13 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                             downloadConfig={downloadConfig}
                             downloadRoot={downloadRoot}
                             hideable={true}
+                            setColor={
+                                groupBy === colorBy
+                                    ? (index, color) => {
+                                          this.setColorWithDebounce(index, color);
+                                      }
+                                    : undefined
+                            }
                             onBarClicked={this.onBarClicked}
                             handleDownload={this.onCategorySetDownloadButtonClicked}
                         />
@@ -259,12 +294,21 @@ class ColorByMenu extends React.Component<ColorByMenuProps> {
                                 <span className={styles.label}># of cells</span>
                             </div>
                             {colorForPlot.map((ele, index) => {
+                                // Do not allow color picking for the fallback category.
+                                const isFallbackCategory =
+                                    ele.color === MISSING_CATEGORY_COLOR &&
+                                    ele.label === MISSING_CATEGORY_LABEL;
+                                const setColorCallback = isFallbackCategory
+                                    ? undefined
+                                    : (color: string | undefined) =>
+                                          this.setColorWithDebounce(index, color);
                                 return (
                                     <ColorLegendRow
                                         color={ele.color}
                                         name={ele.label}
                                         key={ele.name}
                                         total={categoryCounts[index]}
+                                        setColor={setColorCallback}
                                     />
                                 );
                             })}
@@ -322,6 +366,7 @@ const dispatchToPropsMap: DispatchProps = {
     handleChangeDownloadSettings: selectionStateBranch.actions.changeDownloadSettings,
     handleCloseSelectionSet: selectionStateBranch.actions.deselectGroupOfPoints,
     handleFilterByCategoryName: selectionStateBranch.actions.toggleFilterByCategoryName,
+    handleSetColorOverride: selectionStateBranch.actions.setColorOverride,
 };
 export default connect<PropsFromState, DispatchProps, PropsFromApp, State>(
     mapStateToProps,
