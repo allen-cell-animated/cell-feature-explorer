@@ -51,6 +51,9 @@ const configProviderTheme = {
         colorBgElevated: PALETTE.darkGray,
     },
     components: {
+        Badge: {
+            dotSize: 10,
+        },
         Button: {
             colorPrimary: PALETTE.purple,
             primaryShadow: "0 0px 0 transparent",

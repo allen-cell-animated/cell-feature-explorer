@@ -36,6 +36,7 @@ import {
     getGroupingCategoryNamesAsArray,
     getYValues,
     getXValues,
+    getColorOverrides,
 } from "../../state/selection/selectors";
 import { ColorForPlot, LassoOrBoxSelectPointData } from "../../state/selection/types";
 import { convertSingleImageIdToDownloadId } from "../../state/util";
@@ -103,13 +104,17 @@ const getColorForCategory = (
     showGroupByColors: boolean,
     isExcluded: boolean,
     isDisabled: boolean,
-    categoryColor: string
+    categoryColor: string,
+    overrideColor: string | undefined
 ) => {
     if (isDisabled) {
         return DISABLE_COLOR;
     } else if (isExcluded) {
         return OFF_COLOR;
     } else if (showGroupByColors) {
+        if (overrideColor) {
+            return overrideColor;
+        }
         return categoryColor;
     } else {
         return DISABLE_COLOR;
@@ -124,6 +129,7 @@ export const getInteractivePanelData = createSelector(
         getFiltersToExclude,
         getDisplayableGroups,
         getGroupingCategoryNamesAsArray,
+        getColorOverrides,
     ],
     (
         categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
@@ -131,7 +137,8 @@ export const getInteractivePanelData = createSelector(
         categories: MeasuredFeaturesOption[],
         filtersToExclude: string[],
         displayableGroups: string[],
-        categoryNamesArray: string[]
+        categoryNamesArray: string[],
+        colorOverrides: (string | undefined)[]
     ): PanelData[] => {
         // Calculate actual counts from the data
         const countsByCategory: { [key: string]: number } = reduce(
@@ -162,7 +169,8 @@ export const getInteractivePanelData = createSelector(
                 categoryToColorBy === categoryToGroupBy,
                 includes(filtersToExclude, id),
                 disabled,
-                category.color
+                category.color,
+                colorOverrides[index]
             );
             return {
                 checked: !includes(filtersToExclude, id),

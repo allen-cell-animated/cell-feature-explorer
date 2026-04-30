@@ -1,5 +1,4 @@
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { map } from "lodash";
 import React from "react";
 
 import { PanelData } from "../../containers/ColorByMenu/types";
@@ -15,6 +14,7 @@ interface InteractiveLegendProps {
     downloadUrls: string[];
     downloadConfig: DownloadConfig;
     downloadRoot: string;
+    setColor?: (index: number, color: string | undefined) => void;
     onBarClicked?: (clicked: CheckboxChangeEvent) => void;
     handleCloseSelectionSet?: (id: number | string) => void;
 }
@@ -30,11 +30,12 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
         downloadRoot,
         hideable,
         onBarClicked,
+        setColor,
         panelData,
     } = props;
     return (
         <React.Fragment>
-            {map(panelData, (item) => {
+            {panelData.map((item, index) => {
                 return (
                     <InteractiveRow
                         key={item.id}
@@ -44,6 +45,7 @@ const InteractiveLegend: React.FunctionComponent<InteractiveLegendProps> = (prop
                         hideable={hideable}
                         disabled={item.disabled || false}
                         color={item.color as string}
+                        setColor={setColor ? (color) => setColor(index, color) : undefined}
                         name={item.name}
                         total={item.total}
                         id={item.id}
