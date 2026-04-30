@@ -1053,24 +1053,44 @@ div.ant-modal-mask.ant-modal-mask {
 .style__feature-select-row--eh5Bh .ant-select {
   width: 100%;
 }
-.style__container--GYGx9 {
-    width: 80px;
-}
+#thumbnail-popover {
+    box-shadow: 0 2px 8px black;
+    padding: 0;
+    border-radius: 0;
+    border: 1px solid var(--white);
 
-/* Increase specificity to override Ant Design styles */
-div.style__placeholder-container--ofudX.style__placeholder-container--ofudX {
-    /* Format the placeholder to be centered */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 55px;
-    width: 80px;
-    background-color: var(--dimgray);
-    font-size: 36px;
-}
+    & .ant-card,
+    .ant-popover-inner-content {
+        border-radius: 0;
+        padding: 0;
+    }
 
-.style__container--GYGx9 .ant-card-body {
-    padding: 2px;
+    .style__container--GYGx9 {
+        width: 80px;
+    }
+
+    div.style__placeholder-container--ofudX {
+        /* Format the placeholder to be centered */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80px;
+        width: 80px;
+        background-color: black;
+        font-size: 36px;
+
+        svg {
+            color: var(--dimgray);
+        }
+    }
+
+    .ant-card-cover > * {
+        border-radius: 0;
+    }
+
+    .style__container--GYGx9 .ant-card-body {
+        padding: 2px;
+    }
 }
 
 .style__container--UHk47 {
@@ -1101,19 +1121,6 @@ div.style__placeholder-container--ofudX.style__placeholder-container--ofudX {
 .modebar-btn.active path {
     /*override plotly svg styling*/
     fill: white !important;
-}
-
-#thumbnail-popover {
-    box-shadow: 0 2px 8px black;
-    padding: 0;
-    border-radius: 0;
-    border: 1px solid var(--white);
-
-    & .ant-card,
-    .ant-popover-inner-content {
-        border-radius: 0;
-        padding: 0;
-    }
 }
 
 .style__hidden--fIiS2 {
