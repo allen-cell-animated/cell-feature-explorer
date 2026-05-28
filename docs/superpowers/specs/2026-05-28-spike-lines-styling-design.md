@@ -1,53 +1,112 @@
 # Spike Lines Styling Design
 
-**Date:** 2026-05-28
+**Date:** 2026-05-28 (revised after visual verification)
 **Branch:** copilot/display-x-and-y-values
 
 ## Problem
 
-When hovering over a data point on the scatter plot, it is hard to read the precise x and y values. Plotly spike lines were added to address this, but the current `spikeColor` (`OFF_COLOR = "#000"`) is invisible against the dark plot background, making the feature non-functional in practice. Once the color is fixed, Plotly's hover label box at the axis will also become visible — and it needs to be styled to match the app's dark theme.
+When hovering over a data point on the scatter plot, it is hard to read the precise x and y values. Plotly spike lines were added to address this, but two issues were discovered during visual verification:
+
+1. **White background on spike lines**: Plotly renders a white mask/halo behind spike lines when `plot_bgcolor` is transparent (`rgba(0,0,0,0)`). This makes the dotted lines look like a solid white band on the dark background.
+2. **No axis value labels**: Plotly only shows value labels at the spike/axis intersection in `hovermode: "x"`, `"y"`, `"x unified"`, or `"y unified"`. This app uses `hovermode: "closest"`, so those labels never appear.
 
 ## Scope
 
 - Only activates when hovering over a data point (not on free cursor movement)
 - Affects the main scatter plot axes only (`xaxis`, `yaxis` in `makeAxis()`)
-- The histogram sub-axes (`histogramAxis`) are unaffected — they do not use `makeAxis()`
+- The histogram sub-axes (`histogramAxis`) are unaffected
 
 ## Design
 
-### 1. Spike line color (`constants/index.ts`)
+### 1. Fix spike line white background (`MainPlot/index.tsx`)
 
-Update `GENERAL_PLOT_SETTINGS.spikeColor` from `OFF_COLOR` (`"#000"`) to `"rgba(255,255,255,0.25)"` — a semi-transparent white that is visible but subtle against the dark background.
-
-```ts
-spikeColor: "rgba(255,255,255,0.25)",
-```
-
-No other spike properties need to change (`spikethickness: 2`, `spikedash: "dot"`, `spikemode: "toaxis+marker"` are already reasonable).
-
-### 2. Hover label styling (`MainPlot/index.tsx`)
-
-Add a `hoverlabel` property to the layout object in the constructor's initial state using existing palette constants. The `componentDidUpdate` setState spreads `...this.state.layout`, so `hoverlabel` is preserved automatically on re-renders:
+Change `plot_bgcolor` from `GENERAL_PLOT_SETTINGS.backgroundColor` (transparent) to `PALETTE.darkGray` (`#313131`). The page background behind the plot is already this color, so visually nothing changes — but Plotly now has a dark surface to render against, eliminating the white mask.
 
 ```ts
-hoverlabel: {
-    bgcolor: PALETTE.darkGray,
-    bordercolor: PALETTE.headerGray,
-    font: { color: GENERAL_PLOT_SETTINGS.textColor },
-},
+plot_bgcolor: PALETTE.darkGray,
 ```
 
-`PALETTE` must be imported from `../../constants` alongside the existing `GENERAL_PLOT_SETTINGS` import.
+`paper_bgcolor` stays transparent (`GENERAL_PLOT_SETTINGS.backgroundColor`) so the outer figure area remains see-through.
+
+### 2. Show x/y values in the hover popup
+
+Since Plotly's axis spike labels don't appear in `hovermode: "closest"`, add the x/y values to the existing `PopoverCard` hover popup instead.
+
+#### `src/state/selection/types.ts`
+
+Add optional fields to `SelectedPointData`:
+
+```ts
+export interface SelectedPointData {
+    [CELL_ID_KEY]: string;
+    index: number;
+    thumbnailPath: string;
+    srcPath: string;
+    groupBy?: string;
+    xValue?: number;
+    yValue?: number;
+}
+```
+
+#### `src/containers/MainPlotContainer/index.tsx`
+
+In `onPointHovered`, extract `point.x` and `point.y` from the Plotly event and include them in the `changeHoveredPoint` dispatch:
+
+```ts
+changeHoveredPoint({
+    [CELL_ID_KEY]: point.id,
+    index: point.customdata.index,
+    thumbnailPath: point.customdata.thumbnailPath,
+    srcPath: point.customdata.srcPath,
+    xValue: point.x as number,
+    yValue: point.y as number,
+});
+```
+
+In `renderPopover`, format the values and pass them to `PopoverCard` with axis feature name labels:
+
+- For numerical axes: format to 4 significant figures using `Number(value).toPrecision(4)`
+- For categorical axes: look up the display label from `xTickConversion`/`yTickConversion`
+- Labels come from `xDropDownValue` / `yDropDownValue` (already in props)
+
+#### `src/components/PopoverCard/index.tsx`
+
+Add optional x/y props and display them below the existing cell info:
+
+```ts
+export interface PopoverCardProps {
+    description: string;
+    title: string;
+    src?: string;
+    xLabel?: string;
+    xValue?: string;
+    yLabel?: string;
+    yValue?: string;
+}
+```
+
+Display as a small table or label/value pairs beneath the `Meta` section when values are present.
+
+### 3. Spike line color (already done)
+
+`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `"rgba(255,255,255,0.25)"` in Task 1. This remains correct.
+
+### 4. Hover label styling (already done)
+
+`hoverlabel` was added to the layout in Task 2 using `PALETTE.darkGray`, `PALETTE.headerGray`, and `GENERAL_PLOT_SETTINGS.textColor`. This styles the Plotly point tooltip and remains correct.
 
 ## Files Changed
 
 | File | Change |
 |------|--------|
-| `src/constants/index.ts` | Update `spikeColor` value |
-| `src/components/MainPlot/index.tsx` | Add `hoverlabel` to layout; import `PALETTE` |
+| `src/constants/index.ts` | `spikeColor` updated (done) |
+| `src/components/MainPlot/index.tsx` | Fix `plot_bgcolor`; spike/hoverlabel styling (partially done) |
+| `src/state/selection/types.ts` | Add `xValue`, `yValue` to `SelectedPointData` |
+| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard |
+| `src/components/PopoverCard/index.tsx` | Add x/y display |
 
 ## Non-goals
 
-- Styling the Plotly point hover tooltip (the floating box near the cursor) — that is a separate concern handled by the existing `PopoverCard`/`MouseFollower` system
-- Free-cursor crosshair (values only on data point hover)
-- Custom `hovertemplate` text formatting
+- Showing spike lines when hovering empty plot space (only on data points)
+- Axis value labels drawn on the axis line (not achievable with `hovermode: "closest"`)
+- Custom `hovertemplate` text on Plotly's trace tooltip

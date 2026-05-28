@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make Plotly spike lines visible on hover and style them (along with the axis hover label) to match the app's dark theme.
+**Goal:** Make Plotly spike lines visible on hover and show precise x/y values in the existing hover popup, all styled to match the app's dark theme.
 
-**Architecture:** Two targeted constant/config changes — update `spikeColor` in `GENERAL_PLOT_SETTINGS` to a visible semi-transparent white, then wire up `hoverlabel` in the plot layout using existing palette constants. No new files, no structural changes.
+**Architecture:** Fix `plot_bgcolor` so Plotly renders spike lines against a dark surface; add x/y values to `SelectedPointData` and surface them in `PopoverCard`. No new components.
 
-**Tech Stack:** React, Plotly / react-plotly.js, TypeScript
+**Tech Stack:** React, Plotly / react-plotly.js, TypeScript, Redux
 
 ---
 
@@ -14,28 +14,41 @@
 
 | File | Change |
 |------|--------|
-| `src/constants/index.ts` | Change `spikeColor` from `OFF_COLOR` to `"rgba(255,255,255,0.25)"` |
-| `src/components/MainPlot/index.tsx` | Import `PALETTE`; use `GENERAL_PLOT_SETTINGS.spikeColor` for spike color; add `hoverlabel` to layout; remove `"toggleSpikelines"` from mode bar |
+| `src/constants/index.ts` | `spikeColor` updated (DONE) |
+| `src/components/MainPlot/index.tsx` | Fix `plot_bgcolor`; spike/hoverlabel styling (DONE except plot_bgcolor) |
+| `src/state/selection/types.ts` | Add `xValue`, `yValue` to `SelectedPointData` |
+| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard |
+| `src/components/PopoverCard/index.tsx` | Add x/y display |
 
 ---
 
-### Task 1: Fix spike line color constant
+### Task 1: Fix spike line color constant ✅ DONE
+
+---
+
+### Task 2: Wire up spike color constant and add hover label styling in MainPlot ✅ DONE
+
+---
+
+### Task 3: Fix `plot_bgcolor` to eliminate white spike background
 
 **Files:**
-- Modify: `src/constants/index.ts:73`
+- Modify: `src/components/MainPlot/index.tsx`
 
-The current value `OFF_COLOR` (`"#000"`) is black — invisible against the dark plot background. Replace it with a semi-transparent white.
+Plotly renders a white mask behind spike lines when `plot_bgcolor` is transparent. Fix by setting it to `PALETTE.darkGray` (`#313131`). The page background behind the plot is already this color, so visually nothing changes — Plotly just gets a dark surface to render against.
 
-- [ ] **Step 1: Update `spikeColor` in `GENERAL_PLOT_SETTINGS`**
+`PALETTE` is already imported in this file (from Task 2).
 
-In `src/constants/index.ts`, change line 73:
+- [ ] **Step 1: Change `plot_bgcolor` in the layout `useMemo`**
+
+Find the layout return object inside the `useMemo` and change:
 
 ```ts
 // before
-spikeColor: OFF_COLOR,
+plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
 
 // after
-spikeColor: "rgba(255,255,255,0.25)",
+plot_bgcolor: PALETTE.darkGray,
 ```
 
 - [ ] **Step 2: Run TypeScript check**
@@ -44,140 +57,183 @@ spikeColor: "rgba(255,255,255,0.25)",
 npx tsc --noEmit
 ```
 
-Expected: same errors as baseline (two pre-existing errors in `csv-dataset/index.ts` and its test file — these are not from our change). No new errors.
+Expected: same two pre-existing errors only.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add src/constants/index.ts
-git commit -m "fix: make spike line color visible on dark background"
+git add src/components/MainPlot/index.tsx
+git commit -m "fix: use dark plot background to prevent white spike line halo"
 ```
 
 ---
 
-### Task 2: Wire up spike color constant and add hover label styling in MainPlot
+### Task 4: Add x/y values to hover popup
 
 **Files:**
-- Modify: `src/components/MainPlot/index.tsx:12,54-66,104-121,123-136`
+- Modify: `src/state/selection/types.ts`
+- Modify: `src/containers/MainPlotContainer/index.tsx`
+- Modify: `src/components/PopoverCard/index.tsx`
 
-Four changes in one file:
-1. Import `PALETTE` so we can use its dark-theme colors for `hoverlabel`
-2. Use `GENERAL_PLOT_SETTINGS.spikeColor` instead of the hardcoded `"#4b4b4b2c"` so the constant from Task 1 is actually applied
-3. Remove `"toggleSpikelines"` from the mode bar — since spikes are always on, the toggle button is misleading
-4. Add `hoverlabel` to the layout so the axis value label box uses the app's dark theme colors
+Three changes to show the hovered point's x and y values in the existing `PopoverCard`.
 
-- [ ] **Step 1: Update the import on line 12**
+- [ ] **Step 1: Add `xValue` and `yValue` to `SelectedPointData` in `src/state/selection/types.ts`**
 
 ```ts
-// before
-import { GENERAL_PLOT_SETTINGS } from "../../constants";
-
-// after
-import { GENERAL_PLOT_SETTINGS, PALETTE } from "../../constants";
+export interface SelectedPointData {
+    [CELL_ID_KEY]: string;
+    index: number;
+    thumbnailPath: string;
+    srcPath: string;
+    groupBy?: string;
+    xValue?: number | string;
+    yValue?: number | string;
+}
 ```
 
-- [ ] **Step 2: Remove `"toggleSpikelines"` from `PLOT_CONFIG` (lines 54–66)**
+- [ ] **Step 2: Extract x/y in `onPointHovered` in `src/containers/MainPlotContainer/index.tsx`**
+
+In the `onPointHovered` method, add `xValue` and `yValue` to the `changeHoveredPoint` call:
 
 ```ts
-const PLOT_CONFIG: Partial<Config> = {
-    responsive: true,
-    displayModeBar: true,
-    displaylogo: false,
-    modeBarButtonsToRemove: [
-        "sendDataToCloud",
-        "toImage",
-        "resetScale2d",
-        "hoverClosestCartesian",
-        "hoverCompareCartesian",
-    ],
-};
-```
-
-- [ ] **Step 3: Use the constant for `spikecolor` in `makeAxis` (line 111)**
-
-Inside the `useMemo`, in the `makeAxis` arrow function:
-
-```ts
-const makeAxis = (type: AxisType, tickConversion: any, range?: [number, number]) => ({
-    color: GENERAL_PLOT_SETTINGS.textColor,
-    domain: [0, 0.85],
-    hoverformat: ".1f",
-    linecolor: GENERAL_PLOT_SETTINGS.textColor,
-    showgrid: false,
-    showspikes: true,
-    spikecolor: GENERAL_PLOT_SETTINGS.spikeColor,
-    spikethickness: 2,
-    spikedash: "dot",
-    spikemode: "toaxis+marker" as const,
-    tickcolor: GENERAL_PLOT_SETTINGS.textColor,
-    tickmode: type,
-    ticktext: tickConversion.tickText,
-    tickvals: tickConversion.tickValues,
-    zeroline: false,
-    range,
+changeHoveredPoint({
+    [CELL_ID_KEY]: point.id,
+    index: point.customdata.index,
+    thumbnailPath: point.customdata.thumbnailPath,
+    srcPath: point.customdata.srcPath,
+    xValue: point.x,
+    yValue: point.y,
 });
 ```
 
-- [ ] **Step 4: Add `hoverlabel` to the layout return object (after line 135)**
+- [ ] **Step 3: Format and pass x/y values in `renderPopover` in `src/containers/MainPlotContainer/index.tsx`**
 
-In the `useMemo` return, add `hoverlabel` alongside the other layout properties:
+Add a helper at the top of `renderPopover` to format a value:
 
 ```ts
-return {
-    annotations: updatedAnnotations,
-    autosize: true,
-    height: height - GENERAL_PLOT_SETTINGS.heightMargin,
-    hovermode: "closest",
-    hoverlabel: {
-        bgcolor: PALETTE.darkGray,
-        bordercolor: PALETTE.headerGray,
-        font: { color: GENERAL_PLOT_SETTINGS.textColor },
-    },
-    legend: GENERAL_PLOT_SETTINGS.legend,
-    margin: GENERAL_PLOT_SETTINGS.margin,
-    paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-    plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-    xaxis: makeAxis(xAxisType, xTickConversion, xAxisRange && padAxisRange(xAxisRange)),
-    xaxis2: histogramAxis,
-    yaxis: makeAxis(yAxisType, yTickConversion, yAxisRange && padAxisRange(yAxisRange)),
-    yaxis2: histogramAxis,
+const formatAxisValue = (value: number | string | undefined): string => {
+    if (value === undefined) return "";
+    if (typeof value === "string") return value;
+    return Number(value).toPrecision(4);
 };
 ```
 
-- [ ] **Step 5: Run TypeScript check**
+Then pass x/y to `PopoverCard`:
+
+```ts
+return (
+    hoveredPointData &&
+    galleryCollapsed && (
+        <PopoverCard
+            title={hoveredPointData[GROUP_BY_KEY] || ""}
+            description={hoveredPointData[CELL_ID_KEY].toString()}
+            src={thumbnailSrc}
+            xLabel={xDropDownValue}
+            xValue={formatAxisValue(hoveredPointData.xValue)}
+            yLabel={yDropDownValue}
+            yValue={formatAxisValue(hoveredPointData.yValue)}
+        />
+    )
+);
+```
+
+Note: `xDropDownValue` and `yDropDownValue` are already in the component's props (destructured from `this.props` in the `render` method). Destructure them in `renderPopover` as well:
+
+```ts
+public renderPopover() {
+    const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue } = this.props;
+    // ... rest of method
+```
+
+- [ ] **Step 4: Add x/y props and display to `PopoverCard` in `src/components/PopoverCard/index.tsx`**
+
+Update the interface:
+
+```ts
+export interface PopoverCardProps {
+    description: string;
+    title: string;
+    src?: string;
+    xLabel?: string;
+    xValue?: string;
+    yLabel?: string;
+    yValue?: string;
+}
+```
+
+Add the x/y display below `<Meta>` when values are present:
+
+```tsx
+return (
+    <Card className={styles.container} cover={cover} variant="borderless">
+        <Meta description={props.description} title={props.title} />
+        {(props.xValue || props.yValue) && (
+            <div className={styles.axisValues}>
+                {props.xValue && (
+                    <div className={styles.axisRow}>
+                        <span className={styles.axisLabel}>{props.xLabel}</span>
+                        <span className={styles.axisValue}>{props.xValue}</span>
+                    </div>
+                )}
+                {props.yValue && (
+                    <div className={styles.axisRow}>
+                        <span className={styles.axisLabel}>{props.yLabel}</span>
+                        <span className={styles.axisValue}>{props.yValue}</span>
+                    </div>
+                )}
+            </div>
+        )}
+    </Card>
+);
+```
+
+- [ ] **Step 5: Add CSS for x/y display in `src/components/PopoverCard/style.css`**
+
+Inside the `#thumbnail-popover` block, add:
+
+```css
+.axisValues {
+    padding: 4px 2px 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.axisRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 9px;
+    line-height: 1.3;
+    color: var(--text-gray);
+    overflow: hidden;
+}
+
+.axisLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 54px;
+}
+
+.axisValue {
+    white-space: nowrap;
+    color: var(--off-white);
+    flex-shrink: 0;
+}
+```
+
+- [ ] **Step 6: Run TypeScript check**
 
 ```bash
 npx tsc --noEmit
 ```
 
-Expected: same two pre-existing errors only — no new errors.
+Expected: same two pre-existing errors only.
 
-- [ ] **Step 6: Commit**
-
-```bash
-git add src/components/MainPlot/index.tsx
-git commit -m "feat: style spike lines and hover label to match dark theme"
-```
-
----
-
-### Task 3: Visual verification
-
-- [ ] **Step 1: Start the dev server**
+- [ ] **Step 7: Commit**
 
 ```bash
-npm run dev
+git add src/state/selection/types.ts src/containers/MainPlotContainer/index.tsx src/components/PopoverCard/index.tsx src/components/PopoverCard/style.css
+git commit -m "feat: show x/y axis values in hover popup"
 ```
-
-Open the app in a browser (typically `http://localhost:3000`).
-
-- [ ] **Step 2: Verify spike lines appear on hover**
-
-Load any dataset, hover over a data point on the scatter plot. You should see:
-- Two faint dotted white lines extending from the point to the x-axis and y-axis
-- A small dark label box on each axis showing the numeric x and y values (background `#313131`, white text, `#4b4b4b` border)
-- No spike lines when hovering over empty plot space
-
-- [ ] **Step 3: Verify "toggle spike lines" button is gone from mode bar**
-
-The Plotly toolbar at the top-right of the plot should not contain a spike lines toggle button.
