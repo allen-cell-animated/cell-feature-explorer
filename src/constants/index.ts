@@ -48,7 +48,7 @@ export const OFF_COLOR = "#000";
 export const HEX_COLOR_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/i;
 
 export const GENERAL_PLOT_SETTINGS = {
-    backgroundColor: "rgba(0,0,0,0)",
+    backgroundColor: "#000",
     cellName: CELL_ID_KEY,
     chartParent: "ace-scatter-chart",
     circleRadius: 4,

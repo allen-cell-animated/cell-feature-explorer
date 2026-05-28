@@ -12,13 +12,13 @@
 
 ## File Map
 
-| File | Change |
-|------|--------|
-| `src/constants/index.ts` | `spikeColor` updated (DONE) |
-| `src/components/MainPlot/index.tsx` | Fix `plot_bgcolor`; spike/hoverlabel styling (DONE except plot_bgcolor) |
-| `src/state/selection/types.ts` | Add `xValue`, `yValue` to `SelectedPointData` |
-| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard |
-| `src/components/PopoverCard/index.tsx` | Add x/y display |
+| File                                         | Change                                                                  |
+| -------------------------------------------- | ----------------------------------------------------------------------- |
+| `src/constants/index.ts`                     | `spikeColor` updated (DONE)                                             |
+| `src/components/MainPlot/index.tsx`          | Fix `plot_bgcolor`; spike/hoverlabel styling (DONE except plot_bgcolor) |
+| `src/state/selection/types.ts`               | Add `xValue`, `yValue` to `SelectedPointData`                           |
+| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard            |
+| `src/components/PopoverCard/index.tsx`       | Add x/y display                                                         |
 
 ---
 
@@ -35,21 +35,13 @@
 **Files:**
 - Modify: `src/components/MainPlot/index.tsx`
 
-Plotly renders a white mask behind spike lines when `plot_bgcolor` is transparent. Fix by setting it to `PALETTE.darkGray` (`#313131`). The page background behind the plot is already this color, so visually nothing changes — Plotly just gets a dark surface to render against.
+Plotly renders a white mask behind spike lines when `plot_bgcolor` is transparent. Fix by setting it to `PALETTE.backgroundColor` (`#000`). The page background behind the plot is already this color, so visually nothing changes — Plotly just gets a dark surface to render against.
 
 `PALETTE` is already imported in this file (from Task 2).
 
 - [ ] **Step 1: Change `plot_bgcolor` in the layout `useMemo`**
 
 Find the layout return object inside the `useMemo` and change:
-
-```ts
-// before
-plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-
-// after
-plot_bgcolor: PALETTE.darkGray,
-```
 
 - [ ] **Step 2: Run TypeScript check**
 

@@ -20,13 +20,7 @@ When hovering over a data point on the scatter plot, it is hard to read the prec
 
 ### 1. Fix spike line white background (`MainPlot/index.tsx`)
 
-Change `plot_bgcolor` from `GENERAL_PLOT_SETTINGS.backgroundColor` (transparent) to `PALETTE.darkGray` (`#313131`). The page background behind the plot is already this color, so visually nothing changes — but Plotly now has a dark surface to render against, eliminating the white mask.
-
-```ts
-plot_bgcolor: PALETTE.darkGray,
-```
-
-`paper_bgcolor` stays transparent (`GENERAL_PLOT_SETTINGS.backgroundColor`) so the outer figure area remains see-through.
+Change `plot_bgcolor` to black.
 
 ### 2. Show x/y values in the hover popup
 
@@ -89,7 +83,7 @@ Display as a small table or label/value pairs beneath the `Meta` section when va
 
 ### 3. Spike line color (already done)
 
-`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `"rgba(255,255,255,0.25)"` in Task 1. This remains correct.
+`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `"rgb(0, 0, 0)"` in Task 1. This remains correct.
 
 ### 4. Hover label styling (already done)
 
@@ -97,13 +91,13 @@ Display as a small table or label/value pairs beneath the `Meta` section when va
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
-| `src/constants/index.ts` | `spikeColor` updated (done) |
-| `src/components/MainPlot/index.tsx` | Fix `plot_bgcolor`; spike/hoverlabel styling (partially done) |
-| `src/state/selection/types.ts` | Add `xValue`, `yValue` to `SelectedPointData` |
-| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard |
-| `src/components/PopoverCard/index.tsx` | Add x/y display |
+| File                                         | Change                                                        |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `src/constants/index.ts`                     | `spikeColor` updated (done)                                   |
+| `src/components/MainPlot/index.tsx`          | Fix `plot_bgcolor`; spike/hoverlabel styling (partially done) |
+| `src/state/selection/types.ts`               | Add `xValue`, `yValue` to `SelectedPointData`                 |
+| `src/containers/MainPlotContainer/index.tsx` | Extract x/y in hover handler; format and pass to PopoverCard  |
+| `src/components/PopoverCard/index.tsx`       | Add x/y display                                               |
 
 ## Non-goals
 
