@@ -193,6 +193,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     index: point.customdata.index,
                     thumbnailPath: point.customdata.thumbnailPath,
                     srcPath: point.customdata.srcPath,
+                    xValue: point.x,
+                    yValue: point.y,
                 });
                 this.loadThumbnailForZarr(point.id, point.customdata.srcPath);
             } else {
@@ -233,7 +235,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public renderPopover() {
-        const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue } = this.props;
         let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
@@ -244,6 +246,11 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             thumbnailSrc =
                 this.state.cellIdToZarrThumbnailUrl.get(hoveredPointData.CellId) ?? undefined;
         }
+        const formatAxisValue = (value: number | string | undefined): string => {
+            if (value === undefined) return "";
+            if (typeof value === "string") return value;
+            return Number(value).toPrecision(4);
+        };
         return (
             hoveredPointData &&
             galleryCollapsed && (
@@ -251,6 +258,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={thumbnailSrc}
+                    xLabel={xDropDownValue}
+                    xValue={formatAxisValue(hoveredPointData.xValue)}
+                    yLabel={yDropDownValue}
+                    yValue={formatAxisValue(hoveredPointData.yValue)}
                 />
             )
         );
