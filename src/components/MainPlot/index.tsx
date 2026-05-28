@@ -9,7 +9,7 @@ import type {
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS } from "../../constants";
+import { GENERAL_PLOT_SETTINGS, PALETTE } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
 
 interface MainPlotProps {
@@ -61,7 +61,6 @@ const PLOT_CONFIG: Partial<Config> = {
         "resetScale2d",
         "hoverClosestCartesian",
         "hoverCompareCartesian",
-        "toggleSpikelines",
     ],
 };
 
@@ -108,7 +107,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             linecolor: GENERAL_PLOT_SETTINGS.textColor,
             showgrid: false,
             showspikes: true,
-            spikecolor: "#4b4b4b2c",
+            spikecolor: GENERAL_PLOT_SETTINGS.spikeColor,
             spikethickness: 2,
             spikedash: "dot",
             spikemode: "toaxis+marker" as const,
@@ -125,6 +124,11 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             autosize: true,
             height: height - GENERAL_PLOT_SETTINGS.heightMargin,
             hovermode: "closest",
+            hoverlabel: {
+                bgcolor: PALETTE.darkGray,
+                bordercolor: PALETTE.headerGray,
+                font: { color: GENERAL_PLOT_SETTINGS.textColor },
+            },
             legend: GENERAL_PLOT_SETTINGS.legend,
             margin: GENERAL_PLOT_SETTINGS.margin,
             paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
