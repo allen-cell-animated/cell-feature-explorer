@@ -132,7 +132,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             legend: GENERAL_PLOT_SETTINGS.legend,
             margin: GENERAL_PLOT_SETTINGS.margin,
             paper_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
-            plot_bgcolor: GENERAL_PLOT_SETTINGS.backgroundColor,
+            plot_bgcolor: PALETTE.darkGray,
             xaxis: makeAxis(xAxisType, xTickConversion, xAxisRange && padAxisRange(xAxisRange)),
             xaxis2: histogramAxis,
             yaxis: makeAxis(yAxisType, yTickConversion, yAxisRange && padAxisRange(yAxisRange)),
