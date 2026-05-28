@@ -235,7 +235,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public renderPopover() {
-        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue, xDropDownOptions, yDropDownOptions } = this.props;
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue, xDropDownOptions, yDropDownOptions, categoricalFeatures, xTickConversion, yTickConversion } = this.props;
         let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
@@ -248,10 +248,24 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         }
         const xDisplayName = xDropDownOptions.find((o) => o.key === xDropDownValue)?.displayName ?? xDropDownValue;
         const yDisplayName = yDropDownOptions.find((o) => o.key === yDropDownValue)?.displayName ?? yDropDownValue;
-        const formatAxisValue = (value: number | string | undefined): string => {
+        const formatXValue = (value: number | string | undefined): string => {
             if (value === undefined) return "";
             if (typeof value === "string") return value;
             if (!isFinite(value)) return "";
+            if (includes(categoricalFeatures, xDropDownValue)) {
+                const idx = xTickConversion.tickValues.indexOf(value);
+                if (idx >= 0) return xTickConversion.tickText[idx];
+            }
+            return Number(value).toPrecision(4);
+        };
+        const formatYValue = (value: number | string | undefined): string => {
+            if (value === undefined) return "";
+            if (typeof value === "string") return value;
+            if (!isFinite(value)) return "";
+            if (includes(categoricalFeatures, yDropDownValue)) {
+                const idx = yTickConversion.tickValues.indexOf(value);
+                if (idx >= 0) return yTickConversion.tickText[idx];
+            }
             return Number(value).toPrecision(4);
         };
         return (
@@ -262,9 +276,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={thumbnailSrc}
                     xLabel={xDisplayName}
-                    xValue={formatAxisValue(hoveredPointData.xValue)}
+                    xValue={formatXValue(hoveredPointData.xValue)}
                     yLabel={yDisplayName}
-                    yValue={formatAxisValue(hoveredPointData.yValue)}
+                    yValue={formatYValue(hoveredPointData.yValue)}
                 />
             )
         );

@@ -61,6 +61,7 @@ const PLOT_CONFIG: Partial<Config> = {
         "resetScale2d",
         "hoverClosestCartesian",
         "hoverCompareCartesian",
+        "toggleSpikelines",
     ],
 };
 
