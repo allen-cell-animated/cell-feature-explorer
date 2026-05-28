@@ -506,3 +506,56 @@ export const getYAxisRange = createSelector(
         return getAxisRange(yValues);
     }
 );
+
+export const getXDisplayName = createSelector(
+    [getPlotByOnX, getMeasuredFeaturesDefs],
+    (plotByOnX, featureDefs): string => {
+        const feature = findFeature(featureDefs, plotByOnX);
+        return feature?.displayName ?? plotByOnX;
+    }
+);
+
+export const getYDisplayName = createSelector(
+    [getPlotByOnY, getMeasuredFeaturesDefs],
+    (plotByOnY, featureDefs): string => {
+        const feature = find(featureDefs, { key: plotByOnY });
+        return feature?.displayName ?? plotByOnY;
+    }
+);
+
+function formatAxisValue(
+    value: number | string | undefined,
+    isCategorical: boolean,
+    tickConversion: TickConversion
+): string {
+    if (value === undefined) return "";
+    if (typeof value === "string") return value;
+    if (!isFinite(value)) return "";
+    if (isCategorical) {
+        const idx = tickConversion.tickValues.indexOf(value);
+        if (idx >= 0) return tickConversion.tickText[idx];
+    }
+    return Number(value).toPrecision(4);
+}
+
+export const getFormattedHoveredXValue = createSelector(
+    [getHoveredPointData, getCategoricalFeatureKeys, getPlotByOnX, getXTickConversion],
+    (hoveredPointData, categoricalFeatures, xKey, xTickConversion): string => {
+        return formatAxisValue(
+            hoveredPointData?.xValue,
+            includes(categoricalFeatures, xKey),
+            xTickConversion
+        );
+    }
+);
+
+export const getFormattedHoveredYValue = createSelector(
+    [getHoveredPointData, getCategoricalFeatureKeys, getPlotByOnY, getYTickConversion],
+    (hoveredPointData, categoricalFeatures, yKey, yTickConversion): string => {
+        return formatAxisValue(
+            hoveredPointData?.yValue,
+            includes(categoricalFeatures, yKey),
+            yTickConversion
+        );
+    }
+);

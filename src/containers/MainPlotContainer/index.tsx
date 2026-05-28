@@ -35,9 +35,13 @@ import type { State } from "../../state/types";
 
 import {
     getDataForOverlayCard,
+    getFormattedHoveredXValue,
+    getFormattedHoveredYValue,
     getScatterPlotDataArray,
+    getXDisplayName,
     getXDisplayOptions,
     getXTickConversion,
+    getYDisplayName,
     getYDisplayOptions,
     getYTickConversion,
     getXAxisRange,
@@ -60,9 +64,13 @@ interface PropsFromState {
     filtersToExclude: string[];
     galleryCollapsed: boolean;
     hoveredPointData: SelectedPointData | null;
+    hoveredXValue: string;
+    hoveredYValue: string;
     mousePosition: MousePosition;
     plotDataArray: any;
     thumbnailRoot: string;
+    xDisplayName: string;
+    yDisplayName: string;
     xDropDownValue: string;
     yDropDownValue: string;
     yDropDownOptions: MeasuredFeatureDef[];
@@ -235,7 +243,15 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public renderPopover() {
-        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue, xDropDownOptions, yDropDownOptions, categoricalFeatures, xTickConversion, yTickConversion } = this.props;
+        const {
+            hoveredPointData,
+            galleryCollapsed,
+            thumbnailRoot,
+            xDisplayName,
+            yDisplayName,
+            hoveredXValue,
+            hoveredYValue,
+        } = this.props;
         let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
@@ -246,28 +262,6 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             thumbnailSrc =
                 this.state.cellIdToZarrThumbnailUrl.get(hoveredPointData.CellId) ?? undefined;
         }
-        const xDisplayName = xDropDownOptions.find((o) => o.key === xDropDownValue)?.displayName ?? xDropDownValue;
-        const yDisplayName = yDropDownOptions.find((o) => o.key === yDropDownValue)?.displayName ?? yDropDownValue;
-        const formatXValue = (value: number | string | undefined): string => {
-            if (value === undefined) return "";
-            if (typeof value === "string") return value;
-            if (!isFinite(value)) return "";
-            if (includes(categoricalFeatures, xDropDownValue)) {
-                const idx = xTickConversion.tickValues.indexOf(value);
-                if (idx >= 0) return xTickConversion.tickText[idx];
-            }
-            return Number(value).toPrecision(4);
-        };
-        const formatYValue = (value: number | string | undefined): string => {
-            if (value === undefined) return "";
-            if (typeof value === "string") return value;
-            if (!isFinite(value)) return "";
-            if (includes(categoricalFeatures, yDropDownValue)) {
-                const idx = yTickConversion.tickValues.indexOf(value);
-                if (idx >= 0) return yTickConversion.tickText[idx];
-            }
-            return Number(value).toPrecision(4);
-        };
         return (
             hoveredPointData &&
             galleryCollapsed && (
@@ -276,9 +270,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={thumbnailSrc}
                     xLabel={xDisplayName}
-                    xValue={formatXValue(hoveredPointData.xValue)}
+                    xValue={hoveredXValue}
                     yLabel={yDisplayName}
-                    yValue={formatYValue(hoveredPointData.yValue)}
+                    yValue={hoveredYValue}
                 />
             )
         );
@@ -382,9 +376,13 @@ function mapStateToProps(state: State): PropsFromState {
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         hoveredPointData: getDataForOverlayCard(state),
+        hoveredXValue: getFormattedHoveredXValue(state),
+        hoveredYValue: getFormattedHoveredYValue(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
+        xDisplayName: getXDisplayName(state),
+        yDisplayName: getYDisplayName(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
         xTickConversion: getXTickConversion(state),

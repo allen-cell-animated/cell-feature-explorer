@@ -2,9 +2,17 @@ import { describe, it, expect } from "vitest";
 
 import { mockState, selectedCellFileInfo } from "../../../state/test/mocks";
 import type { State, AnnotationData } from "../../../state/types";
-import { getAnnotations, handleNullValues, makeAnnotations } from "../selectors";
+import {
+    getAnnotations,
+    getFormattedHoveredXValue,
+    getFormattedHoveredYValue,
+    getXDisplayName,
+    getYDisplayName,
+    handleNullValues,
+    makeAnnotations,
+} from "../selectors";
 import type { PlotlyAnnotation } from "../../../components/MainPlot";
-import { PALETTE } from "../../../constants";
+import { CELL_ID_KEY, PALETTE } from "../../../constants";
 
 describe("MainPlotContainer selectors", () => {
     const newMockState = mockState;
@@ -72,6 +80,196 @@ describe("MainPlotContainer selectors", () => {
             expect(result).to.have.lengthOf(2);
         });
     });
+    describe("getXDisplayName", () => {
+        it("returns the displayName for a continuous feature", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnX: "apical-proximity" },
+            };
+            expect(getXDisplayName(state)).to.equal("Apical Proximity");
+        });
+
+        it("returns the displayName for a discrete feature", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnX: "cell-line" },
+            };
+            expect(getXDisplayName(state)).to.equal("Labeled Structure");
+        });
+
+        it("falls back to the raw key when the feature is not found", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnX: "unknown-feature" },
+            };
+            expect(getXDisplayName(state)).to.equal("unknown-feature");
+        });
+    });
+
+    describe("getYDisplayName", () => {
+        it("returns the displayName for a continuous feature", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnY: "cellular-surface-area" },
+            };
+            expect(getYDisplayName(state)).to.equal("Cell Surface area");
+        });
+
+        it("returns the displayName for a discrete feature", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnY: "anaphase-segmentation-complete" },
+            };
+            expect(getYDisplayName(state)).to.equal("Anaphase segmentation complete");
+        });
+
+        it("falls back to the raw key when the feature is not found", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, plotByOnY: "unknown-feature" },
+            };
+            expect(getYDisplayName(state)).to.equal("unknown-feature");
+        });
+    });
+
+    describe("getFormattedHoveredXValue", () => {
+        it("returns empty string when no point is hovered", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, hoveredPointData: null },
+            };
+            expect(getFormattedHoveredXValue(state)).to.equal("");
+        });
+
+        it("formats a continuous numeric value to 4 significant figures", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "apical-proximity",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: -0.25868651080317,
+                        yValue: 1,
+                    },
+                },
+            };
+            expect(getFormattedHoveredXValue(state)).to.equal(
+                Number(-0.25868651080317).toPrecision(4)
+            );
+        });
+
+        it("resolves a categorical value to its display label", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "cell-line",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: 5,
+                        yValue: 0,
+                    },
+                },
+            };
+            expect(getFormattedHoveredXValue(state)).to.equal("Matrix adhesions");
+        });
+
+        it("returns empty string for a non-finite value", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnX: "apical-proximity",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: NaN,
+                        yValue: 0,
+                    },
+                },
+            };
+            expect(getFormattedHoveredXValue(state)).to.equal("");
+        });
+    });
+
+    describe("getFormattedHoveredYValue", () => {
+        it("returns empty string when no point is hovered", () => {
+            const state: State = {
+                ...newMockState,
+                selection: { ...newMockState.selection, hoveredPointData: null },
+            };
+            expect(getFormattedHoveredYValue(state)).to.equal("");
+        });
+
+        it("formats a continuous numeric value to 4 significant figures", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnY: "cellular-surface-area",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: 0,
+                        yValue: 702.3191,
+                    },
+                },
+            };
+            expect(getFormattedHoveredYValue(state)).to.equal(
+                Number(702.3191).toPrecision(4)
+            );
+        });
+
+        it("resolves a categorical value to its display label", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnY: "anaphase-segmentation-complete",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: 0,
+                        yValue: 1,
+                    },
+                },
+            };
+            expect(getFormattedHoveredYValue(state)).to.equal("Complete");
+        });
+
+        it("returns empty string for a non-finite value", () => {
+            const state: State = {
+                ...newMockState,
+                selection: {
+                    ...newMockState.selection,
+                    plotByOnY: "cellular-surface-area",
+                    hoveredPointData: {
+                        [CELL_ID_KEY]: "1",
+                        index: 0,
+                        thumbnailPath: "path1",
+                        srcPath: "",
+                        xValue: 0,
+                        yValue: Infinity,
+                    },
+                },
+            };
+            expect(getFormattedHoveredYValue(state)).to.equal("");
+        });
+    });
+
     describe("makeAnnotations", () => {
         const baseAnnotation: AnnotationData = {
             cellID: "cell-42",
