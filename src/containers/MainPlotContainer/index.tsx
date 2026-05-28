@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
 
 import FeatureSelectDropdown from "../../components/FeatureSelectDropdown";
-import MainPlot from "../../components/MainPlot";
+import MainPlot, { type PlotlyAnnotation } from "../../components/MainPlot";
 import MouseFollower from "../../components/MouseFollower";
 import PopoverCard from "../../components/PopoverCard/index";
 import {
@@ -31,10 +31,9 @@ import {
     TickConversion,
     SelectedPointData,
 } from "../../state/selection/types";
-import { Annotation, State } from "../../state/types";
+import type { State } from "../../state/types";
 
 import {
-    getAnnotations,
     getDataForOverlayCard,
     getScatterPlotDataArray,
     getXDisplayOptions,
@@ -43,6 +42,7 @@ import {
     getYTickConversion,
     getXAxisRange,
     getYAxisRange,
+    getAnnotations,
 } from "./selectors";
 import { getFeatureDefTooltip } from "../../state/selection/selectors";
 import { formatThumbnailSrc } from "../../state/util";
@@ -54,7 +54,7 @@ import { createThumbnailImageSrc } from "../../util/thumbnails";
 const MAX_GENERATED_THUMBNAILS = 250;
 
 interface PropsFromState {
-    annotations: Annotation[];
+    annotations: PlotlyAnnotation[];
     categoricalFeatures: string[];
     clickedPoints: string[];
     filtersToExclude: string[];
@@ -279,7 +279,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
         const popover = this.renderPopover();
 
         return (
-            <React.Fragment>
+            <>
                 <MouseFollower
                     ref={this.popoverContainer}
                     pageX={mousePosition.pageX}
@@ -290,11 +290,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         content={popover}
                         open={!!popover}
                         getPopupContainer={() => this.popoverContainer.current || document.body}
-                        {...{
-                            // props not in ant.d component, but do exist
-                            // needed to style this component since it's out of the DOM structure
-                            id: "thumbnail-popover",
-                        }}
+                        id="thumbnail-popover"
                     />
                 </MouseFollower>
                 <div
@@ -339,13 +335,13 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                         onPointUnhovered={this.onPointUnhovered}
                         xAxisType={includes(categoricalFeatures, xDropDownValue) ? "array" : "auto"}
                         yAxisType={includes(categoricalFeatures, yDropDownValue) ? "array" : "auto"}
-                        yTickConversion={yTickConversion}
                         xTickConversion={xTickConversion}
+                        yTickConversion={yTickConversion}
                         xAxisRange={xAxisRange}
                         yAxisRange={yAxisRange}
                     />
                 </div>
-            </React.Fragment>
+            </>
         );
     }
 }

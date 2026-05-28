@@ -1,5 +1,7 @@
+import type { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
+
 import { MeasuredFeatureDef } from "../../state/metadata/types";
 import {
     getAlignActive,
@@ -15,10 +17,10 @@ import {
     formatDownloadOfIndividualFile,
 } from "../../state/util";
 
-import { AppProps, ViewerChannelSettings, ViewerState } from "@aics/vole-app";
 import { getMeasuredFeaturesDefs, getViewerChannelSettings } from "../../state/metadata/selectors";
 import { GROUP_BY_KEY } from "../../constants";
 
+// TODO: Should VolumeViewerProps be replaced with AppProps?
 export interface VolumeViewerProps {
     cellId: string;
     baseUrl: string;
@@ -31,7 +33,7 @@ export interface VolumeViewerProps {
         translation: [number, number, number];
         rotation: [number, number, number];
     };
-    metadata?: { [key: string]: string | number | null };
+    metadata?: AppProps["metadata"];
     onControlPanelToggle?(collapsed: boolean): void;
     appProps?: Partial<AppProps>;
     viewerSettings?: Partial<ViewerState>;
@@ -74,6 +76,23 @@ const getCellMetadata = createSelector(
         return { metadata };
     }
 );
+
+const combineVoleMetadata = (
+    voleMetadata: AppProps["metadata"],
+    cellMetadata: { [key: string]: number | string | null }
+): AppProps["metadata"] => {
+    if (Array.isArray(voleMetadata)) {
+        return voleMetadata.map((metadata) => ({
+            ...cellMetadata,
+            ...metadata,
+        }));
+    } else {
+        return {
+            ...cellMetadata,
+            ...voleMetadata,
+        };
+    }
+};
 
 export const getPropsForVolumeViewer = createSelector(
     [
@@ -134,6 +153,18 @@ export const getPropsForVolumeViewer = createSelector(
         if (dataRoot !== "" && !dataRoot.endsWith("/")) {
             dataRoot = dataRoot + "/";
         }
+
+        // If metadata is being passed in via the voleUrlParams, combine with
+        // the existing metadata. Handles a bug where the returned Vol-E
+        // metadata was `[undefined]` and overwrote existing metadata.
+        let voleProps = fileInfo.voleUrlParams?.args;
+        if (voleProps && voleProps.metadata) {
+            voleProps = {
+                ...voleProps,
+                metadata: combineVoleMetadata(voleProps.metadata, cellMetadata.metadata),
+            };
+        }
+
         return {
             cellId: cellId,
             baseUrl: dataRoot,
@@ -144,7 +175,7 @@ export const getPropsForVolumeViewer = createSelector(
             transform: alignActive ? fileInfo.transform : undefined,
             metadata: cellMetadata.metadata,
             viewerChannelSettings,
-            appProps: fileInfo.voleUrlParams?.args,
+            appProps: voleProps,
             viewerSettings: fileInfo.voleUrlParams?.viewerSettings,
         };
     }

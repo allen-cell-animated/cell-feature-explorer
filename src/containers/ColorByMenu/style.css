@@ -2,6 +2,7 @@
 
 .feature-select-row {
   margin-bottom: 1em;
+  align-items: center;
 }
 
 :global(.ant-select.ant-select-enabled) {

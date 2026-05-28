@@ -181,6 +181,7 @@ export const mockState = {
         plotByOnX: "apical-proximity",
         plotByOnY: "anaphase-segmentation-complete",
         defaultColors: INITIAL_COLORS,
+        colorOverrides: [],
         selectedGroupColors: {},
         selectedGroups: {},
         selectedPoints: selectedCellFileInfo,

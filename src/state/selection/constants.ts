@@ -10,6 +10,8 @@ export const SELECT_GROUP_VIA_PLOT = makeSelectionConstant("select_group");
 export const DESELECT_POINT = makeSelectionConstant("deselect-point");
 export const SELECT_POINT = makeSelectionConstant("select-point");
 export const DESELECT_ALL_POINTS = makeSelectionConstant("deselect-all-points");
+export const SET_COLOR_OVERRIDE = makeSelectionConstant("set-color-override");
+export const SET_COLOR_OVERRIDES = makeSelectionConstant("set-color-overrides");
 export const TOGGLE_FILTER_BY_CATEGORY_NAME = makeSelectionConstant(
     "toggle-filter-by-category-name"
 );

@@ -30,16 +30,3 @@
     /*override plotly svg styling*/
     fill: white !important;
 }
-
-:global(#thumbnail-popover) {
-    box-shadow: 0 2px 8px black;
-    padding: 0;
-    border-radius: 0;
-    border: 1px solid var(--white);
-
-    & :global(.ant-card),
-    :global(.ant-popover-inner-content) {
-        border-radius: 0;
-        padding: 0;
-    }
-}

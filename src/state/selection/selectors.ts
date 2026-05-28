@@ -1,15 +1,4 @@
-import {
-    filter,
-    find,
-    includes,
-    isEmpty,
-    keys,
-    map,
-    mapValues,
-    reduce,
-    sortBy,
-    values,
-} from "lodash";
+import { filter, find, includes, isEmpty, keys, map, mapValues, reduce, values } from "lodash";
 import { createSelector } from "reselect";
 
 import { ARRAY_OF_CELL_IDS_KEY, CELL_ID_KEY, FOV_ID_KEY, GROUP_BY_KEY } from "../../constants";
@@ -30,7 +19,7 @@ import {
     PerCellLabels,
 } from "../metadata/types";
 import { NumberOrString, SelectedGroups, State } from "../types";
-import { findFeature, getCategoryString, getFileInfoDatumFromCellId } from "../util";
+import { findFeature, getCategoryString, getFileInfoDatumFromCellId, sortNumeric } from "../util";
 
 import { MISSING_CATEGORY_COLOR, MISSING_CATEGORY_LABEL } from "./constants";
 import {
@@ -50,6 +39,8 @@ export const getSelectedGroups = (state: State): SelectedGroups => state.selecti
 export const getColorBySelection = (state: State): keyof MappingOfMeasuredValuesArrays =>
     state.selection.colorBy;
 export const getDefaultColors = (state: State): string[] => state.selection.defaultColors;
+export const getColorOverrides = (state: State): (string | undefined)[] =>
+    state.selection.colorOverrides;
 export const getSelectionSetColors = (state: State): { [key: string]: string } =>
     state.selection.selectedGroupColors;
 export const getFiltersToExclude = (state: State): string[] => state.selection.filterExclude;
@@ -113,7 +104,8 @@ export const getGroupByFeatureOptionsAsList = createSelector(
         if (isEmpty(feature)) {
             return [] as MeasuredFeaturesOption[];
         }
-        return sortBy(feature.options, "name");
+        const options = sortNumeric(values(feature.options), (option) => option.name);
+        return options;
     }
 );
 
@@ -133,12 +125,19 @@ export const getCategoryGroupColorsAndNames = createSelector(
      * Returns array of objects that have the color mapping for each category in a colorBy
      * selection if the colorBy is a discrete feature.
      */
-    [getColorBySelection, getGroupByCategory, getMeasuredFeaturesDefs, getCategoricalFeatureKeys],
+    [
+        getColorBySelection,
+        getGroupByCategory,
+        getMeasuredFeaturesDefs,
+        getCategoricalFeatureKeys,
+        getColorOverrides,
+    ],
     (
         categoryToColorBy: keyof MappingOfMeasuredValuesArrays,
         categoryToGroupBy: keyof MappingOfMeasuredValuesArrays,
         measuredFeaturesDefs: MeasuredFeatureDef[],
-        categoricalFeatureKeys: string[]
+        categoricalFeatureKeys: string[],
+        colorOverrides: (string | undefined)[]
     ): ColorForPlot[] => {
         /**
          * This data is used to both make the color legend and to tell the plot how to color
@@ -155,7 +154,7 @@ export const getCategoryGroupColorsAndNames = createSelector(
                      *   1. a number representing a boolean, ie, 1, 0, and -1 (for undefined)
                      *   2. an id to be mapped to the feature option. ie, a cell line number.
                      */
-                    let id;
+                    let id: string;
                     if (categoryToGroupBy === categoryToColorBy) {
                         /**
                          * For group by features, we're using the string name as the checkbox identifier instead of
@@ -165,11 +164,23 @@ export const getCategoryGroupColorsAndNames = createSelector(
                     } else {
                         id = key;
                     }
+
                     return {
                         color: option.color,
                         name: id,
                         label: option.name,
                     };
+                });
+
+                // Sort so items are in the same order as the groupBy list
+                sortNumeric(colorForPlot, (colorOption) => colorOption.label);
+
+                // Apply override colors
+                colorForPlot.forEach((colorOption, index) => {
+                    const colorOverride = colorOverrides[index];
+                    if (colorOverride) {
+                        colorOption.color = colorOverride;
+                    }
                 });
 
                 // Add a fallback color option for missing data; otherwise,
@@ -278,7 +289,9 @@ export const getColorByCategoryCounts = createSelector(
         const feature = findFeature(measuredFeatureDefs, categoryToColorBy as string);
         if (feature && feature.discrete) {
             const { options } = feature;
-            let counts = map(options, "count");
+            const optionsList = values(options);
+            sortNumeric(optionsList, (option) => option.name);
+            let counts = map(optionsList, (option) => option.count);
 
             const numDefinedCounts = filter(counts, (count: number) => count !== undefined).length;
             if (numDefinedCounts === 0) {

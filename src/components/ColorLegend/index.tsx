@@ -1,12 +1,13 @@
-import { Badge } from "antd";
 import React from "react";
 
 import styles from "./style.css";
+import ColorPickerBadge from "../ColorPickerBadge";
 
 interface InteractiveRowProps {
     color: string;
     name: string;
     total: number;
+    setColor?: (color: string | undefined) => void;
 }
 
 export default class ColorLegendRow extends React.Component<InteractiveRowProps> {
@@ -20,13 +21,7 @@ export default class ColorLegendRow extends React.Component<InteractiveRowProps>
         return (
             <div className={styles.container}>
                 <div className={styles.firstColumn}>
-                    <Badge
-                        style={{
-                            backgroundColor: color,
-                            padding: 4,
-                        }}
-                        dot={true}
-                    />
+                    <ColorPickerBadge color={color} setColor={this.props.setColor} name={name} />
                     <span className={styles.label}>{name}</span>
                 </div>
                 <div>

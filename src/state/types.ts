@@ -38,7 +38,7 @@ export interface TypeToDescriptionMap {
     [propName: string]: ActionDescription;
 }
 
-export interface Annotation {
+export interface AnnotationData {
     cellID: string;
     hovered: boolean;
     fovID: string;

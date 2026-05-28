@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Badge, Button, Checkbox, Tooltip } from "antd";
+import { Button, Checkbox, Tooltip } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { MouseEvent } from "react";
 
@@ -7,6 +7,7 @@ import { DownloadConfig } from "../../state/selection/types";
 import DownloadDropDownMenu from "../DownloadDropDownMenu";
 
 import styles from "./style.css";
+import ColorPickerBadge from "../ColorPickerBadge";
 
 interface InteractiveRowProps {
     color: string;
@@ -21,6 +22,7 @@ interface InteractiveRowProps {
     downloadUrls: string[];
     downloadRoot: string;
     hideable?: boolean;
+    setColor?: (color: string | undefined) => void;
     onBarClicked?: (clickEvent: CheckboxChangeEvent) => void;
     handleClose?: (id: number | string) => void;
     handleDownload: (id: string) => void;
@@ -78,13 +80,7 @@ export default class InteractiveRow extends React.Component<InteractiveRowProps>
                             disabled={disabled}
                         />
                     )}
-                    <Badge
-                        style={{
-                            backgroundColor: color,
-                            padding: 4,
-                        }}
-                        dot={true}
-                    />
+                    <ColorPickerBadge color={color} setColor={this.props.setColor} name={name} />
                     {showTooltips ? (
                         <Tooltip placement="right" title={tooltip}>
                             <span className={labelClassName}>{name}</span>

@@ -33,6 +33,8 @@ import {
     CHANGE_GROUP_BY_CATEGORY,
     SET_ALIGN_ACTIVE,
     SET_CSV_URL,
+    SET_COLOR_OVERRIDE,
+    SET_COLOR_OVERRIDES,
 } from "./constants";
 import {
     BoolToggleAction,
@@ -53,6 +55,8 @@ import {
     SelectAxisAction,
     SelectionStateBranch,
     SelectPointAction,
+    SetColorOverrideAction,
+    SetColorOverridesAction,
     SetCsvUrlAction,
 } from "./types";
 
@@ -78,6 +82,7 @@ export const initialState = {
     plotByOnY: "",
     groupBy: "",
     defaultColors: INITIAL_COLORS,
+    colorOverrides: [],
     selectedAlbum: INITIAL_SELECTED_ALBUM_ID,
     selectedAlbumFileInfo: [] as FileInfo[],
     selectedGroupColors: {},
@@ -184,6 +189,26 @@ const actionToConfigMap: TypeToDescriptionMap = {
         perform: (state: SelectionStateBranch) => ({
             ...state,
             selectedPoints: [...initialState.selectedPoints],
+        }),
+    },
+    [SET_COLOR_OVERRIDE]: {
+        accepts: (action: Action): action is SetColorOverrideAction =>
+            action.type === SET_COLOR_OVERRIDE,
+        perform: (state: SelectionStateBranch, action: SetColorOverrideAction) => {
+            const newColorOverrides = [...state.colorOverrides];
+            newColorOverrides[action.payload.index] = action.payload.color;
+            return {
+                ...state,
+                colorOverrides: newColorOverrides,
+            };
+        },
+    },
+    [SET_COLOR_OVERRIDES]: {
+        accepts: (action: Action): action is SetColorOverridesAction =>
+            action.type === SET_COLOR_OVERRIDES,
+        perform: (state: SelectionStateBranch, action: SetColorOverridesAction) => ({
+            ...state,
+            colorOverrides: action.payload,
         }),
     },
     [TOGGLE_FILTER_BY_CATEGORY_NAME]: {

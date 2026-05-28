@@ -1,7 +1,12 @@
 import { describe, it, expect } from "vitest";
 
 import { COLOR_BY_SELECTOR, X_AXIS_ID, Y_AXIS_ID } from "../../constants";
-import { changeAxis, selectCellFor3DViewer, selectPoint } from "../../state/selection/actions";
+import {
+    changeAxis,
+    selectCellFor3DViewer,
+    selectPoint,
+    setColorOverrides,
+} from "../../state/selection/actions";
 
 import { initialState } from "../../state/selection/reducer";
 import { selectedCellFileInfo } from "../../state/test/mocks";
@@ -17,6 +22,7 @@ describe("UrlState utility class", () => {
                     [URLSearchParam.plotByOnY]: "feature_y",
                     [URLSearchParam.colorBy]: "feature_z",
                     [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+                    [URLSearchParam.colorOverrides]: "ff0000--00ff00-0000ff",
                 })
             ).to.deep.equal({
                 cellSelectedFor3D: "2",
@@ -24,6 +30,17 @@ describe("UrlState utility class", () => {
                 initSelectedPoints: ["1", "2", "3", "4", "5"],
                 [X_AXIS_ID]: "feature_x",
                 [Y_AXIS_ID]: "feature_y",
+                colorOverrides: ["#ff0000", undefined, "#00ff00", "#0000ff"],
+            });
+        });
+
+        it("handles capitalized hex colors", () => {
+            expect(
+                UrlState.toAppState({
+                    [URLSearchParam.colorOverrides]: "FF0000--00FF00-0000FF",
+                })
+            ).to.deep.equal({
+                colorOverrides: ["#ff0000", undefined, "#00ff00", "#0000ff"],
             });
         });
 
@@ -101,10 +118,11 @@ describe("UrlState utility class", () => {
                     [URLSearchParam.plotByOnY]: "feature_y",
                     [URLSearchParam.colorBy]: "feature_z",
                     [URLSearchParam.selectedPoint]: ["1", "2", "3", "4", "5"],
+                    [URLSearchParam.colorOverrides]: "ff0000--00ff00-0000ff",
                 })
             )
                 .to.be.an("array")
-                .of.length(9)
+                .of.length(10)
                 .and.to.have.deep.members([
                     selectCellFor3DViewer({ id: "2" }),
                     changeAxis(X_AXIS_ID, "feature_x"),
@@ -115,6 +133,7 @@ describe("UrlState utility class", () => {
                     selectPoint({ id: "3" }),
                     selectPoint({ id: "4" }),
                     selectPoint({ id: "5" }),
+                    setColorOverrides(["#ff0000", undefined, "#00ff00", "#0000ff"]),
                 ]);
         });
 
@@ -143,6 +162,7 @@ describe("UrlState utility class", () => {
                 plotByOnX: "X value",
                 plotByOnY: "Y value",
                 selectedPoints: selectedCellFileInfo,
+                colorOverrides: ["#ff0000", undefined, "#00ff00", "#0000ff"],
             };
             expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
                 [URLSearchParam.cellSelectedFor3D]: "10",
@@ -150,6 +170,16 @@ describe("UrlState utility class", () => {
                 [URLSearchParam.plotByOnX]: "X value",
                 [URLSearchParam.plotByOnY]: "Y value",
                 [URLSearchParam.selectedPoint]: ["1", "2"],
+                [URLSearchParam.colorOverrides]: "ff0000--00ff00-0000ff",
+            });
+        });
+
+        it("trims extra undefined values from the color override array", () => {
+            const selections = {
+                colorOverrides: [undefined, "#ffff00", undefined, "#00ffff", undefined, undefined],
+            };
+            expect(UrlState.toUrlSearchParameterMap(selections)).to.deep.equal({
+                [URLSearchParam.colorOverrides]: "-ffff00--00ffff",
             });
         });
 

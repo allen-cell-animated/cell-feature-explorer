@@ -1,4 +1,3 @@
-
 .container :global(.ant-checkbox-inner) {
     background-color: inherit;
 }
@@ -8,7 +7,7 @@
     padding: 4px;
 }
 
-.container{
+.container {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -28,6 +27,8 @@
 
 .first-column {
     margin-top: 5px;
+    display: flex;
+    flex-direction: row;
 }
 
 .container :global(.ant-badge.ant-badge-not-a-wrapper) {

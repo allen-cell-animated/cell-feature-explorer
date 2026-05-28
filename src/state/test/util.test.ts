@@ -10,6 +10,7 @@ import {
     makeReducer,
     convertFullFieldIdToDownloadId,
     convertSingleImageIdToDownloadId,
+    sortNumeric,
 } from "../util";
 
 describe("state utilities", () => {
@@ -185,6 +186,37 @@ describe("general utilities", () => {
             const id = "C12345";
             const downloadId = convertSingleImageIdToDownloadId(id);
             expect(downloadId).to.equal("C12345");
+        });
+    });
+
+    describe("sortNumeric", () => {
+        it("sorts non-number strings alphabetically", () => {
+            const arr = ["a", "c", "b", "d"];
+            sortNumeric(arr, (item) => item);
+            expect(arr).to.deep.equal(["a", "b", "c", "d"]);
+        });
+
+        it("sorts an array of strings with numeric values correctly", () => {
+            const arr = ["category 10", "category 2", "category 1"];
+            sortNumeric(arr, (item) => item);
+            expect(arr).to.deep.equal(["category 1", "category 2", "category 10"]);
+        });
+
+        it("sorts numbers embedded in strings", () => {
+            const arr = ["item 1 part 2", "item 1 part 10", "item 3 part 1", "item 2 part 1"];
+            sortNumeric(arr, (item) => item);
+            expect(arr).to.deep.equal([
+                "item 1 part 2",
+                "item 1 part 10",
+                "item 2 part 1",
+                "item 3 part 1",
+            ]);
+        });
+
+        it("sorts example cell lines", () => {
+            const arr = ["AICS-11", "AICS-25", "AICS-16", "AICS-7"];
+            sortNumeric(arr, (item) => item);
+            expect(arr).to.deep.equal(["AICS-7", "AICS-11", "AICS-16", "AICS-25"]);
         });
     });
 });

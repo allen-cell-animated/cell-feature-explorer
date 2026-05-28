@@ -45,6 +45,8 @@ export const MY_SELECTIONS_ID = 0;
 export const DISABLE_COLOR = "#6e6e6e";
 export const OFF_COLOR = "#000";
 
+export const HEX_COLOR_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/i;
+
 export const GENERAL_PLOT_SETTINGS = {
     backgroundColor: "rgba(0,0,0,0)",
     cellName: CELL_ID_KEY,
@@ -85,6 +87,7 @@ const BASE_PALETTE_COLORS = {
     brightGreen: "#b2d030",
     brightBlue: "#00a0ff",
     white: "#ffffff",
+    translucentWhite: "#ffffffab",
 } as const;
 
 export const PALETTE = {
