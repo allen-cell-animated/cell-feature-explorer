@@ -235,7 +235,7 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public renderPopover() {
-        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue } = this.props;
+        const { hoveredPointData, galleryCollapsed, thumbnailRoot, xDropDownValue, yDropDownValue, xDropDownOptions, yDropDownOptions } = this.props;
         let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
@@ -246,9 +246,12 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
             thumbnailSrc =
                 this.state.cellIdToZarrThumbnailUrl.get(hoveredPointData.CellId) ?? undefined;
         }
+        const xDisplayName = xDropDownOptions.find((o) => o.key === xDropDownValue)?.displayName ?? xDropDownValue;
+        const yDisplayName = yDropDownOptions.find((o) => o.key === yDropDownValue)?.displayName ?? yDropDownValue;
         const formatAxisValue = (value: number | string | undefined): string => {
             if (value === undefined) return "";
             if (typeof value === "string") return value;
+            if (!isFinite(value)) return "";
             return Number(value).toPrecision(4);
         };
         return (
@@ -258,9 +261,9 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={thumbnailSrc}
-                    xLabel={xDropDownValue}
+                    xLabel={xDisplayName}
                     xValue={formatAxisValue(hoveredPointData.xValue)}
-                    yLabel={yDropDownValue}
+                    yLabel={yDisplayName}
                     yValue={formatAxisValue(hoveredPointData.yValue)}
                 />
             )
