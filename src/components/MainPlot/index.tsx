@@ -9,7 +9,7 @@ import type {
 import React from "react";
 import Plot from "react-plotly.js";
 
-import { GENERAL_PLOT_SETTINGS, PALETTE } from "../../constants";
+import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
 
 interface MainPlotProps {
