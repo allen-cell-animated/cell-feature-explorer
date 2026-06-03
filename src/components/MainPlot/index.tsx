@@ -109,7 +109,9 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             const yPxLocal = yDomainTopPx + (1 - yFrac) * (ya.domain[1] - ya.domain[0]) * plotH;
             // Convert to fixed screen coordinates so the portal doesn't need a wrapper div.
             const gdRect = gd.getBoundingClientRect();
-            setHelpTextPos({ x: gdRect.left + xPxLocal, y: gdRect.top + yPxLocal });
+            const x = gdRect.left + xPxLocal;
+            const y = gdRect.top + yPxLocal;
+            setHelpTextPos((prev) => (prev && prev.x === x && prev.y === y ? prev : { x, y }));
         } catch {
             setHelpTextPos(null);
         }
@@ -196,13 +198,10 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
 
     const handleAnnotationClick = React.useCallback(() => setShowFullAnnotation(false), []);
 
-    const handleInitialized = React.useCallback(
-        (_figure: any, gd: any) => {
-            graphDivRef.current = gd;
-            computeHelpTextPos();
-        },
-        [computeHelpTextPos]
-    );
+    // Stable — only sets the ref; onAfterPlot handles position computation.
+    const handleInitialized = React.useCallback((_figure: any, gd: any) => {
+        graphDivRef.current = gd;
+    }, []);
 
     const { onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } = props;
     const lastAnnotation = annotations.length > 0 ? annotations[annotations.length - 1] : null;
