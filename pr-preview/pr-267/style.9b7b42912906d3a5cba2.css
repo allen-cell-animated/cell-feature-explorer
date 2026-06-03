@@ -1053,6 +1053,22 @@ div.ant-modal-mask.ant-modal-mask {
 .style__feature-select-row--eh5Bh .ant-select {
   width: 100%;
 }
+.style__help-text-overlay--Tq7or {
+    position: fixed;
+    transform: translate(-50%, -100%);
+    background: var(--text-gray);
+    border: 1px solid rgba(255, 255, 255, 0.67);
+    border-radius: 2px;
+    color: var(--white);
+    cursor: pointer;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size: 11px;
+    padding: 4px;
+    text-align: left;
+    white-space: nowrap;
+    z-index: 10;
+}
+
 #thumbnail-popover {
     box-shadow: 0 2px 8px black;
     padding: 0;
@@ -1066,7 +1082,7 @@ div.ant-modal-mask.ant-modal-mask {
     }
 
     .style__container--GYGx9 {
-        width: 80px;
+        width: 90px;
     }
 
     div.style__placeholder-container--ofudX {
@@ -1074,8 +1090,8 @@ div.ant-modal-mask.ant-modal-mask {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 80px;
-        width: 80px;
+        height: 90px;
+        width: 90px;
         background-color: black;
         font-size: 36px;
 
@@ -1113,7 +1129,7 @@ div.ant-modal-mask.ant-modal-mask {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 54px;
+        max-width: 64px;
     }
 
     .style__axisValue--uDESz {
