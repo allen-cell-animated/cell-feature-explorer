@@ -7,6 +7,7 @@ import type {
     PlotSelectionEvent,
 } from "plotly.js";
 import React from "react";
+import ReactDOM from "react-dom";
 import Plot from "react-plotly.js";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
@@ -68,6 +69,8 @@ const PLOT_CONFIG: Partial<Config> = {
 const MainPlot: React.FC<MainPlotProps> = (props) => {
     const [showFullAnnotation, setShowFullAnnotation] = React.useState(true);
     const [height, setHeight] = React.useState(window.innerHeight);
+    const [helpTextPos, setHelpTextPos] = React.useState<{ x: number; y: number } | null>(null);
+    const graphDivRef = React.useRef<any>(null);
 
     React.useEffect(() => {
         // Using Plotly's relayout-function with graph-name and
@@ -78,23 +81,59 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
     }, []);
 
     const { annotations } = props;
+
+    const computeHelpTextPos = React.useCallback(() => {
+        const gd = graphDivRef.current;
+        if (!gd || !annotations.length || !showFullAnnotation) {
+            setHelpTextPos(null);
+            return;
+        }
+        try {
+            const fl = gd._fullLayout;
+            const lastAnn = annotations[annotations.length - 1];
+            const xa = fl.xaxis;
+            const ya = fl.yaxis;
+            // Compute pixel offsets using axis range + domain, avoiding internal d2p.
+            // plotWidth/plotHeight is the paper area (between margins).
+            const plotW = fl.width - fl.margin.l - fl.margin.r;
+            const plotH = fl.height - fl.margin.t - fl.margin.b;
+            // xaxis domain[0]=0, so domain start is at margin.l
+            const xFrac = ((lastAnn.x as number) - xa.range[0]) / (xa.range[1] - xa.range[0]);
+            const xPxLocal =
+                fl.margin.l + xa.domain[0] * plotW + xFrac * (xa.domain[1] - xa.domain[0]) * plotW;
+            // yaxis domain[1]=0.85; SVG origin is top-left so y-data is inverted
+            const yDomainTopPx = fl.margin.t + (1 - ya.domain[1]) * plotH;
+            const yFrac = ((lastAnn.y as number) - ya.range[0]) / (ya.range[1] - ya.range[0]);
+            const yPxLocal = yDomainTopPx + (1 - yFrac) * (ya.domain[1] - ya.domain[0]) * plotH;
+            // Convert to fixed screen coordinates so the portal doesn't need a wrapper div.
+            const gdRect = gd.getBoundingClientRect();
+            setHelpTextPos({ x: gdRect.left + xPxLocal, y: gdRect.top + yPxLocal });
+        } catch {
+            setHelpTextPos(null);
+        }
+    }, [annotations, showFullAnnotation]);
+
     const updatedAnnotations = React.useMemo((): PlotlyAnnotation[] => {
         // on first load show the help text for one annotation, but the user can dismiss it by clicking on
-        // it or clicking on a point, and it won't show again until they refresh the page
-
+        // it or clicking on a point, and it won't show again until they refresh the page.
+        // The help text is rendered as an HTML overlay (not a Plotly annotation) so it stays
+        // in front of spike lines.
         return annotations.map((point, index) => {
             const isLastOne = index === annotations.length - 1;
             const showHelpText = isLastOne && showFullAnnotation;
-            const text = showHelpText
-                ? `ID: ${point.cellID}<br><i>click thumbnail in gallery<br>on the right to load in 3D</i>`
-                : point.text;
 
-            return {
-                ...point,
-                ay: showHelpText ? -60 : point.ay,
-                borderpad: showHelpText ? 4 : point.borderpad,
-                text,
-            };
+            if (showHelpText) {
+                // Keep arrow (ay: -60) but make the text box invisible; real text is in the HTML overlay.
+                return {
+                    ...point,
+                    ay: -60,
+                    text: "",
+                    borderpad: 0,
+                    bgcolor: "transparent",
+                    bordercolor: "transparent",
+                };
+            }
+            return { ...point };
         });
     }, [annotations, showFullAnnotation]);
 
@@ -155,20 +194,68 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
 
     const handleAnnotationClick = React.useCallback(() => setShowFullAnnotation(false), []);
 
+    const handleInitialized = React.useCallback(
+        (_figure: any, gd: any) => {
+            graphDivRef.current = gd;
+            computeHelpTextPos();
+        },
+        [computeHelpTextPos]
+    );
+
     const { onPointHovered, onPointUnhovered, onGroupSelected, plotDataArray } = props;
+    const lastAnnotation = annotations.length > 0 ? annotations[annotations.length - 1] : null;
 
     return (
-        <Plot
-            data={plotDataArray}
-            useResizeHandler={true}
-            layout={layout}
-            config={PLOT_CONFIG}
-            onClick={handlePointClick}
-            onClickAnnotation={handleAnnotationClick}
-            onHover={onPointHovered}
-            onUnhover={onPointUnhovered}
-            onSelected={onGroupSelected}
-        />
+        <>
+            <Plot
+                data={plotDataArray}
+                useResizeHandler={true}
+                layout={layout}
+                config={PLOT_CONFIG}
+                onClick={handlePointClick}
+                onClickAnnotation={handleAnnotationClick}
+                onHover={onPointHovered}
+                onUnhover={onPointUnhovered}
+                onSelected={onGroupSelected}
+                onInitialized={handleInitialized}
+                onAfterPlot={computeHelpTextPos}
+            />
+            {showFullAnnotation &&
+                lastAnnotation &&
+                helpTextPos &&
+                ReactDOM.createPortal(
+                    <div
+                        style={{
+                            position: "fixed",
+                            left: helpTextPos.x,
+                            top: helpTextPos.y - 60,
+                            transform: "translate(-50%, -100%)",
+                            background: "#a0a0a0",
+                            border: "1px solid #ffffffab",
+                            borderRadius: "2px",
+                            color: "#ffffff",
+                            cursor: "pointer",
+                            fontFamily: "tahoma, arial, verdana, sans-serif",
+                            fontSize: "11px",
+                            padding: "4px",
+                            pointerEvents: "auto",
+                            textAlign: "left",
+                            whiteSpace: "nowrap",
+                            zIndex: 10,
+                        }}
+                        onClick={() => setShowFullAnnotation(false)}
+                    >
+                        {`ID: ${lastAnnotation.cellID}`}
+                        <br />
+                        <i>
+                            click thumbnail in gallery
+                            <br />
+                            on the right to load in 3D
+                        </i>
+                    </div>,
+                    document.body
+                )}
+        </>
     );
 };
 
