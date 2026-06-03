@@ -13,6 +13,8 @@ import Plot from "react-plotly.js";
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
 import { TickConversion } from "../../state/selection/types";
 
+import styles from "./style.css";
+
 interface MainPlotProps {
     annotations: PlotlyAnnotation[];
     plotDataArray: Data[];
@@ -225,24 +227,8 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
                 helpTextPos &&
                 ReactDOM.createPortal(
                     <div
-                        style={{
-                            position: "fixed",
-                            left: helpTextPos.x,
-                            top: helpTextPos.y - 60,
-                            transform: "translate(-50%, -100%)",
-                            background: "#a0a0a0",
-                            border: "1px solid #ffffffab",
-                            borderRadius: "2px",
-                            color: "#ffffff",
-                            cursor: "pointer",
-                            fontFamily: "tahoma, arial, verdana, sans-serif",
-                            fontSize: "11px",
-                            padding: "4px",
-                            pointerEvents: "auto",
-                            textAlign: "left",
-                            whiteSpace: "nowrap",
-                            zIndex: 10,
-                        }}
+                        className={styles["help-text-overlay"]}
+                        style={{ left: helpTextPos.x, top: helpTextPos.y - 60 }}
                         onClick={() => setShowFullAnnotation(false)}
                     >
                         {`ID: ${lastAnnotation.cellID}`}
