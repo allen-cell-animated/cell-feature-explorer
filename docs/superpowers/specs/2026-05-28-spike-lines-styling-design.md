@@ -83,7 +83,7 @@ Display as a small table or label/value pairs beneath the `Meta` section when va
 
 ### 3. Spike line color (already done)
 
-`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `"rgb(0, 0, 0)"` in Task 1. This remains correct.
+`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `BASE_PALETTE_COLORS.translucentWhite`
 
 ### 4. Hover label styling (already done)
 
