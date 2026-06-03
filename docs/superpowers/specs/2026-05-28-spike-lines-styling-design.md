@@ -37,8 +37,8 @@ export interface SelectedPointData {
     thumbnailPath: string;
     srcPath: string;
     groupBy?: string;
-    xValue?: number;
-    yValue?: number;
+    xValue?: number | string;
+    yValue?: number | string;
 }
 ```
 
@@ -83,7 +83,7 @@ Display as a small table or label/value pairs beneath the `Meta` section when va
 
 ### 3. Spike line color (already done)
 
-`GENERAL_PLOT_SETTINGS.spikeColor` was updated to `BASE_PALETTE_COLORS.translucentWhite`
+`GENERAL_PLOT_SETTINGS.spikeColor` is set to `PALETTE.translucentWhite` (`#ffffffab`) to match the dark theme.
 
 ### 4. Hover label styling (already done)
 

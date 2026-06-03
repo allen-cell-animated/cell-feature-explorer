@@ -228,7 +228,15 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
                     <div
                         className={styles["help-text-overlay"]}
                         style={{ left: helpTextPos.x, top: helpTextPos.y - 60 }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label="Dismiss help text overlay"
                         onClick={() => setShowFullAnnotation(false)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                setShowFullAnnotation(false);
+                            }
+                        }}
                     >
                         {`ID: ${lastAnnotation.cellID}`}
                         <br />
