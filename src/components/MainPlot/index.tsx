@@ -73,6 +73,12 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
     const [height, setHeight] = React.useState(window.innerHeight);
     const [helpTextPos, setHelpTextPos] = React.useState<{ x: number; y: number } | null>(null);
     const graphDivRef = React.useRef<any>(null);
+    // Refs updated synchronously each render so computeHelpTextPos (stable, empty deps)
+    // always reads current values even when onAfterPlot fires inside Plotly.react().
+    const annotationsRef = React.useRef(props.annotations);
+    annotationsRef.current = props.annotations;
+    const showFullAnnotationRef = React.useRef(showFullAnnotation);
+    showFullAnnotationRef.current = showFullAnnotation;
 
     React.useEffect(() => {
         // Using Plotly's relayout-function with graph-name and
@@ -86,13 +92,14 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
 
     const computeHelpTextPos = React.useCallback(() => {
         const gd = graphDivRef.current;
-        if (!gd || !annotations.length || !showFullAnnotation) {
+        const currentAnnotations = annotationsRef.current;
+        if (!gd || !currentAnnotations.length || !showFullAnnotationRef.current) {
             setHelpTextPos(null);
             return;
         }
         try {
             const fl = gd._fullLayout;
-            const lastAnn = annotations[annotations.length - 1];
+            const lastAnn = currentAnnotations[currentAnnotations.length - 1];
             const xa = fl.xaxis;
             const ya = fl.yaxis;
             // Compute pixel offsets using axis range + domain, avoiding internal d2p.
@@ -115,7 +122,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
         } catch {
             setHelpTextPos(null);
         }
-    }, [annotations, showFullAnnotation]);
+    }, []); // stable — reads live values through refs
 
     const updatedAnnotations = React.useMemo((): PlotlyAnnotation[] => {
         // on first load show the help text for one annotation, but the user can dismiss it by clicking on
