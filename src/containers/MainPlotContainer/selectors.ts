@@ -518,7 +518,7 @@ export const getXDisplayName = createSelector(
 export const getYDisplayName = createSelector(
     [getPlotByOnY, getMeasuredFeaturesDefs],
     (plotByOnY, featureDefs): string => {
-        const feature = find(featureDefs, { key: plotByOnY });
+        const feature = findFeature(featureDefs, plotByOnY);
         return feature?.displayName ?? plotByOnY;
     }
 );
