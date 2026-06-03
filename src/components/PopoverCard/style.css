@@ -11,7 +11,7 @@
     }
 
     .container {
-        width: 80px;
+        width: 90px;
     }
 
     div.placeholder-container {
@@ -19,8 +19,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 80px;
-        width: 80px;
+        height: 90px;
+        width: 90px;
         background-color: black;
         font-size: 36px;
 
@@ -58,7 +58,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 54px;
+        max-width: 64px;
     }
 
     .axisValue {

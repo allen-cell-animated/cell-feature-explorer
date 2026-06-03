@@ -50,13 +50,13 @@ const PopoverCard: React.FC<PopoverCardProps> = (props) => {
                 <div className={styles.axisValues}>
                     {props.xValue && (
                         <div className={styles.axisRow}>
-                            <span className={styles.axisLabel}>{props.xLabel}</span>
+                            <span className={styles.axisLabel}>x:{props.xLabel}</span>
                             <span className={styles.axisValue}>{props.xValue}</span>
                         </div>
                     )}
                     {props.yValue && (
                         <div className={styles.axisRow}>
-                            <span className={styles.axisLabel}>{props.yLabel}</span>
+                            <span className={styles.axisLabel}>y:{props.yLabel}</span>
                             <span className={styles.axisValue}>{props.yValue}</span>
                         </div>
                     )}
