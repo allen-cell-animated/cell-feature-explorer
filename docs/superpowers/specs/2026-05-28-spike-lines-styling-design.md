@@ -37,8 +37,8 @@ export interface SelectedPointData {
     thumbnailPath: string;
     srcPath: string;
     groupBy?: string;
-    xValue?: number;
-    yValue?: number;
+    xValue?: number | string;
+    yValue?: number | string;
 }
 ```
 
