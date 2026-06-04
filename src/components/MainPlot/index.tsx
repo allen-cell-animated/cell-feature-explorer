@@ -68,6 +68,8 @@ const PLOT_CONFIG: Partial<Config> = {
     ],
 };
 
+const POPUP_ANNOTATION_OFFSET_PX = 60;
+
 const MainPlot: React.FC<MainPlotProps> = (props) => {
     const [showFullAnnotation, setShowFullAnnotation] = React.useState(true);
     const [height, setHeight] = React.useState(window.innerHeight);
@@ -134,10 +136,10 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             const showHelpText = isLastOne && showFullAnnotation;
 
             if (showHelpText) {
-                // Keep arrow (ay: -60) but make the text box invisible; real text is in the HTML overlay.
+                // Keep arrow (ay: -POPUP_ANNOTATION_OFFSET_PX) but make the text box invisible; real text is in the HTML overlay.
                 return {
                     ...point,
-                    ay: -60,
+                    ay: -POPUP_ANNOTATION_OFFSET_PX,
                     text: "",
                     borderpad: 0,
                     bgcolor: "transparent",
@@ -234,7 +236,10 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
                 ReactDOM.createPortal(
                     <div
                         className={styles["help-text-overlay"]}
-                        style={{ left: helpTextPos.x, top: helpTextPos.y - 60 }}
+                        style={{
+                            left: helpTextPos.x,
+                            top: helpTextPos.y - POPUP_ANNOTATION_OFFSET_PX,
+                        }}
                         role="button"
                         tabIndex={0}
                         aria-label="Dismiss help text overlay"
