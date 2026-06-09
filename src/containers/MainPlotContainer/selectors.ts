@@ -358,11 +358,6 @@ export function makeAnnotations(annotations: AnnotationData[]): PlotlyAnnotation
             borderwidth: 1,
             captureevents: true,
             cellID: point.cellID,
-            font: {
-                color: PALETTE.white,
-                family: "tahoma, arial, verdana, sans-serif",
-                size: 11,
-            },
             fovID: point.fovID,
             pointIndex: point.pointIndex,
             text: point.hovered ? `ID: ${point.cellID}` : "",
