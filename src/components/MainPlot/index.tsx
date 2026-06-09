@@ -104,8 +104,8 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             const lastAnn = currentAnnotations[currentAnnotations.length - 1];
             const xa = fl.xaxis;
             const ya = fl.yaxis;
-            // Compute pixel offsets using axis range + domain, avoiding internal d2p.
-            // plotWidth/plotHeight is the paper area (between margins).
+            // Calculate the width and height of the plot area (excluding margins) to convert
+            // data coordinates to pixel positions on the canvas.
             const plotW = fl.width - fl.margin.l - fl.margin.r;
             const plotH = fl.height - fl.margin.t - fl.margin.b;
             // xaxis domain[0]=0, so domain start is at margin.l
