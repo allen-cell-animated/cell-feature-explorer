@@ -7,7 +7,7 @@ import type {
     PlotSelectionEvent,
 } from "plotly.js";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import Plot from "react-plotly.js";
 
 import { GENERAL_PLOT_SETTINGS } from "../../constants";
@@ -233,7 +233,7 @@ const MainPlot: React.FC<MainPlotProps> = (props) => {
             {showFullAnnotation &&
                 lastAnnotation &&
                 helpTextPos &&
-                ReactDOM.createPortal(
+                createPortal(
                     <div
                         className={styles["help-text-overlay"]}
                         style={{
