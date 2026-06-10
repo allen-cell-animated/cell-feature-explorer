@@ -10,6 +10,10 @@ export interface PopoverCardProps {
     description: string;
     title: string;
     src?: string;
+    xLabel?: string;
+    xValue?: string;
+    yLabel?: string;
+    yValue?: string;
 }
 
 const PopoverCard: React.FC<PopoverCardProps> = (props) => {
@@ -42,6 +46,22 @@ const PopoverCard: React.FC<PopoverCardProps> = (props) => {
     return (
         <Card className={styles.container} cover={cover} variant="borderless">
             <Meta description={props.description} title={props.title} />
+            {(props.xValue || props.yValue) && (
+                <div className={styles.axisValues}>
+                    {props.xValue && (
+                        <div className={styles.axisRow}>
+                            <span className={styles.axisLabel}>x:{props.xLabel}</span>
+                            <span className={styles.axisValue}>{props.xValue}</span>
+                        </div>
+                    )}
+                    {props.yValue && (
+                        <div className={styles.axisRow}>
+                            <span className={styles.axisLabel}>y:{props.yLabel}</span>
+                            <span className={styles.axisValue}>{props.yValue}</span>
+                        </div>
+                    )}
+                </div>
+            )}
         </Card>
     );
 };

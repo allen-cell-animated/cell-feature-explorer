@@ -1,0 +1,16 @@
+@import "../../styles/colors.css";
+
+.help-text-overlay {
+    position: fixed;
+    transform: translate(-50%, -100%);
+    background: var(--text-gray);
+    border: 1px solid rgba(255, 255, 255, 0.67);
+    border-radius: 2px;
+    color: var(--white);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px;
+    text-align: left;
+    white-space: nowrap;
+    z-index: 10;
+}

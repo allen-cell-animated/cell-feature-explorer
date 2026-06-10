@@ -115,6 +115,8 @@ export interface SelectedPointData {
     thumbnailPath: string;
     srcPath: string;
     groupBy?: string;
+    xValue?: number | string;
+    yValue?: number | string;
 }
 
 export interface ChangeHoveredPointAction {

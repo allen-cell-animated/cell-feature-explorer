@@ -35,9 +35,13 @@ import type { State } from "../../state/types";
 
 import {
     getDataForOverlayCard,
+    getFormattedHoveredXValue,
+    getFormattedHoveredYValue,
     getScatterPlotDataArray,
+    getXDisplayName,
     getXDisplayOptions,
     getXTickConversion,
+    getYDisplayName,
     getYDisplayOptions,
     getYTickConversion,
     getXAxisRange,
@@ -60,9 +64,13 @@ interface PropsFromState {
     filtersToExclude: string[];
     galleryCollapsed: boolean;
     hoveredPointData: SelectedPointData | null;
+    hoveredXValue: string;
+    hoveredYValue: string;
     mousePosition: MousePosition;
     plotDataArray: any;
     thumbnailRoot: string;
+    xDisplayName: string;
+    yDisplayName: string;
     xDropDownValue: string;
     yDropDownValue: string;
     yDropDownOptions: MeasuredFeatureDef[];
@@ -193,6 +201,8 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     index: point.customdata.index,
                     thumbnailPath: point.customdata.thumbnailPath,
                     srcPath: point.customdata.srcPath,
+                    xValue: point.x,
+                    yValue: point.y,
                 });
                 this.loadThumbnailForZarr(point.id, point.customdata.srcPath);
             } else {
@@ -233,7 +243,15 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
     }
 
     public renderPopover() {
-        const { hoveredPointData, galleryCollapsed, thumbnailRoot } = this.props;
+        const {
+            hoveredPointData,
+            galleryCollapsed,
+            thumbnailRoot,
+            xDisplayName,
+            yDisplayName,
+            hoveredXValue,
+            hoveredYValue,
+        } = this.props;
         let thumbnailSrc: string | undefined = formatThumbnailSrc(
             thumbnailRoot,
             hoveredPointData?.thumbnailPath || ""
@@ -251,6 +269,10 @@ class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlot
                     title={hoveredPointData[GROUP_BY_KEY] || ""}
                     description={hoveredPointData[CELL_ID_KEY].toString()}
                     src={thumbnailSrc}
+                    xLabel={xDisplayName}
+                    xValue={hoveredXValue}
+                    yLabel={yDisplayName}
+                    yValue={hoveredYValue}
                 />
             )
         );
@@ -354,9 +376,13 @@ function mapStateToProps(state: State): PropsFromState {
         filtersToExclude: selectionStateBranch.selectors.getFiltersToExclude(state),
         galleryCollapsed: selectionStateBranch.selectors.getGalleryCollapsed(state),
         hoveredPointData: getDataForOverlayCard(state),
+        hoveredXValue: getFormattedHoveredXValue(state),
+        hoveredYValue: getFormattedHoveredYValue(state),
         mousePosition: selectionStateBranch.selectors.getMousePosition(state),
         plotDataArray: getScatterPlotDataArray(state),
         thumbnailRoot: selectionStateBranch.selectors.getThumbnailRoot(state),
+        xDisplayName: getXDisplayName(state),
+        yDisplayName: getYDisplayName(state),
         xDropDownOptions: getXDisplayOptions(state),
         xDropDownValue: selectionStateBranch.selectors.getPlotByOnX(state),
         xTickConversion: getXTickConversion(state),

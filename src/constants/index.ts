@@ -46,16 +46,28 @@ export const DISABLE_COLOR = "#6e6e6e";
 export const OFF_COLOR = "#000";
 
 export const HEX_COLOR_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/i;
+const BASE_PALETTE_COLORS = {
+    purple: "#8950d9",
+    darkGray: "#313131",
+    mediumDarkGray: "#4b4b4b",
+    mediumGray: "#6e6e6e",
+    lightGray: "#a0a0a0",
+    extraLightGray: "#d8d8d8",
+    brightGreen: "#b2d030",
+    brightBlue: "#00a0ff",
+    white: "#ffffff",
+    translucentWhite: "#ffffffab",
+} as const;
 
 export const GENERAL_PLOT_SETTINGS = {
-    backgroundColor: "rgba(0,0,0,0)",
+    backgroundColor: "#000",
     cellName: CELL_ID_KEY,
     chartParent: "ace-scatter-chart",
     circleRadius: 4,
-    histogramColor: "rgb(164,162,164)",
+    histogramColor: BASE_PALETTE_COLORS.lightGray,
     legend: {
         font: {
-            color: "rgb(255,255,255)",
+            color: BASE_PALETTE_COLORS.white,
         },
         orientation: "h" as const,
         y: 60,
@@ -70,24 +82,12 @@ export const GENERAL_PLOT_SETTINGS = {
     heightMargin: 56 + 74 + 140, // header height + tab height + margins
     showLegendCutoffHeight: 635,
     showLegendCutoffWidth: 692,
-    textColor: "rgb(255,255,255)",
+    spikeColor: BASE_PALETTE_COLORS.translucentWhite,
+    textColor: BASE_PALETTE_COLORS.white,
     unselectedCircleOpacity: 0.5,
 };
 
 export const NO_DOWNLOADS_TOOLTIP = "Direct download is not available for this dataset.";
-
-const BASE_PALETTE_COLORS = {
-    purple: "#8950d9",
-    darkGray: "#313131",
-    mediumDarkGray: "#4b4b4b",
-    mediumGray: "#6e6e6e",
-    lightGray: "#a0a0a0",
-    extraLightGray: "#d8d8d8",
-    brightGreen: "#b2d030",
-    brightBlue: "#00a0ff",
-    white: "#ffffff",
-    translucentWhite: "#ffffffab",
-} as const;
 
 export const PALETTE = {
     ...BASE_PALETTE_COLORS,

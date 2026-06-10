@@ -360,7 +360,6 @@ export function makeAnnotations(annotations: AnnotationData[]): PlotlyAnnotation
             cellID: point.cellID,
             font: {
                 color: PALETTE.white,
-                family: "tahoma, arial, verdana, sans-serif",
                 size: 11,
             },
             fovID: point.fovID,
@@ -504,5 +503,58 @@ export const getYAxisRange = createSelector(
     [getYValues],
     (yValues: (number | null)[]): [number, number] | undefined => {
         return getAxisRange(yValues);
+    }
+);
+
+export const getXDisplayName = createSelector(
+    [getPlotByOnX, getMeasuredFeaturesDefs],
+    (plotByOnX, featureDefs): string => {
+        const feature = findFeature(featureDefs, plotByOnX);
+        return feature?.displayName ?? plotByOnX;
+    }
+);
+
+export const getYDisplayName = createSelector(
+    [getPlotByOnY, getMeasuredFeaturesDefs],
+    (plotByOnY, featureDefs): string => {
+        const feature = findFeature(featureDefs, plotByOnY);
+        return feature?.displayName ?? plotByOnY;
+    }
+);
+
+function formatAxisValue(
+    value: number | string | undefined,
+    isCategorical: boolean,
+    tickConversion: TickConversion
+): string {
+    if (value === undefined) return "";
+    if (typeof value === "string") return value;
+    if (!isFinite(value)) return "";
+    if (isCategorical) {
+        const idx = tickConversion.tickValues.indexOf(value);
+        if (idx >= 0) return tickConversion.tickText[idx];
+    }
+    return Number(value).toPrecision(4);
+}
+
+export const getFormattedHoveredXValue = createSelector(
+    [getHoveredPointData, getCategoricalFeatureKeys, getPlotByOnX, getXTickConversion],
+    (hoveredPointData, categoricalFeatures, xKey, xTickConversion): string => {
+        return formatAxisValue(
+            hoveredPointData?.xValue,
+            includes(categoricalFeatures, xKey),
+            xTickConversion
+        );
+    }
+);
+
+export const getFormattedHoveredYValue = createSelector(
+    [getHoveredPointData, getCategoricalFeatureKeys, getPlotByOnY, getYTickConversion],
+    (hoveredPointData, categoricalFeatures, yKey, yTickConversion): string => {
+        return formatAxisValue(
+            hoveredPointData?.yValue,
+            includes(categoricalFeatures, yKey),
+            yTickConversion
+        );
     }
 );
