@@ -50,7 +50,9 @@ export function useThumbnail(src: string, fileInfo: FileInfo): string {
                 }
             }
         };
-        tryGenerateThumbnailAsync();
+        if (!src || src.endsWith(".zarr")) {
+            tryGenerateThumbnailAsync();
+        }
     }, [src, volumeviewerPath, fovVolumeviewerPath]);
 
     return imageSrc;
