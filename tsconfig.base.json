@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
     "jsx": "react",
     "lib": ["DOM", "ES2015", "ES6", "DOM.Iterable", "ScriptHost"],
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitAny": true,
     "preserveConstEnums": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES5"
   },
   "include": [
     "typings/**/*",
