@@ -1,8 +1,7 @@
 import { ConfigProvider, Layout, Menu } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { ItemType } from "antd/es/menu/interface";
+import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { uniq } from "lodash";
-import { MenuInfo } from "rc-menu/lib/interface";
 import * as React from "react";
 import { connect } from "react-redux";
 import type { ActionCreator } from "redux";
@@ -123,7 +122,7 @@ class Cfe extends React.Component<CfeProps, CfeState> {
         this.setState({ dontShowSmallScreenWarningAgain: value });
     };
 
-    private handleTabClick = (event: MenuInfo) => {
+    private handleTabClick = (event: Parameters<NonNullable<MenuItemType["onClick"]>>[0]) => {
         this.setState({ currentTab: event.key });
     };
 

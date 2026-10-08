@@ -90,7 +90,7 @@ const messages = {
 };
 
 class ThumbnailGallery extends React.Component<ThumbnailGalleryProps, ThumbnailGalleryState> {
-    private endOfAlbum: React.RefObject<HTMLDivElement>;
+    private endOfAlbum: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: ThumbnailGalleryProps) {
         super(props);

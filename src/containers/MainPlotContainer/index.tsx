@@ -113,7 +113,7 @@ interface MainPlotContainerState {
 }
 
 class MainPlotContainer extends React.Component<MainPlotContainerProps, MainPlotContainerState> {
-    private popoverContainer: React.RefObject<HTMLDivElement>;
+    private popoverContainer: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: MainPlotContainerProps) {
         super(props);

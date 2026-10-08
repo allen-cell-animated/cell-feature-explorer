@@ -11,8 +11,8 @@ import {
     VOLE_PARAMS,
     VOLUME_VIEWER_PATH,
 } from "../../constants";
-import { Megaset } from "../image-dataset/types";
-import { Album } from "../types";
+import type { Megaset } from "../image-dataset/types";
+import type { Album } from "../types";
 
 // FROM THE DATABASE TYPINGS
 

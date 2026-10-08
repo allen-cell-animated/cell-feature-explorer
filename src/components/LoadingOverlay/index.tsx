@@ -11,7 +11,7 @@ interface ViewerOverlayTargetProps {
 const LoadingOverlay = ({
     isLoading,
     loadingText,
-}: ViewerOverlayTargetProps): JSX.Element | null => {
+}: ViewerOverlayTargetProps): React.ReactNode => {
     const loadingOverlay = (
         <div className={styles.container}>
             <p className="loading-icon">{Loading}</p>

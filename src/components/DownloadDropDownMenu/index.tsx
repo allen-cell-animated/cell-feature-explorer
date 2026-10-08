@@ -1,8 +1,7 @@
 import { Button, Dropdown, MenuProps, Tooltip } from "antd";
 import { CheckOutlined, DownloadOutlined } from "@ant-design/icons";
-import { ItemType } from "antd/es/menu/interface";
+import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { MenuInfo } from "rc-menu/lib/interface";
 
 import { includes, uniq } from "lodash";
 import React, { MouseEvent } from "react";
@@ -49,7 +48,7 @@ export default class DownloadDropDownMenu extends React.Component<
         hideable: true,
     };
 
-    private popupContainerRef: React.RefObject<HTMLDivElement>;
+    private popupContainerRef: React.RefObject<HTMLDivElement | null>;
 
     constructor(props: DownloadDropDownMenuProps) {
         super(props);
@@ -83,7 +82,7 @@ export default class DownloadDropDownMenu extends React.Component<
         }
     }
 
-    public saveDownloadUrl(info: MenuInfo) {
+    public saveDownloadUrl(info: Parameters<NonNullable<MenuItemType["onClick"]>>[0]) {
         const { downloadConfig } = this.props;
         const { alreadyDownloaded } = this.state;
         const thisAlreadyDownloaded = alreadyDownloaded[downloadConfig.key];

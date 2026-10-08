@@ -11,7 +11,7 @@ interface AppHeaderProps {
 }
 
 class AppHeader extends React.Component<AppHeaderProps> {
-    public render(): JSX.Element {
+    public render(): React.ReactNode {
         const { selectedDataset } = this.props;
 
         return (
