@@ -464,7 +464,7 @@ function makeLinePlotTrace(data: LinePlotData, settings: MainPlotSettings): Part
     let color = settings.connectionLineDefaultColor;
     if (data.color) {
         // Color is a hex string; apply transparency
-        const opacityHex = Math.round(settings.unselectedCircleOpacity * 255);
+        const opacityHex = Math.round(settings.connectionLineOpacity * 255);
         color = data.color + opacityHex.toString(16).padStart(2, "0");
     }
     return {

@@ -47,6 +47,7 @@ export const getShowConnectLines = (state: State): boolean => state.selection.sh
 export const getLineMovingAverageWindow = (state: State): number =>
     state.selection.connectLineMovingAverageWindow;
 export const getLineWidth = (state: State): number => state.selection.connectLineWidth;
+export const getLineOpacity = (state: State): number => state.selection.connectLineOpacity;
 export const getLineDefaultColor = (state: State): string =>
     state.selection.connectLineDefaultColor;
 export const getClickedCellsFileInfo = (state: State): FileInfo[] => state.selection.selectedPoints;
@@ -263,12 +264,13 @@ export const getGroupingCategoryNamesAsArray = createSelector(
 );
 
 export const getMainPlotSettings = createSelector(
-    [getPointOpacity, getPointRadius, getLineDefaultColor, getLineWidth],
+    [getPointOpacity, getPointRadius, getLineDefaultColor, getLineWidth, getLineOpacity],
     (
         pointOpacity: number,
         pointRadius: number,
         lineDefaultColor: string,
-        lineWidth: number
+        lineWidth: number,
+        lineOpacity: number
     ): MainPlotSettings => {
         return {
             ...GENERAL_PLOT_SETTINGS,
@@ -276,6 +278,7 @@ export const getMainPlotSettings = createSelector(
             unselectedCircleOpacity: pointOpacity,
             connectionLineDefaultColor: lineDefaultColor,
             connectionLineWidth: lineWidth,
+            connectionLineOpacity: lineOpacity,
         };
     }
 );
