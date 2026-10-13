@@ -280,7 +280,7 @@ export default class UrlState {
             if (!isFinite(Number(opacity))) {
                 return {};
             }
-            return { connectLineOpacity: Number(opacity) };
+            return { connectLineOpacity: Math.max(Math.min(Number(opacity), 1), 0) };
         },
         [URLSearchParam.connectLineDefaultColor]: (color) => ({
             connectLineDefaultColor: String(color),

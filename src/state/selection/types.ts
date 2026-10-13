@@ -25,6 +25,7 @@ export interface SelectionStateBranch {
     connectLineMovingAverageWindow: number;
     connectLineWidth: number;
     connectLineDefaultColor: string;
+    /** Opacity of the plot connection lines, in a [0, 1] range. */
     connectLineOpacity: number;
     defaultColors: string[];
     colorOverrides: (string | undefined)[];
