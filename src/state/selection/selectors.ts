@@ -47,7 +47,7 @@ export const getShowConnectLines = (state: State): boolean => state.selection.sh
 export const getLineMovingAverageWindow = (state: State): number =>
     state.selection.connectLineMovingAverageWindow;
 export const getLineWidth = (state: State): number => state.selection.connectLineWidth;
-/** Returns the opacity of points in the plot, in a [0, 1] range. */
+/** Returns the opacity of lines in the plot, in a [0, 1] range. */
 export const getLineOpacity = (state: State): number => state.selection.connectLineOpacity;
 export const getLineDefaultColor = (state: State): string =>
     state.selection.connectLineDefaultColor;
