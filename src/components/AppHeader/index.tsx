@@ -20,7 +20,7 @@ class AppHeader extends React.Component<AppHeaderProps> {
                     <a
                         href="https://allencell.org"
                         title="Allen Institute for Cell Science"
-                        style={{ height: "41px" }}
+                        style={{ height: "36px" }}
                     >
                         {AicsLogo}
                     </a>
