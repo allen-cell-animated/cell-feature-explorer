@@ -31,8 +31,9 @@ jobs:
               run: npm ci
 
             - name: Build
-              run: npx vite build --basename=/vole-app/pr-preview/pr-${PR_NUMBER}/
+              run: npx vite build --base=/${GITHUB_EVENT_REPOSITORY_NAME}/pr-preview/pr-${PR_NUMBER}/
               env:
+                  GITHUB_EVENT_REPOSITORY_NAME: ${{ github.event.repository.name }}
                   PR_NUMBER: ${{ github.event.number }}
 
             - name: Deploy preview
