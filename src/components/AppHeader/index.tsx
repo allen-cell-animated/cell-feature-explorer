@@ -2,15 +2,20 @@ import { Row } from "antd";
 import * as React from "react";
 
 import { AicsLogo } from "../Icons";
-
-import styles from "./style.css";
 import CsvInput from "../../containers/CsvInput";
+
+import styles from "./style.module.css";
 
 interface AppHeaderProps {
     selectedDataset: string;
 }
 
 class AppHeader extends React.Component<AppHeaderProps> {
+    constructor(props: AppHeaderProps) {
+        super(props);
+        console.log("styles", styles);
+    }
+
     public render(): JSX.Element {
         const { selectedDataset } = this.props;
 
