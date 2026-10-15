@@ -3,6 +3,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 const DEFAULT_CONFIG = {
+    basename: process.env.basename ?? "./",
     build: {
         rolldownOptions: {
             input: {
@@ -18,7 +19,7 @@ const DEFAULT_CONFIG = {
     },
     css: {
         modules: {
-            localsConvention: "camelCaseOnly",
+            localsConvention: "camelCase",
         },
     },
     optimizeDeps: {
