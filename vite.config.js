@@ -17,6 +17,11 @@ const DEFAULT_CONFIG = {
     server: {
         port: 9002,
     },
+    css: {
+        modules: {
+            localsConvention: "camelCaseOnly",
+        },
+    },
     optimizeDeps: {
         // geotiff is only imported indirectly in vole-core workers, so vite will
         // exclude it unless it's explicitly included here.
