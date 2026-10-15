@@ -30,4 +30,4 @@ const DEFAULT_CONFIG = {
     plugins: [react()],
 };
 
-module.exports = defineConfig(DEFAULT_CONFIG);
+export default defineConfig(DEFAULT_CONFIG);
