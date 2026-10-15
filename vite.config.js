@@ -3,7 +3,6 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 const DEFAULT_CONFIG = {
-    base: process.env.basename ?? "./",
     build: {
         rolldownOptions: {
             input: {
