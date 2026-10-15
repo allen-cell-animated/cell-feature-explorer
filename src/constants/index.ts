@@ -1,7 +1,6 @@
 export const APP_ID = "cell-feature-explorer";
 export const API_VERSION = "v1";
 
-export const ENV = import.meta.env.MODE === "production" ? "production" : "development";
 export const USE_DEV_DB = import.meta.env.VITE_USE_DEV_DB === "true";
 export const USE_JSON_DATASET = import.meta.env.VITE_USE_JSON_DATASET === "true";
 export const USE_REDUX_DEVTOOLS = import.meta.env.VITE_USE_REDUX_DEVTOOLS === "true";
