@@ -11,11 +11,6 @@ interface AppHeaderProps {
 }
 
 class AppHeader extends React.Component<AppHeaderProps> {
-    constructor(props: AppHeaderProps) {
-        super(props);
-        console.log("styles", styles);
-    }
-
     public render(): JSX.Element {
         const { selectedDataset } = this.props;
 
